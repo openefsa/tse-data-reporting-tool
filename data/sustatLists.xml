@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sustatLists xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<selectionList id="BSE">
+		<selection code="statusHerd=F">
+			<description>Not infected</description>
+		</selection>
+		<selection code="statusHerd=N">
+			<description>Infected</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIE">
+		<selection code="statusHerd=F">
+			<description>Not infected</description>
+		</selection>
+		<selection code="statusHerd=N">
+			<description>Infected</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD">
+		<selection code="statusHerd=F">
+			<description>Not infected</description>
+		</selection>
+		<selection code="statusHerd=N">
+			<description>Infected</description>
+		</selection>
+	</selectionList>
+</sustatLists>

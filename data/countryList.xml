@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<countryList>
+	<selectionList>
+		<selection code="FR">
+			<description>France</description>
+		</selection>
+		<selection code="IT">
+			<description>Italy</description>
+		</selection>
+	</selectionList>
+</countryList>

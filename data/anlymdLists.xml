@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<anlymdLists xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<selectionList id="BSE">
+		<selection code="TBD01">
+			<description>To Be Defined 1</description>
+		</selection>
+		<selection code="TBD02">
+			<description>To Be Defined 2</description>
+		</selection>
+		<selection code="TBD03">
+			<description>To Be Defined 3</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIE">
+		<selection code="TBD01">
+			<description>To Be Defined 1</description>
+		</selection>
+		<selection code="TBD02">
+			<description>To Be Defined 2</description>
+		</selection>
+		<selection code="TBD03">
+			<description>To Be Defined 3</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD">
+		<selection code="TBD01">
+			<description>To Be Defined 1</description>
+		</selection>
+		<selection code="TBD02">
+			<description>To Be Defined 2</description>
+		</selection>
+		<selection code="TBD03">
+			<description>To Be Defined 3</description>
+		</selection>
+	</selectionList>
+</anlymdLists>
