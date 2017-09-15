@@ -54,6 +54,10 @@ public class ReportViewer {
 	public void setReport(TableRow report) {
 		this.report = report;
 		this.monitorSelector.setEnabled(true);
+		
+		// load report rows
+		TableDao dao = new TableDao(this.reportTable.getSchema());
+		this.reportTable.setInput(dao.getByParentId(report.getSchema().getSheetName(), report.getId()));
 	}
 	
 	public void setPreferences(TableRow preferences) {
@@ -131,14 +135,14 @@ public class ReportViewer {
 		// put the report id into the row
 		if (report != null) {
 			String reportForeignKey = reportTable.getSchema()
-					.getRelationByParentId(AppPaths.REPORT_SHEET).getForeignKey();
+					.getRelationByParentTable(AppPaths.REPORT_SHEET).getForeignKey();
 			row.put(reportForeignKey, report.get(reportForeignKey));
 		}
 		
 		// link to preferences
 		if (preferences != null) {
 			String prefForeignKey = reportTable.getSchema()
-					.getRelationByParentId(AppPaths.PREFERENCES_SHEET).getForeignKey();
+					.getRelationByParentTable(AppPaths.PREFERENCES_SHEET).getForeignKey();
 
 			row.put(prefForeignKey, preferences.get(prefForeignKey));
 		}
@@ -146,7 +150,7 @@ public class ReportViewer {
 		// link to settings
 		if (settings != null) {
 			String settForeignKey = reportTable.getSchema()
-					.getRelationByParentId(AppPaths.SETTINGS_SHEET).getForeignKey();
+					.getRelationByParentTable(AppPaths.SETTINGS_SHEET).getForeignKey();
 
 			row.put(settForeignKey, settings.get(settForeignKey));
 		}

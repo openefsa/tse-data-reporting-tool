@@ -100,7 +100,7 @@ public class TableSchema extends ArrayList<TableColumn> {
 	 * @param parentId
 	 * @return
 	 */
-	public Relation getRelationByParentId(String parentId) {
+	public Relation getRelationByParentTable(String parentId) {
 		return relations.get(parentId);
 	}
 	

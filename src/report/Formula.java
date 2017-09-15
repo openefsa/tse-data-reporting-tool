@@ -82,7 +82,7 @@ public class Formula {
 	 */
 	public String solve() {
 		
-		if (formula == null)
+		if (formula == null || formula.isEmpty())
 			return "";
 
 		String value = formula.replace(" ", "");
@@ -90,32 +90,52 @@ public class Formula {
 		// solve dates
 		value = solveDateFormula(value);
 		
+		print(value, "DATE");
+		
 		// solve special characters
 		value = solveKeywords(value);
+		
+		print(value, "KEYWORDS");
 		
 		// solve columns values
 		value = solveColumnsFormula(value);
 
+		print(value, "COLUMNS");
+		
 		// solve relations formulas
 		value = solveRelationFormula(value);
+		
+		print(value, "RELATIONS");
 		
 		// solve additions
 		value = solveAdditions(value);
 		
+		print(value, "SUM");
+		
 		// solve if not null
 		value = solveConditions(value);
+		
+		print(value, "CONDITIONS");
 		
 		// solve the if statements
 		value = solveIf(value);
 		
+		print(value, "IF");
+		
 		// solve logical comparisons
 		value = solveLogicalOperators(value);
+		
+		print(value, "LOGIC");
 		
 		// solve padding
 		value = solvePadding(value);
 		
+		print(value, "PADDING");
+		
 		// solve trims
 		value = solveTrims(value);
+		
+		print(value, "TRIMS");
 
 		// remove all spaces
 		this.solvedFormula = value.replace(" ", "");
@@ -123,6 +143,10 @@ public class Formula {
 		return solvedFormula;
 	}
 	
+	private void print(String value, String header) {
+		/*if (column.equals("progId"))
+			System.out.println(header + " => " + value);*/
+	}
 	
 	private String solveTrims(String value) {
 		
@@ -430,7 +454,7 @@ public class Formula {
 			String fieldName = split[0].replace(" ", "");
 			
 			// get the relation with the parent
-			Relation r = row.getSchema().getRelationByParentId(parentId);
+			Relation r = row.getSchema().getRelationByParentTable(parentId);
 			
 			if (r == null) {
 				System.err.println("No such relation found in the " 

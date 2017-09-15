@@ -63,6 +63,7 @@ public class XmlContents {
 	 */
 	public Selection getElementByCode(String code) {
 		Collection<Selection> objs = getAllListsElements();
+
 		for (Selection sel : objs) {
 			if (sel.getCode().equals(code))
 				return sel;

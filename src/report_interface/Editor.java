@@ -131,6 +131,9 @@ public class Editor extends EditingSupport {
 		// update the row values
 		row.updateFormulas();
 		
+		// save the row in the db
+		row.save();
+		
 		// refresh the table
 		viewer.refresh(row);
 	}

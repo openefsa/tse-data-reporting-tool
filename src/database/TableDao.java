@@ -296,25 +296,75 @@ public class TableDao {
 					String code = String.valueOf(value);
 					
 					// get the description from the .xml using the code
-					selection = new TableColumnValue(XmlLoader.getByPicklistKey(column.getPicklistKey()).getElementByCode(code));
+					if (!code.isEmpty())
+						selection = new TableColumnValue(
+								XmlLoader.getByPicklistKey(column.getPicklistKey())
+									.getElementByCode(code));
+					else
+						selection = new TableColumnValue();
 				}
 				else {
 					
 					// if simple element, then it is sufficient the
 					// description (which is the label)
 					selection = new TableColumnValue();
+					selection.setCode(String.valueOf(value));
 					selection.setLabel(String.valueOf(value));
 				}
 			}
-			
+
 			// set also the id of the row
 			row.setId(rs.getInt(schema.getTableIdField()));
+			
+			if (selection.getLabel().isEmpty())
+				selection.setLabel(selection.getCode());
 			
 			// insert the element into the row
 			row.put(column.getId(), selection);
 		}
 		
+		// solve automatic fields
+		row.updateFormulas();
+		
 		return row;
+	}
+	
+	/**
+	 * Get all the rows that has as parent the {@code parentId} in the parent table {@code parentTable}
+	 * @param row
+	 * @return
+	 */
+	public Collection<TableRow> getByParentId(String parentTable, int parentId) {
+		
+		Collection<TableRow> rows = new ArrayList<>();
+		
+		Relation r = schema.getRelationByParentTable(parentTable);
+
+		String query = "select * from " + tableName + " where " + r.getForeignKey() + " = ?";
+		
+		try (Connection con = Database.getConnection(); 
+				PreparedStatement stmt = con.prepareStatement(query);) {
+			
+			// set the id of the parent
+			stmt.setInt(1, parentId);
+			
+			try (ResultSet rs = stmt.executeQuery();) {
+				while (rs.next()) {
+					
+					TableRow row = getByResultSet(rs);
+					if (row != null)
+						rows.add(row);
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return rows;
 	}
 	
 	/**
@@ -335,7 +385,6 @@ public class TableDao {
 				while (rs.next()) {
 					
 					TableRow row = getByResultSet(rs);
-					
 					if (row != null)
 						rows.add(row);
 				}

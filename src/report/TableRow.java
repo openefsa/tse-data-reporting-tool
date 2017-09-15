@@ -2,6 +2,7 @@ package report;
 
 import java.util.HashMap;
 
+import database.TableDao;
 import xlsx_reader.ReportTableHeaders.XlsxHeader;
 import xlsx_reader.TableSchema;
 import xml_reader.Selection;
@@ -183,6 +184,14 @@ public class TableRow {
 		solver.solveAll(XlsxHeader.DEFAULTVALUE.getHeaderName());
 		solver.solveAll(XlsxHeader.DEFAULTCODE.getHeaderName());
 	}
+	
+	/**
+	 * Update the row
+	 */
+	public void save() {
+		TableDao dao = new TableDao(this.schema);
+		dao.update(this);
+	}
 
 	
 	public TableSchema getSchema() {
@@ -243,8 +252,9 @@ public class TableRow {
 			
 			print.append("Column: " + key);
 			
-			// add code for picklists
-			if (schema.getById(key) != null && schema.getById(key).isPicklist())
+			// add code for picklists and foreign keys
+			if (schema.getById(key) != null 
+					&& (schema.getById(key).isPicklist() || schema.getById(key).isForeignKey()))
 				print.append(" code=" + values.get(key).getCode());
 			
 			print.append(";value=" + values.get(key).getLabel());

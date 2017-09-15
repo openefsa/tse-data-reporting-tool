@@ -169,6 +169,7 @@ public class ReportTable {
 	public void setInput(Collection<TableRow> elements) {
 		this.tableViewer.setInput(elements);
 		this.tableElements = new ArrayList<>(elements);
+		this.tableViewer.refresh();
 	}
 	
 	/**
