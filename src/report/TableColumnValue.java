@@ -9,6 +9,7 @@ import xml_reader.Selection;
  *
  */
 public class TableColumnValue {
+	
 	String code;
 	String label;
 	public TableColumnValue() {

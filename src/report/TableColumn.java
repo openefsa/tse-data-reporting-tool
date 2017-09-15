@@ -58,8 +58,8 @@ public class TableColumn implements Comparable<TableColumn> {
 	public enum ColumnType {
 		INTEGER("integer"),
 		STRING("string"),
-		PICKLIST("picklist"),
-		FOREIGNKEY("foreignKey");
+		PICKLIST("picklist"),  // catalogues values
+		FOREIGNKEY("foreignKey");  // relation with other tables
 		
 		private String headerName;
 		

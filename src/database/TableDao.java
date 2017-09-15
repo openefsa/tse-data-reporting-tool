@@ -5,15 +5,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import report.TableColumnValue;
 import report.TableColumn;
+import report.TableColumnValue;
 import report.TableRow;
 import xlsx_reader.TableSchema;
-import xml_reader.Selection;
 import xml_reader.XmlLoader;
 
 /**
@@ -79,12 +79,39 @@ public class TableDao {
 		return query.toString();
 	}
 	
+	/**
+	 * Get the query needed to add a row to the table
+	 * @return
+	 */
+	private String getUpdateQuery() {
+		
+		StringBuilder query = new StringBuilder();
+		query.append("update " + tableName + " set ");
+		
+		// set the columns names
+		Iterator<TableColumn> iterator = schema.iterator();
+		while (iterator.hasNext()) {
+			
+			TableColumn col = iterator.next();
+			query.append(col.getId());
+			query.append(" = ?");
+			
+			// append the comma if there is another field
+			if(iterator.hasNext())
+				query.append(",");
+		}
+		
+		query.append(" where ").append(schema.getTableIdField()).append(" = ?");
+
+		return query.toString();
+	}
+	
 	private boolean isRelationId(String id) throws IOException {
 		
 		if (schema.getRelations() == null)
 			return false;
 		
-		for (Relation r : schema.getRelations()) {
+		for (Relation r : schema.getRelations().values()) {
 			if(r.getForeignKey().equals(id))
 				return true;
 		}
@@ -99,32 +126,44 @@ public class TableDao {
 	 * @param stmt
 	 * @throws SQLException
 	 */
-	private void setParameters(TableRow row, PreparedStatement stmt) throws SQLException {
-		
+	private void setParameters(TableRow row, PreparedStatement stmt, boolean setWhereId) throws SQLException {
+
 		for (int i = 0; i < schema.size(); ++i) {
 			
-			TableColumn col = schema.get(i);			
+			TableColumn col = schema.get(i);
 			
 			String value = null;
 			
 			TableColumnValue sel = row.get(col.getId());
+			
+			if (sel == null) {
+				System.err.println("Missing value for " + col.getId() 
+					+ " in table " + row.getSchema().getSheetName());
+				continue;
+			}
 
-			if (col.isPicklist() || col.isForeignKey())
+			//if (col.isPicklist() || col.isForeignKey())
 				value = sel.getCode();
-			else
-				value = sel.getLabel();
+			//else
+				//value = sel.getLabel();
 
 			// If we have a relation ID => then convert into integer
 			try {
 				
 				if (isRelationId(col.getId()))
 					stmt.setInt(1 + i, Integer.valueOf(value));
-				else
+				else {
 					stmt.setString(1 + i, value);
+				}
 				
 			} catch (NumberFormatException | IOException e) {
 				e.printStackTrace();
 			}
+		}
+		
+		// set also the id of the row
+		if (setWhereId) {
+			stmt.setInt(schema.size() + 1, row.getId());
 		}
 	}
 	
@@ -133,15 +172,49 @@ public class TableDao {
 	 * @param row
 	 * @return
 	 */
-	public boolean add(TableRow row) {
+	public int add(TableRow row) {
+		
+		int id = -1;
+		
+		try (Connection con = Database.getConnection(); 
+				PreparedStatement stmt = con.prepareStatement(getAddQuery(), 
+						Statement.RETURN_GENERATED_KEYS);) {
+			
+			// set the row values in the parameters
+			setParameters(row, stmt, false);
+			
+			// insert the element
+			stmt.executeUpdate();
+			
+			// get the newly generated id
+			try (ResultSet rs = stmt.getGeneratedKeys();) {
+				if (rs.next()) {
+					id = rs.getInt(1);
+				}
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return id;
+	}
+	
+	/**
+	 * Add a new row to the table
+	 * @param row
+	 * @return
+	 */
+	public boolean update(TableRow row) {
 		
 		boolean ok = true;
 		
 		try (Connection con = Database.getConnection(); 
-				PreparedStatement stmt = con.prepareStatement(getAddQuery());) {
+				PreparedStatement stmt = con.prepareStatement(getUpdateQuery());) {
 			
 			// set the row values in the parameters
-			setParameters(row, stmt);
+			// with the where id included
+			setParameters(row, stmt, true);
 			
 			// insert the element
 			stmt.executeUpdate();
@@ -149,8 +222,7 @@ public class TableDao {
 		} catch (SQLException e) {
 			
 			e.printStackTrace();
-			ok = false;
-			
+			ok = false;	
 		}
 		
 		return ok;
@@ -234,6 +306,9 @@ public class TableDao {
 					selection.setLabel(String.valueOf(value));
 				}
 			}
+			
+			// set also the id of the row
+			row.setId(rs.getInt(schema.getTableIdField()));
 			
 			// insert the element into the row
 			row.put(column.getId(), selection);

@@ -14,7 +14,6 @@ import java.util.Comparator;
 public class FormulaSolver {
 
 	private TableRow row;
-	private TableColumn column;
 
 	/**
 	 * Initialize the solver.
@@ -71,6 +70,8 @@ public class FormulaSolver {
 			// skip if no value is found
 			if (solvedFormula == null || solvedFormula.isEmpty())
 				continue;
+			
+			row.update(formula, fieldHeader);
 			
 			// save solved formula
 			solvedFormulas.add(formula);

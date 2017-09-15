@@ -15,6 +15,7 @@ import app_config.AppPaths;
 public class Database {
 
 	private static final String DB_URL = "jdbc:derby:" + AppPaths.DB_FOLDER;
+	private static final String CLOSE_DB_URL = DB_URL + ";shutdown=true";
 	
 	/**
 	 * Connect to the main catalogues database if present, otherwise create it and then connect
@@ -22,7 +23,7 @@ public class Database {
 	 * @throws IOException 
 	 * @throws Exception
 	 */
-	public void connect(String path) throws IOException {
+	public void connect() throws IOException {
 
 		try {
 
@@ -47,7 +48,18 @@ public class Database {
 			System.out.println( "Creating database...");
 			
 			DatabaseCreator creator = new DatabaseCreator(AppPaths.CONFIG_FILE);
-			creator.create(path);
+			creator.create(AppPaths.DB_FOLDER);
+		}
+	}
+	
+	/**
+	 * Shutdown the database
+	 * @throws SQLException
+	 */
+	public void shutdown() {
+		try {
+			DriverManager.getConnection(CLOSE_DB_URL);
+		} catch (SQLException e) {
 		}
 	}
 	

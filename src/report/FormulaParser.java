@@ -1,7 +1,6 @@
 package report;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import xlsx_reader.ReportTableHeaders.XlsxHeader;
 
@@ -49,28 +48,5 @@ public class FormulaParser {
 		}
 		
 		return formulas;
-	}
-	
-	/**
-	 * Get all the columns that can be updated automatically
-	 * @return
-	 */
-	private Collection<TableColumn> getUpdateableFields() {
-		
-		Collection<TableColumn> cols = new ArrayList<>();
-
-		// for each column of the row
-		for (TableColumn column : this.row.getSchema()) {
-
-			// update is not done on editable columns
-			// since they are changed directly by
-			// the user
-			if (this.row.get(column.getId()) != null && column.isEditable())
-				continue;
-			
-			cols.add(column);
-		}
-		
-		return cols;
 	}
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 
 import app_config.AppPaths;
 import database.Relation;
@@ -19,7 +20,25 @@ public class TableSchema extends ArrayList<TableColumn> {
 	private static final long serialVersionUID = 1L;
 	private String sheetName;
 	private String tableIdField;
-	private Collection<Relation> relations;
+	private HashMap<String, Relation> relations;
+	
+	
+	/**
+	 * Load a generic schema from the {@link AppPaths#CONFIG_FILE} file
+	 * using the {@code sheetName} sheet
+	 * @param sheetName
+	 * @return
+	 * @throws IOException
+	 */
+	public static TableSchema load(String sheetName) throws IOException {
+		SchemaReader r = new SchemaReader(AppPaths.CONFIG_FILE);
+		r.read(sheetName);
+		r.close();
+		TableSchema schema = r.getSchema();
+		schema.setSheetName(sheetName);
+		return schema;
+	}
+	
 	
 	/**
 	 * Set the sheet name related to the schema
@@ -52,9 +71,9 @@ public class TableSchema extends ArrayList<TableColumn> {
 	 * @return
 	 * @throws IOException
 	 */
-	private Collection<Relation> fetchRelations() throws IOException {
+	private HashMap<String, Relation> fetchRelations() throws IOException {
 		
-		Collection<Relation> out = new ArrayList<>();
+		HashMap<String, Relation> out = new HashMap<>();
 		
 		RelationParser parser = new RelationParser(AppPaths.CONFIG_FILE);
 		Collection<Relation> rs = parser.read();
@@ -62,7 +81,7 @@ public class TableSchema extends ArrayList<TableColumn> {
 
 		for (Relation r : rs) {
 			if (r.getChild().equals(sheetName))
-				out.add(r);
+				out.put(r.getParent(), r);
 		}
 		
 		return out;
@@ -72,7 +91,7 @@ public class TableSchema extends ArrayList<TableColumn> {
 	 * Get the relationships with other tables
 	 * @return
 	 */
-	public Collection<Relation> getRelations() {
+	public HashMap<String, Relation> getRelations() {
 		return relations;
 	}
 	
@@ -82,11 +101,7 @@ public class TableSchema extends ArrayList<TableColumn> {
 	 * @return
 	 */
 	public Relation getRelationByParentId(String parentId) {
-		for (Relation r : relations) {
-			if (r.getParent().equals(parentId))
-				return r;
-		}
-		return null;
+		return relations.get(parentId);
 	}
 	
 	/**

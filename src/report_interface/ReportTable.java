@@ -28,11 +28,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 
-import app_config.AppPaths;
 import report.TableColumn;
-import report.TableRow;
 import report.TableColumnValue;
-import xlsx_reader.SchemaReader;
+import report.TableRow;
 import xlsx_reader.TableSchema;
 
 /**
@@ -61,7 +59,7 @@ public class ReportTable {
 		this.parent = parent;
 		this.editable = editable;
 		try {
-			this.schema = loadSchema(schemaSheetName);
+			this.schema = TableSchema.load(schemaSheetName);
 			this.tableElements = new ArrayList<>();
 			this.create();
 		} catch (IOException e) {
@@ -105,20 +103,7 @@ public class ReportTable {
 		}
 		return true;
 	}
-	
-	/**
-	 * Load all the columns from the configuration file
-	 * @return
-	 * @throws IOException 
-	 */
-	private TableSchema loadSchema(String schemaSheetName) throws IOException {
-		SchemaReader read = new SchemaReader(AppPaths.CONFIG_FILE);
-		read.read(schemaSheetName);
-		TableSchema schema = read.getSchema();
-		read.close();
-		return schema;
-	}
-	
+
 	/**
 	 * Create the interface into the composite 
 	 */
@@ -470,11 +455,17 @@ public class ReportTable {
 			case OK:
 				text = "Validated";
 				break;
-			case INCOMPLETE:
-				text = "Case report incomplete";
+			case POSITIVE_MISSING:
+				text = "Positive cases report incomplete";
+				break;
+			case INCONCLUSIVE_MISSING:
+				text = "";
+				break;
+			case MANDATORY_MISSING:
+				text = "Missing mandatory fields";
 				break;
 			case ERROR:
-				text = "Missing mandatory fields";
+				text = "Check case report";
 				break;
 			}
 
@@ -506,10 +497,14 @@ public class ReportTable {
 		    case OK:
 		    	rowColor = green;
 		    	break;
-		    case INCOMPLETE:
+		    	
+		    case POSITIVE_MISSING:
+		    case INCONCLUSIVE_MISSING:
 		    	rowColor = yellow;
 		    	break;
+		    	
 		    case ERROR:
+		    case MANDATORY_MISSING:
 		    	rowColor = red;
 		    	break;
 		    }

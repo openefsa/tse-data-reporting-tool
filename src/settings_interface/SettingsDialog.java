@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
+import database.Relation;
 import database.TableDao;
 import report.TableRow;
 import xlsx_reader.TableSchema;
@@ -16,8 +17,14 @@ import xlsx_reader.TableSchema;
  */
 public class SettingsDialog extends DataDialog {
 	
+	private OptionsChangedListener listener;
+	
 	public SettingsDialog(Shell parent) {
 		super(parent, "User settings", "User settings", true);
+	}
+	
+	public void setListener(OptionsChangedListener listener) {
+		this.listener = listener;
 	}
 
 	@Override
@@ -32,8 +39,16 @@ public class SettingsDialog extends DataDialog {
 		Collection<TableRow> objs = dao.getAll();
 		
 		// if no options were set, add an empty row
-		if (objs.isEmpty())
-			objs.add(new TableRow(schema));
+		// to the db, get 
+		if (objs.isEmpty()) {
+			
+			// add a new row
+			TableRow row = new TableRow(schema);
+			int id = dao.add(row);
+			row.setId(id);
+			
+			objs.add(row);
+		}
 		
 		return objs;
 	}
@@ -43,9 +58,12 @@ public class SettingsDialog extends DataDialog {
 		
 		// update settings
 		TableDao dao = new TableDao(schema);
-		dao.removeAll();
+		dao.update(selectedRow);
 		
-		for (TableRow row : rows)
-			dao.add(row);
+		// update the cache of the relations
+		Relation.updateCache(selectedRow);
+		
+		if (listener != null)
+			listener.optionChanged(selectedRow);
 	}
 }

@@ -123,6 +123,7 @@ public class DatabaseStructureCreator extends XlsxReader {
 		}
 		else if (h == XlsxHeader.TYPE) {
 
+			// get the type of field
 			try {
 				this.currentColumnType = ColumnType.fromString(value);
 			} catch (IllegalArgumentException e) {
@@ -139,13 +140,15 @@ public class DatabaseStructureCreator extends XlsxReader {
 
 		// append the id name as variable name
 		// set the field as string
-		if (this.currentColumnType == ColumnType.FOREIGNKEY) {
+		switch (this.currentColumnType) {
+		case FOREIGNKEY:
 			query.append(this.currentColumnId)
 			.append(" integer not null\n");
-		}
-		else {
+			break;
+		default:
 			query.append(this.currentColumnId)
 			.append(" varchar(1000)");
+			break;
 		}
 		
 		int last = row.getSheet().getLastRowNum();

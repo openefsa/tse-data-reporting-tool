@@ -1,11 +1,11 @@
 package user_interface;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import app_config.AppPaths;
 import database.Database;
 
 public class StartUI {
@@ -17,7 +17,7 @@ public class StartUI {
 		
 		// connect to the database application
 		Database db = new Database();
-		db.connect(AppPaths.DB_FOLDER);
+		db.connect();
 		
 		Display display = new Display();
 		Shell shell = new Shell(display);
@@ -36,6 +36,9 @@ public class StartUI {
 		}
 
 		display.dispose();
+		
+		// close the database
+		db.shutdown();
 		
 		// exit the application
 		System.exit(0);

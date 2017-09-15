@@ -16,10 +16,9 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
 import app_config.AppPaths;
-import database.Relation;
 import database.TableDao;
-import report.TableColumnValue;
 import report.SummarizedInformationSchema;
+import report.TableColumnValue;
 import report.TableRow;
 import report_interface.MonitoringSelector.MonitoringListener;
 import xml_reader.Selection;
@@ -33,6 +32,8 @@ public class ReportViewer {
 	
 	private Composite parent;
 	private TableRow report;  // the current report we want to edit
+	private TableRow preferences;  // the current used preferences
+	private TableRow settings;  // the current used settings
 	private MonitoringSelector monitorSelector;
 	private ReportViewerHelp helpViewer;
 	private ReportTable reportTable;
@@ -53,6 +54,14 @@ public class ReportViewer {
 	public void setReport(TableRow report) {
 		this.report = report;
 		this.monitorSelector.setEnabled(true);
+	}
+	
+	public void setPreferences(TableRow preferences) {
+		this.preferences = preferences;
+	}
+	
+	public void setSettings(TableRow settings) {
+		this.settings = settings;
 	}
 	
 	/**
@@ -96,9 +105,6 @@ public class ReportViewer {
 				try {
 					TableRow row = createNewRow(selectedItem);
 					reportTable.add(row);
-					
-					TableDao dao = new TableDao(reportTable.getSchema());
-					dao.add(row);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -119,12 +125,45 @@ public class ReportViewer {
 	private TableRow createNewRow(Selection element) throws IOException {
 
 		TableRow row = new TableRow(reportTable.getSchema());
+		
 		row.put(SummarizedInformationSchema.TYPE, new TableColumnValue(element));
-		// put also the information related to the foreign key of the report
-		for (Relation r : reportTable.getSchema().getRelations()) {
-			row.put(r.getForeignKey(), report.get(r.getForeignKey()));
+		
+		// put the report id into the row
+		if (report != null) {
+			String reportForeignKey = reportTable.getSchema()
+					.getRelationByParentId(AppPaths.REPORT_SHEET).getForeignKey();
+			row.put(reportForeignKey, report.get(reportForeignKey));
 		}
+		
+		// link to preferences
+		if (preferences != null) {
+			String prefForeignKey = reportTable.getSchema()
+					.getRelationByParentId(AppPaths.PREFERENCES_SHEET).getForeignKey();
 
+			row.put(prefForeignKey, preferences.get(prefForeignKey));
+		}
+		
+		// link to settings
+		if (settings != null) {
+			String settForeignKey = reportTable.getSchema()
+					.getRelationByParentId(AppPaths.SETTINGS_SHEET).getForeignKey();
+
+			row.put(settForeignKey, settings.get(settForeignKey));
+		}
+		
+		// insert the row and get the row id
+		TableDao dao = new TableDao(reportTable.getSchema());
+		int id = dao.add(row);
+		
+		// set the id for the new row
+		row.setId(id);
+		
+		// update the formulas
+		row.updateFormulas();
+		
+		// update the row with the formulas solved
+		dao.update(row);
+		
 		return row;
 	}
 	

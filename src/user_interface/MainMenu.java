@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import report.ReportCreatorDialog;
 import report.TableRow;
+import settings_interface.OptionsChangedListener;
 import settings_interface.PreferencesDialog;
 import settings_interface.SettingsDialog;
 
@@ -114,6 +115,15 @@ public class MainMenu {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				PreferencesDialog dialog = new PreferencesDialog(shell);
+				
+				dialog.setListener(new OptionsChangedListener() {
+					
+					@Override
+					public void optionChanged(TableRow newOptions) {
+						mainPanel.setPreferences(newOptions);
+					}
+				});
+				
 				dialog.open();
 			}
 
@@ -127,6 +137,13 @@ public class MainMenu {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				SettingsDialog dialog = new SettingsDialog(shell);
+				dialog.setListener(new OptionsChangedListener() {
+					
+					@Override
+					public void optionChanged(TableRow newOptions) {
+						mainPanel.setSettings(newOptions);
+					}
+				});
 				dialog.open();
 			}
 

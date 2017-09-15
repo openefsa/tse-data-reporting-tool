@@ -1,6 +1,5 @@
 package report;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import xlsx_reader.ReportTableHeaders.XlsxHeader;
@@ -16,10 +15,12 @@ public class TableRow {
 
 	public enum RowStatus {
 		OK,
-		INCOMPLETE,
+		POSITIVE_MISSING,
+		INCONCLUSIVE_MISSING,
+		MANDATORY_MISSING,
 		ERROR,
 	};
-	
+
 	private HashMap<String, TableColumnValue> values;
 	private TableSchema schema;
 	
@@ -31,7 +32,41 @@ public class TableRow {
 		this.values = new HashMap<>();
 		this.schema = schema;
 		create();
-		updateFormulas();
+	}
+	
+	/**
+	 * Set the database id
+	 * @param id
+	 */
+	public void setId(int id) {
+		
+		String index = String.valueOf(id);
+		TableColumnValue idValue = new TableColumnValue();
+		idValue.setCode(index);
+		idValue.setLabel(index);
+		
+		this.values.put(schema.getTableIdField(), idValue);
+	}
+	
+	/**
+	 * Get the database id if present
+	 * otherwise return -1
+	 * @return
+	 */
+	public int getId() {
+		
+		int id = -1;
+		
+		try {
+			
+			TableColumnValue value = this.values.get(schema.getTableIdField());
+			
+			if (value != null && value.getCode() != null)
+				id = Integer.valueOf(value.getCode());
+			
+		} catch (NumberFormatException e) {}
+		
+		return id;
 	}
 	
 	/**
@@ -56,9 +91,9 @@ public class TableRow {
 	 * Put a string into the data, only for raw columns not picklists
 	 * use {@link #put(String, Selection)} for picklists
 	 * @param key
-	 * @param value
+	 * @param label
 	 */
-	public void put(String key, String value) {
+	public void put(String key, String label) {
 		
 		if (schema.getById(key) != null && schema.getById(key).isPicklist()) {
 			System.err.println("Wrong use of ReportRow.put(String,String), "
@@ -67,7 +102,8 @@ public class TableRow {
 		}
 		
 		TableColumnValue row = new TableColumnValue();
-		row.setLabel(value);
+		row.setCode(label);
+		row.setLabel(label);
 		values.put(key, row);
 	}
 	
@@ -81,8 +117,56 @@ public class TableRow {
 			sel.setCode(col.getDefaultCode());
 			sel.setLabel(col.getDefaultValue());
 			
+			// set the default values for the editable columns
+			// this is done just when the row is created and not
+			// when the row is computed, since they are default
+			// values with formulas, not real automatic values with formulas
+			if (col.isEditable()) {
+				FormulaSolver solver = new FormulaSolver(this);
+				Formula label = solver.solve(col, XlsxHeader.DEFAULTVALUE.getHeaderName());
+				Formula code = solver.solve(col, XlsxHeader.DEFAULTCODE.getHeaderName());
+				
+				sel.setCode(code.getSolvedFormula());
+				sel.setLabel(label.getSolvedFormula());
+			}
+			
 			this.put(col.getId(), sel);
 		}
+	}
+	
+	/**
+	 * Update the code or the value of the row
+	 * using a solved formula
+	 * @param f
+	 * @param fieldHeader
+	 */
+	public void update(Formula f, String fieldHeader) {
+		
+		// skip editable columns
+		if (f.getColumn().isEditable())
+			return;
+		
+		XlsxHeader h = XlsxHeader.fromString(fieldHeader);
+		
+		if (h == null)
+			return;
+		
+		TableColumnValue colVal = this.get(f.getColumn().getId());
+		
+		if (h == XlsxHeader.DEFAULTCODE) {
+			colVal.setCode(f.getSolvedFormula());
+		}
+		else if (h == XlsxHeader.DEFAULTVALUE) {
+			colVal.setLabel(f.getSolvedFormula());
+			
+			// set label in the code if it is empty
+			if (colVal.getCode().isEmpty())
+				colVal.setCode(f.getSolvedFormula());
+		}
+		else // else do nothing
+			return;
+
+		this.put(f.getColumn().getId(), colVal);
 	}
 	
 	/**
@@ -94,38 +178,10 @@ public class TableRow {
 		// solve the formula for default code and default value
 		FormulaSolver solver = new FormulaSolver(this);
 		
-		ArrayList<Formula> labels = solver.solveAll(XlsxHeader.DEFAULTVALUE.getHeaderName());
-		ArrayList<Formula> codes = solver.solveAll(XlsxHeader.DEFAULTCODE.getHeaderName());
-		
-		assert(labels.size() == codes.size());
-
-		// save labels into the row
-		for (Formula f : labels) {
-			
-			// do not change editable columns (they do not have
-			// formulas and would delete the user values)
-			if (f.getColumn().isEditable())
-				continue;
-			
-			TableColumnValue colVal = new TableColumnValue();
-			colVal.setLabel(f.getSolvedFormula());
-			colVal.setCode(f.getSolvedFormula());
-			this.put(f.getColumn().getId(), colVal);
-		}
-		
-		// save codes into the row
-		for (Formula f : codes) {
-			
-			// do not change editable columns (they do not have
-			// formulas and would delete the user values)
-			// update codes just for picklists
-			if (f.getColumn().isEditable() || !f.getColumn().isPicklist())
-				continue;
-			
-			TableColumnValue colVal = this.get(f.getColumn().getId());
-			colVal.setCode(f.getSolvedFormula());
-			this.put(f.getColumn().getId(), colVal);
-		}
+		// note that this automatically updates the row
+		// while solving formulas
+		solver.solveAll(XlsxHeader.DEFAULTVALUE.getHeaderName());
+		solver.solveAll(XlsxHeader.DEFAULTCODE.getHeaderName());
 	}
 
 	
@@ -142,7 +198,7 @@ public class TableRow {
 		RowStatus status = RowStatus.OK;
 		
 		if (!areMandatoryFilled())
-			status = RowStatus.ERROR;
+			status = RowStatus.MANDATORY_MISSING;
 		
 		return status;
 	}
