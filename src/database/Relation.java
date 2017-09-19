@@ -1,10 +1,11 @@
 package database;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 
 import app_config.AppPaths;
-import report.TableRow;
+import table_skeleton.TableRow;
 import xlsx_reader.SchemaReader;
 import xlsx_reader.TableSchema;
 
@@ -94,6 +95,62 @@ public class Relation {
 			parentValueCache.put(tablename, parentValue);
 		}
 	}
+	
+	/**
+	 * Inject the parent foreign key into the child row
+	 * in order to be able to retrieve the parent table
+	 * from the child table.
+	 * @param parent
+	 * @param row
+	 */
+	public static void injectParent(TableRow parent, TableRow row) {
+
+		String prefForeignKey = row.getSchema()
+				.getRelationByParentTable(parent.getSchema().getSheetName()).getForeignKey();
+		
+		row.put(prefForeignKey, parent.get(prefForeignKey));
+	}
+	
+	/**
+	 * Inject the foreign key of a global parent to the {@code row}
+	 * the global parent is loaded from the .xlsx file using the
+	 * {@code parentTableName} field
+	 * @param row
+	 * @param parentTableName
+	 * @throws IOException
+	 */
+	public static void injectGlobalParent(TableRow row, String parentTableName) throws IOException {
+		
+		// load the global parent
+		TableRow globalParent = Relation.getGlobalParent(parentTableName);
+		
+		// set the global parent foreign key to the row
+		// if possible
+		if (globalParent != null)
+			Relation.injectParent(globalParent, row);
+	}
+	
+	/**
+	 * Get a global parent by its table name. (A global parent is
+	 * a table with just one row that contains values that are used
+	 * across the whole application, as preferences/settings...)
+	 * @param sheetName
+	 * @return
+	 * @throws IOException
+	 */
+	public static TableRow getGlobalParent(String tableName) throws IOException {
+
+		TableSchema schema = TableSchema.load(tableName);
+
+		TableDao dao = new TableDao(schema);
+
+		Collection<TableRow> opts = dao.getAll();
+
+		if (opts.isEmpty())
+			return null;
+
+		return opts.iterator().next();
+	}
 
 	/**
 	 * get the schema of the parent
@@ -103,7 +160,7 @@ public class Relation {
 		
 		try {
 			
-			SchemaReader reader = new SchemaReader(AppPaths.CONFIG_FILE);
+			SchemaReader reader = new SchemaReader(AppPaths.TABLES_SCHEMA_FILE);
 			
 			reader.read(getParent());
 			

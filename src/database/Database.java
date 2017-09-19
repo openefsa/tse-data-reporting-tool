@@ -47,7 +47,7 @@ public class Database {
 
 			System.out.println( "Creating database...");
 			
-			DatabaseCreator creator = new DatabaseCreator(AppPaths.CONFIG_FILE);
+			DatabaseCreator creator = new DatabaseCreator(AppPaths.TABLES_SCHEMA_FILE);
 			creator.create(AppPaths.DB_FOLDER);
 		}
 	}

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.apache.poi.ss.usermodel.Row;
 
-import report.TableColumnBuilder;
+import table_skeleton.TableColumnBuilder;
 import xlsx_reader.ReportTableHeaders.XlsxHeader;
 
 /**
@@ -54,6 +54,9 @@ public class SchemaReader extends XlsxReader {
 			break;
 		case LABEL:
 			builder.setLabel(value);
+			break;
+		case XML_TAG:
+			builder.setXmlTag(value);
 			break;
 		case TIP:
 			builder.setTip(value);

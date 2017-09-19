@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
-import report.TableColumn.ColumnType;
+import table_skeleton.TableColumn.ColumnType;
 import xlsx_reader.ReportTableHeaders.XlsxHeader;
 import xlsx_reader.XlsxReader;
 

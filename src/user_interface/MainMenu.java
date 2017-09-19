@@ -9,11 +9,11 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
-import report.ReportCreatorDialog;
-import report.TableRow;
-import settings_interface.OptionsChangedListener;
-import settings_interface.PreferencesDialog;
-import settings_interface.SettingsDialog;
+import table_dialog.PreferencesDialog;
+import table_dialog.ReportCreatorDialog;
+import table_dialog.ReportListDialog;
+import table_dialog.SettingsDialog;
+import table_skeleton.TableRow;
 
 /**
  * Create the main menu of the application in the given shell
@@ -94,7 +94,7 @@ public class MainMenu {
 						
 						TableRow report = (TableRow) arg0.data;
 						mainPanel.setEnabled(true);
-						mainPanel.setReport(report);
+						mainPanel.loadParentRecords(report);
 					}
 				});
 				dialog.open();
@@ -115,15 +115,6 @@ public class MainMenu {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				PreferencesDialog dialog = new PreferencesDialog(shell);
-				
-				dialog.setListener(new OptionsChangedListener() {
-					
-					@Override
-					public void optionChanged(TableRow newOptions) {
-						mainPanel.setPreferences(newOptions);
-					}
-				});
-				
 				dialog.open();
 			}
 
@@ -137,13 +128,6 @@ public class MainMenu {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				SettingsDialog dialog = new SettingsDialog(shell);
-				dialog.setListener(new OptionsChangedListener() {
-					
-					@Override
-					public void optionChanged(TableRow newOptions) {
-						mainPanel.setSettings(newOptions);
-					}
-				});
 				dialog.open();
 			}
 

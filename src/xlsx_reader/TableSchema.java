@@ -10,7 +10,7 @@ import java.util.HashMap;
 import app_config.AppPaths;
 import database.Relation;
 import database.RelationParser;
-import report.TableColumn;
+import table_skeleton.TableColumn;
 
 public class TableSchema extends ArrayList<TableColumn> {
 
@@ -24,14 +24,14 @@ public class TableSchema extends ArrayList<TableColumn> {
 	
 	
 	/**
-	 * Load a generic schema from the {@link AppPaths#CONFIG_FILE} file
+	 * Load a generic schema from the {@link AppPaths#TABLES_SCHEMA_FILE} file
 	 * using the {@code sheetName} sheet
 	 * @param sheetName
 	 * @return
 	 * @throws IOException
 	 */
 	public static TableSchema load(String sheetName) throws IOException {
-		SchemaReader r = new SchemaReader(AppPaths.CONFIG_FILE);
+		SchemaReader r = new SchemaReader(AppPaths.TABLES_SCHEMA_FILE);
 		r.read(sheetName);
 		r.close();
 		TableSchema schema = r.getSchema();
@@ -75,7 +75,7 @@ public class TableSchema extends ArrayList<TableColumn> {
 		
 		HashMap<String, Relation> out = new HashMap<>();
 		
-		RelationParser parser = new RelationParser(AppPaths.CONFIG_FILE);
+		RelationParser parser = new RelationParser(AppPaths.TABLES_SCHEMA_FILE);
 		Collection<Relation> rs = parser.read();
 		parser.close();
 

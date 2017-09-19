@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import report.TableColumn;
-import report.TableColumnValue;
-import report.TableRow;
+import table_skeleton.TableColumn;
+import table_skeleton.TableColumnValue;
+import table_skeleton.TableRow;
 import xlsx_reader.TableSchema;
-import xml_reader.XmlLoader;
+import xml_config_reader.XmlLoader;
 
 /**
  * Dao which communicates with the database and all the tables
@@ -80,7 +80,7 @@ public class TableDao {
 	}
 	
 	/**
-	 * Get the query needed to add a row to the table
+	 * Get the query needed to update a row to the table
 	 * @return
 	 */
 	private String getUpdateQuery() {
@@ -106,6 +106,13 @@ public class TableDao {
 		return query.toString();
 	}
 	
+	/**
+	 * Check if the id is a foreignKey for a parent table of 
+	 * the current table
+	 * @param id
+	 * @return
+	 * @throws IOException
+	 */
 	private boolean isRelationId(String id) throws IOException {
 		
 		if (schema.getRelations() == null)
@@ -149,7 +156,7 @@ public class TableDao {
 
 			// If we have a relation ID => then convert into integer
 			try {
-				
+				//System.out.println("PUTTING " + value + " FOR " + col.getId());
 				if (isRelationId(col.getId()))
 					stmt.setInt(1 + i, Integer.valueOf(value));
 				else {
@@ -158,6 +165,7 @@ public class TableDao {
 				
 			} catch (NumberFormatException | IOException e) {
 				e.printStackTrace();
+				System.err.println("Problematic field " + col.getId() + " with value " + value);
 			}
 		}
 		
@@ -197,6 +205,10 @@ public class TableDao {
 			e.printStackTrace();
 		}
 		
+		if (id != -1) {
+			System.out.println("Row " + id + " successfully added in " + tableName);
+		}
+		
 		return id;
 	}
 	
@@ -225,6 +237,10 @@ public class TableDao {
 			ok = false;	
 		}
 		
+		if (ok) {
+			System.out.println("Row " + row.getId() + " successfully updated in " + tableName);
+		}
+		
 		return ok;
 	}
 	
@@ -247,6 +263,10 @@ public class TableDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			ok = false;
+		}
+		
+		if (ok) {
+			System.out.println("All rows successfully deleted from " + tableName);
 		}
 		
 		return ok;
@@ -398,6 +418,36 @@ public class TableDao {
 		}
 		
 		return rows;
+	}
+	
+	/**
+	 * Remove a row by its id
+	 * @param rowId
+	 * @return
+	 */
+	public boolean delete(int rowId) {
+
+		boolean ok = true;
+		
+		String query = "delete from " + tableName + " where " + schema.getTableIdField() + " = ?";
+		
+		try (Connection con = Database.getConnection(); 
+				PreparedStatement stmt = con.prepareStatement(query);) {
+			
+			stmt.setInt(1, rowId);
+			
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			ok = false;
+		}
+		
+		if (ok) {
+			System.out.println("Row " + rowId + " successfully deleted from " + tableName);
+		}
+		
+		return ok;
 	}
 
 	/**
