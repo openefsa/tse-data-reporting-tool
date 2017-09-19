@@ -114,7 +114,6 @@ public class StartUI {
 		
 		
 		MainPanel panel = new MainPanel(shell);
-
 	    shell.open();
 		
 		// Event loop

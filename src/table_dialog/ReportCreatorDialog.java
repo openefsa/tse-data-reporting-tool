@@ -20,6 +20,7 @@ import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
 import webservice.GetDatasetList;
 import xlsx_reader.TableSchema;
+import xml_config_reader.Selection;
 
 /**
  * Form to create a new report
@@ -29,7 +30,7 @@ import xlsx_reader.TableSchema;
 public class ReportCreatorDialog extends DataDialog {
 	
 	public ReportCreatorDialog(Shell parent) {
-		super(parent, "New report", "Creation of a new report", true);
+		super(parent, "New report", "Creation of a new report", true, false, true);
 	}
 	
 	@Override
@@ -38,7 +39,7 @@ public class ReportCreatorDialog extends DataDialog {
 	}
 
 	@Override
-	public Collection<TableRow> loadContents(TableSchema schema) {
+	public Collection<TableRow> getRows(TableSchema schema, TableRow parentTable) {
 		
 		Collection<TableRow> rows = new ArrayList<>();
 		TableRow row = new TableRow(schema);
@@ -182,6 +183,11 @@ public class ReportCreatorDialog extends DataDialog {
 
 	@Override
 	public Menu createMenu() {
+		return null;
+	}
+
+	@Override
+	public TableRow createNewRow(TableSchema schema, Selection type) throws IOException {
 		return null;
 	}
 }

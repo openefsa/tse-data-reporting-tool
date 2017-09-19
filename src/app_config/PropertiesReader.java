@@ -14,6 +14,8 @@ public class PropertiesReader {
 	private static final String APP_NAME_PROPERTY = "Application.Name";
 	private static final String APP_VERSION_PROPERTY = "Application.Version";
 	private static final String APP_DC_CODE_PROPERTY = "Application.DataCollectionCode";
+	private static final String APP_TEST_REPORT_PROPERTY = "Application.TestReportCode";
+	
 	/**
 	 * Read the application properties from the xml file
 	 * @return
@@ -64,6 +66,14 @@ public class PropertiesReader {
 	 */
 	public static String getDataCollectionCode() {
 		return getValue(APP_DC_CODE_PROPERTY, "not found");
+	}
+	
+	/**
+	 * Get the test report code
+	 * @return
+	 */
+	public static String getTestReportCode() {
+		return getValue(APP_TEST_REPORT_PROPERTY, "not found");
 	}
 	
 	/**

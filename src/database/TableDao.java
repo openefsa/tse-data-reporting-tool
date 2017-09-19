@@ -138,25 +138,21 @@ public class TableDao {
 		for (int i = 0; i < schema.size(); ++i) {
 			
 			TableColumn col = schema.get(i);
+
+			TableColumnValue colValue = row.get(col.getId());
 			
-			String value = null;
-			
-			TableColumnValue sel = row.get(col.getId());
-			
-			if (sel == null) {
+			if (colValue == null) {
 				System.err.println("Missing value for " + col.getId() 
 					+ " in table " + row.getSchema().getSheetName());
 				continue;
 			}
 
-			//if (col.isPicklist() || col.isForeignKey())
-				value = sel.getCode();
-			//else
-				//value = sel.getLabel();
+			// get the code
+			String value = colValue.getCode();
 
 			// If we have a relation ID => then convert into integer
 			try {
-				//System.out.println("PUTTING " + value + " FOR " + col.getId());
+				
 				if (isRelationId(col.getId()))
 					stmt.setInt(1 + i, Integer.valueOf(value));
 				else {
@@ -165,7 +161,7 @@ public class TableDao {
 				
 			} catch (NumberFormatException | IOException e) {
 				e.printStackTrace();
-				System.err.println("Problematic field " + col.getId() + " with value " + value);
+				System.err.println("Wrong integer field " + col.getId() + " with value " + value);
 			}
 		}
 		
@@ -208,6 +204,9 @@ public class TableDao {
 		if (id != -1) {
 			System.out.println("Row " + id + " successfully added in " + tableName);
 		}
+		else {
+			System.err.println("Errors in adding " + row + " to " + tableName);
+		}
 		
 		return id;
 	}
@@ -240,6 +239,9 @@ public class TableDao {
 		if (ok) {
 			System.out.println("Row " + row.getId() + " successfully updated in " + tableName);
 		}
+		else {
+			System.err.println("Errors in updating " + row + " for " + tableName);
+		}
 		
 		return ok;
 	}
@@ -267,6 +269,9 @@ public class TableDao {
 		
 		if (ok) {
 			System.out.println("All rows successfully deleted from " + tableName);
+		}
+		else {
+			System.err.println("Cannot delete all rows from " + tableName);
 		}
 		
 		return ok;
@@ -445,6 +450,9 @@ public class TableDao {
 		
 		if (ok) {
 			System.out.println("Row " + rowId + " successfully deleted from " + tableName);
+		}
+		else {
+			System.out.println("Row " + rowId + " cannot be deleted from " + tableName);
 		}
 		
 		return ok;

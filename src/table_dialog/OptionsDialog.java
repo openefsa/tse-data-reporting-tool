@@ -16,7 +16,7 @@ public abstract class OptionsDialog extends DataDialog {
 	private int status; 
 	
 	public OptionsDialog(Shell parent, String title, String message, boolean editable) {
-		super(parent, title, message, editable);
+		super(parent, title, message, editable, false, true);
 		this.status = SWT.CANCEL;
 	}
 	
@@ -39,7 +39,7 @@ public abstract class OptionsDialog extends DataDialog {
 	}
 
 	@Override
-	public Collection<TableRow> loadContents(TableSchema schema) {
+	public Collection<TableRow> getRows(TableSchema schema, TableRow parentTable) {
 		
 		TableDao dao = new TableDao(schema);
 		Collection<TableRow> objs = dao.getAll();
@@ -62,15 +62,20 @@ public abstract class OptionsDialog extends DataDialog {
 	@Override
 	public boolean apply(TableSchema schema, Collection<TableRow> rows, TableRow selectedRow) {
 		
+		if (rows.isEmpty())
+			return true;
+		
+		TableRow row = rows.iterator().next();
+		
 		// update preferences
 		TableDao dao = new TableDao(schema);
-		dao.update(selectedRow);
+		dao.update(row);
 		
 		// update the cache of the relations
-		Relation.updateCache(selectedRow);
+		Relation.updateCache(row);
 		
 		if (listener != null)
-			listener.optionChanged(selectedRow);
+			listener.optionChanged(row);
 		
 		status = SWT.OK;
 		

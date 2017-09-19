@@ -1,10 +1,11 @@
 package table_dialog;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -16,15 +17,36 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
+import app_config.AppPaths;
+import database.TableDao;
+import table_dialog.SelectorViewer.SelectorListener;
 import table_skeleton.TableRow;
 import xlsx_reader.TableSchema;
+import xml_config_reader.Selection;
 
 /**
- * Generic dialog for showing a dialog 
- * with an help panel and a table that uses an excel schema.
- * It is also possible to load the first row of the table during
- * its creation; this should be used just for settings/preferences
- * in which we have just a row
+ * Generic dialog for showing a table that follows a {@link TableSchema}.
+ * In particular, it is possible to extend this class to show whatever
+ * table that is described in the {@link AppPaths#APP_CONFIG_FILE} .xslx file.
+ * Features:
+ * 
+ * - automatic creation of table with {@link TableColumn} which are visible
+ * 
+ * - automatic generation of {@link HelpViewer} to show help to the user
+ * 
+ * - automatic generation of {@link SelectorViewer} which allows creating
+ * new rows in the table by selecting a parameter from a list. Need to be
+ * specified by setting {@link #addSelector} to true. If the plus icon
+ * is pressed, the {@link #createNewRow(TableSchema, Selection)} method
+ * is called
+ * 
+ * - automatic generation of a {@link Button} to apply changes. Need to be
+ * specified by setting {@link #addSaveBtn} to true. If the button is
+ * pressed the {@link #apply(TableSchema, Collection, TableRow)} method
+ * is called
+ * 
+ * - can specify if the table should be shown in a new dialog or in an
+ * already existing shell by setting {@link #createPopUp} accordingly
  * @author avonva
  *
  */
@@ -32,21 +54,118 @@ public abstract class DataDialog {
 
 	private Shell parent;
 	private Shell dialog;
-	private ReportTable table;
-	private ReportViewerHelp helpViewer;
+	private ReportTableWithHelp panel;
 	private Button saveButton;
 	
-	private String title;
-	private String message;
-	private boolean editable;
+	private TableRow parentTable;
+	private TableSchema schema;
 	
-	public DataDialog(Shell parent, String title, String message, boolean editable) {
+	private String title;
+	private String helpMessage;
+	private boolean editable;
+	private boolean addSelector;
+	private boolean createPopUp;
+	private boolean addSaveBtn;
+	
+	/**
+	 * Create a dialog with a {@link HelpViewer}, a {@link ReportTable}
+	 * and possibly a {@link SelectorViewer} if {@code addSelector} is set to true.
+	 * @param parent the shell parent
+	 * @param title the title of the pop up
+	 * @param helpMessage the help message to be displayed in the {@link HelpViewer}
+	 * @param editable if the table can be edited or not
+	 * @param addSelector if the {@link SelectorViewer} should be added or not
+	 * @param createPopUp true to create a new shell, false to use the parent shell
+	 * @param addSaveBtn true to create a button below the table
+	 */
+	public DataDialog(Shell parent, String title, String helpMessage, boolean editable, 
+			boolean addSelector, boolean createPopUp, boolean addSaveBtn) {
+
 		this.parent = parent;
 		this.title = title;
-		this.message = message;
+		this.helpMessage = helpMessage;
 		this.editable = editable;
+		this.addSelector = addSelector;
+		this.createPopUp = createPopUp;
+		this.addSaveBtn = addSaveBtn;
 		
-		create();
+		try {
+			this.schema = TableSchema.load(getSchemaSheetName());
+			create();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public DataDialog(Shell parent, String title, String helpMessage, boolean editable, 
+			boolean addSelector, boolean createPopUp) {
+		this(parent, title, helpMessage, editable, addSelector, createPopUp, true);
+	}
+	
+	public DataDialog(Shell parent, String title, String helpMessage, boolean editable, 
+			boolean addSelector) {
+		this(parent, title, helpMessage, editable, addSelector, true, true);
+	}
+	
+	public DataDialog(Shell parent, String title, String helpMessage, boolean editable) {
+		this(parent, title, helpMessage, editable, false, true, true);
+	}
+	
+	public DataDialog(Shell parent, String title, String helpMessage) {
+		this(parent, title, helpMessage, true, false, true, true);
+	}
+	
+	public TableSchema getSchema() {
+		return schema;
+	}
+	
+	/**
+	 * If the current table is in many to one relation
+	 * with a parent table, then use this method to
+	 * set the parent. This will be passed then to the
+	 * {@link #loadContents(TableSchema)} methods
+	 * in order to allow loading just the records
+	 * related to the parent table.
+	 * @param parentTable
+	 */
+	public void setParentTable(TableRow parentTable) {
+		this.parentTable = parentTable;
+		loadRows();
+	}
+	
+	/**
+	 * Clear all the table rows
+	 * and the parent table object
+	 */
+	public void clear() {
+		
+		panel.clearTable();
+		this.parentTable = null;
+		
+		// disable the panel
+		if (addSelector)
+			this.panel.setEnabled(false);
+	}
+	
+	/**
+	 * Load the rows which are defined in the {@link #getRows(TableSchema, TableRow)}
+	 * method
+	 */
+	public void loadRows() {
+		
+		panel.clearTable();
+		
+		// load the rows
+		Collection<TableRow> rows = getRows(panel.getSchema(), parentTable);
+
+		// add them to the table
+		for (TableRow row : rows) {
+			panel.add(row);
+		}
+	}
+	
+	public TableRow getParentTable() {
+		return parentTable;
 	}
 	
 	/**
@@ -93,6 +212,13 @@ public abstract class DataDialog {
 	 * @param text
 	 */
 	public void setButtonText(String text) {
+		
+		if (!addSaveBtn) {
+			System.err.println("DataDialog-" + getSchemaSheetName() + ":Cannot set the button text to " 
+					+ text + " since the button was not created. Please set addSaveBtn to true");
+			return;
+		}
+		
 		this.saveButton.setText(text);
 		this.saveButton.pack();
 	}
@@ -101,69 +227,59 @@ public abstract class DataDialog {
 	 * Create the interface
 	 */
 	private void create() {
-		this.dialog = new Shell(parent, SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
+
+		// new shell if required
+		if (createPopUp)
+			this.dialog = new Shell(parent, SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
+		else
+			this.dialog = parent;
+		
 		this.dialog.setText(this.title);
 		
 		this.dialog.setLayout(new GridLayout(1,false));
 		this.dialog.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
-		this.helpViewer = new ReportViewerHelp(dialog, message);
-
-		this.helpViewer.setListener(new MouseListener() {
-			
-			@Override
-			public void mouseUp(MouseEvent arg0) {
-				System.out.println("Open help");
-			}
-			
-			@Override
-			public void mouseDown(MouseEvent arg0) {}
-			
-			@Override
-			public void mouseDoubleClick(MouseEvent arg0) {}
-		});
+		this.panel = new ReportTableWithHelp(dialog, getSchemaSheetName(), helpMessage, editable, addSelector);
+		this.panel.setMenu(createMenu());
 		
-		this.table = new ReportTable(dialog, getSchemaSheetName(), editable);
-		this.table.setMenu(createMenu());
+		// add selector functionalities if possible
+		addSelectorFunctionalities();
 		
-		// load the rows
-		Collection<TableRow> rows = loadContents(table.getSchema());
+		// load all the rows into the table
+		loadRows();
 
-		// add them to the table
-		for (TableRow row : rows) {
-			this.table.add(row);
+		if (addSaveBtn) {
+			// save button
+			this.saveButton = new Button(dialog, SWT.PUSH);
+			this.saveButton.setText("Save");
+			this.saveButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false));
+			this.saveButton.setEnabled(panel.areMandatoryFilled());
+			
+			// save options
+			this.saveButton.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					
+					boolean ok = apply(panel.getSchema(), panel.getTableElements(), panel.getSelection());
+					
+					if (ok)
+						dialog.close();
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {}
+			});
+			
+			
+			panel.setInputChangedListener(new Listener() {
+
+				@Override
+				public void handleEvent(Event arg0) {
+					saveButton.setEnabled(panel.areMandatoryFilled());
+				}
+			});
 		}
-
-		// save button
-		this.saveButton = new Button(dialog, SWT.PUSH);
-		this.saveButton.setText("Save");
-		this.saveButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false));
-		this.saveButton.setEnabled(table.areMandatoryFilled());
-		
-		// save options
-		this.saveButton.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				
-				boolean ok = apply(table.getSchema(), table.getTableElements(), table.getSelection());
-				
-				if (ok)
-					dialog.close();
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {}
-		});
-		
-		// disable button if errors
-		this.table.setInputChangedListener(new Listener() {
-
-			@Override
-			public void handleEvent(Event arg0) {
-				saveButton.setEnabled(table.areMandatoryFilled());
-			}
-		});
 		
 		dialog.pack();
 		
@@ -171,12 +287,135 @@ public abstract class DataDialog {
 		dialog.setSize(dialog.getSize().x, dialog.getSize().y + 50);
 	}
 	
+	/**
+	 * Add the selector functionalities to create a new row
+	 * when the + is pressed
+	 */
+	private void addSelectorFunctionalities() {
+		
+		if (!addSelector)
+			return;
+		
+		// add a selection listener to the selector
+		this.addSelectionListener(new SelectorListener() {
+
+			@Override
+			public void selectionConfirmed(Selection selectedItem) {
+
+				// create a new row and
+				// put the first cell in the row
+				try {
+					
+					TableRow row = createNewRow(getSchema(), selectedItem);
+					
+					// if a parent was set, then add also the foreign key to the
+					// current new row
+					if (parentTable != null) {
+						String reportForeignKey = getSchema()
+								.getRelationByParentTable(parentTable.getSchema().getSheetName()).getForeignKey();
+						row.put(reportForeignKey, parentTable.get(reportForeignKey));
+					}
+					
+					// insert the row and get the row id
+					TableDao dao = new TableDao(getSchema());
+					int id = dao.add(row);
+					
+					// set the id for the new row
+					row.setId(id);
+					
+					// update the formulas
+					row.updateFormulas();
+					
+					// update the row with the formulas solved
+					dao.update(row);
+					
+					// add the row to the table
+					add(row);
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void selectionChanged(Selection selectedItem) {}
+		});
+		
+	}
+	
+	/**
+	 * Add listener to the selector if it was added (i.e. {@link #addSelector} true)
+	 * @param listener
+	 */
+	public void addSelectionListener(SelectorListener listener) {
+		if (addSelector) {
+			this.panel.addSelectionListener(listener);
+		}
+	}
+	
+	public void addTableSelectionListener(ISelectionChangedListener listener) {
+		this.panel.addSelectionChangedListener(listener);
+	}
+	
+	/**
+	 * Check if the table is empty or not
+	 * @return
+	 */
+	public boolean isTableEmpty() {
+		return this.panel.isTableEmpty();
+	}
+	
+	/**
+	 * Enable/disable the creation of new records
+	 * @param enabled
+	 */
+	public void setEnabled(boolean enabled) {
+		if (addSelector)
+			this.panel.setEnabled(enabled);
+	}
+	
 	public Shell getDialog() {
 		return dialog;
 	}
 	
 	/**
-	 * get the sheet which includes the schema for the table
+	 * Add a row to the table
+	 * @param row
+	 */
+	public void add(TableRow row) {
+		panel.add(row);
+	}
+	
+	/**
+	 * Remove from the table the selected row
+	 */
+	public void removeSelectedRow() {
+		panel.removeSelectedRow();
+	}
+	
+	/**
+	 * Get the record of the current table which are 
+	 * related to the parent table
+	 * @return
+	 */
+	public Collection<TableRow> getParentRows() {
+		
+		Collection<TableRow> rows = new ArrayList<>();
+
+		if (parentTable == null)
+			return rows;
+		
+		this.setEnabled(true);
+		
+		// load parents rows
+		TableDao dao = new TableDao(schema);
+		rows = dao.getByParentId(parentTable.getSchema().getSheetName(), parentTable.getId());
+
+		return rows;
+	}
+	
+	/**
+	 * Get the sheet which includes the schema for the table
 	 * @return
 	 */
 	public abstract String getSchemaSheetName();
@@ -188,14 +427,31 @@ public abstract class DataDialog {
 	public abstract Menu createMenu();
 	
 	/**
-	 * Load rows into the table
+	 * Get the rows of the table when it is created
+	 * @param schema the table schema
+	 * @param parentTable the parent related to this table passed with the
+	 * method {@link #setParentTable(TableRow)}
 	 * @return
 	 */
-	public abstract Collection<TableRow> loadContents(TableSchema schema);
+	public abstract Collection<TableRow> getRows(TableSchema schema, TableRow parentTable);
 	
 	/**
-	 * Apply the changes that were made
-	 * @param row
+	 * Create a new row with default values and foreign keys when the selector
+	 * is used. Note that {@link #addSelector} should be set to true, otherwise
+	 * no selector will be available and this method will never be called
+	 * @param element the element which is currently selected in the selector
+	 * @return
+	 * @throws IOException 
+	 */
+	public abstract TableRow createNewRow(TableSchema schema, Selection type) throws IOException;
+	
+	/**
+	 * Apply the changes that were made when the {@link #saveButton} is
+	 * pressed. Note that the {@link #addSaveBtn} should be set to true
+	 * to show the button, otherwise this method will never be called.
+	 * @param schema the table schema
+	 * @param rows the table rows
+	 * @param selectedRow the current selected row in the table (null if no selection)
 	 */
 	public abstract boolean apply(TableSchema schema, Collection<TableRow> rows, TableRow selectedRow);
 }

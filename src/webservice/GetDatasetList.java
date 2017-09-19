@@ -7,6 +7,7 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 
 import app_config.AppPaths;
+import app_config.PropertiesReader;
 import dataset.DatasetList;
 
 /**
@@ -74,7 +75,7 @@ public class GetDatasetList extends SOAPAction {
 	
 	@Override
 	public Object processResponse(SOAPMessage soapResponse) throws SOAPException {
-		
+
 		// parse the dom document and return the contents
 		DatasetListParser parser = new DatasetListParser();
 		SOAPBody body = soapResponse.getSOAPPart().getEnvelope().getBody();
@@ -82,7 +83,8 @@ public class GetDatasetList extends SOAPAction {
 	}
 
 	public static void main(String[] args) throws SOAPException {
-		GetDatasetList list = new GetDatasetList("TSE.TEST");
+		GetDatasetList list = new GetDatasetList(PropertiesReader.getDataCollectionCode());
 		System.out.println("LIST " + list.getlist());
+		
 	}
 }

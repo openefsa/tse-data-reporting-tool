@@ -20,11 +20,11 @@ import xml_config_reader.Selection;
  * The list contains the list of TSE diseases which can be reported.
  * It is possible to select a disease and to confirm the selection by
  * pressing the button. If set, a listener is called when the selection
- * in the list is changed or when the button is pressed (see {@link MonitoringListener}).
+ * in the list is changed or when the button is pressed (see {@link SelectorListener}).
  * @author avonva
  *
  */
-public class MonitoringSelector {
+public class SelectorViewer {
 
 	private Composite parent;
 	private Composite composite;
@@ -35,7 +35,7 @@ public class MonitoringSelector {
 	 * Create object with tse list and button to confirm a selection
 	 * @param parent
 	 */
-	public MonitoringSelector(Composite parent) {
+	public SelectorViewer(Composite parent) {
 		this.parent = parent;
 		create();
 	}
@@ -75,10 +75,10 @@ public class MonitoringSelector {
 	}
 
 	/**
-	 * Add a {@link MonitoringListener} to the object
+	 * Add a {@link SelectorListener} to the object
 	 * @param listener
 	 */
-	public void addSelectionListener(final MonitoringListener listener) {
+	public void addSelectionListener(final SelectorListener listener) {
 		
 		// add listener to the button
 		this.selectBtn.addSelectionListener(new SelectionListener() {
@@ -103,12 +103,12 @@ public class MonitoringSelector {
 	}
 
 	/**
-	 * Listener which is called when the TSE selection changes or
+	 * Listener which is called when the selection changes or
 	 * when the button is pressed.
 	 * @author avonva
 	 *
 	 */
-	public interface MonitoringListener {
+	public interface SelectorListener {
 		/**
 		 * Called when an element of the list is selected
 		 * @param selectedItem

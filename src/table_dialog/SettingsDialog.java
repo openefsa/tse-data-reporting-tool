@@ -1,5 +1,7 @@
 package table_dialog;
 
+import java.io.IOException;
+
 import javax.xml.soap.SOAPException;
 
 import org.eclipse.swt.SWT;
@@ -13,7 +15,10 @@ import app_config.AppPaths;
 import app_config.PropertiesReader;
 import dataset.Dataset;
 import dataset.DatasetList;
+import table_skeleton.TableRow;
 import webservice.GetDatasetList;
+import xlsx_reader.TableSchema;
+import xml_config_reader.Selection;
 
 /**
  * Dialog which is used to set global settings for the application
@@ -38,12 +43,18 @@ public class SettingsDialog extends OptionsDialog {
 		MenuItem test = new MenuItem(menu, SWT.PUSH);
 		test.setText("Test connection");
 		
+		// check if it is possible to make a get dataset
+		// list request and possibly download the
+		// test report if present. If not present, it
+		// creates the test report and send it to the dcf
 		test.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				try {
 
+					System.out.println("Test connection: started");
+					
 					// change the cursor to wait
 					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 					
@@ -51,19 +62,28 @@ public class SettingsDialog extends OptionsDialog {
 					GetDatasetList request = new GetDatasetList(PropertiesReader.getDataCollectionCode());
 					DatasetList list = request.getlist();
 					
-					// get the dataset TEST
-					Dataset dataset = list.getBySenderId("TEST");
 					
-					if (dataset != null)
+					String testReportCode = PropertiesReader.getTestReportCode();
+					
+					// get the dataset of TEST
+					Dataset dataset = list.getBySenderId(testReportCode);
+					
+					if (dataset != null) {
+						System.out.println("Test connection: completed");
 						warnUser("Ok", "Test successfully completed.", SWT.OK);
-					else
-						warnUser("Error", "Cannot retrieve the TEST dataset");
+					}
+					else {
+						System.err.println("Test connection: failed. " + testReportCode + " report cannot be found in the DCF");
+						warnUser("Error", testReportCode + ": Cannot retrieve the dataset");
+					}
 
 					// change the cursor to old cursor
 					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
 					
 				} catch (SOAPException e) {
-					warnUser("Error", "Cannot get the TEST dataset. Check your credentials and connection.");
+					System.err.println("Test connection: failed. See exception for details");
+					e.printStackTrace();
+					warnUser("Error", "Connection error. Check your credentials and connection.");
 				}
 			}
 			
@@ -72,5 +92,10 @@ public class SettingsDialog extends OptionsDialog {
 		});
 		
 		return menu;
+	}
+
+	@Override
+	public TableRow createNewRow(TableSchema schema, Selection type) throws IOException {
+		return null;
 	}
 }

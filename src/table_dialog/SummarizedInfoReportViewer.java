@@ -1,9 +1,9 @@
 package table_dialog;
 
 import java.io.IOException;
+import java.util.Collection;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
 import database.Relation;
@@ -20,37 +20,38 @@ import xml_config_reader.Selection;
  */
 public class SummarizedInfoReportViewer extends ReportViewer {
 	
-	/**
-	 * Create the selector and report table
-	 * @param parent
-	 */
-	public SummarizedInfoReportViewer(Composite parent) {
-		super(parent, "TSEs monitoring data (aggregated level)", 
-				AppPaths.SUMMARIZED_INFO_SHEET);
+	public SummarizedInfoReportViewer(Shell parent) {
+		super(parent, "TSEs monitoring data (aggregated level)", "TSEs monitoring data (aggregated level)", 
+				true, true, false, false);
 	}
-	
+
 	/**
 	 * Create a new row with default values
 	 * @param element
 	 * @return
 	 * @throws IOException 
 	 */
+	@Override
 	public TableRow createNewRow(TableSchema schema, Selection element) throws IOException {
 
 		TableRow row = new TableRow(schema);
-		
+
 		row.put(SummarizedInformationSchema.TYPE, new TableColumnValue(element));
 
 		// add preferences and settings
 		Relation.injectGlobalParent(row, AppPaths.PREFERENCES_SHEET);
 		Relation.injectGlobalParent(row, AppPaths.SETTINGS_SHEET);
-		
+
 		return row;
 	}
 
 	@Override
-	public void addMenuItems(Menu menu) {
-		// TODO add case report, add random genotyping...
-		
+	public String getSchemaSheetName() {
+		return AppPaths.SUMMARIZED_INFO_SHEET;
+	}
+
+	@Override
+	public boolean apply(TableSchema schema, Collection<TableRow> rows, TableRow selectedRow) {
+		return true;
 	}
 }

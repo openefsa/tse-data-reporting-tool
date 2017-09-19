@@ -1,16 +1,10 @@
 package user_interface;
 
-import java.io.IOException;
-import java.util.Collection;
-
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Shell;
 
-import app_config.AppPaths;
-import database.TableDao;
 import table_dialog.SummarizedInfoReportViewer;
 import table_skeleton.TableRow;
-import xlsx_reader.TableSchema;
 
 public class MainPanel {
 
@@ -37,8 +31,11 @@ public class MainPanel {
 		this.reportViewer.setEnabled(enabled);
 	}
 	
-	public void loadParentRecords(TableRow report) {
-		this.reportViewer.loadParentRecords(report);
+	public void openReport(TableRow report) {
+		this.reportViewer.setParentTable(report);
+	}
+	public void closeReport() {
+		this.reportViewer.clear();
 	}
 	
 	/**

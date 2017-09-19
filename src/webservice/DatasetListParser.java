@@ -26,12 +26,13 @@ public class DatasetListParser {
 		
 		DatasetList datasets = new DatasetList();
 		
-		// get all the datasets
-		NodeList datasetList = body.getElementsByTagName("dataset");
-		for (int i = 0; i < datasetList.getLength(); ++i) {
+		NodeList datas = body.getElementsByTagName("dataset");
+
+		for (int i = 0; i < datas.getLength(); ++i) {
 
 			// get the current dataset
-			Node datasetNode = datasetList.item(i);
+			Node datasetNode = datas.item(i);
+
 			datasets.add(getDataset(datasetNode));
 		}
 		
@@ -47,18 +48,22 @@ public class DatasetListParser {
 		
 		// get the info related to the dataset
 		NodeList datasetInfoNode = datasetNode.getChildNodes();
-
+		
 		Dataset dataset = new Dataset();
 		
 		// parse the dataset info
 		for (int i = 0; i < datasetInfoNode.getLength(); ++i) {
+			
 			Node field = datasetInfoNode.item(i);
-			switch (field.getLocalName()) {
+
+			String value = field.getTextContent();
+			
+			switch (field.getNodeName()) {
 			case "datasetId":
-				dataset.setId(field.getNodeValue());
+				dataset.setId(value);
 				break;
-			case "senderDatasetId":
-				dataset.setSenderId(field.getNodeValue());
+			case "datasetSenderId":
+				dataset.setSenderId(value);
 				break;
 			case "datasetStatus":
 				dataset.setStatus(getStatus(field));
@@ -87,12 +92,15 @@ public class DatasetListParser {
 			
 			// set properties based on node name
 			Node field = statusInfoNode.item(i);
+
+			String value = field.getTextContent();
+			
 			switch (field.getLocalName()) {
 			case "status":
-				status = DatasetStatus.fromString(field.getNodeValue());
+				status = DatasetStatus.fromString(value);
 				break;
 			case "step":
-				step = field.getNodeValue();
+				step = value;
 				break;
 			default:
 				break;

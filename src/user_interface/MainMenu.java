@@ -34,6 +34,7 @@ public class MainMenu {
 
 	private MenuItem newReport;
 	private MenuItem openReport;
+	private MenuItem closeReport;
 	private MenuItem sendReport;
 	private MenuItem downloadReport;
 
@@ -88,13 +89,20 @@ public class MainMenu {
 				dialog.setListener(new Listener() {
 					
 					@Override
-					public void handleEvent(Event arg0) {
+					public void handleEvent(Event arg0) {						
+						
 						if (!(arg0.data instanceof TableRow))
 							return;
-						
+
 						TableRow report = (TableRow) arg0.data;
+
 						mainPanel.setEnabled(true);
-						mainPanel.loadParentRecords(report);
+						mainPanel.openReport(report);
+						
+						// enable things accordingly
+						newReport.setEnabled(false);
+						openReport.setEnabled(false);
+						closeReport.setEnabled(true);
 					}
 				});
 				dialog.open();
@@ -104,8 +112,33 @@ public class MainMenu {
 			public void widgetDefaultSelected(SelectionEvent arg0) {}
 		});
 		
+		this.closeReport = new MenuItem(fileMenu, SWT.PUSH);
+		this.closeReport.setText("Close report");
+		
+		this.closeReport.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				mainPanel.closeReport();
+				
+				// enable things accordingly
+				newReport.setEnabled(true);
+				openReport.setEnabled(true);
+				closeReport.setEnabled(false);
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
+		
+		// by default we do not have a report opened at the beginning
+		this.closeReport.setEnabled(false);
+		
 		this.sendReport = new MenuItem(fileMenu, SWT.PUSH);
 		this.sendReport.setText("Send report");
+		this.sendReport.setEnabled(false);
+		
 		this.downloadReport = new MenuItem(fileMenu, SWT.PUSH);
 		this.downloadReport.setText("Download report");
 

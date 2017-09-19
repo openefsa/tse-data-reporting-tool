@@ -142,6 +142,14 @@ public class ReportTable {
 	}
 	
 	/**
+	 * Clear all the elements of the table
+	 */
+	public void clear() {
+		this.tableViewer.setInput(null);
+		this.tableElements.clear();
+	}
+	
+	/**
 	 * Remove an element from the table viewer
 	 * @param row
 	 */
@@ -267,7 +275,7 @@ public class ReportTable {
 			
 			// add editor if editable flag is true
 			if (editable)
-				columnViewer.setEditingSupport(new Editor(this, col));
+				columnViewer.setEditingSupport(new DataEditor(this, col));
 
 			addColumnSorter(col, columnViewer);
 		}
@@ -278,7 +286,7 @@ public class ReportTable {
 	 * the table by the clicked field
 	 * @param columnViewer
 	 */
-	private void addColumnSorter(final TableColumn column, final TableViewerColumn columnViewer) {
+	private void addColumnSorter(TableColumn column, TableViewerColumn columnViewer) {
 		
 		// set default sort direction (false will do an ascending sorting)
 		columnViewer.getColumn().setData(false);
@@ -309,7 +317,7 @@ public class ReportTable {
 	 * @param columnKey
 	 * @param ascendant if true ascendant order, otherwise descendant
 	 */
-	private void orderRowsBy(final TableColumn column, final boolean ascendant) {
+	private void orderRowsBy(TableColumn column, boolean ascendant) {
 		
 		// sort elements
 		Collections.sort(tableElements, new Comparator<TableRow>() {

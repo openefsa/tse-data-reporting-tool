@@ -15,14 +15,14 @@ import org.eclipse.swt.widgets.Label;
  * @author avonva
  *
  */
-public class ReportViewerHelp {
+public class HelpViewer {
 
 	private Composite parent;
 	private String title;
 	private Label info;
 	private Label helpBtn;
 	
-	public ReportViewerHelp(Composite parent, String title) {
+	public HelpViewer(Composite parent, String title) {
 		this.parent = parent;
 		this.title = title;
 		create();

@@ -17,12 +17,12 @@ import table_skeleton.TableRow;
 import xml_config_reader.Selection;
 import xml_config_reader.SelectionList;
 
-public class Editor extends EditingSupport {
+public class DataEditor extends EditingSupport {
 	
 	private TableColumn column;
 	private ReportTable viewer;
 
-	public Editor(ReportTable viewer, TableColumn column) {
+	public DataEditor(ReportTable viewer, TableColumn column) {
 		super(viewer.getViewer());
 		this.column = column;
 		this.viewer = viewer;

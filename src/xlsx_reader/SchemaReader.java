@@ -42,7 +42,7 @@ public class SchemaReader extends XlsxReader {
 			return;
 		}
 
-		if(h == null)
+		if(h == null || value == null)
 			return;
 
 		switch (h) {
@@ -89,7 +89,14 @@ public class SchemaReader extends XlsxReader {
 			builder.setPutInOutput(value);
 			break;
 		case ORDER:
-			builder.setOrder(Integer.valueOf(value));
+			int order;
+			try {
+				order = Integer.valueOf(value);
+			}
+			catch (NumberFormatException e) {
+				order = -1;
+			}
+			builder.setOrder(order);
 			break;
 		default:
 			break;
