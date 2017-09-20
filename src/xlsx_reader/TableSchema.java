@@ -7,10 +7,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-import app_config.AppPaths;
-import database.Relation;
-import database.RelationParser;
+import table_database.Relation;
+import table_database.RelationParser;
 import table_skeleton.TableColumn;
+import user_config.AppPaths;
 
 public class TableSchema extends ArrayList<TableColumn> {
 
@@ -165,5 +165,17 @@ public class TableSchema extends ArrayList<TableColumn> {
 				return arg0.getId().compareTo(arg1.getId());
 			}
 		});
+	}
+	
+	@Override
+	public boolean equals(Object arg0) {
+		
+		if (!(arg0 instanceof TableSchema))
+			return super.equals(arg0);
+		
+		TableSchema other = (TableSchema) arg0;
+		
+		// if they refer to the same table 
+		return other.getSheetName().equals(sheetName);
 	}
 }

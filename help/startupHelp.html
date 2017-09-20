@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<title>TSEs report creator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<style>
+	body,h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}	
+</style>	
+<body>
+ <img src="http://www.efsa.europa.eu/profiles/efsa/themes/responsive_efsa/logo.png"/> <!--style="width:10%"-->
+ 
+<!-- Page Content -->
+<div class="w3-main w3-padding-large" style="margin-left:10%">
+   <p>Go to <a href="main.html">help main page.</a></p>
+   <!-- Header -->
+  <header class="w3-container w3-center" style="padding:12px 16px" id="home">
+    <h1 class="w3-jumbo"><b>TSEs report creator</b></h1>    
+  </header>  
+    <h4>The TSEs report creator tool allows the reporting of surveillance data on Bovine Spongiform Encephalopathy (BSE) in bovine animals, Scrapie and genotyping in small ruminants (sheep and goats) and Chronic Wasting Disease (CWD) in cervids. The tool allows the automatic submission of data into the EFSA <a href="https://dcf.efsa.europa.eu/dcf-war/dc">Data Collection Framework (DCF)</a>. To be able to submit data to DCF you need to be registered as data provider for the TSEs data collection. If are not registered please send an email to <a href="mailto:zoonoses_support@efsa.europa.eu?subject=Request%20to%20access%20to%20DCF%20for%20TSEs%20data%20collection&body=Dear%20Zoonoses%20Support,%0D%0Acould%20you%20please%20give%20me%20access%20as%20data%20provider%20to%20the%20TSEs%20data%20collection?%0D%0AName:%0D%0ASurname:%0D%0AEmail:%0D%0AOrganization:%0D%0AOrganization%20country:%0D%0AOrganization%20website:%0D%0A%0D%0ABest%20regards,">Zoonoses Support</a>. If your password expired please follow this <a href="https://sciencenet.efsa.europa.eu/sumt/pages/lostPassword.jsp">link.</a></h4>
+    <h2>Content of a monthly report</h2>
+    <p>Each montlhy report shall contain all the data related to samples taken within a certain month (and supposed to be analyzed and evaluated within the same month).</p>
+	<h3>Aggregated level data</h3>    
+    <p>Aggregated data (Number of positive cases, Number of negative samples, Number of inconclusive cases, Number of samples not suitable for testing) shall be summarized for a same combination of the following information:</p>
+	<table>
+	   <tr>
+		  <td>Species:</td>
+		  <td>Animal species</td>
+	   </tr>
+	   <tr>
+		  <td>Part:</td>
+		  <td>Sampled part of the animal</td>
+	   </tr>
+	   <tr>
+		  <td>Prod:</td>
+		  <td>Type of production</td>
+	   </tr>
+	   <tr>
+		  <td>Age:</td>
+		  <td>Age class</td>
+	   </tr>
+	   <tr>
+		  <td>Target:</td>
+		  <td>Target group</td>
+	   </tr>
+	   <tr>
+		  <td>Status:</td>
+		  <td>Status of the herd/flock</td>
+	   </tr>
+	</table>    
+	<h3>Case level data</h3>  
+    <p>For each POSITIVE and for each INCONCLUSIVE case, it will be required to specify the following information:</p>
+	<table>
+	   <tr>
+		  <td>National case id:</td>
+		  <td>The univocal ID assigned at country level to the case</td>
+	   </tr>
+	   <tr>
+		  <td>Index case:</td>
+		  <td>If the case is an index case, this have to be specified</td>
+	   </tr>
+	   <tr>
+		  <td>Case assessment:</td>
+		  <td>The final evaluation of the sample (after discriminatory testing)</td>
+	   </tr>
+	   <tr>
+		  <td>Animal id:</td>
+		  <td>The univocal ID assigned at country level to the animal</td>
+	   </tr>
+	   <tr>
+		  <td>Herd id:</td>
+		  <td>The univocal ID assigned at country level to the herd/flock</td>
+	   </tr>
+	   <tr>
+		  <td>Birth country:</td>
+		  <td>Country of birth of the animal</td>
+	   </tr>
+	</table>    
+	<p>In addition, it will be required to detail the results of all the analysis run on the samples related to positive and inconclusive cases.</p>
+    <h3>Random genotyping data</h3>  
+    <p>For small ruminants (sheep and goats), the tool allows also the reporting of random genotyping information.</p>
+	<h2><img src="..\icons\help.png">Help</h2>
+    <p>In each form of the tool, clicking on the icon it is possible to display an help explaining the data needed for the current form. The different pages of the help are also available from the <a href="main.html">help main page.</a></p>
+    <h2>Initialization</h2>
+    <p>At the first run you will be asked to fill in two forms:</p>
+    <table>
+	   <tr>
+		  <td>Preferencies:</td>
+		  <td>Predefined default values to be used during the report editing. Predefined values are meant to ease the manual input of data (for recurrent information). The predefined values can be changed directly in the single records during the report editing (with the only exception of the "country" which is fixed in a same report and for the same data provider).</td>
+	   </tr>
+	   <tr>
+		  <td>User settings:</td>
+		  <td>The information related to the user and used to perform the data submission to EFSA DCF. If you do not own a valid DCF account please send an email to <a href="mailto:zoonoses_support@efsa.europa.eu?subject=Request%20to%20access%20to%20DCF%20for%20TSEs%20data%20collection&body=Dear%20Zoonoses%20Support,%0D%0Acould%20you%20please%20give%20me%20access%20as%20data%20provider%20to%20the%20TSEs%20data%20collection?%0D%0AName:%0D%0ASurname:%0D%0AEmail:%0D%0AOrganization:%0D%0AOrganization%20country:%0D%0AOrganization%20website:%0D%0A%0D%0ABest%20regards,">Zoonoses Support</a>.</td>
+	   </tr>
+	</table>
+	<p>It is mandatory to fill in these two forms prior to be able to use the tool. The related information can anyway be further edited and changed.</p>
+</body>
+</html>

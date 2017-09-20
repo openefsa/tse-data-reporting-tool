@@ -12,9 +12,9 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 
-import app_config.AppPaths;
-import database.TableDao;
+import table_database.TableDao;
 import table_skeleton.TableRow;
+import user_config.AppPaths;
 import xlsx_reader.TableSchema;
 
 /**

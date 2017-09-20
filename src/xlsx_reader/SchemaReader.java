@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.apache.poi.ss.usermodel.Row;
 
 import table_skeleton.TableColumnBuilder;
-import xlsx_reader.ReportTableHeaders.XlsxHeader;
+import xlsx_reader.TableHeaders.XlsxHeader;
 
 /**
  * Read the configuration of tables
@@ -73,19 +73,19 @@ public class SchemaReader extends XlsxReader {
 		case VISIBLE:
 			builder.setVisible(value);
 			break;
-		case PICKLISTKEY:
+		case PICKLIST_KEY:
 			builder.setPicklistKey(value);
 			break;
-		case PICKLISTFILTER:
+		case PICKLIST_FILTER:
 			builder.setPicklistFilter(value);
 			break;
-		case DEFAULTVALUE:
+		case DEFAULT_VALUE:
 			builder.setDefaultValue(value);
 			break;
-		case DEFAULTCODE:
+		case DEFAULT_CODE:
 			builder.setDefaultCode(value);
 			break;
-		case PUTINOUTPUT:
+		case PUT_IN_OUTPUT:
 			builder.setPutInOutput(value);
 			break;
 		case ORDER:
@@ -97,6 +97,9 @@ public class SchemaReader extends XlsxReader {
 				order = -1;
 			}
 			builder.setOrder(order);
+			break;
+		case NATURAL_KEY:
+			builder.setNaturalKey(value);
 			break;
 		default:
 			break;

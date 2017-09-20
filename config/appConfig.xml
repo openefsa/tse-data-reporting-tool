@@ -4,6 +4,8 @@
 <comment>Application configuration</comment>
 <entry key="Application.Name">EFSA TSEs Report Creator</entry> <!-- main title of the application -->
 <entry key="Application.Version">1.0.0</entry> <!-- version of the application that will displayed after the application name -->
-<entry key="Application.DataCollectionCode">TSE.TEST</entry> <!-- code that will be used to send report to the dcf -->
+<entry key="Application.Icon">app-icon.png</entry> <!-- application icon (in the icon folder) -->
+<entry key="Application.DataCollectionCode">TSE.BSE</entry> <!-- code that will be used to send report to the dcf -->
 <entry key="Application.TestReportCode">TEST</entry> <!-- code that will be used as report id for testing the connection and to create an empty report for the current data collection -->
+<entry key="Application.StartupHelpFile">startupHelp.html</entry> <!-- file name of the html file (in the help folder) which will be visualized when the application starts (leave empty to disable) -->
 </properties>

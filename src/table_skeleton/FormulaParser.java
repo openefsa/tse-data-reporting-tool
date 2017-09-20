@@ -2,7 +2,7 @@ package table_skeleton;
 
 import java.util.ArrayList;
 
-import xlsx_reader.ReportTableHeaders.XlsxHeader;
+import xlsx_reader.TableHeaders.XlsxHeader;
 
 /**
  * Parse the formulas of the row and return them

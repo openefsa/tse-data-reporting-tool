@@ -9,12 +9,12 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import app_config.AppPaths;
-import app_config.BooleanValue;
-import app_config.SelectionsNames;
-import database.Relation;
-import xml_config_reader.Selection;
-import xml_config_reader.XmlLoader;
+import table_database.Relation;
+import user_config.AppPaths;
+import user_config.BooleanValue;
+import user_config.SelectionsNames;
+import xml_catalog_reader.Selection;
+import xml_catalog_reader.XmlLoader;
 
 /**
  * Class which models a generic formula which can be inserted in the

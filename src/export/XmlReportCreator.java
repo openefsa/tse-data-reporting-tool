@@ -6,10 +6,10 @@ import java.util.Collection;
 
 import javax.xml.bind.JAXBException;
 
-import app_config.AppPaths;
 import table_skeleton.TableColumn;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
+import user_config.AppPaths;
 import xlsx_reader.TableSchema;
 
 /**

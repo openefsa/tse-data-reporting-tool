@@ -11,7 +11,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
 /**
- * Additional information provided to the user for the form
+ * Panel that displays an help label with an help icon. The
+ * help icon can be clicked to trigger the listener set 
+ * with the {@link #setListener(MouseListener)} method.
+ * It is also possible to set a tooltip text for the help icon
+ * by setting {@link #setToolTipText(String)}.
  * @author avonva
  *
  */
@@ -60,7 +64,7 @@ public class HelpViewer {
 
 		this.info.setFont (font);
 		
-
+		// help icon
 		helpBtn = new Label(composite, SWT.PUSH);
 		
 		Image image = new Image(Display.getCurrent(), 

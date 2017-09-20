@@ -1,6 +1,6 @@
 package table_skeleton;
 
-import xml_config_reader.Selection;
+import xml_catalog_reader.Selection;
 
 /**
  * Single pair (code,label) contained in a {@link TableRow}
@@ -34,6 +34,9 @@ public class TableColumnValue {
 	
 	public void setLabel(String label) {
 		this.label = label;
+		
+		if (this.label == null)
+			this.label = "";
 	}
 	
 	public String getCode() {
@@ -42,6 +45,23 @@ public class TableColumnValue {
 	
 	public String getLabel() {
 		return label;
+	}
+	
+	@Override
+	public boolean equals(Object arg0) {
+		if (!(arg0 instanceof TableColumnValue))
+			return super.equals(arg0);
+		
+		TableColumnValue other = (TableColumnValue) arg0;
+		
+		// if all empty consider them as not equal (too generic)
+		if (code.isEmpty() && other.code.isEmpty() 
+				&& label.isEmpty() && other.label.isEmpty())
+			return false;
+		
+		// check code and label
+		return (this.getCode().equals(other.getCode())
+				&& this.getLabel().equals(other.getLabel()));
 	}
 	
 	@Override

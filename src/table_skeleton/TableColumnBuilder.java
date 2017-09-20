@@ -1,7 +1,7 @@
 package table_skeleton;
 
-import app_config.BooleanValue;
 import table_skeleton.TableColumn.ColumnType;
+import user_config.BooleanValue;
 
 public class TableColumnBuilder {
 
@@ -20,6 +20,7 @@ public class TableColumnBuilder {
 	private String defaultValue;  // default value of the column
 	private String putInOutput;   // if the column value should be exported in the .xml
 	private int order;
+	private String naturalKey;
 	
 	public TableColumnBuilder() {
 		this.mandatory = BooleanValue.getTrueValue();
@@ -32,6 +33,7 @@ public class TableColumnBuilder {
 		this.tip = "";
 		this.xmlTag = "";
 		this.order = 0;
+		this.naturalKey = BooleanValue.getFalseValue();
 	}
 	
 	public TableColumnBuilder setId(String id) {
@@ -94,6 +96,11 @@ public class TableColumnBuilder {
 		return this;
 	}
 	
+	public TableColumnBuilder setNaturalKey(String naturalKey) {
+		this.naturalKey = naturalKey;
+		return this;
+	}
+	
 	/**
 	 * Set the type of the column. Do not use
 	 * this method for {@link ColumnType#PICKLIST}
@@ -143,7 +150,7 @@ public class TableColumnBuilder {
 	public TableColumn build() {
 		
 		TableColumn col = new TableColumn(id, code, label, xmlTag, tip, type, mandatory, editable, 
-				visible, defaultCode, defaultValue, putInOutput, order);
+				visible, defaultCode, defaultValue, putInOutput, order, naturalKey);
 		
 		if (type == ColumnType.PICKLIST && picklistKey == null) {
 			System.err.println("Cannot set type to picklist without specifying list key for column " + this.id);

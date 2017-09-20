@@ -1,15 +1,15 @@
 package table_skeleton;
 
-import app_config.BooleanValue;
-import table_dialog.ReportTable;
-import xlsx_reader.ReportTableHeaders.XlsxHeader;
-import xml_config_reader.Selection;
-import xml_config_reader.SelectionList;
-import xml_config_reader.XmlContents;
-import xml_config_reader.XmlLoader;
+import table_dialog.TableView;
+import user_config.BooleanValue;
+import xlsx_reader.TableHeaders.XlsxHeader;
+import xml_catalog_reader.Selection;
+import xml_catalog_reader.SelectionList;
+import xml_catalog_reader.XmlContents;
+import xml_catalog_reader.XmlLoader;
 
 /**
- * Column class which models the property of a single column of a {@link ReportTable}
+ * Column class which models the property of a single column of a {@link TableView}
  * @author avonva
  *
  */
@@ -30,6 +30,7 @@ public class TableColumn implements Comparable<TableColumn> {
 	private String defaultValue; // default value of the column
 	private String putInOutput;  // if the column value should be exported in the .xml
 	private int order;           // order of visualization, only for visible columns
+	private String naturalKey;   // if the column is part of a natural key or not
 	
 	/**
 	 * Create a column
@@ -40,7 +41,7 @@ public class TableColumn implements Comparable<TableColumn> {
 	 */
 	public TableColumn(String id, String code, String label, String xmlTag, String tip, 
 			ColumnType type, String mandatory, String editable, String visible,
-			String defaultCode, String defaultValue, String putInOutput, int order) {
+			String defaultCode, String defaultValue, String putInOutput, int order, String naturalKey) {
 		
 		this.id = id;
 		this.code = code;
@@ -55,6 +56,7 @@ public class TableColumn implements Comparable<TableColumn> {
 		this.defaultValue = defaultValue;
 		this.putInOutput = putInOutput;
 		this.order = order;
+		this.naturalKey = naturalKey;
 	}
 	
 	public enum ColumnType {
@@ -128,23 +130,29 @@ public class TableColumn implements Comparable<TableColumn> {
 		case VISIBLE:
 			value = this.visible;
 			break;
-		case PICKLISTKEY:
+		case PICKLIST_KEY:
 			value = this.picklistKey;
 			break;
-		case PICKLISTFILTER:
+		case PICKLIST_FILTER:
 			value = this.picklistFilter;
 			break;
-		case DEFAULTVALUE:
+		case DEFAULT_VALUE:
 			value = this.defaultValue;
 			break;
-		case DEFAULTCODE:
+		case DEFAULT_CODE:
 			value = this.defaultCode;
 			break;
-		case PUTINOUTPUT:
+		case PUT_IN_OUTPUT:
 			value = this.putInOutput;
 			break;
 		case ORDER:
 			value = String.valueOf(this.order);
+			break;
+		case XML_TAG:
+			value = this.getXmlTag();
+			break;
+		case NATURAL_KEY:
+			value = this.naturalKey;
 			break;
 		default:
 			break;
@@ -180,6 +188,14 @@ public class TableColumn implements Comparable<TableColumn> {
 	 */
 	public boolean isEditable() {
 		return BooleanValue.isTrue(editable);
+	}
+	
+	/**
+	 * Check if the column is part of a natural key
+	 * @return
+	 */
+	public boolean isNaturalKey() {
+		return BooleanValue.isTrue(naturalKey);
 	}
 	
 	/**
@@ -234,7 +250,7 @@ public class TableColumn implements Comparable<TableColumn> {
 	 * @return
 	 */
 	public String getPicklistFilter(TableRow row) {
-		return solveFormula(row, XlsxHeader.PICKLISTFILTER.getHeaderName());
+		return solveFormula(row, XlsxHeader.PICKLIST_FILTER.getHeaderName());
 	}
 	
 	/**
@@ -317,7 +333,7 @@ public class TableColumn implements Comparable<TableColumn> {
 	 */
 	public boolean isPutInOutput(TableRow row) {
 		return xmlTag != null && !xmlTag.replaceAll(" ", "").isEmpty() 
-				&& isTrue(row, XlsxHeader.PUTINOUTPUT.getHeaderName());
+				&& isTrue(row, XlsxHeader.PUT_IN_OUTPUT.getHeaderName());
 	}
 	
 	public String getPutInOutput() {

@@ -2,9 +2,10 @@ package table_skeleton;
 
 import java.util.HashMap;
 
-import database.TableDao;
-import xlsx_reader.ReportTableHeaders.XlsxHeader;
-import xml_config_reader.Selection;
+import duplicates_detector.Checkable;
+import table_database.TableDao;
+import xlsx_reader.TableHeaders.XlsxHeader;
+import xml_catalog_reader.Selection;
 import xlsx_reader.TableSchema;
 
 /**
@@ -12,7 +13,7 @@ import xlsx_reader.TableSchema;
  * @author avonva
  *
  */
-public class TableRow {
+public class TableRow implements Checkable {
 
 	public enum RowStatus {
 		OK,
@@ -124,8 +125,8 @@ public class TableRow {
 			// values with formulas, not real automatic values with formulas
 			if (col.isEditable()) {
 				FormulaSolver solver = new FormulaSolver(this);
-				Formula label = solver.solve(col, XlsxHeader.DEFAULTVALUE.getHeaderName());
-				Formula code = solver.solve(col, XlsxHeader.DEFAULTCODE.getHeaderName());
+				Formula label = solver.solve(col, XlsxHeader.DEFAULT_VALUE.getHeaderName());
+				Formula code = solver.solve(col, XlsxHeader.DEFAULT_CODE.getHeaderName());
 				
 				sel.setCode(code.getSolvedFormula());
 				sel.setLabel(label.getSolvedFormula());
@@ -154,10 +155,10 @@ public class TableRow {
 		
 		TableColumnValue colVal = this.get(f.getColumn().getId());
 		
-		if (h == XlsxHeader.DEFAULTCODE) {
+		if (h == XlsxHeader.DEFAULT_CODE) {
 			colVal.setCode(f.getSolvedFormula());
 		}
-		else if (h == XlsxHeader.DEFAULTVALUE) {
+		else if (h == XlsxHeader.DEFAULT_VALUE) {
 			colVal.setLabel(f.getSolvedFormula());
 			
 			// set label in the code if it is empty
@@ -181,8 +182,8 @@ public class TableRow {
 		
 		// note that this automatically updates the row
 		// while solving formulas
-		solver.solveAll(XlsxHeader.DEFAULTVALUE.getHeaderName());
-		solver.solveAll(XlsxHeader.DEFAULTCODE.getHeaderName());
+		solver.solveAll(XlsxHeader.DEFAULT_VALUE.getHeaderName());
+		solver.solveAll(XlsxHeader.DEFAULT_CODE.getHeaderName());
 	}
 	
 	/**
@@ -249,6 +250,50 @@ public class TableRow {
 			return true;
 		
 		return false;
+	}
+	
+	/**
+	 * Check if equal
+	 */
+	public boolean sameAs(Checkable arg0) {
+		
+		if (!(arg0 instanceof TableRow))
+			return false;
+		
+		TableRow other = (TableRow) arg0;
+		
+		// cannot compare rows with different schema
+		if (!this.schema.equals(other.schema))
+			return false;
+		
+		// for each column of the row
+		for (String key : this.values.keySet()) {
+			
+			// skip the id of the table since we do
+			// not have a column for that in the schema
+			if (key.equals(schema.getTableIdField()))
+				continue;
+			
+			// get the current column object
+			TableColumn col = this.schema.getById(key);
+			
+			// continue searching if we have not a natural key field
+			if (!col.isNaturalKey())
+				continue;
+			
+			// here we are comparing a part of the natural key
+			TableColumnValue value1 = this.get(key);
+			TableColumnValue value2 = this.get(key);
+			
+			// if a field of the natural key is
+			// different then the two rows are different
+			if (!value1.equals(value2))
+				return false;
+		}
+		
+		// if we have arrived here, all the natural
+		// keys are equal, therefore we have the same row
+		return true;
 	}
 	
 	@Override
