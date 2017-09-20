@@ -354,10 +354,11 @@ public class TableDao {
 					String code = String.valueOf(value);
 					
 					// get the description from the .xml using the code
-					if (!code.isEmpty())
+					if (!code.isEmpty()) {
 						selection = new TableColumnValue(
 								XmlLoader.getByPicklistKey(column.getPicklistKey())
 									.getElementByCode(code));
+					}
 					else
 						selection = new TableColumnValue();
 				}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assessmentLists xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<selectionList id="BSE">
+		<selection code="C-BSE">
+			<description>C-BSE</description>
+		</selection>
+		<selection code="L-BSE">
+			<description>L-BSE</description>
+		</selection>
+		<selection code="H-BSE">
+			<description>H-BSE</description>
+		</selection>
+		<selection code="INC">
+			<description>Inconclusive</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIE">
+		<selection code="ATYPS">
+			<description>Atypical-scrapie</description>
+		</selection>
+		<selection code="CLASS">
+			<description>Classical-scrapie (i.e. BSE-excluded in 1st Molecular test)</description>
+		</selection>
+		<selection code="BSENE">
+			<description>BSE-not excluded (i.e. BSE like)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD">
+		<selection code="CWD">
+			<description>CWD</description>
+		</selection>
+	</selectionList>
+</assessmentLists>
+

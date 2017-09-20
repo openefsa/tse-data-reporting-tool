@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -199,6 +200,14 @@ public class TableView {
 	 */
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		this.tableViewer.addSelectionChangedListener(listener);
+	}
+	
+	/**
+	 * Add a listener which is called when the table changes the highlighted element
+	 * @param listener
+	 */
+	public void addDoubleClickListener(IDoubleClickListener listener) {
+		this.tableViewer.addDoubleClickListener(listener);
 	}
 	
 	/**

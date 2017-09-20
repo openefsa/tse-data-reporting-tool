@@ -3,6 +3,7 @@ package table_dialog;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseListener;
@@ -167,6 +168,14 @@ public class TableViewWithHelp {
 	 */
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		this.table.addSelectionChangedListener(listener);
+	}
+	
+	/**
+	 * Listener called when the selection in the table changes
+	 * @param listener
+	 */
+	public void addDoubleClickListener(IDoubleClickListener listener) {
+		this.table.addDoubleClickListener(listener);
 	}
 	
 	public TableView getTable() {

@@ -317,8 +317,6 @@ public class TableColumn implements Comparable<TableColumn> {
 		if (picklistFilter == null || picklistFilter.isEmpty()) {
 			return contents.getElements().iterator().next();
 		}
-
-		System.out.println("RESULT2 " + picklistFilter + " => " + getPicklistFilter(row) );
 		
 		// otherwise if we have a filter we get the list
 		// related to that filter

@@ -9,7 +9,7 @@ public class MainPanel {
 
 	private Shell shell;
 	private MainMenu menu;
-	private SummarizedInfoReportViewer reportViewer;
+	private SummarizedInfoDialog reportViewer;
 	
 	/**
 	 * Create the main user interface
@@ -65,6 +65,6 @@ public class MainPanel {
 		shell.setLayout(new GridLayout());
 		
 		this.menu = new MainMenu(this, shell);
-		this.reportViewer = new SummarizedInfoReportViewer(shell);
+		this.reportViewer = new SummarizedInfoDialog(shell);
 	}
 }

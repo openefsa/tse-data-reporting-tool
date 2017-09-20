@@ -13,6 +13,7 @@ public class AppPaths {
 	
 	public static final String DB_FOLDER = "database" + System.getProperty("file.separator");
 	
+	public static final String CASE_INFO_SHEET = "CasesInformation";
 	public static final String SUMMARIZED_INFO_SHEET = "SummarizedInformation";
 	public static final String PREFERENCES_SHEET = "Preferences";
 	public static final String SETTINGS_SHEET = "Settings";

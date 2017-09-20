@@ -19,16 +19,22 @@ public class XmlLoader {
 	// cache in memory to speed up
 	private static Collection<XmlContents> contents = new ArrayList<>();
 	
+	/**
+	 * Get a picklist by its identification key
+	 * @param id
+	 * @return
+	 */
 	public static XmlContents getByPicklistKey(String id) {
 		
 		// if empty, refresh contents
 		if (contents.isEmpty()) {
 			refresh();
 		}
-		
+
 		for (XmlContents item : contents) {
-			if (item.equals(id))
+			if (item.getCode().equals(id)) {
 				return item;
+			}
 		}
 
 		return null;
@@ -45,12 +51,13 @@ public class XmlLoader {
 		for (File xml : dir.listFiles()) {
 			
 			try {
-
 				// parse the xml file
 				XmlParser parser = new XmlParser(xml);
 				
+				XmlContents doc = parser.parse();
+				
 				// save the parsed contents
-				contents.add(parser.parse());
+				contents.add(doc);
 				
 				parser.close();
 			} catch (XMLStreamException | IOException e) {

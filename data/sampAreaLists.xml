@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sampAreaLists>
+	<selectionList id="IT">
+		<selection code="IT01">
+			<description>Region 01 Italy</description>
+		</selection>
+		<selection code="IT02">
+			<description>Region 02 Italy</description>
+		</selection>
+	</selectionList>
+	<selectionList id="FR">
+		<selection code="FR01">
+			<description>Region 01 France</description>
+		</selection>
+		<selection code="FR02">
+			<description>Region 02 France</description>
+		</selection>
+	</selectionList>
+</sampAreaLists>

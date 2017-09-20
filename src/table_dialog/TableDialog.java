@@ -3,7 +3,7 @@ package table_dialog;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
@@ -427,7 +427,7 @@ public abstract class TableDialog {
 				
 				// initialize the row fields with default values
 				row.initialize();
-				
+				System.out.println(row);
 				// insert the row and get the row id
 				TableDao dao = new TableDao(getSchema());
 				int id = dao.add(row);
@@ -505,6 +505,10 @@ public abstract class TableDialog {
 	
 	public void addTableSelectionListener(ISelectionChangedListener listener) {
 		this.panel.addSelectionChangedListener(listener);
+	}
+	
+	public void addTableDoubleClickListener(IDoubleClickListener listener) {
+		this.panel.addDoubleClickListener(listener);
 	}
 	
 	/**

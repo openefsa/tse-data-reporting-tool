@@ -57,11 +57,13 @@ public class XmlContents {
 	
 	/**
 	 * Get an element of the .xml document using its code,
-	 * independently on the lists ids
+	 * independently on the lists ids (only the first match
+	 * is returned)
 	 * @param code
 	 * @return
 	 */
 	public Selection getElementByCode(String code) {
+		
 		Collection<Selection> objs = getAllListsElements();
 
 		for (Selection sel : objs) {

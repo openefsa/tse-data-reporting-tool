@@ -3,6 +3,9 @@ package tse_components;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 
 import table_database.Relation;
@@ -18,9 +21,9 @@ import xml_catalog_reader.Selection;
  * @author avonva
  *
  */
-public class SummarizedInfoReportViewer extends TableDialogWithMenu {
+public class SummarizedInfoDialog extends TableDialogWithMenu {
 	
-	public SummarizedInfoReportViewer(Shell parent) {
+	public SummarizedInfoDialog(Shell parent) {
 		
 		super(parent, "", "TSEs monitoring data (aggregated level)", 
 				true, true, false, false);
@@ -39,6 +42,34 @@ public class SummarizedInfoReportViewer extends TableDialogWithMenu {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		// if double clicked an element of the table
+		// open the cases
+		addTableDoubleClickListener(new IDoubleClickListener() {
+			
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+
+				final IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+				if (selection == null || selection.isEmpty())
+					return;
+
+				final TableRow summInfo = (TableRow) selection.getFirstElement();
+
+				CaseReportDialog dialog = new CaseReportDialog(parent);
+				
+				// filter the records by the clicked summarized information
+				dialog.setParentFilter(summInfo);
+				
+				// add as parent also the report of the summarized information
+				// which is the parent filter since we have chosen a summarized
+				// information from a single report (the summ info were filtered
+				// by the report)
+				dialog.addParentTable(getParentFilter());
+				
+				dialog.open();
+			}
+		});
 	}
 	
 	@Override
