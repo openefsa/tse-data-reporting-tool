@@ -1,4 +1,4 @@
-package user_components;
+package tse_components;
 
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Shell;
@@ -27,15 +27,23 @@ public class MainPanel {
 	}
 	
 	public void setEnabled(boolean enabled) {
-		this.reportViewer.setEnabled(enabled);
+		this.reportViewer.setSelectorEnabled(enabled);
 	}
 	
+	/**
+	 * Open a report the main table
+	 * @param report
+	 */
 	public void openReport(TableRow report) {
-		this.reportViewer.setParentTable(report);
+		this.reportViewer.setParentFilter(report);
 	}
 	
+	/**
+	 * Get the opened report
+	 * @return
+	 */
 	public TableRow getOpenedReport() {
-		return this.reportViewer.getParentTable();
+		return this.reportViewer.getParentFilter();
 	}
 	
 	/**

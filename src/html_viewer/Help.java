@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import user_config.AppPaths;
+import tse_config.AppPaths;
 
 public class Help {
 

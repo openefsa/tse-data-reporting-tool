@@ -147,8 +147,12 @@ public class TableDao {
 				continue;
 			}
 
-			// get the code
+			// save always the code
 			String value = colValue.getCode();
+			
+			// if no code is found, use the label
+			if (value.isEmpty())
+				value = colValue.getLabel();
 
 			// If we have a relation ID => then convert into integer
 			try {

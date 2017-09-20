@@ -1,4 +1,4 @@
-package user_components;
+package tse_components;
 
 import table_skeleton.TableRow;
 

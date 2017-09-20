@@ -10,9 +10,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import table_database.Relation;
-import user_config.AppPaths;
-import user_config.BooleanValue;
-import user_config.SelectionsNames;
+import tse_config.AppPaths;
+import tse_config.BooleanValue;
+import tse_config.SelectionsNames;
 import xml_catalog_reader.Selection;
 import xml_catalog_reader.XmlLoader;
 
@@ -144,8 +144,8 @@ public class Formula {
 	}
 	
 	private void print(String value, String header) {
-		/*if (column.equals("progId"))
-			System.out.println(header + " => " + value);*/
+		//if (column.equals("progId"))
+		//	System.out.println(header + " => " + value);
 	}
 	
 	private String solveTrims(String value) {
@@ -389,20 +389,20 @@ public class Formula {
 			if (colValue != null)
 				code = colValue.getCode();
 			else
-				code = col.getDefaultCode();
+				code = col.getCodeFormula();
 
 			// otherwise use value
 			if (colValue != null)
 				label = colValue.getLabel();
 			else
-				label = col.getDefaultValue();
+				label = col.getLabelFormula();
 
 			if (label == null)
 				label = "";
 			
 			if (code == null)
 				code = "";
-
+			
 			// replace values
 			command = command.replace("\\" + col.getId() + ".code", code);
 			command = command.replace("\\" + col.getId() + ".label", label);
@@ -446,7 +446,7 @@ public class Formula {
 			split = field.split("\\.");
 			
 			if (split.length != 2) {
-				System.err.println("Need .code or .label, found " + hit);
+				System.err.println("Need .code or .label, found " + field + " in the match " + hit);
 				continue;
 			}
 			

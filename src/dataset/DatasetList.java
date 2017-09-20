@@ -1,8 +1,8 @@
-package user_objects;
+package dataset;
 
 import java.util.ArrayList;
 
-import user_webservice.GetDatasetList;
+import webservice.GetDatasetList;
 
 /**
  * List of dataset received by calling {@link GetDatasetList}

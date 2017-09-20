@@ -19,7 +19,9 @@ public class TableHeaders {
 		PICKLIST_FILTER("picklistFilter"),
 		EDITABLE("editable"),
 		DEFAULT_CODE("defaultCode"),
+		CODE_FORMULA("codeFormula"),
 		DEFAULT_VALUE("defaultValue"),
+		LABEL_FORMULA("labelFormula"),
 		PUT_IN_OUTPUT("putInOutput"),
 		ORDER("order"),
 		NATURAL_KEY("naturalKey");

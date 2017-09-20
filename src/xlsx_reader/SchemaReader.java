@@ -82,6 +82,12 @@ public class SchemaReader extends XlsxReader {
 		case DEFAULT_VALUE:
 			builder.setDefaultValue(value);
 			break;
+		case CODE_FORMULA:
+			builder.setCodeFormula(value);
+			break;
+		case LABEL_FORMULA:
+			builder.setLabelFormula(value);
+			break;
 		case DEFAULT_CODE:
 			builder.setDefaultCode(value);
 			break;

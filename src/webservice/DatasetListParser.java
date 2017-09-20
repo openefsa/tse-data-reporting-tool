@@ -1,13 +1,13 @@
-package user_webservice;
+package webservice;
 
 import javax.xml.soap.SOAPBody;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import user_objects.Dataset;
-import user_objects.DatasetList;
-import user_objects.DatasetStatus;
+import dataset.Dataset;
+import dataset.DatasetList;
+import dataset.DatasetStatus;
 
 /**
  * Parser for a dom document containing the {@link GetDatasetList}

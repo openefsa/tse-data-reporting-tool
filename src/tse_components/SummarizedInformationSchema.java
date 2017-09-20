@@ -1,4 +1,4 @@
-package user_components;
+package tse_components;
 
 /**
  * This class represents a single element contained in the {@link Report} object.

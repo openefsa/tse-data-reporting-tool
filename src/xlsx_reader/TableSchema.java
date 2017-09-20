@@ -10,7 +10,7 @@ import java.util.HashMap;
 import table_database.Relation;
 import table_database.RelationParser;
 import table_skeleton.TableColumn;
-import user_config.AppPaths;
+import tse_config.AppPaths;
 
 public class TableSchema extends ArrayList<TableColumn> {
 

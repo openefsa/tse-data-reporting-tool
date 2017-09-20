@@ -12,10 +12,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import user_config.SelectionsNames;
+import tse_config.SelectionsNames;
 import xml_catalog_reader.Selection;
 import xml_catalog_reader.SelectionList;
 import xml_catalog_reader.XmlContents;
@@ -29,28 +30,21 @@ import xml_catalog_reader.XmlLoader;
  * @author avonva
  *
  */
-public class CatalogValuePicker {
+public class CatalogComboViewer {
 
 	private Composite parent;
 	private Composite composite;
 	private ComboViewer comboBox;
-	
-	private String selectionListCode;
-	private String selectionListId;
+
+	private String selectionListId;  // filter for the list
 	
 	/**
 	 * Create a combo box which allows selecting a monitoring
 	 * method
 	 * @param parent
 	 */
-	public CatalogValuePicker(Composite parent, String selectionListCode) {
-		this(parent, selectionListCode, null);
-	}
-	
-	public CatalogValuePicker(Composite parent, String selectionListCode, String selectionListId) {
+	public CatalogComboViewer(Composite parent) {
 		this.parent = parent;
-		this.selectionListCode = selectionListCode;
-		this.selectionListId = selectionListId;
 		create();
 	}
 	
@@ -59,16 +53,50 @@ public class CatalogValuePicker {
 	 */
 	private void create() {
 		
+		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
+		data.minimumWidth = 80;
+		
 		this.composite = new Composite(parent, SWT.NONE);
-		this.composite.setLayout(new FillLayout());
+		this.composite.setLayout(new GridLayout(1,false));
 		
 		this.comboBox = new ComboViewer(composite, SWT.READ_ONLY);
 		this.comboBox.setContentProvider(new ContentProvider());
 		this.comboBox.setLabelProvider(new LabelProvider());
+		this.comboBox.getCombo().setLayoutData(data);
+	}
+	
+	/**
+	 * Set an xml list for the combo box. All the values in the
+	 * list will be picked up. If a filter needs to be set, 
+	 * please see {@link #setList(String, String)}.
+	 * @param selectionListCode
+	 */
+	public void setList(String selectionListCode) {
+		setList(selectionListCode, null);
+	}
+	
+	/**
+	 * Set an xml list for the combo box and get only a subset
+	 * identified by the selectionId. The selection id identifies
+	 * a sub node of the xml list and allows taking just the values
+	 * under the matched node.
+	 * @param selectionListCode
+	 * @param selectionId
+	 */
+	public void setList(String selectionListCode, String selectionId) {
 		
-		// get list elements
-		XmlContents items = getItems();
+		this.selectionListId = selectionId;
 		
+		// get the items
+		XmlContents items = XmlLoader.getByPicklistKey(selectionListCode);
+		
+		if (items == null) {
+			System.err.println("No file found for: " + selectionListCode);
+			return;
+		}
+
+		
+		// set the input
 		this.comboBox.setInput(items);
 		
 		if (items.size() > 0)
@@ -103,14 +131,6 @@ public class CatalogValuePicker {
 			return null;
 		
 		return (Selection) selection.getFirstElement();
-	}
-	
-	/**
-	 * Get the items of the combo box
-	 * @return
-	 */
-	private XmlContents getItems() {
-		return XmlLoader.getByPicklistKey(selectionListCode);
 	}
 	
 	private class ContentProvider implements IStructuredContentProvider {

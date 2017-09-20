@@ -9,7 +9,7 @@ import javax.xml.bind.JAXBException;
 import table_skeleton.TableColumn;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
-import user_config.AppPaths;
+import tse_config.AppPaths;
 import xlsx_reader.TableSchema;
 
 /**

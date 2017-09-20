@@ -7,7 +7,7 @@ import java.util.Collection;
 
 import javax.xml.stream.XMLStreamException;
 
-import user_config.AppPaths;
+import tse_config.AppPaths;
 
 /**
  * Load all the .xml contents which are contained in {@link AppPaths#XML_FOLDER}

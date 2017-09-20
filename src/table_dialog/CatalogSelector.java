@@ -1,4 +1,4 @@
-package user_components;
+package table_dialog;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -12,34 +12,65 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
-import table_dialog.CatalogValuePicker;
-import user_config.SelectionsNames;
 import xml_catalog_reader.Selection;
 
 /**
- * Class which contains a {@link TseComboViewer} and a {@link Button}.
+ * Class which contains a {@link CatalogComboViewer} and a {@link Button}.
  * The list contains the list of TSE diseases which can be reported.
  * It is possible to select a disease and to confirm the selection by
  * pressing the button. If set, a listener is called when the selection
- * in the list is changed or when the button is pressed (see {@link SelectorListener}).
+ * in the list is changed or when the button is pressed (see {@link CatalogChangedListener}).
  * @author avonva
  *
  */
-public class SelectorViewer {
+public class CatalogSelector {
 
 	private Composite parent;
 	private Composite composite;
-	private CatalogValuePicker list;
+	private CatalogComboViewer catalogComboViewer;
 	private Button selectBtn;
+	
+	private Label title;
 	
 	/**
 	 * Create object with tse list and button to confirm a selection
 	 * @param parent
 	 */
-	public SelectorViewer(Composite parent) {
+	public CatalogSelector(Composite parent) {
 		this.parent = parent;
 		create();
 	}
+	
+	/**
+	 * Set the label text
+	 * @param text
+	 */
+	public void setLabelText(String text) {
+		this.title.setText(text);
+	}
+	
+	/**
+	 * Set an xml list for the combo box. All the values in the
+	 * list will be picked up. If a filter needs to be set, 
+	 * please see {@link #setList(String, String)}.
+	 * @param selectionListCode
+	 */
+	public void setList(String selectionListCode) {
+		this.catalogComboViewer.setList(selectionListCode);
+	}
+	
+	/**
+	 * Set an xml list for the combo box and get only a subset
+	 * identified by the selectionId. The selection id identifies
+	 * a sub node of the xml list and allows taking just the values
+	 * under the matched node.
+	 * @param selectionListCode
+	 * @param selectionId
+	 */
+	public void setList(String selectionListCode, String selectionId) {
+		this.catalogComboViewer.setList(selectionListCode, selectionId);
+	}
+	
 	
 	/**
 	 * Enable/disable the panel
@@ -47,7 +78,7 @@ public class SelectorViewer {
 	 */
 	public void setEnabled(boolean enabled) {
 		this.selectBtn.setEnabled(enabled);
-		this.list.setEnabled(enabled);
+		this.catalogComboViewer.setEnabled(enabled);
 	}
 	
 	/**
@@ -58,12 +89,10 @@ public class SelectorViewer {
 		this.composite = new Composite(parent, SWT.NONE);
 		this.composite.setLayout(new GridLayout(3,false));
 		
-		Label title = new Label(composite, SWT.NONE);
-		title.setText("Add data related to monitoring of:");
+		this.title = new Label(composite, SWT.NONE);
 		
 		// combo box with selectable elements
-		this.list = new CatalogValuePicker(composite, 
-				SelectionsNames.TSE_LIST);
+		this.catalogComboViewer = new CatalogComboViewer(composite);
 		
 		// button to confirm selection
 		this.selectBtn = new Button(composite, SWT.PUSH);
@@ -76,17 +105,17 @@ public class SelectorViewer {
 	}
 
 	/**
-	 * Add a {@link SelectorListener} to the object
+	 * Add a {@link CatalogChangedListener} to the object
 	 * @param listener
 	 */
-	public void addSelectionListener(final SelectorListener listener) {
+	public void addSelectionListener(final CatalogChangedListener listener) {
 		
 		// add listener to the button
 		this.selectBtn.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				listener.selectionConfirmed(list.getSelectedItem());
+				listener.catalogConfirmed(catalogComboViewer.getSelectedItem());
 			}
 			
 			@Override
@@ -94,11 +123,11 @@ public class SelectorViewer {
 		});
 		
 		// add listener to the list
-		list.addSelectionChangedListener(new ISelectionChangedListener() {
+		catalogComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			
 			@Override
 			public void selectionChanged(SelectionChangedEvent arg0) {
-				listener.selectionChanged(list.getSelectedItem());
+				listener.catalogChanged(catalogComboViewer.getSelectedItem());
 			}
 		});
 	}
@@ -109,17 +138,17 @@ public class SelectorViewer {
 	 * @author avonva
 	 *
 	 */
-	public interface SelectorListener {
+	public interface CatalogChangedListener {
 		/**
 		 * Called when an element of the list is selected
 		 * @param selectedItem
 		 */
-		public void selectionChanged(Selection selectedItem);
+		public void catalogChanged(Selection selectedItem);
 		
 		/**
 		 * Called when the button is clicked
 		 * @param selectedItem
 		 */
-		public void selectionConfirmed(Selection selectedItem);
+		public void catalogConfirmed(Selection selectedItem);
 	}
 }

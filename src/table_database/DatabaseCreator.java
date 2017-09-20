@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import user_config.AppPaths;
+import tse_config.AppPaths;
 
 /**
  * Class which creates the application database. It uses an .xlsx file

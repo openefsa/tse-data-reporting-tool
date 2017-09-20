@@ -1,4 +1,4 @@
-package user_components;
+package tse_components;
 
 import java.io.IOException;
 
@@ -11,12 +11,12 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
+import dataset.Dataset;
+import dataset.DatasetList;
 import table_skeleton.TableRow;
-import user_config.AppPaths;
-import user_config.PropertiesReader;
-import user_objects.Dataset;
-import user_objects.DatasetList;
-import user_webservice.GetDatasetList;
+import tse_config.AppPaths;
+import tse_config.PropertiesReader;
+import webservice.GetDatasetList;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -98,7 +98,7 @@ public class SettingsDialog extends OptionsDialog {
 	}
 
 	@Override
-	public TableRow createNewRow(TableSchema schema, Selection type) throws IOException {
+	public TableRow createNewRow(TableSchema schema, Selection type) {
 		return null;
 	}
 }

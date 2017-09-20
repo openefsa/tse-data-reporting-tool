@@ -1,7 +1,7 @@
 package table_skeleton;
 
 import table_dialog.TableView;
-import user_config.BooleanValue;
+import tse_config.BooleanValue;
 import xlsx_reader.TableHeaders.XlsxHeader;
 import xml_catalog_reader.Selection;
 import xml_catalog_reader.SelectionList;
@@ -27,7 +27,9 @@ public class TableColumn implements Comparable<TableColumn> {
 	private String picklistKey;  // code of the list from which we pick the selectable values
 	private String picklistFilter;  // filter the data of the picklist using a code
 	private String defaultCode;  // 
+	private String codeFormula;
 	private String defaultValue; // default value of the column
+	private String labelFormula;
 	private String putInOutput;  // if the column value should be exported in the .xml
 	private int order;           // order of visualization, only for visible columns
 	private String naturalKey;   // if the column is part of a natural key or not
@@ -41,7 +43,8 @@ public class TableColumn implements Comparable<TableColumn> {
 	 */
 	public TableColumn(String id, String code, String label, String xmlTag, String tip, 
 			ColumnType type, String mandatory, String editable, String visible,
-			String defaultCode, String defaultValue, String putInOutput, int order, String naturalKey) {
+			String defaultCode, String codeFormula, String defaultValue, String labelFormula,
+			String putInOutput, int order, String naturalKey) {
 		
 		this.id = id;
 		this.code = code;
@@ -53,7 +56,9 @@ public class TableColumn implements Comparable<TableColumn> {
 		this.editable = editable;
 		this.visible = visible;
 		this.defaultCode = defaultCode;
+		this.codeFormula = codeFormula;
 		this.defaultValue = defaultValue;
+		this.labelFormula = labelFormula;
 		this.putInOutput = putInOutput;
 		this.order = order;
 		this.naturalKey = naturalKey;
@@ -141,6 +146,12 @@ public class TableColumn implements Comparable<TableColumn> {
 			break;
 		case DEFAULT_CODE:
 			value = this.defaultCode;
+			break;
+		case CODE_FORMULA:
+			value = this.codeFormula;
+			break;
+		case LABEL_FORMULA:
+			value = this.labelFormula;
 			break;
 		case PUT_IN_OUTPUT:
 			value = this.putInOutput;
@@ -253,6 +264,14 @@ public class TableColumn implements Comparable<TableColumn> {
 		return solveFormula(row, XlsxHeader.PICKLIST_FILTER.getHeaderName());
 	}
 	
+	public String getCodeFormula() {
+		return codeFormula;
+	}
+	
+	public String getLabelFormula() {
+		return labelFormula;
+	}
+	
 	/**
 	 * Get the standard filter
 	 * @return
@@ -299,10 +318,12 @@ public class TableColumn implements Comparable<TableColumn> {
 			return contents.getElements().iterator().next();
 		}
 
+		System.out.println("RESULT2 " + picklistFilter + " => " + getPicklistFilter(row) );
+		
 		// otherwise if we have a filter we get the list
 		// related to that filter
 		SelectionList list = contents.getListById(getPicklistFilter(row));
-
+		
 		return list;
 	}
 	

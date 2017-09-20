@@ -14,7 +14,7 @@ import javax.xml.soap.SOAPPart;
 
 import table_database.TableDao;
 import table_skeleton.TableRow;
-import user_config.AppPaths;
+import tse_config.AppPaths;
 import xlsx_reader.TableSchema;
 
 /**

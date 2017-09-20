@@ -1,6 +1,6 @@
-package user_objects;
+package dataset;
 
-import user_webservice.GetDatasetList;
+import webservice.GetDatasetList;
 
 /**
  * Dcf dataset that is downloaded using the {@link GetDatasetList}

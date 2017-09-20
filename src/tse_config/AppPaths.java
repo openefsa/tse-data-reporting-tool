@@ -1,4 +1,4 @@
-package user_config;
+package tse_config;
 
 public class AppPaths {
 	/**

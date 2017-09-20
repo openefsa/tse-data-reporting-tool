@@ -142,6 +142,18 @@ public class TableView {
 	}
 	
 	/**
+	 * Add an element to the table viewer
+	 * @param row
+	 */
+	public void addAll(Collection<TableRow> rows) {
+		for (TableRow r : rows) {
+			this.tableViewer.add(r);
+		}
+		this.tableElements.addAll(rows);
+	}
+	
+	
+	/**
 	 * Clear all the elements of the table
 	 */
 	public void clear() {

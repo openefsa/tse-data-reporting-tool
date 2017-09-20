@@ -1,4 +1,4 @@
-package user_webservice;
+package webservice;
 
 import javax.xml.soap.SOAPBody;
 import javax.xml.soap.SOAPConnection;
@@ -6,10 +6,9 @@ import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 
-import user_config.AppPaths;
-import user_config.PropertiesReader;
-import user_objects.DatasetList;
-import webservice.SOAPAction;
+import dataset.DatasetList;
+import tse_config.AppPaths;
+import tse_config.PropertiesReader;
 
 /**
  * Get dataset list request for the DCF webservice. It can be used

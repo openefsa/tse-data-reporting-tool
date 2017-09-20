@@ -1,4 +1,4 @@
-package user_components;
+package tse_components;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +13,8 @@ import html_viewer.HtmlViewer;
 import table_database.Database;
 import table_database.TableDao;
 import table_skeleton.TableRow;
-import user_config.AppPaths;
-import user_config.PropertiesReader;
+import tse_config.AppPaths;
+import tse_config.PropertiesReader;
 import xlsx_reader.TableSchema;
 
 public class StartUI {

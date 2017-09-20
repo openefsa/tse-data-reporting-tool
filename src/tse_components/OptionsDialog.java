@@ -1,4 +1,4 @@
-package user_components;
+package tse_components;
 
 import java.util.Collection;
 
@@ -40,17 +40,18 @@ public abstract class OptionsDialog extends TableDialog {
 	}
 
 	@Override
-	public Collection<TableRow> getRows(TableSchema schema, TableRow parentTable) {
+	public Collection<TableRow> loadInitialRows(TableSchema schema, TableRow parentTable) {
 		
 		TableDao dao = new TableDao(schema);
 		Collection<TableRow> objs = dao.getAll();
 		
-		// if no options were set, add an empty row
-		// to the db, get 
+		// if no option was set, add an empty row
+		// to the db
 		if (objs.isEmpty()) {
 			
 			// add a new row
 			TableRow row = new TableRow(schema);
+			row.initialize();
 			int id = dao.add(row);
 			row.setId(id);
 			

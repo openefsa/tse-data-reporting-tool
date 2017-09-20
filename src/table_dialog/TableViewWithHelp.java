@@ -1,6 +1,7 @@
 package table_dialog;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.swt.SWT;
@@ -11,14 +12,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 
+import table_dialog.CatalogSelector.CatalogChangedListener;
 import table_skeleton.TableRow;
-import user_components.SelectorViewer;
-import user_components.SelectorViewer.SelectorListener;
 import xlsx_reader.TableSchema;
 
 /**
  * {@link TableView} and {@link HelpViewer} packed together.
- * {@link SelectorViewer} can also be added by setting
+ * {@link CatalogSelector} can also be added by setting
  * {@link #addSelector} to true in the constructor.
  * @author avonva
  *
@@ -33,7 +33,7 @@ public class TableViewWithHelp {
 	private boolean addSelector;
 	
 	private HelpViewer helpViewer;
-	private SelectorViewer typeSelector;
+	private CatalogSelector catalogSelector;
 	private TableView table;
 	
 	public TableViewWithHelp(Composite parent, String schemaSheetName, 
@@ -66,8 +66,8 @@ public class TableViewWithHelp {
 		
 		// add also the selector if required
 		if (addSelector) {
-			this.typeSelector = new SelectorViewer(composite);
-			this.typeSelector.setEnabled(false);
+			this.catalogSelector = new CatalogSelector(composite);
+			this.catalogSelector.setEnabled(false);
 		}
 		
 		this.table = new TableView(composite, schemaSheetName, editable);
@@ -87,7 +87,7 @@ public class TableViewWithHelp {
 	 */
 	public void setEnabled(boolean enabled) {
 		if (addSelector)
-			this.typeSelector.setEnabled(enabled);
+			this.catalogSelector.setEnabled(enabled);
 	}
 	
 	public void setMenu(Menu menu) {
@@ -98,12 +98,58 @@ public class TableViewWithHelp {
 		table.add(row);
 	}
 	
+	public void addAll(Collection<TableRow> row) {
+		table.addAll(row);
+	}
+	
 	public void clearTable() {
 		table.clear();
 	}
 	
 	public void removeSelectedRow() {
 		table.removeSelectedRow();
+	}
+	
+	/**
+	 * Set the label text
+	 * @param text
+	 */
+	public void setSelectorLabelText(String text) {
+		
+		if (!addSelector)
+			return;
+		
+		this.catalogSelector.setLabelText(text);
+	}
+	
+	/**
+	 * Set an xml list for the combo box. All the values in the
+	 * list will be picked up. If a filter needs to be set, 
+	 * please see {@link #setSelectorList(String, String)}.
+	 * @param selectionListCode
+	 */
+	public void setSelectorList(String selectionListCode) {
+		
+		if (!addSelector)
+			return;
+		
+		this.catalogSelector.setList(selectionListCode);
+	}
+	
+	/**
+	 * Set an xml list for the combo box and get only a subset
+	 * identified by the selectionId. The selection id identifies
+	 * a sub node of the xml list and allows taking just the values
+	 * under the matched node.
+	 * @param selectionListCode
+	 * @param selectionId
+	 */
+	public void setSelectorList(String selectionListCode, String selectionId) {
+		
+		if (!addSelector)
+			return;
+		
+		this.catalogSelector.setList(selectionListCode, selectionId);
 	}
 	
 	/**
@@ -147,8 +193,8 @@ public class TableViewWithHelp {
 		return helpMessage;
 	}
 	
-	public SelectorViewer getTypeSelector() {
-		return typeSelector;
+	public CatalogSelector getTypeSelector() {
+		return catalogSelector;
 	}
 	
 	public boolean isTableEmpty() {
@@ -156,13 +202,13 @@ public class TableViewWithHelp {
 	}
 	
 	/**
-	 * Listener called when the {@link #typeSelector}
+	 * Listener called when the {@link #catalogSelector}
 	 * changes selection
 	 * @param listener
 	 */
-	public void addSelectionListener(SelectorListener listener) {
+	public void addSelectionListener(CatalogChangedListener listener) {
 		if (addSelector) {
-			this.typeSelector.addSelectionListener(listener);
+			this.catalogSelector.addSelectionListener(listener);
 		}
 	}
 	

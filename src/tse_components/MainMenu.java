@@ -1,4 +1,4 @@
-package user_components;
+package tse_components;
 
 import java.io.IOException;
 
@@ -11,9 +11,10 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
+import table_database.TableDao;
 import table_importer.TableImporter;
 import table_skeleton.TableRow;
-import user_config.AppPaths;
+import tse_config.AppPaths;
 import xlsx_reader.TableSchema;
 
 /**
@@ -55,6 +56,21 @@ public class MainMenu {
 		this.file = new MenuItem(main, SWT.CASCADE);
 		this.file.setText("File");
 		this.file.setMenu(fileMenu);
+		
+		this.fileMenu.addListener(SWT.Show, new Listener() {
+			
+			@Override
+			public void handleEvent(Event arg0) {
+				
+				// enable report only if there is a report in the database
+				try {
+					TableDao dao = new TableDao(TableSchema.load(AppPaths.REPORT_SHEET));
+					openReport.setEnabled(!dao.getAll().isEmpty());
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 
 		this.preferences = new MenuItem(main, SWT.PUSH);
 		this.preferences.setText("Preferences");

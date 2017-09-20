@@ -1,7 +1,7 @@
 package table_skeleton;
 
 import table_skeleton.TableColumn.ColumnType;
-import user_config.BooleanValue;
+import tse_config.BooleanValue;
 
 public class TableColumnBuilder {
 
@@ -17,7 +17,9 @@ public class TableColumnBuilder {
 	private String picklistKey;   // code of the list from which we pick the selectable values
 	private String picklistFilter;
 	private String defaultCode;   // default code of the column (only for picklists)
+	private String codeFormula;
 	private String defaultValue;  // default value of the column
+	private String labelFormula;
 	private String putInOutput;   // if the column value should be exported in the .xml
 	private int order;
 	private String naturalKey;
@@ -28,7 +30,9 @@ public class TableColumnBuilder {
 		this.type = ColumnType.STRING;
 		this.visible = BooleanValue.getTrueValue();
 		this.defaultCode = "";
+		this.codeFormula = "";
 		this.defaultValue = "";
+		this.labelFormula = "";
 		this.putInOutput = BooleanValue.getTrueValue();
 		this.tip = "";
 		this.xmlTag = "";
@@ -81,8 +85,18 @@ public class TableColumnBuilder {
 		return this;
 	}
 	
+	public TableColumnBuilder setCodeFormula(String codeFormula) {
+		this.codeFormula = codeFormula;
+		return this;
+	}
+	
 	public TableColumnBuilder setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
+		return this;
+	}
+	
+	public TableColumnBuilder setLabelFormula(String labelFormula) {
+		this.labelFormula = labelFormula;
 		return this;
 	}
 	
@@ -150,7 +164,7 @@ public class TableColumnBuilder {
 	public TableColumn build() {
 		
 		TableColumn col = new TableColumn(id, code, label, xmlTag, tip, type, mandatory, editable, 
-				visible, defaultCode, defaultValue, putInOutput, order, naturalKey);
+				visible, defaultCode, codeFormula, defaultValue, labelFormula, putInOutput, order, naturalKey);
 		
 		if (type == ColumnType.PICKLIST && picklistKey == null) {
 			System.err.println("Cannot set type to picklist without specifying list key for column " + this.id);

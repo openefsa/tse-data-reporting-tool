@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import table_skeleton.TableRow;
-import user_config.AppPaths;
+import tse_config.AppPaths;
 import xlsx_reader.SchemaReader;
 import xlsx_reader.TableSchema;
 

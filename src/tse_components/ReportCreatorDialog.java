@@ -1,4 +1,4 @@
-package user_components;
+package tse_components;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,16 +10,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
+import dataset.Dataset;
+import dataset.DatasetList;
 import table_database.Relation;
 import table_database.TableDao;
 import table_dialog.TableDialog;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
-import user_config.AppPaths;
-import user_config.PropertiesReader;
-import user_objects.Dataset;
-import user_objects.DatasetList;
-import user_webservice.GetDatasetList;
+import tse_config.AppPaths;
+import tse_config.PropertiesReader;
+import webservice.GetDatasetList;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -40,10 +40,11 @@ public class ReportCreatorDialog extends TableDialog {
 	}
 
 	@Override
-	public Collection<TableRow> getRows(TableSchema schema, TableRow parentTable) {
+	public Collection<TableRow> loadInitialRows(TableSchema schema, TableRow parentTable) {
 		
 		Collection<TableRow> rows = new ArrayList<>();
 		TableRow row = new TableRow(schema);
+		row.initialize();
 
 		// add preferences to the report
 		try {
@@ -188,7 +189,7 @@ public class ReportCreatorDialog extends TableDialog {
 	}
 
 	@Override
-	public TableRow createNewRow(TableSchema schema, Selection type) throws IOException {
+	public TableRow createNewRow(TableSchema schema, Selection type) {
 		return null;
 	}
 }

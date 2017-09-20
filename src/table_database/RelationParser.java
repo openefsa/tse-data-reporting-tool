@@ -6,7 +6,7 @@ import java.util.Collection;
 
 import org.apache.poi.ss.usermodel.Row;
 
-import user_config.AppPaths;
+import tse_config.AppPaths;
 import xlsx_reader.XlsxReader;
 
 /**

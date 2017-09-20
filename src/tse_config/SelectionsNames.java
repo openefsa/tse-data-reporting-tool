@@ -1,4 +1,4 @@
-package user_config;
+package tse_config;
 
 /**
  * Class which contains all the identifiers for the .xml files

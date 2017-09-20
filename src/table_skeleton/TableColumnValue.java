@@ -12,10 +12,12 @@ public class TableColumnValue {
 	
 	String code;
 	String label;
+	
 	public TableColumnValue() {
 		this.code = "";
 		this.label = "";
 	}
+	
 	public TableColumnValue(Selection sel) {
 		this.code = sel.getCode();
 		this.label = sel.getDescription();
@@ -23,6 +25,7 @@ public class TableColumnValue {
 	
 	
 	public void setCode(String code) {
+
 		this.code = code;
 		
 		// empty code means that we do not

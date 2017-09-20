@@ -1,6 +1,4 @@
-package user_components;
-
-import java.util.Collection;
+package tse_components;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -12,11 +10,11 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
-import table_dialog.TableDialog;
+import table_dialog.CatalogSelector;
 import table_dialog.HelpViewer;
+import table_dialog.TableDialog;
 import table_dialog.TableView;
 import table_skeleton.TableRow;
-import xlsx_reader.TableSchema;
 
 /**
  * Generic class that provides an interface to create {@link TableRow} objects
@@ -24,32 +22,21 @@ import xlsx_reader.TableSchema;
  * @author avonva
  *
  */
-public abstract class ReportViewer extends TableDialog {
+public abstract class TableDialogWithMenu extends TableDialog {
 	
 	/**
 	 * Create a dialog with a {@link HelpViewer}, a {@link TableView}
-	 * and possibly a {@link SelectorViewer} if {@code addSelector} is set to true.
+	 * and possibly a {@link CatalogSelector} if {@code addSelector} is set to true.
 	 * It also allows adding and removing rows from the table
 	 * @param parent the shell parent
 	 * @param title the title of the pop up (used only if {@code createPopUp} is true)
 	 * @param message the help message
 	 * @param editable if the table can be edited or not
-	 * @param addSelector if the {@link SelectorViewer} should be added or not
+	 * @param addSelector if the {@link CatalogSelector} should be added or not
 	 */
-	public ReportViewer(Shell parent, String title, String message, 
+	public TableDialogWithMenu(Shell parent, String title, String message, 
 			boolean editable, boolean addSelector, boolean createPopUp, boolean addSaveBtn) {
 		super(parent, title, message, editable, addSelector, createPopUp, addSaveBtn);
-	}
-	
-	/**
-	 * If the current table is in many to one relation
-	 * with a parent table, then use this method to
-	 * load all the records related to the chosen parent
-	 * in the table.
-	 * @param parentTable
-	 */
-	public Collection<TableRow> getRows(TableSchema schema, TableRow parentTable) {
-		return getParentRows();
 	}
 	
 	@Override

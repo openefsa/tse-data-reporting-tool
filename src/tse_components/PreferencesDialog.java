@@ -1,12 +1,10 @@
-package user_components;
-
-import java.io.IOException;
+package tse_components;
 
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
 import table_skeleton.TableRow;
-import user_config.AppPaths;
+import tse_config.AppPaths;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -32,7 +30,7 @@ public class PreferencesDialog extends OptionsDialog {
 	}
 
 	@Override
-	public TableRow createNewRow(TableSchema schema, Selection type) throws IOException {
+	public TableRow createNewRow(TableSchema schema, Selection type) {
 		return null;
 	}
 }

@@ -33,7 +33,11 @@ public class TableRow implements Checkable {
 	public TableRow(TableSchema schema) {
 		this.values = new HashMap<>();
 		this.schema = schema;
-		create();
+	}
+	
+	public TableRow(TableSchema schema, String initialColumnId, TableColumnValue initialValue) {
+		this(schema);
+		this.values.put(initialColumnId, initialValue);
 	}
 	
 	/**
@@ -108,29 +112,36 @@ public class TableRow implements Checkable {
 		row.setLabel(label);
 		values.put(key, row);
 	}
-	
-	private void create() {
+
+	/**
+	 * Initialize the row with the default values
+	 */
+	public void initialize() {
 		
 		// create a slot for each column of the table
 		for (TableColumn col : schema) {
 
+			// skip foreign keys
+			if (col.isForeignKey())
+				continue;
+			
 			TableColumnValue sel = new TableColumnValue();
 			
-			sel.setCode(col.getDefaultCode());
-			sel.setLabel(col.getDefaultValue());
+			//sel.setCode(col.getDefaultCode());
+			//sel.setLabel(col.getDefaultValue());
 			
 			// set the default values for the editable columns
 			// this is done just when the row is created and not
 			// when the row is computed, since they are default
 			// values with formulas, not real automatic values with formulas
-			if (col.isEditable()) {
+			//if (col.isEditable()) {
 				FormulaSolver solver = new FormulaSolver(this);
-				Formula label = solver.solve(col, XlsxHeader.DEFAULT_VALUE.getHeaderName());
 				Formula code = solver.solve(col, XlsxHeader.DEFAULT_CODE.getHeaderName());
-				
+				Formula label = solver.solve(col, XlsxHeader.DEFAULT_VALUE.getHeaderName());
+
 				sel.setCode(code.getSolvedFormula());
 				sel.setLabel(label.getSolvedFormula());
-			}
+			//}
 
 			this.put(col.getId(), sel);
 		}
@@ -155,15 +166,15 @@ public class TableRow implements Checkable {
 		
 		TableColumnValue colVal = this.get(f.getColumn().getId());
 		
-		if (h == XlsxHeader.DEFAULT_CODE) {
+		if (h == XlsxHeader.CODE_FORMULA && !f.getSolvedFormula().isEmpty()) {
 			colVal.setCode(f.getSolvedFormula());
 		}
-		else if (h == XlsxHeader.DEFAULT_VALUE) {
+		else if (h == XlsxHeader.LABEL_FORMULA && !f.getSolvedFormula().isEmpty()) {
 			colVal.setLabel(f.getSolvedFormula());
 			
 			// set label in the code if it is empty
-			if (colVal.getCode().isEmpty())
-				colVal.setCode(f.getSolvedFormula());
+			//if (colVal.getCode().isEmpty())
+			//	colVal.setCode(f.getSolvedFormula());
 		}
 		else // else do nothing
 			return;
@@ -182,8 +193,8 @@ public class TableRow implements Checkable {
 		
 		// note that this automatically updates the row
 		// while solving formulas
-		solver.solveAll(XlsxHeader.DEFAULT_VALUE.getHeaderName());
-		solver.solveAll(XlsxHeader.DEFAULT_CODE.getHeaderName());
+		solver.solveAll(XlsxHeader.CODE_FORMULA.getHeaderName());
+		solver.solveAll(XlsxHeader.LABEL_FORMULA.getHeaderName());
 	}
 	
 	/**
@@ -304,11 +315,8 @@ public class TableRow implements Checkable {
 		for (String key : this.values.keySet()) {
 			
 			print.append("Column: " + key);
-			
-			// add code for picklists and foreign keys
-			if (schema.getById(key) != null 
-					&& (schema.getById(key).isPicklist() || schema.getById(key).isForeignKey()))
-				print.append(" code=" + values.get(key).getCode());
+
+			print.append(" code=" + values.get(key).getCode());
 			
 			print.append(";value=" + values.get(key).getLabel());
 

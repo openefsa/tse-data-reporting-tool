@@ -22,11 +22,11 @@ import org.eclipse.swt.widgets.Shell;
 
 import duplicates_detector.DuplicatesDetector;
 import html_viewer.Help;
+import table_database.Relation;
 import table_database.TableDao;
+import table_dialog.CatalogSelector.CatalogChangedListener;
 import table_skeleton.TableRow;
-import user_components.SelectorViewer;
-import user_components.SelectorViewer.SelectorListener;
-import user_config.AppPaths;
+import tse_config.AppPaths;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -48,8 +48,9 @@ import xml_catalog_reader.Selection;
  * according to the column type.
  * 
  * - automatic generation of {@link HelpViewer} to show help to the user
+ * with .html files.
  * 
- * - automatic generation of {@link SelectorViewer} which allows creating
+ * - automatic generation of {@link CatalogSelector} which allows creating
  * new rows in the table by selecting a parameter from a list. Need to be
  * specified by setting {@link #addSelector} to true. If the plus icon
  * is pressed, the {@link #createNewRow(TableSchema, Selection)} method
@@ -72,8 +73,9 @@ public abstract class TableDialog {
 	private TableViewWithHelp panel;
 	private Button saveButton;
 	
-	private TableRow parentTable;
-	private TableSchema schema;
+	private TableRow parentFilter;              // if set, only the rows children of this parent are shown in the table
+	private Collection<TableRow> parentTables;  // list of parents of the table in 1-n relations
+	private TableSchema schema;                 // schema of the table that is shown
 	
 	private String title;
 	private String helpMessage;
@@ -84,12 +86,12 @@ public abstract class TableDialog {
 	
 	/**
 	 * Create a dialog with a {@link HelpViewer}, a {@link TableView}
-	 * and possibly a {@link SelectorViewer} if {@code addSelector} is set to true.
+	 * and possibly a {@link CatalogSelector} if {@code addSelector} is set to true.
 	 * @param parent the shell parent
 	 * @param title the title of the pop up (used only if {@code createPopUp} is true)
 	 * @param helpMessage the help message to be displayed in the {@link HelpViewer}
 	 * @param editable if the table can be edited or not
-	 * @param addSelector if the {@link SelectorViewer} should be added or not
+	 * @param addSelector if the {@link CatalogSelector} should be added or not
 	 * @param createPopUp true to create a new shell, false to use the parent shell
 	 * @param addSaveBtn true to create a button below the table
 	 */
@@ -103,6 +105,9 @@ public abstract class TableDialog {
 		this.addSelector = addSelector;
 		this.createPopUp = createPopUp;
 		this.addSaveBtn = addSaveBtn;
+		
+		// list of parent tables
+		this.parentTables = new ArrayList<>();
 		
 		try {
 			this.schema = TableSchema.load(getSchemaSheetName());
@@ -143,9 +148,46 @@ public abstract class TableDialog {
 	 * related to the parent table.
 	 * @param parentTable
 	 */
-	public void setParentTable(TableRow parentTable) {
-		this.parentTable = parentTable;
-		loadRows();
+	public void setParentFilter(TableRow parentFilter) {
+
+		// remove the old parent filter
+		parentTables.remove(this.parentFilter);
+		
+		if (parentFilter == null)
+			return;
+		
+		// add the new filter as parent table
+		parentTables.add(parentFilter);
+		
+		// save the new filter
+		this.parentFilter = parentFilter;
+		
+		this.panel.clearTable();
+		this.panel.addAll(getRows());
+	}
+	
+	/**
+	 * Add a parent table to the current table
+	 * @param parentTable
+	 */
+	public void addParentTable(TableRow parentTable) {
+		
+		if (parentTable == null)
+			return;
+		
+		this.parentTables.add(parentTable);
+	}
+	
+	/**
+	 * Remove a parent table from the current table
+	 * @param parentTable
+	 */
+	public void removeParentTable(TableRow parentTable) {
+		
+		if (parentTable == null)
+			return;
+		
+		this.parentTables.remove(parentTable);
 	}
 	
 	/**
@@ -155,7 +197,7 @@ public abstract class TableDialog {
 	public void clear() {
 		
 		panel.clearTable();
-		this.parentTable = null;
+		this.parentFilter = null;
 		
 		// disable the panel
 		if (addSelector)
@@ -163,7 +205,7 @@ public abstract class TableDialog {
 	}
 	
 	/**
-	 * Load the rows which are defined in the {@link #getRows(TableSchema, TableRow)}
+	 * Load the rows which are defined in the {@link #loadInitialRows(TableSchema, TableRow)}
 	 * method
 	 */
 	public void loadRows() {
@@ -171,16 +213,24 @@ public abstract class TableDialog {
 		panel.clearTable();
 		
 		// load the rows
-		Collection<TableRow> rows = getRows(panel.getSchema(), parentTable);
+		Collection<TableRow> rows = loadInitialRows(panel.getSchema(), parentFilter);
 
+		// skip if null parameter
+		if (rows == null)
+			return;
+		
 		// add them to the table
 		for (TableRow row : rows) {
 			panel.add(row);
 		}
 	}
 	
-	public TableRow getParentTable() {
-		return parentTable;
+	/**
+	 * Get the parent table if it was set
+	 * @return
+	 */
+	public TableRow getParentFilter() {
+		return parentFilter;
 	}
 	
 	/**
@@ -256,8 +306,6 @@ public abstract class TableDialog {
 		}
 		else
 			this.dialog = parent;
-		
-		
 		
 		this.dialog.setLayout(new GridLayout(1,false));
 		this.dialog.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -361,59 +409,95 @@ public abstract class TableDialog {
 		
 		if (!addSelector)
 			return;
-		
+
 		// add a selection listener to the selector
-		this.addSelectionListener(new SelectorListener() {
+		this.addSelectionListener(new CatalogChangedListener() {
 
 			@Override
-			public void selectionConfirmed(Selection selectedItem) {
+			public void catalogConfirmed(Selection selectedItem) {
 
 				// create a new row and
 				// put the first cell in the row
-				try {
-					
-					TableRow row = createNewRow(getSchema(), selectedItem);
-					
-					// if a parent was set, then add also the foreign key to the
-					// current new row
-					if (parentTable != null) {
-						String reportForeignKey = getSchema()
-								.getRelationByParentTable(parentTable.getSchema().getSheetName()).getForeignKey();
-						row.put(reportForeignKey, parentTable.get(reportForeignKey));
-					}
-					
-					// insert the row and get the row id
-					TableDao dao = new TableDao(getSchema());
-					int id = dao.add(row);
-					
-					// set the id for the new row
-					row.setId(id);
-					
-					// update the formulas
-					row.updateFormulas();
-					
-					// update the row with the formulas solved
-					dao.update(row);
-					
-					// add the row to the table
-					add(row);
-					
-				} catch (IOException e) {
-					e.printStackTrace();
+				TableRow row = createNewRow(getSchema(), selectedItem);
+				
+				// inject all the parent tables ids into the row
+				for (TableRow parent : parentTables) {
+					Relation.injectParent(parent, row);
 				}
+				
+				// initialize the row fields with default values
+				row.initialize();
+				
+				// insert the row and get the row id
+				TableDao dao = new TableDao(getSchema());
+				int id = dao.add(row);
+
+				// set the id for the new row
+				row.setId(id);
+
+				// update the formulas
+				row.updateFormulas();
+
+				// update the row with the formulas solved
+				dao.update(row);
+
+				// add the row to the table
+				add(row);
 			}
 
 			@Override
-			public void selectionChanged(Selection selectedItem) {}
+			public void catalogChanged(Selection selectedItem) {}
 		});
-		
 	}
+	
+	/**
+	 * Set the selector label text
+	 * @param text
+	 */
+	public void setSelectorLabelText(String text) {
+		
+		if (!addSelector)
+			return;
+		
+		this.panel.setSelectorLabelText(text);
+	}
+	
+	/**
+	 * Set an xml list for the combo box. All the values in the
+	 * list will be picked up. If a filter needs to be set, 
+	 * please see {@link #setSelectorList(String, String)}.
+	 * @param selectionListCode
+	 */
+	public void setSelectorList(String selectionListCode) {
+		
+		if (!addSelector)
+			return;
+		
+		this.panel.setSelectorList(selectionListCode);
+	}
+	
+	/**
+	 * Set an xml list for the combo box and get only a subset
+	 * identified by the selectionId. The selection id identifies
+	 * a sub node of the xml list and allows taking just the values
+	 * under the matched node.
+	 * @param selectionListCode
+	 * @param selectionId
+	 */
+	public void setSelectorList(String selectionListCode, String selectionId) {
+		
+		if (!addSelector)
+			return;
+		
+		this.panel.setSelectorList(selectionListCode, selectionId);
+	}
+	
 	
 	/**
 	 * Add listener to the selector if it was added (i.e. {@link #addSelector} true)
 	 * @param listener
 	 */
-	public void addSelectionListener(SelectorListener listener) {
+	public void addSelectionListener(CatalogChangedListener listener) {
 		if (addSelector) {
 			this.panel.addSelectionListener(listener);
 		}
@@ -435,7 +519,7 @@ public abstract class TableDialog {
 	 * Enable/disable the creation of new records
 	 * @param enabled
 	 */
-	public void setEnabled(boolean enabled) {
+	public void setSelectorEnabled(boolean enabled) {
 		if (addSelector)
 			this.panel.setEnabled(enabled);
 	}
@@ -475,23 +559,25 @@ public abstract class TableDialog {
 	}
 	
 	/**
-	 * Get the record of the current table which are 
-	 * related to the parent table
+	 * Get the record of the current table. If no {@link #parentFilter}
+	 * was set, then all the rows are returned, otherwise
+	 * the filtered rows are returned.
 	 * @return
 	 */
-	public Collection<TableRow> getParentRows() {
+	public Collection<TableRow> getRows() {
 		
 		Collection<TableRow> rows = new ArrayList<>();
 
-		if (parentTable == null)
-			return rows;
-		
-		this.setEnabled(true);
-		
 		// load parents rows
 		TableDao dao = new TableDao(schema);
-		rows = dao.getByParentId(parentTable.getSchema().getSheetName(), parentTable.getId());
 
+		// if no filter get all
+		if (parentFilter == null)
+			return dao.getAll();
+
+		// otherwise filter by id
+		rows = dao.getByParentId(parentFilter.getSchema().getSheetName(), parentFilter.getId());
+		
 		return rows;
 	}
 	
@@ -508,13 +594,15 @@ public abstract class TableDialog {
 	public abstract Menu createMenu();
 	
 	/**
-	 * Get the rows of the table when it is created
+	 * Get the rows of the table when it is created. If there is no
+	 * particular need, just return the {@link #getRows()} method to
+	 * load all the table rows (possibly filtered by the {@link #parentFilter}).
 	 * @param schema the table schema
-	 * @param parentTable the parent related to this table passed with the
-	 * method {@link #setParentTable(TableRow)}
+	 * @param parentFilter the parent related to this table passed with the
+	 * method {@link #setParentFilter(TableRow)}. Can be null if it was not set.
 	 * @return
 	 */
-	public abstract Collection<TableRow> getRows(TableSchema schema, TableRow parentTable);
+	public abstract Collection<TableRow> loadInitialRows(TableSchema schema, TableRow parentFilter);
 	
 	/**
 	 * Create a new row with default values and foreign keys when the selector
@@ -524,7 +612,7 @@ public abstract class TableDialog {
 	 * @return
 	 * @throws IOException 
 	 */
-	public abstract TableRow createNewRow(TableSchema schema, Selection type) throws IOException;
+	public abstract TableRow createNewRow(TableSchema schema, Selection type);
 	
 	/**
 	 * Apply the changes that were made when the {@link #saveButton} is
