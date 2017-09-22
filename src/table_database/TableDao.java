@@ -118,7 +118,7 @@ public class TableDao {
 		if (schema.getRelations() == null)
 			return false;
 		
-		for (Relation r : schema.getRelations().values()) {
+		for (Relation r : schema.getRelations()) {
 			if(r.getForeignKey().equals(id))
 				return true;
 		}
@@ -352,9 +352,9 @@ public class TableDao {
 				if (column.isPicklist()) {
 					
 					String code = String.valueOf(value);
-					
+
 					// get the description from the .xml using the code
-					if (!code.isEmpty()) {
+					if (code != null && !code.isEmpty()) {
 						selection = new TableColumnValue(
 								XmlLoader.getByPicklistKey(column.getPicklistKey())
 									.getElementByCode(code));

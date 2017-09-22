@@ -5,8 +5,8 @@ import java.util.HashMap;
 import duplicates_detector.Checkable;
 import table_database.TableDao;
 import xlsx_reader.TableHeaders.XlsxHeader;
-import xml_catalog_reader.Selection;
 import xlsx_reader.TableSchema;
+import xml_catalog_reader.Selection;
 
 /**
  * Generic element of a {@link Report}.
@@ -294,7 +294,12 @@ public class TableRow implements Checkable {
 			
 			// here we are comparing a part of the natural key
 			TableColumnValue value1 = this.get(key);
-			TableColumnValue value2 = this.get(key);
+			TableColumnValue value2 = other.get(key);
+			
+			// cannot compare two empty values (it would return
+			// equal but actually they simply have a missing value)
+			if (value1.isEmpty() && value2.isEmpty())
+				continue;
 			
 			// if a field of the natural key is
 			// different then the two rows are different

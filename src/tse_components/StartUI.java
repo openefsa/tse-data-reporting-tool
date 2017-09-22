@@ -9,12 +9,13 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import app_config.AppPaths;
+import app_config.PropertiesReader;
 import html_viewer.HtmlViewer;
 import table_database.Database;
 import table_database.TableDao;
 import table_skeleton.TableRow;
-import tse_config.AppPaths;
-import tse_config.PropertiesReader;
+import tse_config.CustomPaths;
 import xlsx_reader.TableSchema;
 
 public class StartUI {
@@ -46,7 +47,7 @@ public class StartUI {
 	 * @throws IOException
 	 */
 	private static boolean checkSettings() throws IOException {
-		return checkSettings(AppPaths.SETTINGS_SHEET);
+		return checkSettings(CustomPaths.SETTINGS_SHEET);
 	}
 	
 	/**
@@ -55,7 +56,7 @@ public class StartUI {
 	 * @throws IOException
 	 */
 	private static boolean checkPreferences() throws IOException {
-		return checkSettings(AppPaths.PREFERENCES_SHEET);
+		return checkSettings(CustomPaths.PREFERENCES_SHEET);
 	}
 	
 	/**

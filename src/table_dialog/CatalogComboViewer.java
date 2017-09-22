@@ -12,11 +12,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import tse_config.SelectionsNames;
+import tse_config.CatalogLists;
 import xml_catalog_reader.Selection;
 import xml_catalog_reader.SelectionList;
 import xml_catalog_reader.XmlContents;
@@ -26,7 +25,7 @@ import xml_catalog_reader.XmlLoader;
  * Combo box which allows selecting a {@link Selection} object from an .xml list.
  * The data are retrieved from the .xml in the data folder.
  * Please specify in {@link #getSelectionListId()} the code of the
- * .xml which contains the list of interest (see {@link SelectionsNames})
+ * .xml which contains the list of interest (see {@link CatalogLists})
  * @author avonva
  *
  */
@@ -53,16 +52,12 @@ public class CatalogComboViewer {
 	 */
 	private void create() {
 		
-		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-		data.minimumWidth = 80;
-		
 		this.composite = new Composite(parent, SWT.NONE);
-		this.composite.setLayout(new GridLayout(1,false));
+		this.composite.setLayout(new FillLayout());
 		
 		this.comboBox = new ComboViewer(composite, SWT.READ_ONLY);
 		this.comboBox.setContentProvider(new ContentProvider());
 		this.comboBox.setLabelProvider(new LabelProvider());
-		this.comboBox.getCombo().setLayoutData(data);
 	}
 	
 	/**

@@ -1,11 +1,12 @@
 package table_database;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import app_config.AppPaths;
 import table_skeleton.TableRow;
-import tse_config.AppPaths;
 import xlsx_reader.SchemaReader;
 import xlsx_reader.TableSchema;
 
@@ -18,8 +19,9 @@ public class Relation {
 	
 	private String parent;
 	private String child;
+	private boolean directRelation;
 	
-	public Relation(String parent, String child) {
+	public Relation(String parent, String child, boolean directRelation) {
 		
 		// initialize cache if necessary
 		if (parentValueCache == null)
@@ -31,6 +33,7 @@ public class Relation {
 		
 		this.parent = parent;
 		this.child = child;
+		this.directRelation = directRelation;
 	}
 	
 	public String getParent() {
@@ -45,8 +48,56 @@ public class Relation {
 		return foreignKeyFromParent(parent);
 	}
 	
+	public boolean isDirectRelation() {
+		return directRelation;
+	}
+	
 	public static String foreignKeyFromParent(String parent) {
 		return parent + "Id";
+	}
+	
+	/**
+	 * Get all the tables that do not have children
+	 * tables
+	 * @throws IOException 
+	 */
+	public static Collection<TableSchema> getLeavesTables() throws IOException {
+
+		Collection<TableSchema> leaves = new ArrayList<>();
+		
+		for (TableSchema schema : TableSchema.getCustomSchemas()) {
+			
+			// get children tables
+			Collection<Relation> relations = schema.getChildrenTables();
+			
+			// if no children then its a leaf
+			if (relations.isEmpty())
+				leaves.add(schema);
+		}
+		
+		return leaves;
+	}
+	
+	/**
+	 * Get all the root tables (tables without parent)
+	 * @return
+	 * @throws IOException
+	 */
+	public static Collection<TableSchema> getRootTables() throws IOException {
+		
+		Collection<TableSchema> roots = new ArrayList<>();
+		
+		for (TableSchema schema : TableSchema.getCustomSchemas()) {
+			
+			// get children tables
+			Collection<Relation> relations = schema.getParentTables();
+			
+			// if no children then its a leaf
+			if (relations.isEmpty())
+				roots.add(schema);
+		}
+		
+		return roots;
 	}
 	
 	@Override
@@ -163,6 +214,31 @@ public class Relation {
 			SchemaReader reader = new SchemaReader(AppPaths.TABLES_SCHEMA_FILE);
 			
 			reader.read(getParent());
+			
+			TableSchema schema = reader.getSchema();
+			
+			reader.close();
+			
+			return schema;
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * get the schema of the child
+	 * @return
+	 */
+	public TableSchema getChildSchema() {
+		
+		try {
+			
+			SchemaReader reader = new SchemaReader(AppPaths.TABLES_SCHEMA_FILE);
+			
+			reader.read(getChild());
 			
 			TableSchema schema = reader.getSchema();
 			

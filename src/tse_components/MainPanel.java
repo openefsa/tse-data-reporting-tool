@@ -27,7 +27,7 @@ public class MainPanel {
 	}
 	
 	public void setEnabled(boolean enabled) {
-		this.reportViewer.setSelectorEnabled(enabled);
+		this.reportViewer.setRowCreationEnabled(enabled);
 	}
 	
 	/**

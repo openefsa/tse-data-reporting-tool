@@ -1,16 +1,24 @@
 package xlsx_reader;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import app_config.AppPaths;
+import html_viewer.HelpParser;
 import table_database.Relation;
 import table_database.RelationParser;
 import table_skeleton.TableColumn;
-import tse_config.AppPaths;
+import tse_config.CustomPaths;
 
 public class TableSchema extends ArrayList<TableColumn> {
 
@@ -20,11 +28,11 @@ public class TableSchema extends ArrayList<TableColumn> {
 	private static final long serialVersionUID = 1L;
 	private String sheetName;
 	private String tableIdField;
-	private HashMap<String, Relation> relations;
+	private Collection<Relation> relations;
 	
 	
 	/**
-	 * Load a generic schema from the {@link AppPaths#TABLES_SCHEMA_FILE} file
+	 * Load a generic schema from the {@link CustomPaths#TABLES_SCHEMA_FILE} file
 	 * using the {@code sheetName} sheet
 	 * @param sheetName
 	 * @return
@@ -39,6 +47,35 @@ public class TableSchema extends ArrayList<TableColumn> {
 		return schema;
 	}
 	
+	/**
+	 * Get all the custom schemas of the xlsx
+	 * @return
+	 * @throws IOException
+	 */
+	public static Collection<TableSchema> getCustomSchemas() throws IOException {
+		
+		Collection<TableSchema> schemas = new ArrayList<>();
+		
+		InputStream inputStream = new FileInputStream(new File(AppPaths.APP_CONFIG_FILE));
+		Workbook wb = new XSSFWorkbook(inputStream);
+		
+		for (int i = 0; i < wb.getNumberOfSheets(); ++i) {
+			Sheet sheet = wb.getSheetAt(i);
+			
+			// skip special sheets
+			if (RelationParser.isRelationsSheet(sheet.getSheetName())
+					|| HelpParser.isHelpSheet(sheet.getSheetName()))
+				continue;
+			
+			TableSchema schema = TableSchema.load(sheet.getSheetName());
+			schemas.add(schema);
+		}
+		
+		wb.close();
+		
+		return schemas;
+	}
+	
 	
 	/**
 	 * Set the sheet name related to the schema
@@ -48,7 +85,7 @@ public class TableSchema extends ArrayList<TableColumn> {
 		this.sheetName = sheetName;
 		this.tableIdField = sheetName + "Id";
 		try {
-			this.relations = fetchRelations();
+			this.relations = getParentTables();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -67,13 +104,13 @@ public class TableSchema extends ArrayList<TableColumn> {
 	}
 	
 	/**
-	 * Get all the relations related to the table
+	 * Get all the tables that are a direct parent of this table
 	 * @return
 	 * @throws IOException
 	 */
-	private HashMap<String, Relation> fetchRelations() throws IOException {
+	public Collection<Relation> getParentTables() throws IOException {
 		
-		HashMap<String, Relation> out = new HashMap<>();
+		Collection<Relation> out = new ArrayList<>();
 		
 		RelationParser parser = new RelationParser(AppPaths.TABLES_SCHEMA_FILE);
 		Collection<Relation> rs = parser.read();
@@ -81,7 +118,47 @@ public class TableSchema extends ArrayList<TableColumn> {
 
 		for (Relation r : rs) {
 			if (r.getChild().equals(sheetName))
-				out.put(r.getParent(), r);
+				out.add(r);
+		}
+		
+		return out;
+	}
+	
+	/**
+	 * Get all the tables that have as parent this table
+	 * @return
+	 * @throws IOException
+	 */
+	public Collection<Relation> getChildrenTables() throws IOException {
+		
+		Collection<Relation> out = new ArrayList<>();
+		
+		RelationParser parser = new RelationParser(AppPaths.TABLES_SCHEMA_FILE);
+		Collection<Relation> rs = parser.read();
+		parser.close();
+
+		for (Relation r : rs) {
+			if (r.getParent().equals(sheetName))
+				out.add(r);
+		}
+		
+		return out;
+	}
+	
+	/**
+	 * Get the table which are directly related (child) to this table
+	 * @return
+	 * @throws IOException
+	 */
+	public Collection<Relation> getDirectChildren() throws IOException {
+		
+		Collection<Relation> out = new ArrayList<>();
+		
+		Collection<Relation> rs = getChildrenTables();
+
+		for (Relation r : rs) {
+			if (r.isDirectRelation())
+				out.add(r);
 		}
 		
 		return out;
@@ -91,17 +168,24 @@ public class TableSchema extends ArrayList<TableColumn> {
 	 * Get the relationships with other tables
 	 * @return
 	 */
-	public HashMap<String, Relation> getRelations() {
+	public Collection<Relation> getRelations() {
 		return relations;
 	}
 	
 	/**
 	 * Get the relation which is related to the {@code parentId}
+	 * that is the parent table name
 	 * @param parentId
 	 * @return
 	 */
 	public Relation getRelationByParentTable(String parentId) {
-		return relations.get(parentId);
+		
+		for (Relation r : relations) {
+			if (r.getParent().equals(parentId))
+				return r;
+		}
+		
+		return null;
 	}
 	
 	/**

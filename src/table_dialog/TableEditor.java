@@ -32,6 +32,13 @@ public class TableEditor extends EditingSupport {
 	protected boolean canEdit(Object arg0) {
 		return column.isEditable();
 	}
+	
+	private Selection getEmptySelection() {
+		Selection selection = new Selection();
+		selection.setCode("");
+		selection.setDescription("");
+		return selection;
+	}
 
 	@Override
 	protected CellEditor getCellEditor(Object arg0) {
@@ -45,9 +52,14 @@ public class TableEditor extends EditingSupport {
 			
 			// get the list of possible values for the current column
 			// filtering by the summarized information type (bse..)
-			//System.out.println(column.getPicklistFilterFormula());
-			//System.out.println(column.getPicklistFilter(row));
 			SelectionList list = column.getList(row);
+			
+			// if not mandatory column, add an empty value
+			if (!column.isMandatory(row)) {
+				Selection emptySel = getEmptySelection();
+				if (!list.contains(emptySel))
+					list.add(emptySel);
+			}
 			
 			combo.setContentProvider(new ComboBoxContentProvider());
 			combo.setLabelProvider(new ComboBoxLabelProvider());

@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Shell;
 import table_database.TableDao;
 import table_importer.TableImporter;
 import table_skeleton.TableRow;
-import tse_config.AppPaths;
+import tse_config.CustomPaths;
 import xlsx_reader.TableSchema;
 
 /**
@@ -64,7 +64,7 @@ public class MainMenu {
 				
 				// enable report only if there is a report in the database
 				try {
-					TableDao dao = new TableDao(TableSchema.load(AppPaths.REPORT_SHEET));
+					TableDao dao = new TableDao(TableSchema.load(CustomPaths.REPORT_SHEET));
 					openReport.setEnabled(!dao.getAll().isEmpty());
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -188,7 +188,7 @@ public class MainMenu {
 						// copy the report summarized information into the opened one
 						try {
 							
-							TableSchema childSchema = TableSchema.load(AppPaths.SUMMARIZED_INFO_SHEET);
+							TableSchema childSchema = TableSchema.load(CustomPaths.SUMMARIZED_INFO_SHEET);
 							
 							
 							dialog.getDialog().setCursor(dialog.getDialog()

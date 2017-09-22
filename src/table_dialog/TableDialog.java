@@ -20,13 +20,14 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
-import duplicates_detector.DuplicatesDetector;
+import export.DatasetXmlCreator;
 import html_viewer.Help;
 import table_database.Relation;
 import table_database.TableDao;
-import table_dialog.CatalogSelector.CatalogChangedListener;
+import table_dialog.RowCreatorViewer.CatalogChangedListener;
+import table_dialog.TableViewWithHelp.RowCreationMode;
 import table_skeleton.TableRow;
-import tse_config.AppPaths;
+import tse_config.CustomPaths;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -37,37 +38,45 @@ import xml_catalog_reader.Selection;
  * should extend this class.
  * 
  * In particular, remember that only the tables identified in the 
- * {@link AppPaths#APP_CONFIG_FILE} .xslx file are considered.
+ * {@link CustomPaths#APP_CONFIG_FILE} .xslx file are considered.
  * 
- * Features:
+ * Features that are provided by this class:
+ * <ul>
+ * <li>automatic creation of table with {@link TableColumn} which are related
+ * to a column which is visible.</li>
  * 
- * - automatic creation of table with {@link TableColumn} which are related
- * to a column which is visible.
+ * <li>automatic editor added to all the columns which are marked as editable
+ * according to the column type.</li>
  * 
- * - automatic editor added to all the columns which are marked as editable
- * according to the column type.
+ * <li>automatic generation of {@link HelpViewer} to show help to the user
+ * with .html files.</li>
  * 
- * - automatic generation of {@link HelpViewer} to show help to the user
- * with .html files.
+ * <li>automatic generation of new rows by pressing a button:
+ * 	<ul>
+ * 		<li>It is possible to add a simple button by setting {@link #mode} to {@link RowCreationMode#STANDARD}
+ * 		in the constructor of the class.
+ * 		<li>If instead it is needed to first select an element from a catalogue to initialize
+ * 		a new row, then set {@link #mode} to {@link RowCreationMode#SELECTOR}, in order
+ * 		to have a {@link RowCreatorViewer} which allows creating
+ * 		new rows in the table by selecting a parameter from a list. 
+ * 		<li>In both cases if the plus icon is pressed, the {@link #createNewRow(TableSchema, Selection)} 
+ * 		method is called. To disable the addition of new rows, simply put 
+ * 		as {@link #mode} the value {@link RowCreationMode#NONE}.</li>
+ * 	</ul>
  * 
- * - automatic generation of {@link CatalogSelector} which allows creating
- * new rows in the table by selecting a parameter from a list. Need to be
- * specified by setting {@link #addSelector} to true. If the plus icon
- * is pressed, the {@link #createNewRow(TableSchema, Selection)} method
- * is called
- * 
- * - automatic generation of a {@link Button} to apply changes. Need to be
+ * <li>automatic generation of a {@link Button} to apply changes. Need to be
  * specified by setting {@link #addSaveBtn} to true. If the button is
  * pressed the {@link #apply(TableSchema, Collection, TableRow)} method
- * is called
+ * is called.</li>
  * 
- * - can specify if the table should be shown in a new dialog or in an
- * already existing shell by setting {@link #createPopUp} accordingly
+ * <li>You can specify if the table should be shown in a new dialog or in an
+ * already existing shell by setting {@link #createPopUp} accordingly.</li>
+ * </ul>
  * @author avonva
  *
  */
 public abstract class TableDialog {
-
+	
 	private Shell parent;
 	private Shell dialog;
 	private TableViewWithHelp panel;
@@ -80,29 +89,29 @@ public abstract class TableDialog {
 	private String title;
 	private String helpMessage;
 	private boolean editable;
-	private boolean addSelector;
+	private RowCreationMode mode;
 	private boolean createPopUp;
 	private boolean addSaveBtn;
 	
 	/**
 	 * Create a dialog with a {@link HelpViewer}, a {@link TableView}
-	 * and possibly a {@link CatalogSelector} if {@code addSelector} is set to true.
+	 * and possibly a {@link RowCreatorViewer} if {@code addSelector} is set to true.
 	 * @param parent the shell parent
 	 * @param title the title of the pop up (used only if {@code createPopUp} is true)
 	 * @param helpMessage the help message to be displayed in the {@link HelpViewer}
 	 * @param editable if the table can be edited or not
-	 * @param addSelector if the {@link CatalogSelector} should be added or not
+	 * @param mode see {@link TableDialog}
 	 * @param createPopUp true to create a new shell, false to use the parent shell
 	 * @param addSaveBtn true to create a button below the table
 	 */
 	public TableDialog(Shell parent, String title, String helpMessage, boolean editable, 
-			boolean addSelector, boolean createPopUp, boolean addSaveBtn) {
+			RowCreationMode mode, boolean createPopUp, boolean addSaveBtn) {
 
 		this.parent = parent;
 		this.title = title;
 		this.helpMessage = helpMessage;
 		this.editable = editable;
-		this.addSelector = addSelector;
+		this.mode = mode;
 		this.createPopUp = createPopUp;
 		this.addSaveBtn = addSaveBtn;
 		
@@ -117,22 +126,46 @@ public abstract class TableDialog {
 		}
 	}
 	
+	/**
+	 * A table with save button.
+	 * @param parent
+	 * @param title
+	 * @param helpMessage
+	 */
 	public TableDialog(Shell parent, String title, String helpMessage, boolean editable, 
-			boolean addSelector, boolean createPopUp) {
-		this(parent, title, helpMessage, editable, addSelector, createPopUp, true);
+			RowCreationMode mode, boolean createPopUp) {
+		this(parent, title, helpMessage, editable, mode, createPopUp, true);
 	}
 	
+	/**
+	 * A table in a new pop up. Save button is also added.
+	 * @param parent
+	 * @param title
+	 * @param helpMessage
+	 */
 	public TableDialog(Shell parent, String title, String helpMessage, boolean editable, 
-			boolean addSelector) {
-		this(parent, title, helpMessage, editable, addSelector, true, true);
+			RowCreationMode mode) {
+		this(parent, title, helpMessage, editable, mode, true, true);
 	}
 	
+	/**
+	 * A table in a new pop up with no row creation. Save button is also added.
+	 * @param parent
+	 * @param title
+	 * @param helpMessage
+	 */
 	public TableDialog(Shell parent, String title, String helpMessage, boolean editable) {
-		this(parent, title, helpMessage, editable, false, true, true);
+		this(parent, title, helpMessage, editable, RowCreationMode.NONE, true, true);
 	}
 	
+	/**
+	 * Editable table in a new pop up with no row creation. Save button is also added.
+	 * @param parent
+	 * @param title
+	 * @param helpMessage
+	 */
 	public TableDialog(Shell parent, String title, String helpMessage) {
-		this(parent, title, helpMessage, true, false, true, true);
+		this(parent, title, helpMessage, true, RowCreationMode.NONE, true, true);
 	}
 	
 	public TableSchema getSchema() {
@@ -200,7 +233,7 @@ public abstract class TableDialog {
 		this.parentFilter = null;
 		
 		// disable the panel
-		if (addSelector)
+		if (mode == RowCreationMode.SELECTOR)
 			this.panel.setEnabled(false);
 	}
 	
@@ -310,7 +343,7 @@ public abstract class TableDialog {
 		this.dialog.setLayout(new GridLayout(1,false));
 		this.dialog.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
-		this.panel = new TableViewWithHelp(dialog, getSchemaSheetName(), helpMessage, editable, addSelector);
+		this.panel = new TableViewWithHelp(dialog, getSchemaSheetName(), helpMessage, editable, mode);
 		this.panel.setMenu(createMenu());
 		
 		// help listener
@@ -327,10 +360,21 @@ public abstract class TableDialog {
 			@Override
 			public void mouseDoubleClick(MouseEvent arg0) {}
 		});
-		
-		// add selector functionalities if possible
-		addSelectorFunctionalities();
-		
+
+
+		// add a selection listener to the selector
+		this.addSelectionListener(new CatalogChangedListener() {
+
+			@Override
+			public void catalogConfirmed(Selection selectedItem) {
+				addNewRow(selectedItem);
+			}
+
+			@Override
+			public void catalogChanged(Selection selectedItem) {}
+		});
+
+
 		// load all the rows into the table
 		loadRows();
 
@@ -367,19 +411,42 @@ public abstract class TableDialog {
 			});
 		}
 		
-		// TODO DEBUG 
-		Button duplicates = new Button(dialog, SWT.PUSH);
+		// DEBUG for duplicates in the table
+		/*Button duplicates = new Button(dialog, SWT.PUSH);
 		duplicates.setText("Check duplicates");
 		duplicates.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				System.out.println(DuplicatesDetector.detect(panel.getTableElements()));
+				for (Duplicate<Checkable> t : DuplicatesDetector.detect(panel.getTableElements())) {
+					System.out.println("DUPLICATE " + ((TableRow)t.getFirst()).getId() + " => " + ((TableRow)t.getSecond()).getId());
+				}
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});*/
+		
+		Button export = new Button(dialog, SWT.PUSH);
+		export.setText("Export report");
+		export.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				DatasetXmlCreator creator = new DatasetXmlCreator();
+				try {
+					creator.export(getParentFilter());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
 			}
 			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {}
 		});
+		
 		dialog.pack();
 		
 		// make dialog longer
@@ -401,62 +468,45 @@ public abstract class TableDialog {
 		help.open();
 	}
 	
-	/**
-	 * Add the selector functionalities to create a new row
-	 * when the + is pressed
-	 */
-	private void addSelectorFunctionalities() {
+	
+	private void addNewRow(Selection selectedItem) {
+
+		// create a new row and
+		// put the first cell in the row
+		TableRow row = createNewRow(getSchema(), selectedItem);
 		
-		if (!addSelector)
-			return;
+		// inject all the parent tables ids into the row
+		for (TableRow parent : parentTables) {
+			Relation.injectParent(parent, row);
+		}
+		
+		// initialize the row fields with default values
+		row.initialize();
 
-		// add a selection listener to the selector
-		this.addSelectionListener(new CatalogChangedListener() {
+		// insert the row and get the row id
+		TableDao dao = new TableDao(getSchema());
+		int id = dao.add(row);
 
-			@Override
-			public void catalogConfirmed(Selection selectedItem) {
+		// set the id for the new row
+		row.setId(id);
 
-				// create a new row and
-				// put the first cell in the row
-				TableRow row = createNewRow(getSchema(), selectedItem);
-				
-				// inject all the parent tables ids into the row
-				for (TableRow parent : parentTables) {
-					Relation.injectParent(parent, row);
-				}
-				
-				// initialize the row fields with default values
-				row.initialize();
-				System.out.println(row);
-				// insert the row and get the row id
-				TableDao dao = new TableDao(getSchema());
-				int id = dao.add(row);
+		// update the formulas
+		row.updateFormulas();
 
-				// set the id for the new row
-				row.setId(id);
+		// update the row with the formulas solved
+		dao.update(row);
 
-				// update the formulas
-				row.updateFormulas();
-
-				// update the row with the formulas solved
-				dao.update(row);
-
-				// add the row to the table
-				add(row);
-			}
-
-			@Override
-			public void catalogChanged(Selection selectedItem) {}
-		});
+		// add the row to the table
+		add(row);
 	}
 	
 	/**
 	 * Set the selector label text
 	 * @param text
 	 */
-	public void setSelectorLabelText(String text) {
+	public void setRowCreatorLabel(String text) {
 		
-		if (!addSelector)
+		if (mode == RowCreationMode.NONE)
 			return;
 		
 		this.panel.setSelectorLabelText(text);
@@ -470,7 +520,7 @@ public abstract class TableDialog {
 	 */
 	public void setSelectorList(String selectionListCode) {
 		
-		if (!addSelector)
+		if (mode != RowCreationMode.SELECTOR)
 			return;
 		
 		this.panel.setSelectorList(selectionListCode);
@@ -486,7 +536,7 @@ public abstract class TableDialog {
 	 */
 	public void setSelectorList(String selectionListCode, String selectionId) {
 		
-		if (!addSelector)
+		if (mode != RowCreationMode.SELECTOR)
 			return;
 		
 		this.panel.setSelectorList(selectionListCode, selectionId);
@@ -498,7 +548,7 @@ public abstract class TableDialog {
 	 * @param listener
 	 */
 	public void addSelectionListener(CatalogChangedListener listener) {
-		if (addSelector) {
+		if (mode != RowCreationMode.NONE) {
 			this.panel.addSelectionListener(listener);
 		}
 	}
@@ -523,8 +573,8 @@ public abstract class TableDialog {
 	 * Enable/disable the creation of new records
 	 * @param enabled
 	 */
-	public void setSelectorEnabled(boolean enabled) {
-		if (addSelector)
+	public void setRowCreationEnabled(boolean enabled) {
+		if (mode != RowCreationMode.NONE)
 			this.panel.setEnabled(enabled);
 	}
 	
@@ -625,6 +675,7 @@ public abstract class TableDialog {
 	 * @param schema the table schema
 	 * @param rows the table rows
 	 * @param selectedRow the current selected row in the table (null if no selection)
+	 * @return true if the current dialog should be closed or false otherwise
 	 */
 	public abstract boolean apply(TableSchema schema, Collection<TableRow> rows, TableRow selectedRow);
 }

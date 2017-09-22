@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Shell;
 import table_database.Relation;
 import table_database.TableDao;
 import table_dialog.TableDialog;
+import table_dialog.TableViewWithHelp.RowCreationMode;
 import table_skeleton.TableRow;
 import xlsx_reader.TableSchema;
 
@@ -17,7 +18,7 @@ public abstract class OptionsDialog extends TableDialog {
 	private int status; 
 	
 	public OptionsDialog(Shell parent, String title, String message, boolean editable) {
-		super(parent, title, message, editable, false, true);
+		super(parent, title, message, editable, RowCreationMode.NONE, true);
 		this.status = SWT.CANCEL;
 	}
 	

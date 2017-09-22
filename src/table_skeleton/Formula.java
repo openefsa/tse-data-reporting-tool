@@ -9,10 +9,10 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import app_config.AppPaths;
+import app_config.BooleanValue;
 import table_database.Relation;
-import tse_config.AppPaths;
-import tse_config.BooleanValue;
-import tse_config.SelectionsNames;
+import tse_config.CatalogLists;
 import xml_catalog_reader.Selection;
 import xml_catalog_reader.XmlLoader;
 
@@ -458,7 +458,9 @@ public class Formula {
 			
 			if (r == null) {
 				System.err.println("No such relation found in the " 
-						+ AppPaths.RELATIONS_SHEET + ", relation required: " + parentId);
+						+ AppPaths.RELATIONS_SHEET 
+						+ ". Relation required: " 
+						+ parentId);
 				continue;
 			}
 			
@@ -562,7 +564,7 @@ public class Formula {
 		// get last month term
 		String lastMonth = String.valueOf(cal.get(Calendar.MONTH) + 1); // months start from 0
 		
-		Selection monthSel = XmlLoader.getByPicklistKey(SelectionsNames.MONTHS_LIST)
+		Selection monthSel = XmlLoader.getByPicklistKey(CatalogLists.MONTHS_LIST)
 				.getList().getSelectionByCode(lastMonth);
 
 		command = command.replace("lastMonth.code", monthSel.getCode());

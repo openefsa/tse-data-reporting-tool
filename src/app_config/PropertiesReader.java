@@ -1,4 +1,4 @@
-package tse_config;
+package app_config;
 
 import java.io.FileInputStream;
 import java.io.IOException;

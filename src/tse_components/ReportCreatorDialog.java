@@ -10,15 +10,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
+import app_config.PropertiesReader;
 import dataset.Dataset;
 import dataset.DatasetList;
 import table_database.Relation;
 import table_database.TableDao;
 import table_dialog.TableDialog;
+import table_dialog.TableViewWithHelp.RowCreationMode;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
-import tse_config.AppPaths;
-import tse_config.PropertiesReader;
+import tse_config.CustomPaths;
 import webservice.GetDatasetList;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
@@ -31,12 +32,12 @@ import xml_catalog_reader.Selection;
 public class ReportCreatorDialog extends TableDialog {
 	
 	public ReportCreatorDialog(Shell parent) {
-		super(parent, "New report", "Creation of a new report", true, false, true);
+		super(parent, "New report", "Creation of a new report", true, RowCreationMode.NONE, true);
 	}
 	
 	@Override
 	public String getSchemaSheetName() {
-		return AppPaths.REPORT_SHEET;
+		return CustomPaths.REPORT_SHEET;
 	}
 
 	@Override
@@ -44,15 +45,17 @@ public class ReportCreatorDialog extends TableDialog {
 		
 		Collection<TableRow> rows = new ArrayList<>();
 		TableRow row = new TableRow(schema);
-		row.initialize();
+		
 
 		// add preferences to the report
 		try {
-			Relation.injectGlobalParent(row, AppPaths.PREFERENCES_SHEET);
+			Relation.injectGlobalParent(row, CustomPaths.PREFERENCES_SHEET);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		row.initialize();
 		
 		// update the formulas of the report
 		// to compute the sender id
@@ -70,18 +73,19 @@ public class ReportCreatorDialog extends TableDialog {
 	 */
 	private boolean isLocallyPresent(TableRow currentReport) {
 		
-		String year = currentReport.get(AppPaths.REPORT_YEAR).getCode();
-		String month = currentReport.get(AppPaths.REPORT_MONTH).getCode();
+		String year = currentReport.get(CustomPaths.REPORT_YEAR).getCode();
+		String month = currentReport.get(CustomPaths.REPORT_MONTH).getCode();
+		String country = currentReport.get(CustomPaths.REPORT_COUNTRY).getCode();
 		
 		// check if the report is already in the db
 		TableDao dao = new TableDao(currentReport.getSchema());
 		for (TableRow report : dao.getAll()) {
 			
-			String year2 = report.get(AppPaths.REPORT_YEAR).getCode();
-			String month2 = report.get(AppPaths.REPORT_MONTH).getCode();
-			
-			// if same month and year it is the same
-			if (year.equals(year2) && month.equals(month2))
+			String year2 = report.get(CustomPaths.REPORT_YEAR).getCode();
+			String month2 = report.get(CustomPaths.REPORT_MONTH).getCode();
+			String country2 = report.get(CustomPaths.REPORT_COUNTRY).getCode();
+			// if same month and year and country we have the same
+			if (year.equals(year2) && month.equals(month2) && country.equals(country2))
 				return true;
 		}
 		
@@ -104,7 +108,7 @@ public class ReportCreatorDialog extends TableDialog {
 
 		DatasetList datasets = request.getlist();
 
-		TableColumnValue value = report.get(AppPaths.REPORT_SENDER_ID);
+		TableColumnValue value = report.get(CustomPaths.REPORT_SENDER_ID);
 		
 		if (value == null) {
 			throw new ReportException("Cannot retrieve the report sender id for " + report);

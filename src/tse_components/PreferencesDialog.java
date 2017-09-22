@@ -4,7 +4,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
 import table_skeleton.TableRow;
-import tse_config.AppPaths;
+import tse_config.CustomPaths;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -21,7 +21,7 @@ public class PreferencesDialog extends OptionsDialog {
 	
 	@Override
 	public String getSchemaSheetName() {
-		return AppPaths.PREFERENCES_SHEET;
+		return CustomPaths.PREFERENCES_SHEET;
 	}
 
 	@Override

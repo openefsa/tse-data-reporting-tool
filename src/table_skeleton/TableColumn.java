@@ -1,7 +1,7 @@
 package table_skeleton;
 
+import app_config.BooleanValue;
 import table_dialog.TableView;
-import tse_config.BooleanValue;
 import xlsx_reader.TableHeaders.XlsxHeader;
 import xml_catalog_reader.Selection;
 import xml_catalog_reader.SelectionList;
@@ -178,6 +178,10 @@ public class TableColumn implements Comparable<TableColumn> {
 	 */
 	public String getId() {
 		return id;
+	}
+	
+	public void setLabel(String label) {
+		this.label = label;
 	}
 	
 	/**

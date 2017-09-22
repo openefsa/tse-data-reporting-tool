@@ -6,15 +6,15 @@ import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 
+import app_config.PropertiesReader;
 import dataset.DatasetList;
-import tse_config.AppPaths;
-import tse_config.PropertiesReader;
+import tse_config.CustomPaths;
 
 /**
  * Get dataset list request for the DCF webservice. It can be used
  * by calling {@link #getlist()} to get all the dataset
  * of the current user. Note that the username and the password
- * of the user are picked from the {@link AppPaths#SETTINGS_SHEET} table.
+ * of the user are picked from the {@link CustomPaths#SETTINGS_SHEET} table.
  * @author avonva
  *
  */

@@ -1,7 +1,7 @@
 package table_skeleton;
 
+import app_config.BooleanValue;
 import table_skeleton.TableColumn.ColumnType;
-import tse_config.BooleanValue;
 
 public class TableColumnBuilder {
 

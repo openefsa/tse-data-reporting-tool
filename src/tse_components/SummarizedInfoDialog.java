@@ -9,10 +9,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 
 import table_database.Relation;
+import table_dialog.TableViewWithHelp.RowCreationMode;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
-import tse_config.AppPaths;
-import tse_config.SelectionsNames;
+import tse_config.CustomPaths;
+import tse_config.CatalogLists;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -26,19 +27,19 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	public SummarizedInfoDialog(Shell parent) {
 		
 		super(parent, "", "TSEs monitoring data (aggregated level)", 
-				true, true, false, false);
+				true, RowCreationMode.SELECTOR, false, false);
 		
 		// add 300 px in height
 		addDialogHeight(300);
 		
 		// specify title and list of the selector
-		setSelectorLabelText("Add data related to monitoring of:");
-		setSelectorList(SelectionsNames.TSE_LIST);
+		setRowCreatorLabel("Add data related to monitoring of:");
+		setSelectorList(CatalogLists.TSE_LIST);
 		
 		// add the parents of preferences and settings
 		try {
-			addParentTable(Relation.getGlobalParent(AppPaths.PREFERENCES_SHEET));
-			addParentTable(Relation.getGlobalParent(AppPaths.SETTINGS_SHEET));
+			addParentTable(Relation.getGlobalParent(CustomPaths.PREFERENCES_SHEET));
+			addParentTable(Relation.getGlobalParent(CustomPaths.SETTINGS_SHEET));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -56,7 +57,8 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 
 				final TableRow summInfo = (TableRow) selection.getFirstElement();
 
-				CaseReportDialog dialog = new CaseReportDialog(parent);
+				// create a case passing also the report information
+				CaseReportDialog dialog = new CaseReportDialog(parent, getParentFilter());
 				
 				// filter the records by the clicked summarized information
 				dialog.setParentFilter(summInfo);
@@ -75,7 +77,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	@Override
 	public void setParentFilter(TableRow parentFilter) {
 		// enable/disable the selector when a report is opened/closed
-		setSelectorEnabled(parentFilter != null);
+		setRowCreationEnabled(parentFilter != null);
 		super.setParentFilter(parentFilter);
 	}
 
@@ -98,7 +100,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 
 	@Override
 	public String getSchemaSheetName() {
-		return AppPaths.SUMMARIZED_INFO_SHEET;
+		return CustomPaths.SUMMARIZED_INFO_SHEET;
 	}
 
 	@Override

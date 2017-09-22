@@ -1,7 +1,5 @@
 package tse_components;
 
-import java.io.IOException;
-
 import javax.xml.soap.SOAPException;
 
 import org.eclipse.swt.SWT;
@@ -11,11 +9,11 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
+import app_config.PropertiesReader;
 import dataset.Dataset;
 import dataset.DatasetList;
 import table_skeleton.TableRow;
-import tse_config.AppPaths;
-import tse_config.PropertiesReader;
+import tse_config.CustomPaths;
 import webservice.GetDatasetList;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
@@ -33,7 +31,7 @@ public class SettingsDialog extends OptionsDialog {
 
 	@Override
 	public String getSchemaSheetName() {
-		return AppPaths.SETTINGS_SHEET;
+		return CustomPaths.SETTINGS_SHEET;
 	}
 
 	@Override

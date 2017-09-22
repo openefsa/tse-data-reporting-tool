@@ -35,6 +35,10 @@ public class SelectionList {
 		selections.add(selection);
 	}
 	
+	public boolean contains(Selection selection) {
+		return selections.contains(selection);
+	}
+	
 	/**
 	 * Get the code of the main .xml node
 	 * @return

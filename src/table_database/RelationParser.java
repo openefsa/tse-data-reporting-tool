@@ -6,7 +6,8 @@ import java.util.Collection;
 
 import org.apache.poi.ss.usermodel.Row;
 
-import tse_config.AppPaths;
+import app_config.AppPaths;
+import app_config.BooleanValue;
 import xlsx_reader.XlsxReader;
 
 /**
@@ -20,6 +21,7 @@ public class RelationParser extends XlsxReader {
 	private Collection<Relation> relations;
 	private String parentTable;
 	private String childTable;
+	private boolean directRelation;
 	
 	public RelationParser(String filename) throws IOException {
 		super(filename);
@@ -62,6 +64,9 @@ public class RelationParser extends XlsxReader {
 		case CHILDTABLE:
 			this.childTable = value;
 			break;
+		case DIRECT_RELATION:
+			this.directRelation = BooleanValue.isTrue(value);
+			break;		
 		}
 	}
 
@@ -75,7 +80,7 @@ public class RelationParser extends XlsxReader {
 			return;
 		
 		// create a new table relation and put it into the collection
-		Relation r = new Relation(parentTable, childTable);
+		Relation r = new Relation(parentTable, childTable, directRelation);
 		relations.add(r);
 	}
 }

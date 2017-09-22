@@ -13,47 +13,58 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 
-import table_dialog.CatalogSelector.CatalogChangedListener;
+import table_dialog.RowCreatorViewer.CatalogChangedListener;
 import table_skeleton.TableRow;
 import xlsx_reader.TableSchema;
 
 /**
  * {@link TableView} and {@link HelpViewer} packed together.
- * {@link CatalogSelector} can also be added by setting
+ * {@link RowCreatorViewer} can also be added by setting
  * {@link #addSelector} to true in the constructor.
  * @author avonva
  *
  */
 public class TableViewWithHelp {
 
+	/**
+	 * How a row should be created.
+	 * @author avonva
+	 *
+	 */
+	public enum RowCreationMode {
+		SELECTOR,  // selector + button to add rows
+		STANDARD,  // just a button to add rows
+		NONE       // adding not supported
+	}
+	
 	private Composite parent;
 	private Composite composite;
 	private String schemaSheetName;
 	private String helpMessage;
 	private boolean editable;
-	private boolean addSelector;
+	private RowCreationMode mode;
 	
 	private HelpViewer helpViewer;
-	private CatalogSelector catalogSelector;
+	private RowCreatorViewer catalogSelector;
 	private TableView table;
 	
 	public TableViewWithHelp(Composite parent, String schemaSheetName, 
 			String helpMessage) {
-		this(parent, schemaSheetName, helpMessage, true, false);
+		this(parent, schemaSheetName, helpMessage, true, RowCreationMode.NONE);
 	}
 	
 	public TableViewWithHelp(Composite parent, String schemaSheetName, 
 			String helpMessage, boolean editable) {
-		this(parent, schemaSheetName, helpMessage, editable, false);
+		this(parent, schemaSheetName, helpMessage, editable, RowCreationMode.NONE);
 	}
 	
 	public TableViewWithHelp(Composite parent, String schemaSheetName, 
-			String helpMessage, boolean editable, boolean addSelector) {
+			String helpMessage, boolean editable, RowCreationMode mode) {
 		this.parent = parent;
 		this.schemaSheetName = schemaSheetName;
 		this.helpMessage = helpMessage;
 		this.editable = editable;
-		this.addSelector = addSelector;
+		this.mode = mode;
 		create();
 	}
 	
@@ -64,13 +75,13 @@ public class TableViewWithHelp {
 		this.composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		this.helpViewer = new HelpViewer(composite, helpMessage);
-		
+
 		// add also the selector if required
-		if (addSelector) {
-			this.catalogSelector = new CatalogSelector(composite);
+		if (mode != RowCreationMode.NONE) {
+			this.catalogSelector = new RowCreatorViewer(composite, mode);
 			this.catalogSelector.setEnabled(false);
 		}
-		
+
 		this.table = new TableView(composite, schemaSheetName, editable);
 	}
 	
@@ -87,7 +98,7 @@ public class TableViewWithHelp {
 	 * @param enabled
 	 */
 	public void setEnabled(boolean enabled) {
-		if (addSelector)
+		if (mode != RowCreationMode.NONE)
 			this.catalogSelector.setEnabled(enabled);
 	}
 	
@@ -117,10 +128,8 @@ public class TableViewWithHelp {
 	 */
 	public void setSelectorLabelText(String text) {
 		
-		if (!addSelector)
-			return;
-		
-		this.catalogSelector.setLabelText(text);
+		if (mode != RowCreationMode.NONE)
+			this.catalogSelector.setLabelText(text);
 	}
 	
 	/**
@@ -131,7 +140,7 @@ public class TableViewWithHelp {
 	 */
 	public void setSelectorList(String selectionListCode) {
 		
-		if (!addSelector)
+		if (mode != RowCreationMode.SELECTOR)
 			return;
 		
 		this.catalogSelector.setList(selectionListCode);
@@ -147,7 +156,7 @@ public class TableViewWithHelp {
 	 */
 	public void setSelectorList(String selectionListCode, String selectionId) {
 		
-		if (!addSelector)
+		if (mode != RowCreationMode.SELECTOR)
 			return;
 		
 		this.catalogSelector.setList(selectionListCode, selectionId);
@@ -202,7 +211,7 @@ public class TableViewWithHelp {
 		return helpMessage;
 	}
 	
-	public CatalogSelector getTypeSelector() {
+	public RowCreatorViewer getTypeSelector() {
 		return catalogSelector;
 	}
 	
@@ -216,7 +225,7 @@ public class TableViewWithHelp {
 	 * @param listener
 	 */
 	public void addSelectionListener(CatalogChangedListener listener) {
-		if (addSelector) {
+		if (this.catalogSelector != null) {
 			this.catalogSelector.addSelectionListener(listener);
 		}
 	}

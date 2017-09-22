@@ -1,11 +1,9 @@
 package tse_components;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 
 import table_dialog.TableViewWithHelp.RowCreationMode;
@@ -19,40 +17,22 @@ import xml_catalog_reader.Selection;
  * @author avonva
  *
  */
-public class CaseReportDialog extends TableDialogWithMenu {
+public class ResultDialog extends TableDialogWithMenu {
 	
-	public CaseReportDialog(Shell parent, TableRow report) {
+	public ResultDialog(Shell parent, TableRow report, TableRow summInfo) {
 		
-		super(parent, "Case report", "TSEs monitoring data (case level)", 
+		super(parent, "Analytical results", "Analytical results", 
 				true, RowCreationMode.STANDARD, true, false);
 		
 		// add 300 px in height
 		addDialogHeight(300);
 		
 		// specify title and list of the selector
-		setRowCreatorLabel("Add data:");
+		setRowCreatorLabel("Add result:");
 		
-		// set the report also as parent of the case
+		// add the parents
 		addParentTable(report);
-		
-		addTableDoubleClickListener(new IDoubleClickListener() {
-			
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				
-				final IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-				if (selection == null || selection.isEmpty())
-					return;
-
-				final TableRow caseReport = (TableRow) selection.getFirstElement();
-				
-				// initialize result passing also the 
-				// report data and the summarized information data
-				ResultDialog dialog = new ResultDialog(parent, report, getParentFilter());
-				dialog.setParentFilter(caseReport); // set the case as filter (and parent)
-				dialog.open();
-			}
-		});
+		addParentTable(summInfo);
 	}
 	
 	@Override
@@ -76,7 +56,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 
 	@Override
 	public String getSchemaSheetName() {
-		return CustomPaths.CASE_INFO_SHEET;
+		return CustomPaths.RESULT_SHEET;
 	}
 
 	@Override
@@ -86,6 +66,16 @@ public class CaseReportDialog extends TableDialogWithMenu {
 
 	@Override
 	public Collection<TableRow> loadInitialRows(TableSchema schema, TableRow parentFilter) {
-		return null;
+		
+		TableRow row1 = new TableRow(schema);
+		row1.initialize();
+		TableRow row2 = new TableRow(schema);
+		row2.initialize();
+		
+		Collection<TableRow> out = new ArrayList<>();
+		out.add(row1);
+		out.add(row2);
+		
+		return out;
 	}
 }

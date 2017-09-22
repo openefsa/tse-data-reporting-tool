@@ -7,10 +7,11 @@ import java.util.Collection;
 
 import javax.xml.stream.XMLStreamException;
 
-import tse_config.AppPaths;
+import app_config.AppPaths;
+import tse_config.CustomPaths;
 
 /**
- * Load all the .xml contents which are contained in {@link AppPaths#XML_FOLDER}
+ * Load all the .xml contents which are contained in {@link CustomPaths#XML_FOLDER}
  * @author avonva
  *
  */

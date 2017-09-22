@@ -10,10 +10,11 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
-import table_dialog.CatalogSelector;
+import table_dialog.RowCreatorViewer;
 import table_dialog.HelpViewer;
 import table_dialog.TableDialog;
 import table_dialog.TableView;
+import table_dialog.TableViewWithHelp.RowCreationMode;
 import table_skeleton.TableRow;
 
 /**
@@ -26,17 +27,17 @@ public abstract class TableDialogWithMenu extends TableDialog {
 	
 	/**
 	 * Create a dialog with a {@link HelpViewer}, a {@link TableView}
-	 * and possibly a {@link CatalogSelector} if {@code addSelector} is set to true.
+	 * and possibly a {@link RowCreatorViewer} if {@code addSelector} is set to true.
 	 * It also allows adding and removing rows from the table
 	 * @param parent the shell parent
 	 * @param title the title of the pop up (used only if {@code createPopUp} is true)
 	 * @param message the help message
 	 * @param editable if the table can be edited or not
-	 * @param addSelector if the {@link CatalogSelector} should be added or not
+	 * @param addSelector if the {@link RowCreatorViewer} should be added or not
 	 */
 	public TableDialogWithMenu(Shell parent, String title, String message, 
-			boolean editable, boolean addSelector, boolean createPopUp, boolean addSaveBtn) {
-		super(parent, title, message, editable, addSelector, createPopUp, addSaveBtn);
+			boolean editable, RowCreationMode mode, boolean createPopUp, boolean addSaveBtn) {
+		super(parent, title, message, editable, mode, createPopUp, addSaveBtn);
 	}
 	
 	@Override

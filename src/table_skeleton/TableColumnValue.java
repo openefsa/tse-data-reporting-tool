@@ -50,17 +50,20 @@ public class TableColumnValue {
 		return label;
 	}
 	
+	/**
+	 * Check if the value is empty
+	 * @return
+	 */
+	public boolean isEmpty() {
+		return code.isEmpty() && label.isEmpty();
+	}
+	
 	@Override
 	public boolean equals(Object arg0) {
 		if (!(arg0 instanceof TableColumnValue))
 			return super.equals(arg0);
 		
 		TableColumnValue other = (TableColumnValue) arg0;
-		
-		// if all empty consider them as not equal (too generic)
-		if (code.isEmpty() && other.code.isEmpty() 
-				&& label.isEmpty() && other.label.isEmpty())
-			return false;
 		
 		// check code and label
 		return (this.getCode().equals(other.getCode())

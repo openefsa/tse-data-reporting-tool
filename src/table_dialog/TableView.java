@@ -271,6 +271,13 @@ public class TableView {
 			if (!col.isVisible())
 				continue;
 			
+			if (col.getLabel() == null || col.getLabel().isEmpty()) {
+				System.err.println("WARNING: column " 
+						+ col 
+						+ " is set as visible but it has not a label set.");
+				col.setLabel("MISSING_" + col.getId());
+			}
+			
 			// Add the column to the parent table
 			TableViewerColumn columnViewer = new TableViewerColumn(this.tableViewer, SWT.NONE);
 

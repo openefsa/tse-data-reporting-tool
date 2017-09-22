@@ -32,8 +32,8 @@ public class DuplicatesDetector {
 			
 			// compare with all the others in the order
 			for (int j = i + 1; j < list.size(); ++j) {
+
 				Checkable second = (Checkable) list.get(j);
-				
 				// if they are equal
 				if (first.sameAs(second)) {
 					Duplicate<Checkable> dup = new Duplicate<Checkable>(first, second);

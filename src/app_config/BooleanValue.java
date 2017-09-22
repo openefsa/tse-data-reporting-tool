@@ -1,4 +1,4 @@
-package tse_config;
+package app_config;
 
 /**
  * Features to handle boolean values in string format

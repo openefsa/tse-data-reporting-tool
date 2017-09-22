@@ -3,7 +3,8 @@ package table_database;
 public enum RelationHeader {
 	
 	PARENTTABLE("parentTable"),
-	CHILDTABLE("childTable");
+	CHILDTABLE("childTable"),
+	DIRECT_RELATION("directRelation");
 	
 	private String headerName;
 	

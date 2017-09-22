@@ -1,6 +1,5 @@
 package tse_components;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import org.eclipse.swt.widgets.Event;
@@ -10,8 +9,9 @@ import org.eclipse.swt.widgets.Shell;
 
 import table_database.TableDao;
 import table_dialog.TableDialog;
+import table_dialog.TableViewWithHelp.RowCreationMode;
 import table_skeleton.TableRow;
-import tse_config.AppPaths;
+import tse_config.CustomPaths;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -20,12 +20,12 @@ public class ReportListDialog extends TableDialog {
 	private Listener listener;
 	
 	public ReportListDialog(Shell parent, String title, String message) {
-		super(parent, title, message, false, false, true);
+		super(parent, title, message, false, RowCreationMode.NONE, true);
 	}
 
 	@Override
 	public String getSchemaSheetName() {
-		return AppPaths.REPORT_SHEET;
+		return CustomPaths.REPORT_SHEET;
 	}
 
 	@Override
