@@ -16,4 +16,7 @@ public class CustomPaths {
 	public static final String REPORT_MONTH = "reportMonth";
 	public static final String REPORT_COUNTRY = "country";
 	public static final String REPORT_SENDER_ID = "reportSenderId";
+	
+	public static final String SUMMARIZED_INFO_POS_SAMPLES = "totSamplesPositive";
+	public static final String SUMMARIZED_INFO_INC_SAMPLES = "totSamplesInconclusive";
 }
