@@ -1,5 +1,6 @@
 package table_dialog;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,15 +21,17 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
+import app_config.AppPaths;
 import export.DatasetXmlCreator;
-import html_viewer.Help;
-import table_database.Relation;
 import table_database.TableDao;
 import table_dialog.RowCreatorViewer.CatalogChangedListener;
 import table_dialog.TableViewWithHelp.RowCreationMode;
+import table_list.TableMetaData;
+import table_relations.Relation;
 import table_skeleton.TableRow;
 import tse_config.CustomPaths;
 import xlsx_reader.TableSchema;
+import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.Selection;
 
 /**
@@ -119,7 +122,7 @@ public abstract class TableDialog {
 		this.parentTables = new ArrayList<>();
 		
 		try {
-			this.schema = TableSchema.load(getSchemaSheetName());
+			this.schema = TableSchemaList.getByName(getSchemaSheetName());
 			create();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -434,13 +437,17 @@ public abstract class TableDialog {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				DatasetXmlCreator creator = new DatasetXmlCreator();
-				try {
-					creator.export(getParentFilter());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 				
+				File file = new File(AppPaths.TEMP_FOLDER + "report.xml");
+				
+				DatasetXmlCreator creator;
+				try {
+					creator = new DatasetXmlCreator(file);
+					creator.export(getParentFilter());
+					
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 			
 			@Override
@@ -458,14 +465,14 @@ public abstract class TableDialog {
 	 */
 	private void showHelp() {
 		
-		Help help = Help.getHelp(getSchemaSheetName());
+		TableMetaData help = TableMetaData.getTableByName(getSchemaSheetName());
 		
 		// if no help found return
 		if (help == null)
 			return;
 		
 		// open the help viewer
-		help.open();
+		help.openHelp();
 	}
 	
 	
@@ -498,6 +505,9 @@ public abstract class TableDialog {
 
 		// add the row to the table
 		add(row);
+		
+		// call external function
+		processNewRow(row);
 	}
 	
 	/**
@@ -667,6 +677,13 @@ public abstract class TableDialog {
 	 * @throws IOException 
 	 */
 	public abstract TableRow createNewRow(TableSchema schema, Selection type);
+	
+	/**
+	 * Process the newly created row if necessary. Note that the row was already
+	 * added to the db and has its id set.
+	 * @param row
+	 */
+	public abstract void processNewRow(TableRow row);
 	
 	/**
 	 * Apply the changes that were made when the {@link #saveButton} is

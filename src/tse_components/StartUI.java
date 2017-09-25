@@ -16,7 +16,7 @@ import table_database.Database;
 import table_database.TableDao;
 import table_skeleton.TableRow;
 import tse_config.CustomPaths;
-import xlsx_reader.TableSchema;
+import xlsx_reader.TableSchemaList;
 
 public class StartUI {
 
@@ -27,8 +27,8 @@ public class StartUI {
 	 * @throws IOException
 	 */
 	private static boolean checkSettings(String tableName) throws IOException {
-		
-		TableDao dao = new TableDao(TableSchema.load(tableName));
+
+		TableDao dao = new TableDao(TableSchemaList.getByName(tableName));
 		
 		Collection<TableRow> data = dao.getAll();
 		

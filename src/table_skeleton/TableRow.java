@@ -1,5 +1,6 @@
 package table_skeleton;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 import duplicates_detector.Checkable;
@@ -76,6 +77,27 @@ public class TableRow implements Checkable {
 	}
 	
 	/**
+	 * Get the rows defined in the child table that are related to
+	 * this parent row.
+	 * @param childSchema the schema of the child table
+	 * @return
+	 */
+	public Collection<TableRow> getChildren(TableSchema childSchema) {
+		
+		// open the child dao
+		TableDao dao = new TableDao(childSchema);
+		
+		// get parent table name using the relation
+		String parentTable = this.getSchema().getSheetName();
+		
+		// get the rows of the children related to the parent
+		Collection<TableRow> children = dao.getByParentId(parentTable, this.getId());
+		
+		return children;
+	}
+	
+	
+	/**
 	 * Get a string variable value from the data
 	 * @param key
 	 * @return
@@ -124,29 +146,20 @@ public class TableRow implements Checkable {
 			// skip foreign keys
 			if (col.isForeignKey())
 				continue;
-			
-			TableColumnValue sel = new TableColumnValue();
-			
-			//sel.setCode(col.getDefaultCode());
-			//sel.setLabel(col.getDefaultValue());
-			
-			// set the default values for the editable columns
-			// this is done just when the row is created and not
-			// when the row is computed, since they are default
-			// values with formulas, not real automatic values with formulas
-			//if (col.isEditable()) {
-				FormulaSolver solver = new FormulaSolver(this);
-				Formula code = solver.solve(col, XlsxHeader.DEFAULT_CODE.getHeaderName());
-				Formula label = solver.solve(col, XlsxHeader.DEFAULT_VALUE.getHeaderName());
 
-				sel.setCode(code.getSolvedFormula());
-				sel.setLabel(label.getSolvedFormula());
-			//}
+			TableColumnValue sel = new TableColumnValue();
+
+			FormulaSolver solver = new FormulaSolver(this);
+			Formula code = solver.solve(col, XlsxHeader.DEFAULT_CODE.getHeaderName());
+			Formula label = solver.solve(col, XlsxHeader.DEFAULT_VALUE.getHeaderName());
+
+			sel.setCode(code.getSolvedFormula());
+			sel.setLabel(label.getSolvedFormula());
 
 			this.put(col.getId(), sel);
 		}
 	}
-	
+
 	/**
 	 * Update the code or the value of the row
 	 * using a solved formula

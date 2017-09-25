@@ -32,24 +32,24 @@ public abstract class XlsxReader implements Closeable {
 	/**
 	 * Get the number of sheets
 	 */
-	public void getNumberOfSheets() {
-		this.workbook.getNumberOfSheets();
+	public int getNumberOfSheets() {
+		return this.workbook.getNumberOfSheets();
 	}
 	
 	/**
 	 * Get a sheet by name
 	 * @param sheetName
 	 */
-	public void getSheet(String sheetName) {
-		this.workbook.getSheet(sheetName);
+	public Sheet getSheet(String sheetName) {
+		return this.workbook.getSheet(sheetName);
 	}
 	
 	/**
 	 * Get the sheet at the specified position
 	 * @param sheetId
 	 */
-	public void getSheetAt(int sheetId) {
-		this.workbook.getSheetAt(sheetId);
+	public Sheet getSheetAt(int sheetId) {
+		return this.workbook.getSheetAt(sheetId);
 	}
 	
 	/**

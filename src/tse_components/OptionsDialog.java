@@ -5,10 +5,10 @@ import java.util.Collection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
-import table_database.Relation;
 import table_database.TableDao;
 import table_dialog.TableDialog;
 import table_dialog.TableViewWithHelp.RowCreationMode;
+import table_relations.Relation;
 import table_skeleton.TableRow;
 import xlsx_reader.TableSchema;
 

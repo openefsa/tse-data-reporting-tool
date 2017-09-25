@@ -5,7 +5,8 @@ import java.io.IOException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
-import html_viewer.HelpParser;
+import table_list.TableListParser;
+import table_relations.RelationParser;
 import table_skeleton.TableColumn.ColumnType;
 import xlsx_reader.TableHeaders.XlsxHeader;
 import xlsx_reader.XlsxReader;
@@ -47,7 +48,7 @@ public class DatabaseStructureCreator extends XlsxReader {
 			
 			// skip special sheets
 			if (RelationParser.isRelationsSheet(sheet.getSheetName())
-					|| HelpParser.isHelpSheet(sheet.getSheetName()))
+					|| TableListParser.isHelpSheet(sheet.getSheetName()))
 				continue;
 			
 			addTableStatement(sheet.getSheetName());

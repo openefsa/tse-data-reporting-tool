@@ -13,10 +13,10 @@ import org.eclipse.swt.widgets.Shell;
 import app_config.PropertiesReader;
 import dataset.Dataset;
 import dataset.DatasetList;
-import table_database.Relation;
 import table_database.TableDao;
 import table_dialog.TableDialog;
 import table_dialog.TableViewWithHelp.RowCreationMode;
+import table_relations.Relation;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
 import tse_config.CustomPaths;
@@ -196,4 +196,7 @@ public class ReportCreatorDialog extends TableDialog {
 	public TableRow createNewRow(TableSchema schema, Selection type) {
 		return null;
 	}
+
+	@Override
+	public void processNewRow(TableRow row) {}
 }

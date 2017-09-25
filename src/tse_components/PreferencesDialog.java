@@ -33,4 +33,7 @@ public class PreferencesDialog extends OptionsDialog {
 	public TableRow createNewRow(TableSchema schema, Selection type) {
 		return null;
 	}
+
+	@Override
+	public void processNewRow(TableRow row) {}
 }

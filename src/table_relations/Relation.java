@@ -1,4 +1,4 @@
-package table_database;
+package table_relations;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,9 +6,11 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import app_config.AppPaths;
+import table_database.TableDao;
 import table_skeleton.TableRow;
 import xlsx_reader.SchemaReader;
 import xlsx_reader.TableSchema;
+import xlsx_reader.TableSchemaList;
 
 public class Relation {
 	
@@ -65,7 +67,7 @@ public class Relation {
 
 		Collection<TableSchema> leaves = new ArrayList<>();
 		
-		for (TableSchema schema : TableSchema.getCustomSchemas()) {
+		for (TableSchema schema : TableSchemaList.getAll()) {
 			
 			// get children tables
 			Collection<Relation> relations = schema.getChildrenTables();
@@ -87,7 +89,7 @@ public class Relation {
 		
 		Collection<TableSchema> roots = new ArrayList<>();
 		
-		for (TableSchema schema : TableSchema.getCustomSchemas()) {
+		for (TableSchema schema : TableSchemaList.getAll()) {
 			
 			// get children tables
 			Collection<Relation> relations = schema.getParentTables();
@@ -191,7 +193,7 @@ public class Relation {
 	 */
 	public static TableRow getGlobalParent(String tableName) throws IOException {
 
-		TableSchema schema = TableSchema.load(tableName);
+		TableSchema schema = TableSchemaList.getByName(tableName);
 
 		TableDao dao = new TableDao(schema);
 

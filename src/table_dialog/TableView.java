@@ -33,6 +33,7 @@ import table_skeleton.TableColumn;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
 import xlsx_reader.TableSchema;
+import xlsx_reader.TableSchemaList;
 
 /**
  * This class contains a table which shows all the information
@@ -60,7 +61,7 @@ public class TableView {
 		this.parent = parent;
 		this.editable = editable;
 		try {
-			this.schema = TableSchema.load(schemaSheetName);
+			this.schema = TableSchemaList.getByName(schemaSheetName);
 			this.tableElements = new ArrayList<>();
 			this.create();
 		} catch (IOException e) {

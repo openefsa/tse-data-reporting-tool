@@ -22,20 +22,15 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 
-import org.apache.xerces.dom.DOMInputImpl;
-import org.apache.xerces.impl.xs.XSImplementationImpl;
-import org.apache.xerces.xs.XSLoader;
-import org.apache.xerces.xs.XSModel;
 import org.w3c.dom.Document;
-import org.w3c.dom.ls.LSInput;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import app_config.AppPaths;
 import table_database.TableDao;
 import table_skeleton.TableRow;
 import tse_config.CustomPaths;
 import xlsx_reader.TableSchema;
+import xlsx_reader.TableSchemaList;
 
 /**
  * Abstract class used to create soap requests and to process soap responses
@@ -111,7 +106,7 @@ public abstract class SOAPAction {
 				try {
 					
 					// get username and password from the settings
-					TableDao dao = new TableDao(TableSchema.load(CustomPaths.SETTINGS_SHEET));
+					TableDao dao = new TableDao(TableSchemaList.getByName(CustomPaths.SETTINGS_SHEET));
 					TableRow sett = dao.getAll().iterator().next();
 					
 					String username = sett.get(CustomPaths.SETTINGS_USERNAME).getCode();

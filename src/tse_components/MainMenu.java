@@ -16,6 +16,7 @@ import table_importer.TableImporter;
 import table_skeleton.TableRow;
 import tse_config.CustomPaths;
 import xlsx_reader.TableSchema;
+import xlsx_reader.TableSchemaList;
 
 /**
  * Create the main menu of the application in the given shell
@@ -64,7 +65,7 @@ public class MainMenu {
 				
 				// enable report only if there is a report in the database
 				try {
-					TableDao dao = new TableDao(TableSchema.load(CustomPaths.REPORT_SHEET));
+					TableDao dao = new TableDao(TableSchemaList.getByName(CustomPaths.REPORT_SHEET));
 					openReport.setEnabled(!dao.getAll().isEmpty());
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -188,7 +189,7 @@ public class MainMenu {
 						// copy the report summarized information into the opened one
 						try {
 							
-							TableSchema childSchema = TableSchema.load(CustomPaths.SUMMARIZED_INFO_SHEET);
+							TableSchema childSchema = TableSchemaList.getByName(CustomPaths.SUMMARIZED_INFO_SHEET);
 							
 							
 							dialog.getDialog().setCursor(dialog.getDialog()

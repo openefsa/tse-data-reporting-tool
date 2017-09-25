@@ -1,9 +1,10 @@
-package html_viewer;
+package table_relations;
 
-public enum HelpHeader {
+public enum RelationHeader {
 	
-	TABLE_NAME("tableName"),
-	HTML_FILENAME("htmlFileName");
+	PARENTTABLE("parentTable"),
+	CHILDTABLE("childTable"),
+	DIRECT_RELATION("directRelation");
 	
 	private String headerName;
 	
@@ -12,7 +13,7 @@ public enum HelpHeader {
 	 * header name that is present in the xlsx
 	 * @param headerName
 	 */
-	private HelpHeader(String headerName) {
+	private RelationHeader(String headerName) {
 		this.headerName = headerName;
 	}
 	
@@ -29,9 +30,9 @@ public enum HelpHeader {
 	 * @param text
 	 * @return
 	 */
-	public static HelpHeader fromString(String text) {
+	public static RelationHeader fromString(String text) {
 		
-		for (HelpHeader b : HelpHeader.values()) {
+		for (RelationHeader b : RelationHeader.values()) {
 			if (b.headerName.equalsIgnoreCase(text)) {
 				return b;
 			}

@@ -1,27 +1,17 @@
 package xlsx_reader;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import app_config.AppPaths;
-import html_viewer.HelpParser;
-import table_database.Relation;
-import table_database.RelationParser;
+import table_relations.Relation;
+import table_relations.RelationList;
 import table_skeleton.TableColumn;
-import tse_config.CustomPaths;
 
 public class TableSchema extends ArrayList<TableColumn> {
-
+	
 	/**
 	 * 
 	 */
@@ -29,53 +19,6 @@ public class TableSchema extends ArrayList<TableColumn> {
 	private String sheetName;
 	private String tableIdField;
 	private Collection<Relation> relations;
-	
-	
-	/**
-	 * Load a generic schema from the {@link CustomPaths#TABLES_SCHEMA_FILE} file
-	 * using the {@code sheetName} sheet
-	 * @param sheetName
-	 * @return
-	 * @throws IOException
-	 */
-	public static TableSchema load(String sheetName) throws IOException {
-		SchemaReader r = new SchemaReader(AppPaths.TABLES_SCHEMA_FILE);
-		r.read(sheetName);
-		r.close();
-		TableSchema schema = r.getSchema();
-		schema.setSheetName(sheetName);
-		return schema;
-	}
-	
-	/**
-	 * Get all the custom schemas of the xlsx
-	 * @return
-	 * @throws IOException
-	 */
-	public static Collection<TableSchema> getCustomSchemas() throws IOException {
-		
-		Collection<TableSchema> schemas = new ArrayList<>();
-		
-		InputStream inputStream = new FileInputStream(new File(AppPaths.APP_CONFIG_FILE));
-		Workbook wb = new XSSFWorkbook(inputStream);
-		
-		for (int i = 0; i < wb.getNumberOfSheets(); ++i) {
-			Sheet sheet = wb.getSheetAt(i);
-			
-			// skip special sheets
-			if (RelationParser.isRelationsSheet(sheet.getSheetName())
-					|| HelpParser.isHelpSheet(sheet.getSheetName()))
-				continue;
-			
-			TableSchema schema = TableSchema.load(sheet.getSheetName());
-			schemas.add(schema);
-		}
-		
-		wb.close();
-		
-		return schemas;
-	}
-	
 	
 	/**
 	 * Set the sheet name related to the schema
@@ -111,12 +54,8 @@ public class TableSchema extends ArrayList<TableColumn> {
 	public Collection<Relation> getParentTables() throws IOException {
 		
 		Collection<Relation> out = new ArrayList<>();
-		
-		RelationParser parser = new RelationParser(AppPaths.TABLES_SCHEMA_FILE);
-		Collection<Relation> rs = parser.read();
-		parser.close();
 
-		for (Relation r : rs) {
+		for (Relation r : RelationList.getAll()) {
 			if (r.getChild().equals(sheetName))
 				out.add(r);
 		}
@@ -132,12 +71,8 @@ public class TableSchema extends ArrayList<TableColumn> {
 	public Collection<Relation> getChildrenTables() throws IOException {
 		
 		Collection<Relation> out = new ArrayList<>();
-		
-		RelationParser parser = new RelationParser(AppPaths.TABLES_SCHEMA_FILE);
-		Collection<Relation> rs = parser.read();
-		parser.close();
 
-		for (Relation r : rs) {
+		for (Relation r : RelationList.getAll()) {
 			if (r.getParent().equals(sheetName))
 				out.add(r);
 		}

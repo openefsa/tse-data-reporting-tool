@@ -2,8 +2,8 @@ package table_importer;
 
 import java.util.Collection;
 
-import table_database.Relation;
 import table_database.TableDao;
+import table_relations.Relation;
 import table_skeleton.TableRow;
 import xlsx_reader.TableSchema;
 

@@ -1,7 +1,6 @@
 package tse_components;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.eclipse.swt.widgets.Shell;
@@ -66,16 +65,9 @@ public class ResultDialog extends TableDialogWithMenu {
 
 	@Override
 	public Collection<TableRow> loadInitialRows(TableSchema schema, TableRow parentFilter) {
-		
-		TableRow row1 = new TableRow(schema);
-		row1.initialize();
-		TableRow row2 = new TableRow(schema);
-		row2.initialize();
-		
-		Collection<TableRow> out = new ArrayList<>();
-		out.add(row1);
-		out.add(row2);
-		
-		return out;
+		return null;
 	}
+
+	@Override
+	public void processNewRow(TableRow row) {}
 }

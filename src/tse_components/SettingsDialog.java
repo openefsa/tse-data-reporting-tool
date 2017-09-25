@@ -1,5 +1,7 @@
 package tse_components;
 
+import java.util.Collection;
+
 import javax.xml.soap.SOAPException;
 
 import org.eclipse.swt.SWT;
@@ -12,8 +14,10 @@ import org.eclipse.swt.widgets.Shell;
 import app_config.PropertiesReader;
 import dataset.Dataset;
 import dataset.DatasetList;
+import table_skeleton.TableColumn;
 import table_skeleton.TableRow;
 import tse_config.CustomPaths;
+import user.User;
 import webservice.GetDatasetList;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
@@ -32,6 +36,26 @@ public class SettingsDialog extends OptionsDialog {
 	@Override
 	public String getSchemaSheetName() {
 		return CustomPaths.SETTINGS_SHEET;
+	}
+	
+	@Override
+	public boolean apply(TableSchema schema, Collection<TableRow> rows, TableRow selectedRow) {
+
+		boolean closeWindow = super.apply(schema, rows, selectedRow);
+		
+		/*String username;
+		String password;
+		
+		// log the user with the new credentials
+		for (TableColumn column : schema) {
+			if (column.getId().equals(CustomPaths.SETTINGS_PASSWORD)) {
+				password = 
+			}
+		}
+		
+		User.getInstance().login(username, password);*/
+		
+		return closeWindow;
 	}
 
 	@Override
@@ -99,4 +123,7 @@ public class SettingsDialog extends OptionsDialog {
 	public TableRow createNewRow(TableSchema schema, Selection type) {
 		return null;
 	}
+
+	@Override
+	public void processNewRow(TableRow row) {}
 }

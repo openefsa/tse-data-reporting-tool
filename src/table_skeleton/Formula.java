@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 import app_config.AppPaths;
 import app_config.BooleanValue;
-import table_database.Relation;
+import table_relations.Relation;
 import tse_config.CatalogLists;
 import xml_catalog_reader.Selection;
 import xml_catalog_reader.XmlLoader;

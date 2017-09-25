@@ -8,10 +8,13 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 
+import table_database.TableDao;
 import table_dialog.TableViewWithHelp.RowCreationMode;
+import table_relations.Relation;
 import table_skeleton.TableRow;
 import tse_config.CustomPaths;
 import xlsx_reader.TableSchema;
+import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.Selection;
 
 /**
@@ -21,10 +24,15 @@ import xml_catalog_reader.Selection;
  */
 public class CaseReportDialog extends TableDialogWithMenu {
 	
+	private TableRow report;
+	private TableRow summInfo;
+	
 	public CaseReportDialog(Shell parent, TableRow report) {
 		
 		super(parent, "Case report", "TSEs monitoring data (case level)", 
 				true, RowCreationMode.STANDARD, true, false);
+		
+		this.report = report;
 		
 		// add 300 px in height
 		addDialogHeight(300);
@@ -35,6 +43,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		// set the report also as parent of the case
 		addParentTable(report);
 		
+		// when element is double clicked
 		addTableDoubleClickListener(new IDoubleClickListener() {
 			
 			@Override
@@ -48,7 +57,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				
 				// initialize result passing also the 
 				// report data and the summarized information data
-				ResultDialog dialog = new ResultDialog(parent, report, getParentFilter());
+				ResultDialog dialog = new ResultDialog(parent, report, summInfo);
 				dialog.setParentFilter(caseReport); // set the case as filter (and parent)
 				dialog.open();
 			}
@@ -58,6 +67,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	@Override
 	public void setParentFilter(TableRow parentFilter) {
 		setRowCreationEnabled(parentFilter != null);
+		this.summInfo = parentFilter;
 		super.setParentFilter(parentFilter);
 	}
 
@@ -69,9 +79,11 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	 */
 	@Override
 	public TableRow createNewRow(TableSchema schema, Selection element) {
+
+		// return the new row
+		TableRow caseRow = new TableRow(schema);
 		
-		TableRow row = new TableRow(schema);
-		return row;
+		return caseRow;
 	}
 
 	@Override
@@ -87,5 +99,34 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	@Override
 	public Collection<TableRow> loadInitialRows(TableSchema schema, TableRow parentFilter) {
 		return null;
+	}
+
+	@Override
+	public void processNewRow(TableRow caseRow) {
+
+		// create two default rows for the analytical results
+		// related to this case
+		// we do this after the new row was added to the database
+		// in order to be able to get its id
+		try {
+			
+			TableSchema resultSchema = TableSchemaList.getByName(CustomPaths.RESULT_SHEET);
+			
+			TableRow resultRow = new TableRow(resultSchema);
+			resultRow.initialize();
+			
+			// inject the case parent to the result
+			Relation.injectParent(report, resultRow);
+			Relation.injectParent(summInfo, resultRow);
+			Relation.injectParent(caseRow, resultRow);
+			
+			// add two default rows
+			TableDao dao = new TableDao(resultSchema);
+			dao.add(resultRow);
+			dao.add(resultRow);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -3,39 +3,30 @@ package webservice;
 import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.soap.SOAPBody;
-import javax.xml.soap.SOAPConnection;
-import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 
-import org.apache.xerces.xs.XSModel;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-public class GetXsdFile extends SOAPAction {
+/**
+ * Get an xsd file from the dcf
+ * @author avonva
+ *
+ */
+public class GetXsdFile extends GetFile {
 
-	private static final String NAMESPACE = "http://dcf-elect.efsa.europa.eu/";
-	private static final String URL = "https://dcf-elect.efsa.europa.eu/elect2";
-	
-	private String resourceId;
-	
-	/**
-	 * Make a get file request for a specific resource
-	 * @param resourceId
-	 */
 	public GetXsdFile(String resourceId) {
-		super(NAMESPACE);
-		this.resourceId = resourceId;
+		super(resourceId);
 	}
-	
+
 	/**
 	 * Get the xsd file
 	 * @return
 	 * @throws SOAPException
 	 */
 	public Document getFile() throws SOAPException {
-		Object response = makeRequest(URL);
+		Object response = makeRequest(getUrl());
 		if (response == null)
 			return null;
 		
@@ -43,30 +34,12 @@ public class GetXsdFile extends SOAPAction {
 	}
 
 	@Override
-	public SOAPMessage createRequest(SOAPConnection con) throws SOAPException {
-
-		// create the standard structure and get the message
-		SOAPMessage soapMsg = createTemplateSOAPMessage ( "dcf" );
-		SOAPBody soapBody = soapMsg.getSOAPPart().getEnvelope().getBody();
-		SOAPElement soapElem = soapBody.addChildElement( "GetFile", "dcf" );
-
-		// add resource id
-		SOAPElement arg = soapElem.addChildElement( "trxResourceId" );
-		arg.setTextContent( resourceId );
-
-		// save the changes in the message and return it
-		soapMsg.saveChanges();
-
-		return soapMsg;
-	}
-
-	@Override
 	public Object processResponse(SOAPMessage soapResponse) throws SOAPException {
 		
 		// get the xsd file
 		try {
-			Document model = getXsdAttachment(soapResponse);
-			return model;
+			Document xsd = getXsdAttachment(soapResponse);
+			return xsd;
 		} catch (ClassCastException | ClassNotFoundException | InstantiationException 
 				| IllegalAccessException | IOException | ParserConfigurationException | SAXException e) {
 			e.printStackTrace();

@@ -1,4 +1,4 @@
-package table_database;
+package table_relations;
 
 import java.io.IOException;
 import java.util.ArrayList;

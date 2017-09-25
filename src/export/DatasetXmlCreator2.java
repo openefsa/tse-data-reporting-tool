@@ -7,10 +7,7 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Stack;
 
-import app_config.AppPaths;
-import message_config.MessageConfigList;
-import message_config.MessageConfigReader;
-import table_list.TableMetaData;
+import table_database.TableDao;
 import table_relations.Relation;
 import table_skeleton.TableColumn;
 import table_skeleton.TableRow;
@@ -24,7 +21,7 @@ import table_skeleton.TableRow;
  * @author avonva
  *
  */
-public class DatasetXmlCreator {
+public class DatasetXmlCreator2 {
 	
 	/*private Document xsdModel;
 	
@@ -36,7 +33,7 @@ public class DatasetXmlCreator {
 	private File file;           // file to create
 	private PrintWriter writer;  // writer of the file
 	
-	public DatasetXmlCreator(String filename) throws FileNotFoundException {
+	public DatasetXmlCreator2(String filename) throws FileNotFoundException {
 		this(new File(filename));
 	}
 	
@@ -45,7 +42,7 @@ public class DatasetXmlCreator {
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public DatasetXmlCreator(File file) throws FileNotFoundException {
+	public DatasetXmlCreator2(File file) throws FileNotFoundException {
 		this.file = file;
 		this.writer = new PrintWriter(file);
 	}
@@ -62,6 +59,10 @@ public class DatasetXmlCreator {
 	 */
 	public File export(TableRow root) throws IOException {
 
+		// this hashmap will contain all the parents retrieved
+		// until the current node
+		AncestorList parents = new AncestorList();
+		
 		Stack<TableRow> nodes = new Stack<>();  // depth-first exploration
 		
 		// add the root to the stack
@@ -73,29 +74,59 @@ public class DatasetXmlCreator {
 			// get the current node (this removes it from the stack)
 			TableRow currentNode = nodes.pop();
 			
-			// get the metadata of the parent table
-			TableMetaData table = TableMetaData.getTableByName(currentNode
-					.getSchema().getSheetName());
-
-			// print the node if needed
-			if (table != null && table.isGenerateRecord()) {
-				print(currentNode);
-			}
+			//System.out.println("Processing " + currentNode.getSchema().getSheetName() + " " + currentNode.getId());
 
 			// get all the children of the current node (i.e. the tables that
 			// are directly children of the current node, not nephews etc)
 			Collection<Relation> relations = currentNode.getSchema().getDirectChildren();
-			
-			// for each table which is direct child of the current node
-			for (Relation r : relations) {
 
+			// no child relation in the definition => we are in a leaf
+			// therefore we print the node with its parents until here
+			if (relations.isEmpty()) {
+				print(currentNode, parents);
+				continue;
+			}
+			
+			// here we have some children therefore we need to explore
+			// deeper the tree of dependencies
+			
+			// for each direct children
+			for (Relation r : relations) {
+				
+				//System.out.println("Opening dao for " + r.getChild());
+				
+				// open the child dao
+				TableDao dao = new TableDao(r.getChildSchema());
+				
+				String parentTable = r.getParent();  // get parent table name
+				int parentId = currentNode.getId();  // get parent id (we use it as foreign key in the child table)
+				
 				// get the rows of the children related to the parent
-				Collection<TableRow> children = currentNode.getChildren(r.getChildSchema());
+				Collection<TableRow> children = dao.getByParentId(parentTable, parentId);
 				
 				// if we have something then add all the children to the
-				// stack in order to process them later
+				// stack in order to process them later and put the
+				// current node in the parent hashmap, since we need
+				// to go deeper in the tree
 				if (!children.isEmpty()) {
+
+					// add to stack
 					nodes.addAll(children);
+					
+					//System.out.println("Children size " + children.size());
+					//System.out.println("ADD INTO PARENTS " + currentNode.getSchema().getTableIdField());
+					
+					// if we have children save the parent data
+					// since we need to carry on the parent
+					// to be able to put it in the output of
+					// each row
+					parents.addAncestor(currentNode);
+				}
+				else {
+
+					// if no children then we have a leaf
+					// and we print it
+					print(currentNode);
 				}
 			}
 		}
@@ -107,11 +138,13 @@ public class DatasetXmlCreator {
 	}
 	
 	/**
-	 * Print a single row with its elements
+	 * Print an xml row with all its parents values flattened
 	 * @param row
 	 */
-	private void print(TableRow row) {
-
+	public void print(TableRow row, AncestorList parents) {
+		
+		//System.out.println("PRINTING LEAF " + row.getSchema().getTableIdField() + " " + row.getId());
+		
 		rowCounter++;
 		
 		StringBuilder sb = new StringBuilder();
@@ -122,23 +155,22 @@ public class DatasetXmlCreator {
 			.append(row.getSchema().getTableIdField());
 		
 		System.out.println(sb.toString());
+
+		for (TableRow parentRow: parents) {
+			print(parentRow);
+		}
 		
-		// update row values before making the output
-		row.updateFormulas();
-		
-		// print the row nodes into the file
-		writer.println(getRowXmlNode(row));
+		print(row);
 	}
 	
 	/**
-	 * Create all the nodes required for a single row
-	 * adding the row separation node (<result>)
+	 * Print a single row with its elements
 	 * @param row
-	 * @return
 	 */
-	private String getRowXmlNode(TableRow row) {
+	private void print(TableRow row) {
 		
-		StringBuilder sb = new StringBuilder();
+		// update row values before making the output
+		row.updateFormulas();
 		
 		for (TableColumn column : row.getSchema()) {
 
@@ -146,40 +178,20 @@ public class DatasetXmlCreator {
 			if (!column.isPutInOutput(row))
 				continue;
 
-			String node = getXmlNode(column.getXmlTag(), row.get(column.getId()).getCode());
+			StringBuilder node = new StringBuilder();
+			
+			// create the node
+			node.append("<")
+				.append(column.getXmlTag())
+				.append(">")
+				.append(row.get(column.getId()).getCode())
+				.append("</")
+				.append(column.getXmlTag())
+				.append(">");
 
-			// write the node
-			sb.append(node);
+			// write the node into the file
+			writer.println(node.toString());
 		}
-		
-		// envelop all the row nodes into the result node
-		return getXmlNode("result", sb.toString());
-	}
-	
-	/**
-	 * Create a single xml node with the text content
-	 * @param nodeName
-	 * @param textContent
-	 * @return
-	 */
-	private String getXmlNode(String nodeName, String textContent) {
-		
-		StringBuilder node = new StringBuilder();
-		
-		// create the node
-		node.append("<")
-			.append(nodeName)
-			.append(">")
-			.append(textContent)
-			.append("</")
-			.append(nodeName)
-			.append(">");
-		
-		return node.toString();
-	}
-	
-	private void addHeader() throws IOException {
-		MessageConfigList header = MessageConfigList.getHeader();
 	}
 	
 	/**

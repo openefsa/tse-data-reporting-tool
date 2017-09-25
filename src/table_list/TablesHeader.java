@@ -1,10 +1,10 @@
-package table_database;
+package table_list;
 
-public enum RelationHeader {
+public enum TablesHeader {
 	
-	PARENTTABLE("parentTable"),
-	CHILDTABLE("childTable"),
-	DIRECT_RELATION("directRelation");
+	TABLE_NAME("tableName"),
+	HTML_FILENAME("htmlFileName"),
+	GENERATE_RECORD("generateRecord");
 	
 	private String headerName;
 	
@@ -13,7 +13,7 @@ public enum RelationHeader {
 	 * header name that is present in the xlsx
 	 * @param headerName
 	 */
-	private RelationHeader(String headerName) {
+	private TablesHeader(String headerName) {
 		this.headerName = headerName;
 	}
 	
@@ -30,9 +30,9 @@ public enum RelationHeader {
 	 * @param text
 	 * @return
 	 */
-	public static RelationHeader fromString(String text) {
+	public static TablesHeader fromString(String text) {
 		
-		for (RelationHeader b : RelationHeader.values()) {
+		for (TablesHeader b : TablesHeader.values()) {
 			if (b.headerName.equalsIgnoreCase(text)) {
 				return b;
 			}

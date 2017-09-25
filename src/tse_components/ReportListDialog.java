@@ -64,4 +64,7 @@ public class ReportListDialog extends TableDialog {
 	public TableRow createNewRow(TableSchema schema, Selection type) {
 		return null;
 	}
+
+	@Override
+	public void processNewRow(TableRow row) {}
 }

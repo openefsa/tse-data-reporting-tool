@@ -8,8 +8,8 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 
-import table_database.Relation;
 import table_dialog.TableViewWithHelp.RowCreationMode;
+import table_relations.Relation;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
 import tse_config.CustomPaths;
@@ -112,4 +112,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	public Collection<TableRow> loadInitialRows(TableSchema schema, TableRow parentFilter) {
 		return null;
 	}
+
+	@Override
+	public void processNewRow(TableRow row) {}
 }

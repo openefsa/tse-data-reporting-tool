@@ -1,4 +1,4 @@
-package html_viewer;
+package table_list;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import java.util.Collection;
 import org.apache.poi.ss.usermodel.Row;
 
 import app_config.AppPaths;
+import app_config.BooleanValue;
 import xlsx_reader.XlsxReader;
 
 /**
@@ -14,14 +15,15 @@ import xlsx_reader.XlsxReader;
  * @author avonva
  *
  */
-public class HelpParser extends XlsxReader {
+public class TableListParser extends XlsxReader {
 
 	private String tableName;
 	private String htmlFilename;
+	private boolean generateRecord;
 	
-	private Collection<Help> helps;
+	private Collection<TableMetaData> helps;
 	
-	public HelpParser(String filename) throws IOException {
+	public TableListParser(String filename) throws IOException {
 		super(filename);
 		helps = new ArrayList<>();
 	}
@@ -31,21 +33,21 @@ public class HelpParser extends XlsxReader {
 	 * @return
 	 * @throws IOException
 	 */
-	public Collection<Help> read() throws IOException {
-		super.read(AppPaths.HELP_SHEET);
+	public Collection<TableMetaData> read() throws IOException {
+		super.read(AppPaths.TABLES_SHEET);
 		return helps;
 	}
 	
 	public static boolean isHelpSheet(String sheetName) {
-		return AppPaths.HELP_SHEET.equals(sheetName);
+		return AppPaths.TABLES_SHEET.equals(sheetName);
 	}
 
 	@Override
 	public void processCell(String header, String value) {
 		
-		HelpHeader h = null;
+		TablesHeader h = null;
 		try {
-			h = HelpHeader.fromString(header);  // get enum from string
+			h = TablesHeader.fromString(header);  // get enum from string
 		}
 		catch(IllegalArgumentException e) {
 			return;
@@ -61,6 +63,9 @@ public class HelpParser extends XlsxReader {
 		case HTML_FILENAME:
 			this.htmlFilename = value;
 			break;
+		case GENERATE_RECORD:
+			this.generateRecord = BooleanValue.isTrue(value);
+			break;
 		}
 	}
 
@@ -74,7 +79,7 @@ public class HelpParser extends XlsxReader {
 			return;
 		
 		// create a new help and put it into the collection
-		Help help = new Help(tableName, htmlFilename);
+		TableMetaData help = new TableMetaData(tableName, htmlFilename, generateRecord);
 		helps.add(help);
 	}
 }

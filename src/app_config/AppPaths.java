@@ -13,5 +13,6 @@ public class AppPaths {
 	public static final String DB_FOLDER = "database" + System.getProperty("file.separator");
 	
 	public static final String RELATIONS_SHEET = "Relations";
-	public static final String HELP_SHEET = "Help";
+	public static final String TABLES_SHEET = "Tables";
+	public static final String MESSAGE_CONFIG_SHEET = "messageConfig";
 }
