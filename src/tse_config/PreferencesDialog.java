@@ -22,7 +22,7 @@ public class PreferencesDialog extends OptionsDialog {
 	
 	@Override
 	public String getSchemaSheetName() {
-		return CustomPaths.PREFERENCES_SHEET;
+		return CustomStrings.PREFERENCES_SHEET;
 	}
 
 	@Override

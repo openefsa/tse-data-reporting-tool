@@ -16,7 +16,7 @@ import table_database.Database;
 import table_database.TableDao;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
-import tse_config.CustomPaths;
+import tse_config.CustomStrings;
 import tse_config.PreferencesDialog;
 import tse_config.SettingsDialog;
 import user.User;
@@ -52,7 +52,7 @@ public class StartUI {
 	 * @throws IOException
 	 */
 	private static boolean checkSettings() throws IOException {
-		return checkSettings(CustomPaths.SETTINGS_SHEET);
+		return checkSettings(CustomStrings.SETTINGS_SHEET);
 	}
 	
 	/**
@@ -61,13 +61,13 @@ public class StartUI {
 	 * @throws IOException
 	 */
 	private static boolean checkPreferences() throws IOException {
-		return checkSettings(CustomPaths.PREFERENCES_SHEET);
+		return checkSettings(CustomStrings.PREFERENCES_SHEET);
 	}
 	
 	private static void loginUser() throws IOException {
 		
 		// get the settings schema table
-		TableSchema settingsSchema = TableSchemaList.getByName(CustomPaths.SETTINGS_SHEET);
+		TableSchema settingsSchema = TableSchemaList.getByName(CustomStrings.SETTINGS_SHEET);
 		
 		TableDao dao = new TableDao(settingsSchema);
 		
@@ -78,8 +78,8 @@ public class StartUI {
 			return;
 		
 		// get credentials
-		TableColumnValue usernameVal = settings.get(CustomPaths.SETTINGS_USERNAME);
-		TableColumnValue passwordVal = settings.get(CustomPaths.SETTINGS_PASSWORD);
+		TableColumnValue usernameVal = settings.get(CustomStrings.SETTINGS_USERNAME);
+		TableColumnValue passwordVal = settings.get(CustomStrings.SETTINGS_PASSWORD);
 		
 		if (usernameVal == null || passwordVal == null)
 			return;

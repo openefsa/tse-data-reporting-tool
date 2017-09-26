@@ -36,7 +36,7 @@ public class SettingsDialog extends OptionsDialog {
 
 	@Override
 	public String getSchemaSheetName() {
-		return CustomPaths.SETTINGS_SHEET;
+		return CustomStrings.SETTINGS_SHEET;
 	}
 	
 	@Override
@@ -50,8 +50,8 @@ public class SettingsDialog extends OptionsDialog {
 			return closeWindow;
 		
 		// get credentials
-		TableColumnValue usernameVal = settings.get(CustomPaths.SETTINGS_USERNAME);
-		TableColumnValue passwordVal = settings.get(CustomPaths.SETTINGS_PASSWORD);
+		TableColumnValue usernameVal = settings.get(CustomStrings.SETTINGS_USERNAME);
+		TableColumnValue passwordVal = settings.get(CustomStrings.SETTINGS_PASSWORD);
 		
 		if (usernameVal == null || passwordVal == null)
 			return closeWindow;

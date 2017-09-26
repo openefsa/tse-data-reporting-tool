@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Shell;
 import table_database.TableDao;
 import table_importer.TableImporter;
 import table_skeleton.TableRow;
-import tse_config.CustomPaths;
+import tse_config.CustomStrings;
 import tse_config.PreferencesDialog;
 import tse_config.SettingsDialog;
 import tse_report.ReportCreatorDialog;
@@ -69,7 +69,7 @@ public class MainMenu {
 				
 				// enable report only if there is a report in the database
 				try {
-					TableDao dao = new TableDao(TableSchemaList.getByName(CustomPaths.REPORT_SHEET));
+					TableDao dao = new TableDao(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
 					openReport.setEnabled(!dao.getAll().isEmpty());
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -193,7 +193,7 @@ public class MainMenu {
 						// copy the report summarized information into the opened one
 						try {
 							
-							TableSchema childSchema = TableSchemaList.getByName(CustomPaths.SUMMARIZED_INFO_SHEET);
+							TableSchema childSchema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
 							
 							
 							dialog.getDialog().setCursor(dialog.getDialog()

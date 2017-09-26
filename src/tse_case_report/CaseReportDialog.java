@@ -15,7 +15,7 @@ import table_relations.Relation;
 import table_skeleton.TableRow;
 import tse_analytical_result.ResultDialog;
 import tse_components.TableDialogWithMenu;
-import tse_config.CustomPaths;
+import tse_config.CustomStrings;
 import tse_validator.SimpleRowValidatorLabelProvider;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
@@ -92,7 +92,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 
 	@Override
 	public String getSchemaSheetName() {
-		return CustomPaths.CASE_INFO_SHEET;
+		return CustomStrings.CASE_INFO_SHEET;
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		// in order to be able to get its id
 		try {
 			
-			TableSchema resultSchema = TableSchemaList.getByName(CustomPaths.RESULT_SHEET);
+			TableSchema resultSchema = TableSchemaList.getByName(CustomStrings.RESULT_SHEET);
 			
 			TableRow resultRow = new TableRow(resultSchema);
 			resultRow.initialize();

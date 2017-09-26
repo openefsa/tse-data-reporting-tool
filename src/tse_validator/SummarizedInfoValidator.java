@@ -8,7 +8,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
 import table_skeleton.TableRow;
-import tse_config.CustomPaths;
+import tse_config.CustomStrings;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 
@@ -18,11 +18,11 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 		try {
 			
-			TableSchema childSchema = TableSchemaList.getByName(CustomPaths.CASE_INFO_SHEET);
+			TableSchema childSchema = TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
 			Collection<TableRow> cases = row.getChildren(childSchema);
 			
-			String posSamplesStr = row.get(CustomPaths.SUMMARIZED_INFO_POS_SAMPLES).getLabel();
-			String incSamplesStr = row.get(CustomPaths.SUMMARIZED_INFO_INC_SAMPLES).getLabel();
+			String posSamplesStr = row.get(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES).getLabel();
+			String incSamplesStr = row.get(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES).getLabel();
 			
 			// check number of positive and inconclusive
 			// samples with the number of cases

@@ -20,7 +20,7 @@ import table_dialog.TableViewWithHelp.RowCreationMode;
 import table_relations.Relation;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
-import tse_config.CustomPaths;
+import tse_config.CustomStrings;
 import tse_validator.SimpleRowValidatorLabelProvider;
 import webservice.GetDatasetList;
 import xlsx_reader.TableSchema;
@@ -39,7 +39,7 @@ public class ReportCreatorDialog extends TableDialog {
 	
 	@Override
 	public String getSchemaSheetName() {
-		return CustomPaths.REPORT_SHEET;
+		return CustomStrings.REPORT_SHEET;
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class ReportCreatorDialog extends TableDialog {
 
 		// add preferences to the report
 		try {
-			Relation.injectGlobalParent(row, CustomPaths.PREFERENCES_SHEET);
+			Relation.injectGlobalParent(row, CustomStrings.PREFERENCES_SHEET);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -75,17 +75,17 @@ public class ReportCreatorDialog extends TableDialog {
 	 */
 	private boolean isLocallyPresent(TableRow currentReport) {
 		
-		String year = currentReport.get(CustomPaths.REPORT_YEAR).getCode();
-		String month = currentReport.get(CustomPaths.REPORT_MONTH).getCode();
-		String country = currentReport.get(CustomPaths.REPORT_COUNTRY).getCode();
+		String year = currentReport.get(CustomStrings.REPORT_YEAR).getCode();
+		String month = currentReport.get(CustomStrings.REPORT_MONTH).getCode();
+		String country = currentReport.get(CustomStrings.REPORT_COUNTRY).getCode();
 		
 		// check if the report is already in the db
 		TableDao dao = new TableDao(currentReport.getSchema());
 		for (TableRow report : dao.getAll()) {
 			
-			String year2 = report.get(CustomPaths.REPORT_YEAR).getCode();
-			String month2 = report.get(CustomPaths.REPORT_MONTH).getCode();
-			String country2 = report.get(CustomPaths.REPORT_COUNTRY).getCode();
+			String year2 = report.get(CustomStrings.REPORT_YEAR).getCode();
+			String month2 = report.get(CustomStrings.REPORT_MONTH).getCode();
+			String country2 = report.get(CustomStrings.REPORT_COUNTRY).getCode();
 			// if same month and year and country we have the same
 			if (year.equals(year2) && month.equals(month2) && country.equals(country2))
 				return true;
@@ -110,7 +110,7 @@ public class ReportCreatorDialog extends TableDialog {
 
 		DatasetList datasets = request.getlist();
 
-		TableColumnValue value = report.get(CustomPaths.REPORT_SENDER_ID);
+		TableColumnValue value = report.get(CustomStrings.REPORT_SENDER_ID);
 		
 		if (value == null) {
 			throw new ReportException("Cannot retrieve the report sender id for " + report);
@@ -131,6 +131,8 @@ public class ReportCreatorDialog extends TableDialog {
 		// if the report is already present
 		// show error message
 		if (isLocallyPresent(report)) {
+			
+			// TODO allow possibly creating a new version
 			warnUser("Error", "The chosen report was already created! Please open it and make there the required changes.");
 			return false;
 		}

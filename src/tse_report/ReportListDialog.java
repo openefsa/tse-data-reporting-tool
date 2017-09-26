@@ -12,7 +12,7 @@ import table_dialog.RowValidatorLabelProvider;
 import table_dialog.TableDialog;
 import table_dialog.TableViewWithHelp.RowCreationMode;
 import table_skeleton.TableRow;
-import tse_config.CustomPaths;
+import tse_config.CustomStrings;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -26,7 +26,7 @@ public class ReportListDialog extends TableDialog {
 
 	@Override
 	public String getSchemaSheetName() {
-		return CustomPaths.REPORT_SHEET;
+		return CustomStrings.REPORT_SHEET;
 	}
 
 	@Override
