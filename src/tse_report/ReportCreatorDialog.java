@@ -13,16 +13,17 @@ import org.eclipse.swt.widgets.Shell;
 import app_config.PropertiesReader;
 import dataset.Dataset;
 import dataset.DatasetList;
+import dataset.DatasetStatus;
 import table_database.TableDao;
+import table_dialog.PanelBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_dialog.TableDialog;
-import table_dialog.TableViewWithHelp.RowCreationMode;
 import table_relations.Relation;
-import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 import tse_validator.SimpleRowValidatorLabelProvider;
 import webservice.GetDatasetList;
+import webservice.MySOAPException;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -34,7 +35,10 @@ import xml_catalog_reader.Selection;
 public class ReportCreatorDialog extends TableDialog {
 	
 	public ReportCreatorDialog(Shell parent) {
-		super(parent, "New report", "Creation of a new report", true, RowCreationMode.NONE, true);
+		super(parent, "New report", true, true);
+		
+		// create the parent structure
+		super.create();
 	}
 	
 	@Override
@@ -46,9 +50,8 @@ public class ReportCreatorDialog extends TableDialog {
 	public Collection<TableRow> loadInitialRows(TableSchema schema, TableRow parentTable) {
 		
 		Collection<TableRow> rows = new ArrayList<>();
-		TableRow row = new TableRow(schema);
+		Report row = new Report();
 		
-
 		// add preferences to the report
 		try {
 			Relation.injectGlobalParent(row, CustomStrings.PREFERENCES_SHEET);
@@ -58,6 +61,9 @@ public class ReportCreatorDialog extends TableDialog {
 		}
 		
 		row.initialize();
+		
+		// by default the report status is draft for new reports
+		row.setDatasetStatus(DatasetStatus.DRAFT.getStatus());
 		
 		// update the formulas of the report
 		// to compute the sender id
@@ -73,19 +79,22 @@ public class ReportCreatorDialog extends TableDialog {
 	 * @param currentReport
 	 * @return
 	 */
-	private boolean isLocallyPresent(TableRow currentReport) {
+	private boolean isLocallyPresent(Report currentReport) {
 		
-		String year = currentReport.get(CustomStrings.REPORT_YEAR).getCode();
-		String month = currentReport.get(CustomStrings.REPORT_MONTH).getCode();
-		String country = currentReport.get(CustomStrings.REPORT_COUNTRY).getCode();
+		String year = currentReport.getYear();
+		String month = currentReport.getMonth();
+		String country = currentReport.getCountry();
 		
 		// check if the report is already in the db
 		TableDao dao = new TableDao(currentReport.getSchema());
-		for (TableRow report : dao.getAll()) {
+		for (TableRow row : dao.getAll()) {
 			
-			String year2 = report.get(CustomStrings.REPORT_YEAR).getCode();
-			String month2 = report.get(CustomStrings.REPORT_MONTH).getCode();
-			String country2 = report.get(CustomStrings.REPORT_COUNTRY).getCode();
+			Report report = new Report(row);
+			
+			String year2 = report.getYear();
+			String month2 = report.getMonth();
+			String country2 = report.getCountry();
+			
 			// if same month and year and country we have the same
 			if (year.equals(year2) && month.equals(month2) && country.equals(country2))
 				return true;
@@ -103,85 +112,163 @@ public class ReportCreatorDialog extends TableDialog {
 	 * @throws SOAPException
 	 * @throws ReportException 
 	 */
-	private Dataset isRemotelyPresent(TableRow report, String dcCode) throws SOAPException, ReportException {
+	private DatasetList isRemotelyPresent(Report report, String dcCode) throws MySOAPException, ReportException {
 		
 		// check if the Report is in the DCF
 		GetDatasetList request = new GetDatasetList(dcCode);
 
-		DatasetList datasets = request.getlist();
-
-		TableColumnValue value = report.get(CustomStrings.REPORT_SENDER_ID);
+		DatasetList datasets = request.getList();
 		
-		if (value == null) {
+		String senderId = report.getSenderId();
+		
+		if (senderId == null) {
 			throw new ReportException("Cannot retrieve the report sender id for " + report);
 		}
 		
-		// get the sender id label
-		String senderId = value.getLabel();
-
-		return datasets.getBySenderId(senderId);
+		return datasets.filterBySenderId(senderId);
 	}
 
 	
 	@Override
 	public boolean apply(TableSchema schema, Collection<TableRow> rows, TableRow selectedRow) {
 		
-		TableRow report = rows.iterator().next();
+		Report report = (Report) rows.iterator().next();
 		
 		// if the report is already present
 		// show error message
 		if (isLocallyPresent(report)) {
-			
-			// TODO allow possibly creating a new version
-			warnUser("Error", "The chosen report was already created! Please open it and make there the required changes.");
+			warnUser("Error", "The report already exists. Please open it.");
 			return false;
 		}
 
+		// change the cursor to wait
+		getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+		
+		String title = null;
+		String message = null;
+		DatasetList oldReports = new DatasetList();
+		
 		try {
 			
-			// TODO ask for download or for overriding the found report
+			oldReports = isRemotelyPresent(report, PropertiesReader.getDataCollectionCode());
 			
-			// change the cursor to wait
-			getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+		} catch (MySOAPException e) {
 			
-			Dataset oldReport = isRemotelyPresent(report, PropertiesReader.getDataCollectionCode());
-
-			// change the cursor to old cursor
-			getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+			e.printStackTrace();
 			
-			// if no report found skip
-			if (oldReport != null) {
-				
-				// if the report is not editable, then it is a useless version of it
-				// then allow creating the report
-				if (!oldReport.isEditable()) {
-					warnUser("Warning", "The chosen report is already present in the DCF, "
-							+ "but its status is not valid. A new report was created to replace it.", SWT.ICON_WARNING);
-					//TODO mark the report as replacement
-				}
-				else {
-					//TODO ask download or replace
-					warnUser("Error", "The chosen report is already present in the DCF!");
-					return false;
-				}
+			switch(e.getError()) {
+			case NO_CONNECTION:
+				title = "Connection error";
+				message = "It was not possible to connect to the DCF, please check your internet connection.";
+				break;
+			case UNAUTHORIZED:
+			case FORBIDDEN:
+				title = "Wrong credentials";
+				message = "Your credentials are incorrect. Please check them in the Settings.";
+				break;
 			}
-			
-		} catch (SOAPException e) {
-			warnUser("Connection error", "It was not possible to connect to the DCF, please check your credentials and/or your internet connection.");
-			return false;
 		} catch (ReportException e) {
 			e.printStackTrace();
-			warnUser("General error", "It was not possible to retrieve the current report sender id. Please call technical assistance.");
-			return false;
+			title = "General error";
+			message = "It was not possible to retrieve the current report sender id. Please call technical assistance.";
 		}
-
-		// add the report to the database
-		for (TableRow row : rows) {
-			TableDao dao = new TableDao(schema);
-			dao.add(row);
+		finally {
+			// change the cursor to old cursor
+			getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
 		}
 		
+		// if we had an exception warn user and return
+		if (message != null) {
+			warnUser(title, message);
+			return false;
+		}
+		
+		// if at least one report already exists
+		// with the selected sender dataset id
+		if (!oldReports.isEmpty()) {
+
+			// NOTE: we consider just the first report (the most recent)
+			Dataset oldReport = oldReports.get(0);
+			
+			// check if there are errors
+			String errorMessage = getErrorMessage(oldReport);
+
+			// if there are errors
+			if (errorMessage != null) {
+				warnUser("Error", errorMessage);
+				return false;
+			}
+
+			// if no errors, then we are able to create the report
+			
+			switch (oldReport.getStatus()) {
+			case DELETED:
+				// we ignore deleted datasets
+				report.save();
+				break;
+			case REJECTED:
+				// we mantain the same dataset id
+				// of the rejected dataset, but actually
+				// we create a new report with that
+				report.setDatasetId(oldReport.getId());
+				report.save();
+				break;
+				
+			default:
+				break;
+			}
+		}
+
+		// if no conflicts create the new report
+		report.save();
+		
 		return true;
+	}
+	
+	/**
+	 * get the error message that needs to be displayed if
+	 * an old report already exists
+	 * @param oldReport
+	 * @return
+	 */
+	private String getErrorMessage(Dataset oldReport) {
+		
+		String message = null;
+		
+		switch(oldReport.getStatus()) {
+		case ACCEPTED_DWH:
+			message = "An existing report in DCF with dataset id "
+					+ oldReport.getId()
+					+ " was found in status ACCEPTED_DWH. To amend it please download and open it.";
+			break;
+		case SUBMITTED:
+			message = "An existing report in DCF with dataset id "
+					+ oldReport.getId()
+					+ " was found in status SUBMITTED. Please reject it in the validation report if changes are needed.";
+			break;
+		case VALID:
+		case VALID_WITH_WARNINGS:
+		case REJECTED_EDITABLE:
+			message = "An existing report in DCF with dataset id "
+					+ oldReport.getId()
+					+ " was found in status " 
+					+ oldReport.getStatus() 
+					+ ". To apply changes please download and open it.";
+			break;
+		case PROCESSING:
+			message = "An existing report in DCF with dataset id "
+					+ oldReport.getId()
+					+ " was found in status PROCESSING. Please wait the completion of the validation.";
+			break;
+		case DELETED:
+		case REJECTED:
+			break;
+		default:
+			message = "An error occurred due to a conflicting dataset in DCF. Please contact zoonoses_support@efsa.europa.eu.";
+			break;
+		}
+		
+		return message;
 	}
 	
 	public class ReportException extends Exception {
@@ -207,5 +294,12 @@ public class ReportCreatorDialog extends TableDialog {
 	@Override
 	public RowValidatorLabelProvider getValidator() {
 		return new SimpleRowValidatorLabelProvider();
+	}
+
+	@Override
+	public void addWidgets(PanelBuilder viewer) {
+
+		viewer.addHelp("Creation of a new report")
+			.addTable(CustomStrings.REPORT_SHEET, true);
 	}
 }

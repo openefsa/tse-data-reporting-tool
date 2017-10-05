@@ -1,6 +1,5 @@
 package tse_validator;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import org.eclipse.swt.SWT;
@@ -14,49 +13,112 @@ import xlsx_reader.TableSchemaList;
 
 public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
-	private boolean isSampleCorrect(TableRow row) {
+	private enum SampleCheck {
+		OK,
+		LESS,
+		CHECK_CASES,
+		WRONG_CASES,
+		MORE
+	}
+	
+	/**
+	 * Check if the row is correct or not
+	 * @param row
+	 * @return
+	 */
+	private SampleCheck isSampleCorrect(TableRow row) {
 
 		try {
 			
 			TableSchema childSchema = TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
+			
+			if (childSchema == null)
+				return null;
+			
 			Collection<TableRow> cases = row.getChildren(childSchema);
 			
-			String posSamplesStr = row.get(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES).getLabel();
-			String incSamplesStr = row.get(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES).getLabel();
+			// check children errors
+			CaseReportValidator validator = new CaseReportValidator();
+			for (TableRow caseInfo : cases) {
+				if (validator.getWarningLevel(caseInfo) > 0) {
+					return SampleCheck.WRONG_CASES;
+				}
+			}
 			
-			// check number of positive and inconclusive
-			// samples with the number of cases
-			int posSamples = Integer.valueOf(posSamplesStr);
-			int incSamples = Integer.valueOf(incSamplesStr);
+			int incSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
+			int posSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
+			int tot = posSamples + incSamples;
 			
-			return (cases.size() == posSamples + incSamples);
+			if (cases.size() > tot)
+				return SampleCheck.MORE;
+			else if (cases.size() < tot)
+				return SampleCheck.LESS;
+			
+			// check inconclusive are coherent with cases
+			int incCases = 0;
+			for (TableRow caseInfo : cases) {
+				if (caseInfo.getCode(CustomStrings.CASE_INFO_ASSESS)
+						.equals(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE))
+					incCases++;
+			}
+			
+			if (incCases != incSamples)
+				return SampleCheck.CHECK_CASES;
 		}
-		catch (NumberFormatException | IOException e) {
+		catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
 		
-		return false;
+		return SampleCheck.OK;
+	}
+	
+	public int getWarningLevel(TableRow row) {
+		
+		int level = 0;
+		
+		switch (isSampleCorrect(row)) {
+		case LESS:
+		case MORE:
+		case CHECK_CASES:
+			level = 1;
+			break;
+		default:
+			break;
+		}
+		
+		return level;
 	}
 	
 	@Override
 	public String getText(TableRow row) {
 		
-		String text = super.getText(row);
-
-		if (!isSampleCorrect(row))
-			text = "Cases report incomplete";
+		String parentText = super.getText(row);
+		int parentLevel = super.getWarningLevel(row);
+		int level = this.getWarningLevel(row);
 		
-		/*switch (row.getStatus()) {
+		// if parent has bigger severity
+		// use its text
+		if (parentLevel > level)
+			return parentText;
+		
+		String text = parentText;
 
-		case POSITIVE_MISSING:
-			text = "Positive cases report incomplete";
+		switch (isSampleCorrect(row)) {
+		case LESS:
+			text = "Cases report incomplete";
 			break;
-		case INCONCLUSIVE_MISSING:
-			text = "";
+		case MORE:
+			text = "Too many cases reported";
+			break;
+		case CHECK_CASES:
+			text = "Check inconclusive cases";
+			break;
+		case WRONG_CASES:
+			text = "Check case report";
 			break;
 		default:
 			break;
-		}*/
+		}
 
 		return text;
 	}
@@ -66,7 +128,13 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		
 		Color color = super.getForeground(row);
 
-		if (!isSampleCorrect(row)) {
+		int parentLevel = super.getWarningLevel(row);
+		int level = this.getWarningLevel(row);
+		
+		if (parentLevel > level)
+			return color;
+		
+		if (isSampleCorrect(row) != SampleCheck.OK) {
 			Display display = Display.getDefault();
 			color = display.getSystemColor(SWT.COLOR_DARK_YELLOW);
 		}

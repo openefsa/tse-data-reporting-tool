@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alleleList>
+	<selectionList>
+		<selection code="AXRR">
+			<description>AXRR</description>
+		</selection>
+		<selection code="ALRR">
+			<description>ALRR</description>
+		</selection>
+		<selection code="AFRR">
+			<description>AFRR</description>
+		</selection>
+		<selection code="AXRQ">
+			<description>AXRQ</description>
+		</selection>
+		<selection code="AFRQ">
+			<description>AFRQ</description>
+		</selection>
+		<selection code="ALRQ">
+			<description>ALRQ</description>
+		</selection>
+		<selection code="AXRH">
+			<description>AXRH</description>
+		</selection>
+		<selection code="AFRH">
+			<description>AFRH</description>
+		</selection>
+		<selection code="ALRH">
+			<description>ALRH</description>
+		</selection>
+		<selection code="AXHQ">
+			<description>AXHQ</description>
+		</selection>
+		<selection code="AFHQ">
+			<description>AFHQ</description>
+		</selection>
+		<selection code="ALHQ">
+			<description>ALHQ</description>
+		</selection>
+		<selection code="VXRQ">
+			<description>VXRQ</description>
+		</selection>
+		<selection code="VLRQ">
+			<description>VLRQ</description>
+		</selection>
+		<selection code="VFRQ">
+			<description>VFRQ</description>
+		</selection>
+	</selectionList>
+</alleleList>

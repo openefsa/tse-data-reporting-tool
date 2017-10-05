@@ -1,8 +1,6 @@
-package tse_config;
+package tse_options;
 
 import java.util.Collection;
-
-import javax.xml.soap.SOAPException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -14,12 +12,15 @@ import org.eclipse.swt.widgets.Shell;
 import app_config.PropertiesReader;
 import dataset.Dataset;
 import dataset.DatasetList;
+import table_dialog.PanelBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
+import tse_config.CustomStrings;
 import tse_validator.SimpleRowValidatorLabelProvider;
 import user.User;
 import webservice.GetDatasetList;
+import webservice.MySOAPException;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -31,7 +32,7 @@ import xml_catalog_reader.Selection;
 public class SettingsDialog extends OptionsDialog {
 
 	public SettingsDialog(Shell parent) {
-		super(parent, "User settings", "User settings", true);
+		super(parent, "User settings");
 	}
 
 	@Override
@@ -49,22 +50,27 @@ public class SettingsDialog extends OptionsDialog {
 		if (settings == null)
 			return closeWindow;
 		
-		// get credentials
-		TableColumnValue usernameVal = settings.get(CustomStrings.SETTINGS_USERNAME);
-		TableColumnValue passwordVal = settings.get(CustomStrings.SETTINGS_PASSWORD);
-		
-		if (usernameVal == null || passwordVal == null)
-			return closeWindow;
-		
-		// login the user
-		String username = usernameVal.getLabel();
-		String password = passwordVal.getLabel();
-		
-		User.getInstance().login(username, password);
+		login(settings);
 		
 		return closeWindow;
 	}
 
+	private void login(TableRow settings) {
+		
+		// get credentials
+		TableColumnValue usernameVal = settings.get(CustomStrings.SETTINGS_USERNAME);
+		TableColumnValue passwordVal = settings.get(CustomStrings.SETTINGS_PASSWORD);
+
+		if (usernameVal == null || passwordVal == null)
+			return;
+
+		// login the user
+		String username = usernameVal.getLabel();
+		String password = passwordVal.getLabel();
+
+		User.getInstance().login(username, password);
+	}
+	
 	@Override
 	public Menu createMenu() {
 		
@@ -80,42 +86,70 @@ public class SettingsDialog extends OptionsDialog {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				
+				System.out.println("Test connection: started");
+				
+				// login the user if not done before
+				login(getRows().iterator().next());
+				
+				// change the cursor to wait
+				getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+				
+				String title = null;
+				String message = null;
+				DatasetList list = new DatasetList();
 				try {
-
-					System.out.println("Test connection: started");
 					
-					// change the cursor to wait
-					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
-					
-					// get dataset list
+					// get dataset list of the data collection
 					GetDatasetList request = new GetDatasetList(PropertiesReader.getDataCollectionCode());
-					DatasetList list = request.getlist();
+					list = request.getList();
 					
-					// change the cursor to old cursor
-					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
-					
-					String testReportCode = PropertiesReader.getTestReportCode();
-					
-					// get the dataset of TEST
-					Dataset dataset = list.getBySenderId(testReportCode);
-					
-					if (dataset != null) {
-						System.out.println("Test connection: completed");
-						warnUser("Ok", "Test successfully completed.", SWT.OK);
-					}
-					else {
-						System.err.println("Test connection: failed. " + testReportCode + " report cannot be found in the DCF");
-						warnUser("Error", testReportCode + ": Cannot retrieve the dataset");
-					}
-				} catch (SOAPException e) {
-					
-					System.err.println("Test connection: failed. See exception for details");
+				} catch (MySOAPException e) {
+
 					e.printStackTrace();
 					
+					System.err.println("Test connection: failed.");
+					
 					// change the cursor to old cursor
 					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+					title = "Error";
 					
-					warnUser("Error", "Connection error. Check your credentials and connection.");
+					switch(e.getError()) {
+					case NO_CONNECTION:
+						message = "Connection error. Check your connection.";
+						break;
+					case UNAUTHORIZED:
+					case FORBIDDEN:
+						message = "Authentication error. Check your credentials.";
+						break;
+					}
+					
+				}
+				finally {
+					// change the cursor to old cursor
+					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+				}
+				
+				// if we have an error message stop and show the error
+				if (message != null) {
+					warnUser(title, message);
+					return;
+				}
+				
+				// search the test dataset
+				String testReportCode = PropertiesReader.getTestReportCode();
+				
+				// get the dataset of TEST
+				DatasetList testList = list.filterBySenderId(testReportCode);
+				Dataset dataset = testList.isEmpty() ? null : testList.get(0);
+				
+				if (dataset != null) {
+					System.out.println("Test connection: completed");
+					warnUser("Ok", "Test successfully completed.", SWT.OK);
+				}
+				else {
+					System.err.println("Test connection: failed. " + testReportCode + " report cannot be found in the DCF");
+					warnUser("Error", testReportCode + ": Cannot retrieve the dataset");
 				}
 			}
 			
@@ -137,5 +171,11 @@ public class SettingsDialog extends OptionsDialog {
 	@Override
 	public RowValidatorLabelProvider getValidator() {
 		return new SimpleRowValidatorLabelProvider();
+	}
+
+	@Override
+	public void addWidgets(PanelBuilder viewer) {
+		viewer.addHelp("User settings")
+			.addTable(CustomStrings.SETTINGS_SHEET, true);
 	}
 }

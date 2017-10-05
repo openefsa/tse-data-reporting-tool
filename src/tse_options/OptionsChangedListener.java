@@ -1,4 +1,4 @@
-package tse_config;
+package tse_options;
 
 import table_skeleton.TableRow;
 

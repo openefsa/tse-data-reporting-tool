@@ -4,6 +4,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Shell;
 
 import table_skeleton.TableRow;
+import tse_report.Report;
 import tse_summarized_information.SummarizedInfoDialog;
 
 public class MainPanel {
@@ -35,7 +36,7 @@ public class MainPanel {
 	 * Open a report the main table
 	 * @param report
 	 */
-	public void openReport(TableRow report) {
+	public void openReport(Report report) {
 		this.reportViewer.setParentFilter(report);
 	}
 	
@@ -43,8 +44,8 @@ public class MainPanel {
 	 * Get the opened report
 	 * @return
 	 */
-	public TableRow getOpenedReport() {
-		return this.reportViewer.getParentFilter();
+	public Report getOpenedReport() {
+		return this.reportViewer.getReport();
 	}
 	
 	/**

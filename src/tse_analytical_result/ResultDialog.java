@@ -5,12 +5,13 @@ import java.util.Collection;
 
 import org.eclipse.swt.widgets.Shell;
 
+import dataset.DatasetStatus;
+import table_dialog.PanelBuilder;
 import table_dialog.RowValidatorLabelProvider;
-import table_dialog.TableViewWithHelp.RowCreationMode;
 import table_skeleton.TableRow;
 import tse_components.TableDialogWithMenu;
 import tse_config.CustomStrings;
-import tse_validator.SimpleRowValidatorLabelProvider;
+import tse_validator.ResultValidator;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -21,26 +22,41 @@ import xml_catalog_reader.Selection;
  */
 public class ResultDialog extends TableDialogWithMenu {
 	
-	public ResultDialog(Shell parent, TableRow report, TableRow summInfo) {
+	private TableRow report;
+	private TableRow summInfo;
+	private TableRow caseInfo;
+	
+	public ResultDialog(Shell parent, TableRow report, TableRow summInfo, TableRow caseInfo) {
 		
-		super(parent, "Analytical results", "Analytical results", 
-				true, RowCreationMode.STANDARD, true, false);
+		super(parent, "Analytical results", true, false);
+		
+		this.report = report;
+		this.summInfo = summInfo;
+		this.caseInfo = caseInfo;
+		
+		// create the dialog
+		super.create();
 		
 		// add 300 px in height
-		addDialogHeight(300);
-		
-		// specify title and list of the selector
-		setRowCreatorLabel("Add result:");
+		addHeight(300);
 		
 		// add the parents
 		addParentTable(report);
 		addParentTable(summInfo);
+		
+		updateUI();
 	}
 	
-	@Override
-	public void setParentFilter(TableRow parentFilter) {
-		setRowCreationEnabled(parentFilter != null);
-		super.setParentFilter(parentFilter);
+	/**
+	 * make table non editable if needed
+	 */
+	private void updateUI() {
+		PanelBuilder panel = getPanelBuilder();
+		String status = report.getLabel(CustomStrings.REPORT_STATUS);
+		DatasetStatus datasetStatus = DatasetStatus.fromString(status);
+		boolean editableReport = datasetStatus.isEditable();
+		panel.setTableEditable(editableReport);
+		panel.setRowCreatorEnabled(editableReport);
 	}
 
 	/**
@@ -76,6 +92,42 @@ public class ResultDialog extends TableDialogWithMenu {
 	
 	@Override
 	public RowValidatorLabelProvider getValidator() {
-		return new SimpleRowValidatorLabelProvider();
+		return new ResultValidator();
+	}
+
+	@Override
+	public void addWidgets(PanelBuilder viewer) {
+		
+		String reportMonth = report.getLabel(CustomStrings.REPORT_MONTH);
+		String reportYear = report.getLabel(CustomStrings.REPORT_YEAR);
+		String sampleId = caseInfo.getLabel(CustomStrings.CASE_INFO_SAMPLE_ID);
+		String animalId = caseInfo.getLabel(CustomStrings.CASE_INFO_ANIMAL_ID);
+		String caseId = caseInfo.getLabel(CustomStrings.CASE_INFO_CASE_ID);
+		
+		StringBuilder reportRow = new StringBuilder();
+		reportRow.append("Monthly report: ")
+			.append(reportMonth)
+			.append(" ")
+			.append(reportYear);
+		
+		StringBuilder sampleIdRow = new StringBuilder();
+		sampleIdRow.append("Sample id: ")
+			.append(sampleId);
+		
+		StringBuilder animalIdRow = new StringBuilder();
+		animalIdRow.append("Animal id: ")
+			.append(animalId);
+		
+		StringBuilder caseIdRow = new StringBuilder();
+		caseIdRow.append("Case id: ")
+			.append(caseId);
+		
+		viewer.addHelp("Analytical results")
+			.addRowCreator("Add result:")
+			.addLabel("reportLabel", reportRow.toString())
+			.addLabel("sampLabel", sampleIdRow.toString())
+			.addLabel("animalLabel", animalIdRow.toString())
+			.addLabel("caseIdLabel", caseIdRow.toString())
+			.addTable(CustomStrings.RESULT_SHEET, true, summInfo);  // add parent to be able to solve isVisible field
 	}
 }

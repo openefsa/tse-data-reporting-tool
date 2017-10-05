@@ -1,34 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<assessmentLists xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<assessmentLists>
 	<selectionList id="BSE">
-		<selection code="C-BSE">
+		<selection code="J046A">
 			<description>C-BSE</description>
 		</selection>
-		<selection code="L-BSE">
+		<selection code="J047A">
 			<description>L-BSE</description>
 		</selection>
-		<selection code="H-BSE">
+		<selection code="J048A">
 			<description>H-BSE</description>
 		</selection>
-		<selection code="INC">
+		<selection code="J050A">
 			<description>Inconclusive</description>
 		</selection>
 	</selectionList>
 	<selectionList id="SCRAPIE">
-		<selection code="ATYPS">
+		<selection code="J043A">
 			<description>Atypical-scrapie</description>
 		</selection>
-		<selection code="CLASS">
+		<selection code="J044A">
+			<description>BSE-not excluded (i.e. BSE like)</description>
+		</selection>
+		<selection code="J045A">
 			<description>Classical-scrapie (i.e. BSE-excluded in 1st Molecular test)</description>
 		</selection>
-		<selection code="BSENE">
-			<description>BSE-not excluded (i.e. BSE like)</description>
+		<selection code="J050A">
+			<description>Inconclusive</description>
 		</selection>
 	</selectionList>
 	<selectionList id="CWD">
-		<selection code="CWD">
+		<selection code="J049A">
 			<description>CWD</description>
+		</selection>
+		<selection code="J050A">
+			<description>Inconclusive</description>
 		</selection>
 	</selectionList>
 </assessmentLists>
-

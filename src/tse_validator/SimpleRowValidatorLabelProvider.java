@@ -21,14 +21,29 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 		case MANDATORY_MISSING:
 			text = "Missing mandatory fields";
 			break;
-		case ERROR:
-			text = "Check case report";
-			break;
 		default:
 			break;
 		}
 
 		return text;
+	}
+	
+	public int getWarningLevel(TableRow row) {
+		
+		int level = 0;
+		
+		switch (row.getStatus()) {
+		case OK:
+			level = 0;
+			break;
+		case MANDATORY_MISSING:
+			level = 5;
+			break;
+		default:
+			break;
+		}
+		
+		return level;
 	}
 	
 	@Override
@@ -55,7 +70,6 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 	    case OK:
 	    	rowColor = green;
 	    	break;
-	    case ERROR:
 	    case MANDATORY_MISSING:
 	    	rowColor = red;
 	    	break;

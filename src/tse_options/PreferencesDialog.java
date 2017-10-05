@@ -1,10 +1,12 @@
-package tse_config;
+package tse_options;
 
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
 import table_dialog.RowValidatorLabelProvider;
+import table_dialog.PanelBuilder;
 import table_skeleton.TableRow;
+import tse_config.CustomStrings;
 import tse_validator.SimpleRowValidatorLabelProvider;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
@@ -17,7 +19,7 @@ import xml_catalog_reader.Selection;
 public class PreferencesDialog extends OptionsDialog {
 	
 	public PreferencesDialog(Shell parent) {
-		super(parent, "Tse preferences", "Tse preferences", true);
+		super(parent, "Tse preferences");
 	}
 	
 	@Override
@@ -41,5 +43,11 @@ public class PreferencesDialog extends OptionsDialog {
 	@Override
 	public RowValidatorLabelProvider getValidator() {
 		return new SimpleRowValidatorLabelProvider();
+	}
+
+	@Override
+	public void addWidgets(PanelBuilder viewer) {
+		viewer.addHelp("TSE preferences")
+			.addTable(CustomStrings.PREFERENCES_SHEET, true);
 	}
 }

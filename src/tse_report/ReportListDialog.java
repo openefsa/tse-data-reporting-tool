@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 import table_database.TableDao;
 import table_dialog.RowValidatorLabelProvider;
 import table_dialog.TableDialog;
-import table_dialog.TableViewWithHelp.RowCreationMode;
+import table_dialog.PanelBuilder;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 import xlsx_reader.TableSchema;
@@ -20,8 +20,11 @@ public class ReportListDialog extends TableDialog {
 
 	private Listener listener;
 	
-	public ReportListDialog(Shell parent, String title, String message) {
-		super(parent, title, message, false, RowCreationMode.NONE, true);
+	public ReportListDialog(Shell parent, String title) {
+		super(parent, title, true, true);
+		
+		// create the parent structure
+		super.create();
 	}
 
 	@Override
@@ -45,7 +48,7 @@ public class ReportListDialog extends TableDialog {
 		
 		if (listener != null) {
 			Event event = new Event();
-			event.data = selectedRow;
+			event.data = new Report(selectedRow);
 			listener.handleEvent(event);
 		}
 		
@@ -72,5 +75,11 @@ public class ReportListDialog extends TableDialog {
 	@Override
 	public RowValidatorLabelProvider getValidator() {
 		return null;
+	}
+
+	@Override
+	public void addWidgets(PanelBuilder viewer) {
+		viewer.addHelp(getDialog().getText())
+			.addTable(CustomStrings.REPORT_SHEET, false);
 	}
 }

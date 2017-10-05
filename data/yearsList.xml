@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <yearsList>
-
 	<selectionList>
+		<selection code="2010">
+			<description>2010</description>
+		</selection>
+		<selection code="2011">
+			<description>2011</description>
+		</selection>
+		<selection code="2012">
+			<description>2012</description>
+		</selection>
+		<selection code="2013">
+			<description>2013</description>
+		</selection>
+		<selection code="2014">
+			<description>2014</description>
+		</selection>
+		<selection code="2015">
+			<description>2015</description>
+		</selection>
 		<selection code="2016">
 			<description>2016</description>
 		</selection>
@@ -256,5 +272,4 @@
 			<description>2099</description>
 		</selection>
 	</selectionList>
-
 </yearsList>

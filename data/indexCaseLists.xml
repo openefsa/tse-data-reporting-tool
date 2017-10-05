@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<indexCaseLists>
-	<selectionList id="TG001A">
+<indexCaseLists>	
+	<selectionList id="">
 		<selection code="Y">
 			<description>Yes</description>
 		</selection>
@@ -8,7 +8,7 @@
 			<description>No</description>
 		</selection>
 	</selectionList>
-	<selectionList id="TG002A">
+	<selectionList id="F">
 		<selection code="Y">
 			<description>Yes</description>
 		</selection>
@@ -16,55 +16,7 @@
 			<description>No</description>
 		</selection>
 	</selectionList>
-	<selectionList id="TG003A">
-		<selection code="Y">
-			<description>Yes</description>
-		</selection>
-		<selection code="N">
-			<description>No</description>
-		</selection>
-	</selectionList>
-	<selectionList id="TG004A">
-		<selection code="Y">
-			<description>Yes</description>
-		</selection>
-		<selection code="N">
-			<description>No</description>
-		</selection>
-	</selectionList>
-	<selectionList id="TG005A">
-		<selection code="Y">
-			<description>Yes</description>
-		</selection>
-		<selection code="N">
-			<description>No</description>
-		</selection>
-	</selectionList>
-	<selectionList id="TG006A">
-		<selection code="N">
-			<description>No</description>
-		</selection>
-	</selectionList>
-	<selectionList id="TG007A">
-		<selection code="Y">
-			<description>Yes</description>
-		</selection>
-		<selection code="N">
-			<description>No</description>
-		</selection>
-	</selectionList>
-	<selectionList id="TG008A">
-		<selection code="Y">
-			<description>Yes</description>
-		</selection>
-		<selection code="N">
-			<description>No</description>
-		</selection>
-	</selectionList>
-	<selectionList id="TG009A">
-		<selection code="Y">
-			<description>Yes</description>
-		</selection>
+	<selectionList id="N">
 		<selection code="N">
 			<description>No</description>
 		</selection>

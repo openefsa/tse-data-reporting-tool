@@ -2,7 +2,11 @@ package tse_main;
 
 import java.io.IOException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.soap.SOAPException;
+
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Event;
@@ -10,17 +14,27 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.xml.sax.SAXException;
 
+import app_config.AppPaths;
+import app_config.DebugConfig;
+import dataset.Dataset;
+import message.SendMessageException;
+import report_downloader.ReportImporter;
 import table_database.TableDao;
 import table_importer.TableImporter;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
-import tse_config.PreferencesDialog;
-import tse_config.SettingsDialog;
+import tse_options.PreferencesDialog;
+import tse_options.SettingsDialog;
+import tse_report.DownloadReportDialog;
+import tse_report.Report;
 import tse_report.ReportCreatorDialog;
 import tse_report.ReportListDialog;
+import warn_user.Warnings;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
+import xml_catalog_reader.Selection;
 
 /**
  * Create the main menu of the application in the given shell
@@ -66,14 +80,23 @@ public class MainMenu {
 			
 			@Override
 			public void handleEvent(Event arg0) {
-				
+
 				// enable report only if there is a report in the database
-				try {
-					TableDao dao = new TableDao(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-					openReport.setEnabled(!dao.getAll().isEmpty());
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+
+				TableSchema schema = Report.getReportSchema();
+				
+				if (schema == null)
+					return;
+				
+				TableDao dao = new TableDao(schema);
+
+				boolean hasReport = !dao.getAll().isEmpty();
+				boolean isReportOpened = mainPanel.getOpenedReport() != null;
+				boolean editable = isReportOpened && mainPanel.getOpenedReport().isEditable();
+
+				openReport.setEnabled(hasReport);
+				sendReport.setEnabled(isReportOpened);
+				importReport.setEnabled(editable);
 			}
 		});
 
@@ -107,17 +130,17 @@ public class MainMenu {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				ReportListDialog dialog = new ReportListDialog(shell, "Reports", "Open a report");
+				ReportListDialog dialog = new ReportListDialog(shell, "Open a report");
 				dialog.setButtonText("Open");
 				dialog.setListener(new Listener() {
 					
 					@Override
 					public void handleEvent(Event arg0) {						
 						
-						if (!(arg0.data instanceof TableRow))
+						if (!(arg0.data instanceof Report))
 							return;
 
-						TableRow report = (TableRow) arg0.data;
+						Report report = (Report) arg0.data;
 
 						mainPanel.setEnabled(true);
 						
@@ -137,6 +160,7 @@ public class MainMenu {
 						importReport.setEnabled(true);
 					}
 				});
+				
 				dialog.open();
 			}
 			
@@ -177,40 +201,37 @@ public class MainMenu {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				ReportListDialog dialog = new ReportListDialog(shell, "Reports", "Import a report");
+				
+				ReportListDialog dialog = new ReportListDialog(shell, "Import a report");
 				dialog.setButtonText("Import");
 				dialog.setListener(new Listener() {
 					
 					@Override
 					public void handleEvent(Event arg0) {
-						
+
 						if (!(arg0.data instanceof TableRow))
 							return;
 
 						// import the report into the opened report
 						TableRow report = (TableRow) arg0.data;
-						
+
 						// copy the report summarized information into the opened one
-						try {
-							
-							TableSchema childSchema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
-							
-							
-							dialog.getDialog().setCursor(dialog.getDialog()
-									.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
-							
-							TableImporter.copyByParent(childSchema, 
-									report, mainPanel.getOpenedReport());
-							
-							mainPanel.refresh();
-							
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						finally {
-							dialog.getDialog().setCursor(dialog.getDialog()
-									.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
-						}
+						TableSchema childSchema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
+
+						if (childSchema == null)
+							return;
+
+						dialog.getDialog().setCursor(dialog.getDialog()
+								.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+
+						TableImporter.copyByParent(childSchema, 
+								report, mainPanel.getOpenedReport());
+
+						mainPanel.refresh();
+
+						dialog.getDialog().setCursor(dialog.getDialog()
+								.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+
 					}
 				});
 				
@@ -225,8 +246,152 @@ public class MainMenu {
 		this.sendReport.setText("Send report");
 		this.sendReport.setEnabled(false);
 		
+		this.sendReport.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				TableRow report = mainPanel.getOpenedReport();
+				
+				if (report == null) {
+					System.err.println("Cannot send opened report since no report is currently opened!");
+					return;
+				}
+				
+				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+				
+				String title = "Success";
+				String message = "Report successfully sent to the dcf.";
+				int icon = SWT.ICON_INFORMATION;
+				
+				try {
+
+					FileActions.exportAndSendReport(report);
+					mainPanel.refresh();
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+					
+					title = "Error";
+					message = "Errors occurred during the export of the report.";
+					icon = SWT.ICON_ERROR;
+					
+				} catch (SOAPException e) {
+					e.printStackTrace();
+					
+					title = "Connection error";
+					message = "Cannot connect to the DCF. Please check your connections and credentials.";
+					icon = SWT.ICON_ERROR;
+					
+				} catch (SAXException | ParserConfigurationException e) {
+					e.printStackTrace();
+					
+					title = "Error";
+					message = "Errors occurred during the creation of the report. Please check if the " 
+							+ AppPaths.MESSAGE_GDE2_XSD + " file is correct. Received error: " + e.getMessage();
+					icon = SWT.ICON_ERROR;
+					
+				} catch (SendMessageException e) {
+					e.printStackTrace();
+					
+					title = "Error";
+					message = "Send message failed. Received error: " + e.getMessage();
+					icon = SWT.ICON_ERROR;
+				}
+
+				finally {
+					shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+				}
+				
+				// warn the user
+				Warnings.warnUser(shell, title, message, icon);
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
+		
 		this.downloadReport = new MenuItem(fileMenu, SWT.PUSH);
 		this.downloadReport.setText("Download report");
+		this.downloadReport.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				DownloadReportDialog dialog = new DownloadReportDialog(shell);
+				
+				Dataset selectedDataset = dialog.getSelectedDataset();
+				
+				if (selectedDataset == null)
+					return;
+				
+				// populate the dataset with the dcf information
+				try {
+					
+					shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+					
+					Dataset populatedDataset = selectedDataset.populate();
+					
+					ReportImporter importer = new ReportImporter(populatedDataset);
+					importer.start();
+					
+				} catch (SOAPException e) {
+					e.printStackTrace();
+					Warnings.warnUser(shell, "Error", "Check your connection and credentials");
+				}
+				finally {
+					shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+				}
+			}
+		});
+		
+
+		if (DebugConfig.debug) {
+			MenuItem exportReport = new MenuItem(fileMenu, SWT.PUSH);
+			exportReport.setText("[DEBUG] Export report");
+			exportReport.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					try {
+						FileActions.exportReport(mainPanel.getOpenedReport(), 
+								"report " + System.currentTimeMillis() + ".xml");
+					} catch (IOException | ParserConfigurationException | SAXException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {}
+			});
+			
+			MenuItem deleteReport = new MenuItem(fileMenu, SWT.PUSH);
+			deleteReport.setText("[DEBUG] Delete report");
+			deleteReport.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					ReportListDialog dialog = new ReportListDialog(shell, "Delete a report");
+					dialog.setButtonText("Delete");
+					dialog.setListener(new Listener() {
+						
+						@Override
+						public void handleEvent(Event arg0) {
+							
+							if (!(arg0.data instanceof Report))
+								return;
+
+							Report report = (Report) arg0.data;
+							report.delete();
+						}
+					});
+					dialog.open();
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {}
+			});
+		}
+		
 
 		// open preferences
 		this.preferences.addSelectionListener(new SelectionListener() {

@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <partLists xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<selectionList id="BSE">
-		<selection code="$F02.A06AM">
+		<selection code="F02.A06AM">
 			<description>Brain</description>
 		</selection>
-		<selection code="$F02.A0CJN">
+		<selection code="F02.A0CJN">
 			<description>Lymph node</description>
 		</selection>
-		<selection code="$F02.A16HJ">
+		<selection code="F02.A16HJ">
 			<description>Tonsil</description>
 		</selection>
 	</selectionList>
 	<selectionList id="SCRAPIE">
-		<selection code="$F02.A06AM">
+		<selection code="F02.A06AM">
 			<description>Brain</description>
 		</selection>
-		<selection code="$F02.A0CJN">
+		<selection code="F02.A0CJN">
 			<description>Lymph node</description>
 		</selection>
-		<selection code="$F02.A16HJ">
+		<selection code="F02.A16HJ">
 			<description>Tonsil</description>
 		</selection>
 	</selectionList>
 	<selectionList id="CWD">
-		<selection code="$F02.A06AM">
+		<selection code="F02.A06AM">
 			<description>Brain</description>
 		</selection>
-		<selection code="$F02.A0CJN">
+		<selection code="F02.A0CJN">
 			<description>Lymph node</description>
 		</selection>
-		<selection code="$F02.A16HJ">
+		<selection code="F02.A16HJ">
 			<description>Tonsil</description>
 		</selection>
 	</selectionList>

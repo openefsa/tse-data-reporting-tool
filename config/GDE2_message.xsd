@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!--Compound data element definition-->
+	<!--Compound data element are mixed element supporting both the '#', '=', '$' separated notation and the xml notation for the individually reported values-->
+	<!--The '=' sign can be replaced by the '.' sign if the code of the attribute is used instead of the name of the attribute (e.g., FoodEx2)-->
+	<xs:complexType name="SSDCompoundType" mixed="true">
+		<xs:annotation>
+			<xs:documentation>Contain one or many simple elements which are named attributes of the compound element.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="base" type="xs:anySimpleType" id="CT.01" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>Base term</xs:appinfo>
+					<xs:documentation>one attribute can be defined as the default attribute of the compound element: this attribute is referred to as base term.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="value" id="CT.02" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>Attributes/Facets</xs:appinfo>
+					<xs:documentation>Each attribute can have values which can be text
+values, numeric values or catalogue values.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anySimpleType">
+							<xs:attribute name="code" id="CTA.01">
+								<xs:annotation>
+									<xs:appinfo>Attributes/Facets reference code</xs:appinfo>
+									<xs:documentation>Code of the attribute to distinguish the different attributes inside a compound element. </xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="32"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+							<xs:attribute name="name" id="CTA.02">
+								<xs:annotation>
+									<xs:appinfo>Attributes/Facets reference name</xs:appinfo>
+									<xs:documentation>Name of the attribute to distinguish the different attributes inside a compound element. </xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="32"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!--Repeatable data element definition-->
+	<!--Repeatable data element are mixed element supporting both the '$' separated notation and the xml notation for the individually reported values-->
+	<xs:complexType name="SSDRepeatableType" mixed="true">
+		<xs:annotation>
+			<xs:documentation>Contain one or many instances of a specified element value</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="value" type="xs:anySimpleType" id="RV.01" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>Value</xs:appinfo>
+					<xs:documentation>Single value instance</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!--Message structure part-->
+	<xs:element name="message" id="MSG">
+		<xs:annotation>
+			<xs:documentation>Data Message</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="header" type="headerType" id="MH" minOccurs="0">
+					<xs:annotation>
+						<xs:appinfo>Message header</xs:appinfo>
+						<xs:documentation>The message header contains technical information for the transmission of the data</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="payload" maxOccurs="unbounded" id="PL">
+					<xs:annotation>
+						<xs:appinfo>Payload</xs:appinfo>
+						<xs:documentation>The data transmission part of the message contains the data for a specific data collection.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="operation" type="operationType" id="OP">
+								<xs:annotation>
+									<xs:appinfo>Operation</xs:appinfo>
+									<xs:documentation>Section specifying the operation to be performed with the transmitted dataset</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="dataset" type="xs:anyType" id="D" minOccurs="0">
+								<xs:annotation>
+									<xs:appinfo>Dataset</xs:appinfo>
+									<xs:documentation>Set of records to be transmitted together and identified by a single dataset identifier. The structure of the contained records is related to the specific data model (e.g., SSD2).</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="headerType">
+		<xs:annotation>
+			<xs:documentation>Complex type message header</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="type" fixed="dcfmsg" id="MH.01">
+				<xs:annotation>
+					<xs:appinfo>Message type</xs:appinfo>
+					<xs:documentation>Type of transmission. For transmissions to EFSA with GDE2 protocol, the value is fixed: 'dcfmsg'.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20"/>
+						<xs:enumeration value="dcfmsg"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="version" default="2.0" id="MH.02">
+				<xs:annotation>
+					<xs:appinfo>Message version</xs:appinfo>
+					<xs:documentation>Message version supported in this transmission. For transmissions to EFSA with GDE2 protocol, the value is fixed: '2.0'.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="senderMessageId" id="MH.03">
+				<xs:annotation>
+					<xs:appinfo>Message identifier from the sender</xs:appinfo>
+					<xs:documentation>Unique identifier for the file transmitted by the sender (the file name could be used if unique).</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="senderOrgCode" id="MH.04">
+				<xs:annotation>
+					<xs:appinfo>Sender organisation code</xs:appinfo>
+					<xs:documentation>Code representing the organisation uploading the payloads. It shall contain the code of the organization as present in the receiver system (e.g., the code of the organization in the DCF).</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="receiverOrgCode" id="MH.05">
+				<xs:annotation>
+					<xs:appinfo>Receiver organisation code</xs:appinfo>
+					<xs:documentation>Code representing the organisation receiving the payloads (e.g., 'EFSA')</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="operationType">
+		<xs:annotation>
+			<xs:documentation>Specify the operation to be performed on the dataset</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="opType" id="OP.01">
+				<xs:annotation>
+					<xs:appinfo>Type of operation</xs:appinfo>
+					<xs:documentation>Operation to be performed on the dataset. Possible values are:
+-Insert
+-Replace
+-Partial-replace
+-Partial-delete
+-Submit
+-Accept dwh
+-Reject
+-Confirm</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20"/>
+						<xs:enumeration value="Insert"/>
+						<xs:enumeration value="Replace"/>
+						<xs:enumeration value="Partial-replace"/>
+						<xs:enumeration value="Partial-delete"/>
+						<xs:enumeration value="Submit"/>
+						<xs:enumeration value="Accept dwh"/>
+						<xs:enumeration value="Reject"/>
+						<xs:enumeration value="Confirm"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="senderDatasetId" id="OP.02" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>Id of the dataset in the sender database</xs:appinfo>
+					<xs:documentation>It identifies univocally the dataset in the sender database. It is created and maintained by the sender.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="datasetId" id="OP.03" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>Dataset ID</xs:appinfo>
+					<xs:documentation>It identifies univocally the dataset in the receiver database.
+It is mandatory in case opType is not 'Insert', shall be absent otherwise.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="dcCode" id="OP.04">
+				<xs:annotation>
+					<xs:appinfo>Data collection code</xs:appinfo>
+					<xs:documentation>It identifies univocally the data collection. If the target data collection contains partitions (i.e., sub-data collections identified by a '.' in the code), the sender should report the complete code (e.g. 'MOPER.2013').</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="dcTable" id="OP.05" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>Data collection table</xs:appinfo>
+					<xs:documentation>It identifies the table of the data collection where data should be delivered. Mandatory only for data collection where multiple tables are available. </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="30"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="orgCode" id="OP.06" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>Organisation code</xs:appinfo>
+					<xs:documentation>It identifies the organisation providing the dataset. It shall contain the code of the organization as present in the receiver system (e.g., the code of the organization in the DCF). Mandatory if the user can provide data for multiple organisations.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="opCom" id="OP.07" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>Operation comment</xs:appinfo>
+					<xs:documentation>Text comment for this operation.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

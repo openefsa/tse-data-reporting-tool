@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
+import app_config.DebugConfig;
 import app_config.PropertiesReader;
 import html_viewer.HtmlViewer;
 import table_database.Database;
@@ -17,8 +18,8 @@ import table_database.TableDao;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
-import tse_config.PreferencesDialog;
-import tse_config.SettingsDialog;
+import tse_options.PreferencesDialog;
+import tse_options.SettingsDialog;
 import user.User;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
@@ -166,9 +167,11 @@ public class StartUI {
 	    shell.open();
 	    
 	    // open also an help view for showing general help
-	    File helpFile = new File(AppPaths.HELP_FOLDER + PropertiesReader.getStartupHelpFileName());
-	    HtmlViewer help = new HtmlViewer();
-	    //TODO help.open(helpFile);
+	    if (!DebugConfig.debug) {
+		    File helpFile = new File(AppPaths.HELP_FOLDER + PropertiesReader.getStartupHelpFileName());
+		    HtmlViewer help = new HtmlViewer();
+		    help.open(helpFile);
+	    }
 		
 		// Event loop
 		while (!shell.isDisposed()) {

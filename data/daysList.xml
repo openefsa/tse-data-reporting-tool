@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<daysList>
+	<selectionList>
+		<selection code="01">
+			<description>1</description>
+		</selection>
+		<selection code="02">
+			<description>2</description>
+		</selection>
+		<selection code="03">
+			<description>3</description>
+		</selection>
+		<selection code="04">
+			<description>4</description>
+		</selection>
+		<selection code="05">
+			<description>5</description>
+		</selection>
+		<selection code="06">
+			<description>6</description>
+		</selection>
+		<selection code="07">
+			<description>7</description>
+		</selection>
+		<selection code="08">
+			<description>8</description>
+		</selection>
+		<selection code="09">
+			<description>9</description>
+		</selection>
+		<selection code="10">
+			<description>10</description>
+		</selection>
+		<selection code="11">
+			<description>11</description>
+		</selection>
+		<selection code="12">
+			<description>12</description>
+		</selection>
+		<selection code="13">
+			<description>13</description>
+		</selection>
+		<selection code="14">
+			<description>14</description>
+		</selection>
+		<selection code="15">
+			<description>15</description>
+		</selection>
+		<selection code="16">
+			<description>16</description>
+		</selection>
+		<selection code="17">
+			<description>17</description>
+		</selection>
+		<selection code="18">
+			<description>18</description>
+		</selection>
+		<selection code="19">
+			<description>19</description>
+		</selection>
+		<selection code="20">
+			<description>20</description>
+		</selection>
+		<selection code="21">
+			<description>21</description>
+		</selection>
+		<selection code="22">
+			<description>22</description>
+		</selection>
+		<selection code="23">
+			<description>23</description>
+		</selection>
+		<selection code="24">
+			<description>24</description>
+		</selection>
+		<selection code="25">
+			<description>25</description>
+		</selection>
+		<selection code="26">
+			<description>26</description>
+		</selection>
+		<selection code="27">
+			<description>27</description>
+		</selection>
+		<selection code="28">
+			<description>28</description>
+		</selection>
+		<selection code="29">
+			<description>29</description>
+		</selection>
+		<selection code="30">
+			<description>30</description>
+		</selection>
+		<selection code="31">
+			<description>31</description>
+		</selection>
+	</selectionList>
+</daysList>

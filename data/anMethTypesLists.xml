@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<anMethTypesLists>	
+	<selectionList id="ALL">
+		<selection code="AT06A">
+			<description>Screening</description>
+		</selection>
+		<selection code="AT08A">
+			<description>Confirmatory</description>
+		</selection>
+		<selection code="AT12A">
+			<description>Discriminatory</description>
+		</selection>
+		<selection code="AT13A">
+			<description>Molecular characterisation/Genotyping</description>
+		</selection>
+	</selectionList>
+	<selectionList id="RAPID">
+		<selection code="AT06A">
+			<description>Screening</description>
+		</selection>			
+	</selectionList>
+	<selectionList id="TG006A">
+		<selection code="AT06A">
+			<description>Screening</description>
+		</selection>
+		<selection code="AT08A">
+			<description>Confirmatory</description>
+		</selection>		
+	</selectionList>
+</anMethTypesLists>
