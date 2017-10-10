@@ -1,14 +1,20 @@
 package tse_summarized_information;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import table_database.TableDao;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
+import tse_case_report.CaseReport;
 import tse_config.CatalogLists;
 import tse_config.CustomStrings;
+import tse_report.TseTableRow;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.XmlLoader;
 
-public class SummarizedInfo extends TableRow {
+public class SummarizedInfo extends TableRow implements TseTableRow {
 
 	public SummarizedInfo(TableRow row) {
 		super(row);
@@ -45,5 +51,27 @@ public class SummarizedInfo extends TableRow {
 				.getElementByCode(species).getListId();
 		
 		return listId;
+	}
+	
+	/**
+	 * Get all the cases
+	 * @return
+	 */
+	public Collection<TseTableRow> getChildren() {
+		
+		Collection<TseTableRow> output = new ArrayList<>();
+		
+		TableSchema caseSchema = TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
+		
+		TableDao dao = new TableDao(caseSchema);
+		Collection<TableRow> children = dao.getByParentId(CustomStrings.SUMMARIZED_INFO_SHEET, 
+				this.getId(), "desc");
+		
+		// create it as case report
+		for (TableRow child : children) {
+			output.add(new CaseReport(child));
+		}
+		
+		return output;
 	}
 }

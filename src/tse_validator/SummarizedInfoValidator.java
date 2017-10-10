@@ -72,7 +72,23 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		return SampleCheck.OK;
 	}
 	
-	public int getWarningLevel(TableRow row) {
+	/**
+	 * Get the warning level of the current row
+	 * @param row
+	 * @return
+	 */
+	public int getOverallWarningLevel(TableRow row) {
+		int parentLevel = super.getWarningLevel(row);
+		int level = this.getLevel(row);
+		
+		return Math.max(parentLevel, level);
+	}
+	
+	/**
+	 * Get the warning level for the current row
+	 * just for the specific 
+	 */
+	private int getLevel(TableRow row) {
 		
 		int level = 0;
 		
@@ -94,7 +110,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		
 		String parentText = super.getText(row);
 		int parentLevel = super.getWarningLevel(row);
-		int level = this.getWarningLevel(row);
+		int level = this.getLevel(row);
 		
 		// if parent has bigger severity
 		// use its text
@@ -129,7 +145,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		Color color = super.getForeground(row);
 
 		int parentLevel = super.getWarningLevel(row);
-		int level = this.getWarningLevel(row);
+		int level = this.getLevel(row);
 		
 		if (parentLevel > level)
 			return color;

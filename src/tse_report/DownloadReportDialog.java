@@ -6,6 +6,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.PropertiesReader;
+import dataset.Dataset;
 import dataset.DatasetList;
 import table_dialog.DatasetListDialog;
 import webservice.GetDatasetList;
@@ -16,6 +17,8 @@ import webservice.GetDatasetList;
  *
  */
 public class DownloadReportDialog extends DatasetListDialog {
+	
+	private DatasetList allDatasets;
 	
 	public DownloadReportDialog(Shell parent) {
 		
@@ -39,11 +42,33 @@ public class DownloadReportDialog extends DatasetListDialog {
 		GetDatasetList req = new GetDatasetList(PropertiesReader.getDataCollectionCode());
 		try {
 			
-			return req.getList().getDownloadableDatasets();
+			this.allDatasets = req.getList();
+			return allDatasets.getDownloadableDatasets();
 			
 		} catch (SOAPException e) {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	/**
+	 * Get all the versions of the dataset
+	 * @return
+	 */
+	public DatasetList getSelectedDatasetVersions() {
+
+		Dataset dataset = getSelectedDataset();
+		
+		if (dataset == null) {
+			return null;
+		}
+		
+		String senderId = dataset.getDecomposedSenderId();
+		
+		if (senderId == null)
+			return null;
+		
+		// get all the versions of the dataset
+		return this.allDatasets.filterByDecomposedSenderId(senderId);
 	}
 }

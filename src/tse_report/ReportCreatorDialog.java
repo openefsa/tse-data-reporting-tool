@@ -4,25 +4,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.xml.soap.SOAPException;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
-import app_config.PropertiesReader;
 import dataset.Dataset;
-import dataset.DatasetList;
 import dataset.DatasetStatus;
-import table_database.TableDao;
-import table_dialog.PanelBuilder;
+import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_dialog.TableDialog;
 import table_relations.Relation;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 import tse_validator.SimpleRowValidatorLabelProvider;
-import webservice.GetDatasetList;
 import webservice.MySOAPException;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
@@ -71,63 +65,7 @@ public class ReportCreatorDialog extends TableDialog {
 
 		rows.add(row);
 		return rows;
-	}
-
-	/**
-	 * Check if the current report is already present in the database
-	 * @param schema
-	 * @param currentReport
-	 * @return
-	 */
-	private boolean isLocallyPresent(Report currentReport) {
-		
-		String year = currentReport.getYear();
-		String month = currentReport.getMonth();
-		String country = currentReport.getCountry();
-		
-		// check if the report is already in the db
-		TableDao dao = new TableDao(currentReport.getSchema());
-		for (TableRow row : dao.getAll()) {
-			
-			Report report = new Report(row);
-			
-			String year2 = report.getYear();
-			String month2 = report.getMonth();
-			String country2 = report.getCountry();
-			
-			// if same month and year and country we have the same
-			if (year.equals(year2) && month.equals(month2) && country.equals(country2))
-				return true;
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Check if the current report is already present in the DCF
-	 * by using the sender id attribute. If present the method
-	 * returns the already present dataset
-	 * @param report
-	 * @return
-	 * @throws SOAPException
-	 * @throws ReportException 
-	 */
-	private DatasetList isRemotelyPresent(Report report, String dcCode) throws MySOAPException, ReportException {
-		
-		// check if the Report is in the DCF
-		GetDatasetList request = new GetDatasetList(dcCode);
-
-		DatasetList datasets = request.getList();
-		
-		String senderId = report.getSenderId();
-		
-		if (senderId == null) {
-			throw new ReportException("Cannot retrieve the report sender id for " + report);
-		}
-		
-		return datasets.filterBySenderId(senderId);
-	}
-
+	}	
 	
 	@Override
 	public boolean apply(TableSchema schema, Collection<TableRow> rows, TableRow selectedRow) {
@@ -136,7 +74,7 @@ public class ReportCreatorDialog extends TableDialog {
 		
 		// if the report is already present
 		// show error message
-		if (isLocallyPresent(report)) {
+		if (report.isLocallyPresent()) {
 			warnUser("Error", "The report already exists. Please open it.");
 			return false;
 		}
@@ -146,11 +84,11 @@ public class ReportCreatorDialog extends TableDialog {
 		
 		String title = null;
 		String message = null;
-		DatasetList oldReports = new DatasetList();
+		Dataset oldReport = null;
 		
 		try {
 			
-			oldReports = isRemotelyPresent(report, PropertiesReader.getDataCollectionCode());
+			oldReport = report.getDataset();
 			
 		} catch (MySOAPException e) {
 			
@@ -183,12 +121,9 @@ public class ReportCreatorDialog extends TableDialog {
 			return false;
 		}
 		
-		// if at least one report already exists
+		// if the report already exists
 		// with the selected sender dataset id
-		if (!oldReports.isEmpty()) {
-
-			// NOTE: we consider just the first report (the most recent)
-			Dataset oldReport = oldReports.get(0);
+		if (oldReport != null) {
 			
 			// check if there are errors
 			String errorMessage = getErrorMessage(oldReport);
@@ -270,13 +205,7 @@ public class ReportCreatorDialog extends TableDialog {
 		
 		return message;
 	}
-	
-	public class ReportException extends Exception {
-		private static final long serialVersionUID = 1L;
-		public ReportException(String text) {
-			super(text);
-		}
-	}
+
 
 	@Override
 	public Menu createMenu() {
@@ -297,7 +226,7 @@ public class ReportCreatorDialog extends TableDialog {
 	}
 
 	@Override
-	public void addWidgets(PanelBuilder viewer) {
+	public void addWidgets(DialogBuilder viewer) {
 
 		viewer.addHelp("Creation of a new report")
 			.addTable(CustomStrings.REPORT_SHEET, true);

@@ -3,8 +3,6 @@ package tse_summarized_information;
 import java.io.IOException;
 import java.util.Collection;
 
-import javax.xml.soap.SOAPException;
-
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -12,13 +10,17 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
-import acknowledge.Ack;
 import dataset.DatasetStatus;
+import global_utils.Warnings;
 import table_database.TableDao;
-import table_dialog.PanelBuilder;
+import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_relations.Relation;
 import table_skeleton.TableColumnValue;
@@ -27,9 +29,11 @@ import tse_case_report.CaseReportDialog;
 import tse_components.TableDialogWithMenu;
 import tse_config.CatalogLists;
 import tse_config.CustomStrings;
+import tse_main.UIActions;
 import tse_report.Report;
+import tse_report.ReportException;
 import tse_validator.SummarizedInfoValidator;
-import webservice.GetAck;
+import webservice.MySOAPException;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.Selection;
@@ -233,58 +237,10 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		}
 	}
 	
-	/**
-	 * Get the state of the current report
-	 * @return
-	 * @throws SOAPException
-	 */
-	private Ack getReportAck() throws SOAPException {
-		
-		if (report == null) {
-			return null;
-		}
-
-		// make get ack request
-		String messageId = report.getMessageId();
-		
-		// if no message id => the report was never sent
-		if (messageId.isEmpty()) {
-			return null;
-		}
-		
-		GetAck req = new GetAck(messageId);
-		
-		// get state
-		Ack ack = req.getAck();
-
-		// if we have something in the ack
-		if (ack.isCorrect()) {
-
-			// save id
-			String datasetId = ack.getLog().getDatasetId();
-			report.setDatasetId(datasetId);
-			
-			// save status
-			String datasetStatus = ack.getLog().getDatasetStatus().getStatus();
-			report.setDatasetStatus(datasetStatus);
-			
-			// permanently save data
-			report.update();
-			
-			System.out.println("Ack successful for message id " + messageId + ". Retrieved datasetId=" 
-					+ datasetId + " with status=" + datasetStatus);
-		}
-		
-		return ack;
-	}
-	
 	@Override
 	public void setParentFilter(TableRow parentFilter) {
 		
 		this.report = new Report(parentFilter);
-		
-		// enable/disable the selector when a report is opened/closed
-		setRowCreationEnabled(parentFilter != null);
 		
 		// update ui with report data
 		updateUI();
@@ -303,6 +259,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	@Override
 	public void clear() {
 		super.clear();
+		this.report = null;
 		initUI(); // report was closed => update ui
 	}
 
@@ -345,51 +302,160 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	}
 
 	@Override
-	public void addWidgets(PanelBuilder viewer) {
+	public void addWidgets(DialogBuilder viewer) {
 		
 		SelectionListener refreshStateListener = new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+
+				// if no report opened, stop
+				if (report == null)
+					return;
+
+				UIActions.refreshStatus(getDialog(), report, new Listener() {
+
+					@Override
+					public void handleEvent(Event arg0) {
+						updateUI();
+					}
+				});
+			}
+		};
+		
+		SelectionListener editListener = new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
 				
 				// if no report opened, stop
-				if (getParentFilter() == null)
+				if (report == null)
 					return;
 				
-				Cursor wait = getDialog().getDisplay().getSystemCursor(SWT.CURSOR_WAIT);
-				getDialog().setCursor(wait);
-
+				int val = warnUser("Warning", 
+						"The report editing will be enabled, but be aware this will overwrite the current data.", 
+						SWT.ICON_WARNING | SWT.YES | SWT.NO);
+				
+				if (val == SWT.NO)
+					return;
+				
+				// yes, overwrite
+				report.makeEditable();
+				report.update();
+				
+				// update the ui accordingly
+				updateUI();
+			}
+		};
+		
+		SelectionListener sendListener = new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				if (report == null)
+					return;
+				
 				try {
-					
-					Ack ack = getReportAck();
-					
-					if (ack == null)
-						warnUser("Error", "The current report cannot be refreshed, since it was never sent to the dcf.");
-					else {
-						
-						// update the ui accordingly
-						updateUI();
-						
-						warnUser("Acknowledgment received", 
-								"Current report state: " + ack.getState(), SWT.ICON_INFORMATION);
-					}
-					
-				} catch (SOAPException e) {
+					UIActions.exportAndSendReport(getDialog(), report);
+				} catch (MySOAPException e) {
 					e.printStackTrace();
-					warnUser("Error", "Check your credentials or your internet connection");
+					UIActions.showSOAPWarning(getDialog(), e.getError());
+				} catch (ReportException e) {
+					e.printStackTrace();
+					Warnings.warnUser(getDialog(), "Error", "Something went wrong, "
+							+ "please check if the report senderDatasetId is set");
 				}
 				
-				Cursor arrow = getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW);
-				getDialog().setCursor(arrow);
+				getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+			}
+		};
+		
+		SelectionListener rejectListener = new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				if (report == null)
+					return;
+				
+				// reject the report and update the ui
+				UIActions.reject(getDialog(), report, new Listener() {
+					
+					@Override
+					public void handleEvent(Event arg0) {
+						updateUI();
+					}
+				});
+			}
+		};
+		
+		SelectionListener submitListener = new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				if (report == null)
+					return;
+				
+				// reject the report and update the ui
+				UIActions.submit(getDialog(), report, new Listener() {
+					
+					@Override
+					public void handleEvent(Event arg0) {
+						updateUI();
+					}
+				});
+			}
+		};
+		
+		SelectionListener displayAckListener = new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				if (report == null)
+					return;
+				
+				UIActions.displayAck(getDialog(), report);
+			}
+		};
+		
+		SelectionListener amendListener = new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				if (report == null)
+					return;
+				
+				UIActions.amend(getDialog(), report, new Listener() {
+					
+					@Override
+					public void handleEvent(Event arg0) {
+						Report newReportVersion = (Report) arg0.data;
+						setParentFilter(newReportVersion);
+					}
+				});
 			}
 		};
 		
 		viewer.addHelp("TSEs monitoring data (aggregated level)")
-			.addLabel("reportLabel")
-			.addLabel("statusLabel")
-			.addLabel("messageIdLabel")
-			.addLabel("datasetIdLabel")
-			.addButton("refreshBtn", "Refresh status", refreshStateListener)
-			.addRowCreator("Add data related to monitoring of:", CatalogLists.TSE_LIST)
+		
+			.addComposite("labelsComp", new GridLayout(1, false), null)
+			.addLabelToComposite("reportLabel", "labelsComp")
+			.addLabelToComposite("statusLabel", "labelsComp")
+			.addLabelToComposite("messageIdLabel", "labelsComp")
+			.addLabelToComposite("datasetIdLabel", "labelsComp")
+			
+			.addComposite("panel", new GridLayout(2, false), null)
+			
+			.addGroupToComposite("rowCreatorComp", "panel", "Add record", new GridLayout(1, false), null)
+			.addRowCreatorToComposite("rowCreatorComp", "Add data related to monitoring of:", CatalogLists.TSE_LIST)
+			
+			.addGroupToComposite("buttonsComp", "panel", "Toolbar", new GridLayout(7, false), null)
+			
+			.addButtonToComposite("editBtn", "buttonsComp", "Edit", editListener)
+			.addButtonToComposite("sendBtn", "buttonsComp", "Send", sendListener)
+			.addButtonToComposite("submitBtn", "buttonsComp", "Submit", submitListener)
+			.addButtonToComposite("amendBtn", "buttonsComp", "Amend", amendListener)
+			.addButtonToComposite("rejectBtn", "buttonsComp", "Reject", rejectListener)
+			.addButtonToComposite("refreshBtn", "buttonsComp", "Refresh status", refreshStateListener)
+			.addButtonToComposite("displayAckBtn", "buttonsComp", "Display ack", displayAckListener)
+			
 			.addTable(CustomStrings.SUMMARIZED_INFO_SHEET, true);
 
 		initUI();
@@ -400,10 +466,51 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	 */
 	private void initUI() {
 		
-		PanelBuilder panel = getPanelBuilder();
+		DialogBuilder panel = getPanelBuilder();
 		
 		// disable refresh until a report is opened
 		panel.setEnabled("refreshBtn", false);
+		panel.setEnabled("editBtn", false);
+		panel.setEnabled("sendBtn", false);
+		panel.setEnabled("rejectBtn", false);
+		panel.setEnabled("submitBtn", false);
+		panel.setEnabled("amendBtn", false);
+		panel.setEnabled("displayAckBtn", false);
+		
+		// add image to edit button
+		Image editImage = new Image(Display.getCurrent(), this.getClass()
+				.getClassLoader().getResourceAsStream("edit-icon.png"));
+		panel.addButtonImage("editBtn", editImage);
+		
+		// add image to send button
+		Image sendImage = new Image(Display.getCurrent(), this.getClass()
+				.getClassLoader().getResourceAsStream("send-icon.png"));
+		panel.addButtonImage("sendBtn", sendImage);
+		
+		// add image to refresh button
+		Image submitImage = new Image(Display.getCurrent(), this.getClass()
+				.getClassLoader().getResourceAsStream("submit-icon.png"));
+		panel.addButtonImage("submitBtn", submitImage);
+		
+		// add image to send button
+		Image amendImage = new Image(Display.getCurrent(), this.getClass()
+				.getClassLoader().getResourceAsStream("amend-icon.png"));
+		panel.addButtonImage("amendBtn", amendImage);
+		
+		// add image to send button
+		Image rejectImage = new Image(Display.getCurrent(), this.getClass()
+				.getClassLoader().getResourceAsStream("reject-icon.png"));
+		panel.addButtonImage("rejectBtn", rejectImage);
+		
+		// add image to send button
+		Image displayAckImage = new Image(Display.getCurrent(), this.getClass()
+				.getClassLoader().getResourceAsStream("displayAck-icon.png"));
+		panel.addButtonImage("displayAckBtn", displayAckImage);
+		
+		// add image to refresh button
+		Image refreshImage = new Image(Display.getCurrent(), this.getClass()
+				.getClassLoader().getResourceAsStream("refresh-icon.png"));
+		panel.addButtonImage("refreshBtn", refreshImage);
 		
 		panel.setLabelText("reportLabel", "Monthly report: no report is currently opened!");
 		panel.setLabelText("statusLabel", "Status: -");
@@ -417,7 +524,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	 */
 	public void updateUI() {
 		
-		String reportMonth = report.getMonth();
+		String reportMonth = report.getLabel(CustomStrings.REPORT_MONTH);
 		String reportYear = report.getYear();
 		String status = report.getDatasetStatus().getStatus();
 		String messageId = report.getMessageId();
@@ -428,6 +535,12 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			.append(reportMonth)
 			.append(" ")
 			.append(reportYear);
+		System.out.println(report.getSenderId());
+		// add version if possible
+		if (report.getVersion() != null) {
+			reportRow.append(" revision ")
+				.append(report.getVersion());
+		}
 		
 		StringBuilder statusRow = new StringBuilder("Status: ");
 		statusRow.append(checkField(status, DatasetStatus.DRAFT.getStatus()));
@@ -438,19 +551,25 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		StringBuilder datasetRow = new StringBuilder("DCF Dataset ID: ");
 		datasetRow.append(checkField(datasetId, "not assigned yet"));
 		
-		PanelBuilder panel = getPanelBuilder();
+		DialogBuilder panel = getPanelBuilder();
 		panel.setLabelText("reportLabel", reportRow.toString());
 		panel.setLabelText("statusLabel", statusRow.toString());
 		panel.setLabelText("messageIdLabel", messageRow.toString());
 		panel.setLabelText("datasetIdLabel", datasetRow.toString());
-		
-		panel.setEnabled("refreshBtn", !messageId.isEmpty());
 		
 		// enable the table only if report status if correct
 		DatasetStatus datasetStatus = DatasetStatus.fromString(status);
 		boolean editableReport = datasetStatus.isEditable();
 		panel.setTableEditable(editableReport);
 		panel.setRowCreatorEnabled(editableReport);
+		
+		panel.setEnabled("editBtn", datasetStatus.canBeMadeEditable());
+		panel.setEnabled("sendBtn", datasetStatus.canBeSent());
+		panel.setEnabled("amendBtn", true);//datasetStatus.canBeAmended());
+		panel.setEnabled("submitBtn", datasetStatus.canBeSubmitted());
+		panel.setEnabled("rejectBtn", datasetStatus.canBeRejected());
+		panel.setEnabled("displayAckBtn", true);
+		panel.setEnabled("refreshBtn", datasetStatus.canBeRefreshed());
 	}
 	
 	/**

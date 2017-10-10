@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 import table_database.TableDao;
 import table_dialog.RowValidatorLabelProvider;
 import table_dialog.TableDialog;
-import table_dialog.PanelBuilder;
+import table_dialog.DialogBuilder;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 import xlsx_reader.TableSchema;
@@ -78,7 +78,7 @@ public class ReportListDialog extends TableDialog {
 	}
 
 	@Override
-	public void addWidgets(PanelBuilder viewer) {
+	public void addWidgets(DialogBuilder viewer) {
 		viewer.addHelp(getDialog().getText())
 			.addTable(CustomStrings.REPORT_SHEET, false);
 	}

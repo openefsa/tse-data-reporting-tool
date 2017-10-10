@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Shell;
 import app_config.PropertiesReader;
 import dataset.Dataset;
 import dataset.DatasetList;
-import table_dialog.PanelBuilder;
+import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
@@ -112,15 +112,16 @@ public class SettingsDialog extends OptionsDialog {
 					
 					// change the cursor to old cursor
 					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
-					title = "Error";
 					
 					switch(e.getError()) {
 					case NO_CONNECTION:
-						message = "Connection error. Check your connection.";
+						title = "Connection error";
+						message = "It was not possible to connect to the DCF, please check your internet connection.";
 						break;
 					case UNAUTHORIZED:
 					case FORBIDDEN:
-						message = "Authentication error. Check your credentials.";
+						title = "Wrong credentials";
+						message = "Your credentials are incorrect. Please check them in the Settings.";
 						break;
 					}
 					
@@ -174,7 +175,7 @@ public class SettingsDialog extends OptionsDialog {
 	}
 
 	@Override
-	public void addWidgets(PanelBuilder viewer) {
+	public void addWidgets(DialogBuilder viewer) {
 		viewer.addHelp("User settings")
 			.addTable(CustomStrings.SETTINGS_SHEET, true);
 	}

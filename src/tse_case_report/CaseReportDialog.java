@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import dataset.DatasetStatus;
 import table_database.TableDao;
-import table_dialog.PanelBuilder;
+import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_relations.Relation;
 import table_skeleton.TableColumnValue;
@@ -165,7 +165,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	}
 
 	private void updateUI() {
-		PanelBuilder panel = getPanelBuilder();
+		DialogBuilder panel = getPanelBuilder();
 		String status = report.getLabel(CustomStrings.REPORT_STATUS);
 		DatasetStatus datasetStatus = DatasetStatus.fromString(status);
 		boolean editableReport = datasetStatus.isEditable();
@@ -212,7 +212,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	}
 
 	@Override
-	public void addWidgets(PanelBuilder viewer) {
+	public void addWidgets(DialogBuilder viewer) {
 		
 		String reportMonth = report.getLabel(CustomStrings.REPORT_MONTH);
 		String reportYear = report.getLabel(CustomStrings.REPORT_YEAR);

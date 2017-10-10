@@ -6,7 +6,7 @@ import java.util.Collection;
 import org.eclipse.swt.widgets.Shell;
 
 import dataset.DatasetStatus;
-import table_dialog.PanelBuilder;
+import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_skeleton.TableRow;
 import tse_components.TableDialogWithMenu;
@@ -51,7 +51,7 @@ public class ResultDialog extends TableDialogWithMenu {
 	 * make table non editable if needed
 	 */
 	private void updateUI() {
-		PanelBuilder panel = getPanelBuilder();
+		DialogBuilder panel = getPanelBuilder();
 		String status = report.getLabel(CustomStrings.REPORT_STATUS);
 		DatasetStatus datasetStatus = DatasetStatus.fromString(status);
 		boolean editableReport = datasetStatus.isEditable();
@@ -96,7 +96,7 @@ public class ResultDialog extends TableDialogWithMenu {
 	}
 
 	@Override
-	public void addWidgets(PanelBuilder viewer) {
+	public void addWidgets(DialogBuilder viewer) {
 		
 		String reportMonth = report.getLabel(CustomStrings.REPORT_MONTH);
 		String reportYear = report.getLabel(CustomStrings.REPORT_YEAR);

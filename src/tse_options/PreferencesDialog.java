@@ -4,7 +4,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
 import table_dialog.RowValidatorLabelProvider;
-import table_dialog.PanelBuilder;
+import table_dialog.DialogBuilder;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 import tse_validator.SimpleRowValidatorLabelProvider;
@@ -46,7 +46,7 @@ public class PreferencesDialog extends OptionsDialog {
 	}
 
 	@Override
-	public void addWidgets(PanelBuilder viewer) {
+	public void addWidgets(DialogBuilder viewer) {
 		viewer.addHelp("TSE preferences")
 			.addTable(CustomStrings.PREFERENCES_SHEET, true);
 	}

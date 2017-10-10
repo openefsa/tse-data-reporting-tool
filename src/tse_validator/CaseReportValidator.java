@@ -43,9 +43,12 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 
 		// if we have a screening in the summarized
 		if (summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TEST_TYPE)
-				.equals(CustomStrings.SUMMARIZED_INFO_SCREENING_TEST))
+				.equals(CustomStrings.SUMMARIZED_INFO_SCREENING_TEST)) {
 			summScreening = true;
+			
+		}
 
+		// but no screening in results
 		boolean hasScreening = false;
 		for (TableRow result : results) {
 			if (result.getCode(CustomStrings.RESULT_TEST_TYPE)
