@@ -1,6 +1,5 @@
 package tse_main;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,24 +15,19 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.xml.sax.SAXException;
 
-import app_config.AppPaths;
 import app_config.DebugConfig;
-import dataset.Dataset;
-import dataset.DatasetList;
-import global_utils.Warnings;
+import message.MessageConfigBuilder;
 import message_creator.OperationType;
+import report.ReportException;
 import table_database.TableDao;
 import table_importer.TableImporter;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
-import tse_dataset.TseDatasetList;
 import tse_options.PreferencesDialog;
 import tse_options.SettingsDialog;
-import tse_report.DownloadReportDialog;
-import tse_report.Report;
 import tse_report.ReportCreatorDialog;
 import tse_report.ReportListDialog;
-import webservice.MySOAPException;
+import tse_report.TseReport;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 
@@ -83,7 +77,7 @@ public class MainMenu {
 
 				// enable report only if there is a report in the database
 
-				TableSchema schema = Report.getReportSchema();
+				TableSchema schema = TseReport.getReportSchema();
 				
 				if (schema == null)
 					return;
@@ -139,10 +133,10 @@ public class MainMenu {
 					@Override
 					public void handleEvent(Event arg0) {						
 						
-						if (!(arg0.data instanceof Report))
+						if (!(arg0.data instanceof TseReport))
 							return;
 
-						Report report = (Report) arg0.data;
+						TseReport report = (TseReport) arg0.data;
 
 						mainPanel.setEnabled(true);
 						
@@ -238,79 +232,7 @@ public class MainMenu {
 		this.downloadReport.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				
-				DownloadReportDialog dialog = new DownloadReportDialog(shell);
-				
-				Dataset selectedDataset = dialog.getSelectedDataset();
-				
-				if (selectedDataset == null)
-					return;
-				
-				if (selectedDataset.getSenderId() == null) {
-					Warnings.warnUser(shell, "Error", "Cannot download a report without senderDatasetId"); 
-					return;
-				}
-				
-				// if the report already exists locally, warn that it will be overwritten
-				if (Report.isLocallyPresent(selectedDataset.getDecomposedSenderId())) {
-					
-					int val = Warnings.warnUser(shell, "Warning", 
-							"This report already exists locally. Do you want to overwrite it?", 
-							SWT.YES | SWT.NO | SWT.ICON_WARNING);
-					
-					if (val == SWT.NO)
-						return;
-					
-					// try to use the decomposed sender id
-					String senderId = selectedDataset.getDecomposedSenderId();
-					if (senderId == null)
-						senderId = selectedDataset.getSenderId();
-					
-					// delete the old versions of the report
-					TableDao dao = new TableDao(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-					dao.deleteByStringField(CustomStrings.REPORT_SENDER_ID, senderId);
-				}
-				
-				String title = null;
-				String message = null;
-				
-				// populate the dataset with the dcf information
-				try {
-					
-					shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
-					
-					// get all the datasets that need to be downloaded
-					DatasetList datasetsToDownload = dialog.getSelectedDatasetVersions();
-
-					TseDatasetList list = new TseDatasetList(datasetsToDownload);
-					
-					// download all the datasets and put them in the db
-					list.downloadAll();
-					
-				} catch (MySOAPException e) {
-					e.printStackTrace();
-				
-					switch(e.getError()) {
-					case NO_CONNECTION:
-						title = "Connection error";
-						message = "It was not possible to connect to the DCF, please check your internet connection.";
-						break;
-					case UNAUTHORIZED:
-					case FORBIDDEN:
-						title = "Wrong credentials";
-						message = "Your credentials are incorrect. Please check them in the Settings.";
-						break;
-					}
-				}
-				finally {
-					shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
-				}
-				
-				if (message != null)
-					Warnings.warnUser(shell, title, message);
-				else
-					Warnings.warnUser(shell, "Success", 
-							"The report was successfully downloaded! Open it to see its contents.", SWT.ICON_INFORMATION); 
+				UIActions.download(shell);
 			}
 		});
 		
@@ -322,14 +244,13 @@ public class MainMenu {
 				
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
+
+					TseReport report = mainPanel.getOpenedReport();
+
+					MessageConfigBuilder config = report.getDefaultExportConfiguration(OperationType.REPLACE);
 					try {
-						
-						File reportFile = new File(AppPaths.TEMP_FOLDER + "report " 
-								+ System.currentTimeMillis() + ".xml");
-						
-						mainPanel.getOpenedReport().export(reportFile, OperationType.REPLACE);
-						
-					} catch (IOException | ParserConfigurationException | SAXException e) {
+						report.export(config);
+					} catch (IOException | ParserConfigurationException | SAXException | ReportException e) {
 						e.printStackTrace();
 					}
 				}
@@ -345,7 +266,7 @@ public class MainMenu {
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
 					
-					Report report = mainPanel.getOpenedReport();
+					TseReport report = mainPanel.getOpenedReport();
 					System.out.println(report.getAllVersions());
 				}
 				
@@ -366,10 +287,10 @@ public class MainMenu {
 						@Override
 						public void handleEvent(Event arg0) {
 							
-							if (!(arg0.data instanceof Report))
+							if (!(arg0.data instanceof TseReport))
 								return;
 
-							Report report = (Report) arg0.data;
+							TseReport report = (TseReport) arg0.data;
 							report.delete();
 						}
 					});

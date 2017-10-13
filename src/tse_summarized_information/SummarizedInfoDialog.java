@@ -17,21 +17,23 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
+import app_config.DebugConfig;
 import dataset.DatasetStatus;
 import global_utils.Warnings;
+import report.ReportException;
 import table_database.TableDao;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_relations.Relation;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
+import table_skeleton.TableVersion;
 import tse_case_report.CaseReportDialog;
 import tse_components.TableDialogWithMenu;
 import tse_config.CatalogLists;
 import tse_config.CustomStrings;
 import tse_main.UIActions;
-import tse_report.Report;
-import tse_report.ReportException;
+import tse_report.TseReport;
 import tse_validator.SummarizedInfoValidator;
 import webservice.MySOAPException;
 import xlsx_reader.TableSchema;
@@ -45,7 +47,7 @@ import xml_catalog_reader.Selection;
  */
 public class SummarizedInfoDialog extends TableDialogWithMenu {
 
-	private Report report;
+	private TseReport report;
 	
 	public SummarizedInfoDialog(Shell parent) {
 		
@@ -240,7 +242,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	@Override
 	public void setParentFilter(TableRow parentFilter) {
 		
-		this.report = new Report(parentFilter);
+		this.report = new TseReport(parentFilter);
 		
 		// update ui with report data
 		updateUI();
@@ -252,7 +254,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	 * Get the report that contains the summarized information
 	 * @return
 	 */
-	public Report getReport() {
+	public TseReport getReport() {
 		return report;
 	}
 	
@@ -353,8 +355,13 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
+				if (report.isEmpty()) {
+					Warnings.warnUser(getDialog(), "Error", "Cannot send an empty report!");
+					return;
+				}
+				
 				try {
-					UIActions.exportAndSendReport(getDialog(), report);
+					UIActions.send(getDialog(), report);
 				} catch (MySOAPException e) {
 					e.printStackTrace();
 					UIActions.showSOAPWarning(getDialog(), e.getError());
@@ -426,7 +433,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 					
 					@Override
 					public void handleEvent(Event arg0) {
-						Report newReportVersion = (Report) arg0.data;
+						TseReport newReportVersion = (TseReport) arg0.data;
 						setParentFilter(newReportVersion);
 					}
 				});
@@ -526,7 +533,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		String reportMonth = report.getLabel(CustomStrings.REPORT_MONTH);
 		String reportYear = report.getYear();
-		String status = report.getDatasetStatus().getStatus();
+		String status = report.getStatus().getStatus();
 		String messageId = report.getMessageId();
 		String datasetId = report.getDatasetId();
 		
@@ -535,11 +542,11 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			.append(reportMonth)
 			.append(" ")
 			.append(reportYear);
-		System.out.println(report.getSenderId());
+		
 		// add version if possible
-		if (report.getVersion() != null) {
+		if (!TableVersion.isFirstVersion(report.getVersion())) {
 			reportRow.append(" revision ")
-				.append(report.getVersion());
+				.append(Integer.valueOf(report.getVersion())); // remove 0 from 01..
 		}
 		
 		StringBuilder statusRow = new StringBuilder("Status: ");
@@ -565,10 +572,10 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		panel.setEnabled("editBtn", datasetStatus.canBeMadeEditable());
 		panel.setEnabled("sendBtn", datasetStatus.canBeSent());
-		panel.setEnabled("amendBtn", true);//datasetStatus.canBeAmended());
+		panel.setEnabled("amendBtn", DebugConfig.debug || datasetStatus.canBeAmended());
 		panel.setEnabled("submitBtn", datasetStatus.canBeSubmitted());
 		panel.setEnabled("rejectBtn", datasetStatus.canBeRejected());
-		panel.setEnabled("displayAckBtn", true);
+		panel.setEnabled("displayAckBtn", datasetStatus.canDisplayAck());
 		panel.setEnabled("refreshBtn", datasetStatus.canBeRefreshed());
 	}
 	

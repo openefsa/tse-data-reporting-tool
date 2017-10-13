@@ -7,6 +7,7 @@ import java.nio.file.Files;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.SOAPException;
+import javax.xml.stream.XMLStreamException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
@@ -17,16 +18,23 @@ import org.xml.sax.SAXException;
 import acknowledge.Ack;
 import app_config.AppPaths;
 import dataset.Dataset;
+import dataset.DatasetList;
 import dataset.DatasetStatus;
 import global_utils.Warnings;
 import html_viewer.HtmlViewer;
+import message.MessageConfigBuilder;
 import message.SendMessageException;
-import tse_report.Report;
-import tse_report.ReportException;
-import tse_report.ReportSendOperation;
+import report.ReportException;
+import report.ReportSendOperation;
+import report_downloader.TseReportDownloader;
+import table_database.TableDao;
+import tse_config.CustomStrings;
+import tse_report.DownloadReportDialog;
+import tse_report.TseReport;
 import webservice.GetAck;
 import webservice.MySOAPException;
 import webservice.SOAPError;
+import xlsx_reader.TableSchemaList;
 
 /**
  * Bridge between the user interface and the programmatic part.
@@ -37,7 +45,91 @@ import webservice.SOAPError;
  */
 public class UIActions {
 
-	public static void amend(Shell shell, Report report, Listener listener) {
+	/**
+	 * Download a dataset from the dcf
+	 * @param shell
+	 */
+	public static void download(Shell shell) {
+		
+		// show only the datasets that can be downloaded (valid status, valid senderId)
+		DownloadReportDialog dialog = new DownloadReportDialog(shell);
+		
+		// get the chosen dataset
+		Dataset selectedDataset = dialog.getSelectedDataset();
+		
+		if (selectedDataset == null)  // user pressed cancel
+			return;
+
+		// if the report already exists locally, warn that it will be overwritten
+		if (TseReport.isLocallyPresent(selectedDataset.getDecomposedSenderId())) {
+			
+			int val = Warnings.warnUser(shell, "Warning", 
+					"This report already exists locally. Do you want to overwrite it?", 
+					SWT.YES | SWT.NO | SWT.ICON_WARNING);
+			
+			if (val == SWT.NO)  // user pressed cancel
+				return;
+			
+			// extract the senderId from the composed field (senderId.version)
+			String senderId = selectedDataset.getDecomposedSenderId();
+			
+			// delete the old versions of the report (the one with the same senderId)
+			TableDao dao = new TableDao(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+			dao.deleteByStringField(CustomStrings.REPORT_SENDER_ID, senderId);
+		}
+		
+		// import report
+		
+		// get all the versions of the dataset that are present in the DCF
+		DatasetList allVersions = dialog.getSelectedDatasetVersions();
+		
+		// download and import the dataset
+		TseReportDownloader downloader = new TseReportDownloader(allVersions);
+		
+		String title = null;
+		String message = null;
+		int style = SWT.ICON_ERROR;
+		
+		try {
+			
+			shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+			
+			// import the dataset
+			downloader.importReport();
+			
+			title = "Success";
+			message = "The report was successfully downloaded. Open it to check its content.";
+			style = SWT.ICON_INFORMATION;
+			
+		} catch (MySOAPException e) {
+			e.printStackTrace();
+			
+			String[] warnings = getSOAPWarning(e.getError());
+			title = warnings[0];
+			message = warnings[1];
+			
+		} catch (XMLStreamException | IOException e) {
+			e.printStackTrace();
+			
+			title = "Error";
+			message = "The downloaded report is badly formatted. Please contact technical assistance.";
+		}
+		finally {
+			shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+		}
+		
+		if (message != null) {
+			Warnings.warnUser(shell, title, message, style);
+		}
+	}
+	
+	/**
+	 * Amend a report
+	 * @param shell
+	 * @param report
+	 * @param listener
+	 */
+	public static void amend(Shell shell, TseReport report, Listener listener) {
 		
 		int val = Warnings.warnUser(shell, "Warning", 
 				"Do you confirm you need to apply changes to the report already accepted in the EFSA Data Warehouse?",
@@ -50,6 +142,7 @@ public class UIActions {
 		// create a new version of the report in the db
 		report.createNewVersion();
 		
+		// call listener to open the new version in the application
 		Event event = new Event();
 		event.data = report;
 		listener.handleEvent(event);
@@ -60,7 +153,7 @@ public class UIActions {
 	 * @param shell
 	 * @param report
 	 */
-	public static void reject(Shell shell, Report report, Listener listener) {
+	public static void reject(Shell shell, TseReport report, Listener listener) {
 		
 		int val = Warnings.warnUser(shell, "Warning", 
 				"After the rejection of the dataset, to provide again the same report "
@@ -95,6 +188,10 @@ public class UIActions {
 			String[] warning = getSOAPWarning(e.getError());
 			title = warning[0];
 			message = warning[1];
+		} catch (report.ReportException e) {
+			e.printStackTrace();
+			title = "Error";
+			message = "The dataset cannot be sent since its previous versions are missing.";
 		}
 		finally {
 			shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
@@ -110,7 +207,7 @@ public class UIActions {
 	 * @param shell
 	 * @param report
 	 */
-	public static void submit(Shell shell, Report report, Listener listener) {
+	public static void submit(Shell shell, TseReport report, Listener listener) {
 		
 		int val = Warnings.warnUser(shell, "Warning", 
 				"After the submission of the dataset, the data will be processed for being inserted into EFSA Data Warehouse. "
@@ -127,7 +224,7 @@ public class UIActions {
 		
 		try {
 			shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
-			report.reject();
+			report.submit();
 			title = "Success";
 			message = "The submit request was successfully sent to DCF. Please refresh the status to check if the operation is completed.";
 			style = SWT.ICON_INFORMATION;
@@ -145,6 +242,10 @@ public class UIActions {
 			String[] warning = getSOAPWarning(e.getError());
 			title = warning[0];
 			message = warning[1];
+		} catch (ReportException e) {
+			e.printStackTrace();
+			title = "Error";
+			message = "The dataset cannot be sent since its previous versions are missing.";
 		}
 		finally {
 			shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
@@ -161,7 +262,7 @@ public class UIActions {
 	 * @param shell
 	 * @param report
 	 */
-	public static void displayAck(Shell shell, Report report) {
+	public static void displayAck(Shell shell, TseReport report) {
 		
 		String messageId = report.getMessageId();
 		
@@ -231,7 +332,7 @@ public class UIActions {
 	 * @throws ParserConfigurationException 
 	 * @throws SendMessageException 
 	 */
-	public static void exportAndSendReport(Shell shell, Report report) throws MySOAPException, ReportException {
+	public static void send(Shell shell, TseReport report) throws MySOAPException, ReportException {
 		
 		int val = Warnings.warnUser(shell, "Warning", 
 				"Once the dataset is sent, the report will not be editable until "
@@ -270,7 +371,8 @@ public class UIActions {
 			if (opType.getDataset() != null)
 				report.setDatasetId(opType.getDataset().getId());
 			
-			report.exportAndSend(opType.getOpType());
+			MessageConfigBuilder config = report.getDefaultExportConfiguration(opType.getOpType());
+			report.exportAndSend(config);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -316,10 +418,10 @@ public class UIActions {
 	 * @param report
 	 * @param listener
 	 */
-	public static void refreshStatus(Shell shell, Report report, Listener listener) {
+	public static void refreshStatus(Shell shell, TseReport report, Listener listener) {
 		
 		// if local status UPLOADED, SUBMISSION_SENT, REJECTION_SENT
-		if (report.getDatasetStatus().canGetAck()) {
+		if (report.getStatus().canGetAck()) {
 			
 			// get the ack of the dataset
 			Ack ack = getAck(shell, report, listener);
@@ -349,7 +451,7 @@ public class UIActions {
 	 * @param report
 	 * @return
 	 */
-	public static Ack getAck(Shell shell, Report report, Listener updateListener) {
+	public static Ack getAck(Shell shell, TseReport report, Listener updateListener) {
 		
 		shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 
@@ -397,7 +499,7 @@ public class UIActions {
 	 * @param report
 	 * @param updateListener
 	 */
-	public static void updateStatusWithDCF(Shell shell, Report report, Listener updateListener) {
+	public static void updateStatusWithDCF(Shell shell, TseReport report, Listener updateListener) {
 		
 		String title = null;
 		String message = null;
@@ -445,7 +547,7 @@ public class UIActions {
 		
 		// if we have the same status then ok stop
 		// we have the report updated
-		if (dataset.getStatus() == report.getDatasetStatus()) {
+		if (dataset.getStatus() == report.getStatus()) {
 			Warnings.warnUser(shell, "Acknowledgment received", 
 					"Current report state: " + dataset.getStatus().getStatus(),
 					SWT.ICON_INFORMATION);
@@ -455,7 +557,7 @@ public class UIActions {
 		
 		// if the report is in status submitted
 		// and dcf status ACCEPTED_DWH or REJECTED_EDITABLE
-		if (report.getDatasetStatus() == DatasetStatus.SUBMITTED) {
+		if (report.getStatus() == DatasetStatus.SUBMITTED) {
 			
 			// and dataset is accepted dwh or rejected editable
 			switch(dataset.getStatus()) {
@@ -463,7 +565,7 @@ public class UIActions {
 			case REJECTED_EDITABLE:
 				
 				// update local report status with the dcf status
-				report.setDatasetStatus(dataset.getStatus());
+				report.setStatus(dataset.getStatus());
 				
 				// update caller to update ui
 				updateListener.handleEvent(null);

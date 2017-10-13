@@ -4,17 +4,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import table_database.TableDao;
-import table_relations.Relation;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
-import tse_report.Report;
+import tse_report.TseReport;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 
 public class TseReportDao extends TableDao {
 
 	public TseReportDao() {
-		super(Report.getReportSchema());
+		super(TseReport.getReportSchema());
 	}
 	
 	/**
@@ -23,7 +22,7 @@ public class TseReportDao extends TableDao {
 	 * contains a reference to the report id it belongs to.
 	 * @return
 	 */
-	public Collection<TableRow> getAllReportChildren(Report report) {
+	public Collection<TableRow> getAllReportChildren(TseReport report) {
 		
 		Collection<TableRow> output = new ArrayList<>();
 		

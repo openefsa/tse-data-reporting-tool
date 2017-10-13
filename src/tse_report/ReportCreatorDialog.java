@@ -10,11 +10,13 @@ import org.eclipse.swt.widgets.Shell;
 
 import dataset.Dataset;
 import dataset.DatasetStatus;
+import report.ReportException;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_dialog.TableDialog;
 import table_relations.Relation;
 import table_skeleton.TableRow;
+import table_skeleton.TableVersion;
 import tse_config.CustomStrings;
 import tse_validator.SimpleRowValidatorLabelProvider;
 import webservice.MySOAPException;
@@ -44,7 +46,7 @@ public class ReportCreatorDialog extends TableDialog {
 	public Collection<TableRow> loadInitialRows(TableSchema schema, TableRow parentTable) {
 		
 		Collection<TableRow> rows = new ArrayList<>();
-		Report row = new Report();
+		TseReport row = new TseReport();
 		
 		// add preferences to the report
 		try {
@@ -56,8 +58,11 @@ public class ReportCreatorDialog extends TableDialog {
 		
 		row.initialize();
 		
+		// set as default the first version
+		row.setVersion(TableVersion.getFirstVersion());
+		
 		// by default the report status is draft for new reports
-		row.setDatasetStatus(DatasetStatus.DRAFT.getStatus());
+		row.setStatus(DatasetStatus.DRAFT.getStatus());
 		
 		// update the formulas of the report
 		// to compute the sender id
@@ -70,7 +75,7 @@ public class ReportCreatorDialog extends TableDialog {
 	@Override
 	public boolean apply(TableSchema schema, Collection<TableRow> rows, TableRow selectedRow) {
 		
-		Report report = (Report) rows.iterator().next();
+		TseReport report = (TseReport) rows.iterator().next();
 		
 		// if the report is already present
 		// show error message

@@ -7,10 +7,11 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
+import dataset.DatasetList;
 import table_database.TableDao;
+import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_dialog.TableDialog;
-import table_dialog.DialogBuilder;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 import xlsx_reader.TableSchema;
@@ -34,8 +35,28 @@ public class ReportListDialog extends TableDialog {
 
 	@Override
 	public Collection<TableRow> loadInitialRows(TableSchema schema, TableRow parentTable) {
+		
 		TableDao dao = new TableDao(schema);
-		return dao.getAll();
+		Collection<TableRow> reports = dao.getAll();
+		
+		// convert to dataset list
+		DatasetList<TseReport> tseReports = new DatasetList<>();
+		for (TableRow r : reports) {
+			TseReport report = new TseReport(r);
+			tseReports.add(report);
+		}
+		
+		// get only last versions
+		DatasetList<TseReport> lastVersions = tseReports.filterOldVersions();
+
+		reports.clear();
+		
+		// convert back to table row
+		for (TseReport tseReport : lastVersions) {
+			reports.add(new TableRow(tseReport));
+		}
+		
+		return reports;
 	}
 
 	@Override
@@ -48,7 +69,7 @@ public class ReportListDialog extends TableDialog {
 		
 		if (listener != null) {
 			Event event = new Event();
-			event.data = new Report(selectedRow);
+			event.data = new TseReport(selectedRow);
 			listener.handleEvent(event);
 		}
 		

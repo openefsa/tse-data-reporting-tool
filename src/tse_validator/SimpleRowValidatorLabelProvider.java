@@ -14,7 +14,7 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 		
 		String text = "";
 
-		switch (row.getStatus()) {
+		switch (row.getRowStatus()) {
 		case OK:
 			text = "Validated";
 			break;
@@ -32,7 +32,7 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 		
 		int level = 0;
 		
-		switch (row.getStatus()) {
+		switch (row.getRowStatus()) {
 		case OK:
 			level = 0;
 			break;
@@ -66,7 +66,7 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 	    
 	    Color rowColor = green;
 	    
-	    switch (row.getStatus()) {
+	    switch (row.getRowStatus()) {
 	    case OK:
 	    	rowColor = green;
 	    	break;

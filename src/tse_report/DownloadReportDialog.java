@@ -9,6 +9,7 @@ import app_config.PropertiesReader;
 import dataset.Dataset;
 import dataset.DatasetList;
 import table_dialog.DatasetListDialog;
+import tse_config.CustomStrings;
 import webservice.GetDatasetList;
 
 /**
@@ -18,7 +19,7 @@ import webservice.GetDatasetList;
  */
 public class DownloadReportDialog extends DatasetListDialog {
 	
-	private DatasetList allDatasets;
+	private DatasetList<Dataset> allDatasets;
 	
 	public DownloadReportDialog(Shell parent) {
 		
@@ -37,13 +38,13 @@ public class DownloadReportDialog extends DatasetListDialog {
 	 * Get a list of all the dcf datasets which are downloadable
 	 * @return
 	 */
-	private DatasetList getDownloadableDatasets() {
+	private DatasetList<Dataset> getDownloadableDatasets() {
 		
 		GetDatasetList req = new GetDatasetList(PropertiesReader.getDataCollectionCode());
 		try {
 			
 			this.allDatasets = req.getList();
-			return allDatasets.getDownloadableDatasets();
+			return allDatasets.getDownloadableDatasets(CustomStrings.VALID_SENDER_ID_PATTERN);
 			
 		} catch (SOAPException e) {
 			e.printStackTrace();
@@ -55,7 +56,7 @@ public class DownloadReportDialog extends DatasetListDialog {
 	 * Get all the versions of the dataset
 	 * @return
 	 */
-	public DatasetList getSelectedDatasetVersions() {
+	public DatasetList<Dataset> getSelectedDatasetVersions() {
 
 		Dataset dataset = getSelectedDataset();
 		

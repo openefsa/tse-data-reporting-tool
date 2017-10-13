@@ -1,35 +1,29 @@
 package report_downloader;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import javax.xml.soap.SOAPException;
-import javax.xml.stream.XMLStreamException;
-
 import dataset.Dataset;
-import dataset.DatasetParser;
 import formula.FormulaException;
 import table_relations.Relation;
 import table_skeleton.TableColumn;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
-import tse_report.Report;
+import tse_report.TseReport;
 import tse_summarized_information.SummarizedInfo;
 import xlsx_reader.TableSchemaList;
 
-public class ReportImporter {
+public class ReportImporterBeta {
 
 	private Collection<SummarizedInfo> summInfos;
 	private HashMap<String, TableRow> cases;  // caseId, case
 
 	private Dataset dataset;
 
-	public ReportImporter(Dataset dataset) {
+	public ReportImporterBeta(Dataset dataset) {
 		this.dataset = dataset;
 		this.summInfos = new ArrayList<>();
 		this.cases = new HashMap<>(); 
@@ -41,7 +35,7 @@ public class ReportImporter {
 	public void start() {
 
 		// create the new report
-		Report report = createNewReport();
+		TseReport report = createNewReport();
 
 		// get the dataset rows
 		Collection<TableRow> datasetRows = dataset.getRows();
@@ -69,7 +63,7 @@ public class ReportImporter {
 	 * @param report
 	 * @param datasetRows
 	 */
-	private void importSummarizedInformation(Report report, Collection<TableRow> datasetRows) {
+	private void importSummarizedInformation(TseReport report, Collection<TableRow> datasetRows) {
 
 		// first process the summarized information
 		for (TableRow row : datasetRows) {
@@ -95,7 +89,7 @@ public class ReportImporter {
 	 * @param summInfo
 	 * @param datasetRows
 	 */
-	private void importCasesAndResults(Report report, Collection<TableRow> datasetRows) {
+	private void importCasesAndResults(TseReport report, Collection<TableRow> datasetRows) {
 		
 		// process the cases and analytical results
 		for (TableRow row : datasetRows) {
@@ -127,7 +121,7 @@ public class ReportImporter {
 	 * @param row
 	 * @return
 	 */
-	private TableRow importCase(Report report, SummarizedInfo summInfo, TableRow row) {
+	private TableRow importCase(TseReport report, SummarizedInfo summInfo, TableRow row) {
 
 		// extract the case from the row
 		TableRow currentCaseInfo = extractCase(report, summInfo, row);
@@ -154,7 +148,7 @@ public class ReportImporter {
 	 * @param row
 	 * @return
 	 */
-	private TableRow importResult(Report report, SummarizedInfo summInfo, TableRow caseInfo, TableRow row) {
+	private TableRow importResult(TseReport report, SummarizedInfo summInfo, TableRow caseInfo, TableRow row) {
 
 		// then import the analytical result
 		TableRow result = extractAnalyticalResult(report, summInfo, caseInfo, row);
@@ -168,9 +162,9 @@ public class ReportImporter {
 	/**
 	 * Create the new report
 	 */
-	private Report createNewReport() {
+	private TseReport createNewReport() {
 
-		Report report = Report.fromDataset(dataset);
+		TseReport report = TseReport.fromDataset(dataset);
 		report.save();
 
 		// TODO check if the report is already present or not, in case overwrite
@@ -184,7 +178,7 @@ public class ReportImporter {
 	 * @param row
 	 * @return
 	 */
-	private SummarizedInfo extractSummarizedInfo(Report report, TableRow row) {
+	private SummarizedInfo extractSummarizedInfo(TseReport report, TableRow row) {
 
 		// set the summarized information schema
 		row.setSchema(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
@@ -232,7 +226,7 @@ public class ReportImporter {
 	 * @param row
 	 * @return
 	 */
-	private TableRow extractCase(Report report, SummarizedInfo summInfo, TableRow row) {
+	private TableRow extractCase(TseReport report, SummarizedInfo summInfo, TableRow row) {
 
 		// set schema (required for next step), we are processing a result row,
 		// even if we are extracting the case information data!
@@ -317,7 +311,7 @@ public class ReportImporter {
 	 * @param row
 	 * @return
 	 */
-	private TableRow extractAnalyticalResult(Report report, SummarizedInfo summInfo, 
+	private TableRow extractAnalyticalResult(TseReport report, SummarizedInfo summInfo, 
 			TableRow caseInfo, TableRow row) {
 
 		// set the summarized information schema
@@ -427,17 +421,5 @@ public class ReportImporter {
 		}
 
 		return rowValues;
-	}
-
-	public static void main(String[] args) throws SOAPException, XMLStreamException, FileNotFoundException {
-
-		// read the file
-		File file = new File(args[0]);
-		DatasetParser parser = new DatasetParser(file);
-		Dataset dataset = parser.parse();
-
-		// import the report
-		ReportImporter importer = new ReportImporter(dataset);
-		importer.start();
 	}
 }

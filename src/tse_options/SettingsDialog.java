@@ -97,7 +97,7 @@ public class SettingsDialog extends OptionsDialog {
 				
 				String title = null;
 				String message = null;
-				DatasetList list = new DatasetList();
+				DatasetList<Dataset> list = new DatasetList<Dataset>();
 				try {
 					
 					// get dataset list of the data collection
@@ -141,7 +141,7 @@ public class SettingsDialog extends OptionsDialog {
 				String testReportCode = PropertiesReader.getTestReportCode();
 				
 				// get the dataset of TEST
-				DatasetList testList = list.filterBySenderId(testReportCode);
+				DatasetList<Dataset> testList = list.filterBySenderId(testReportCode);
 				Dataset dataset = testList.isEmpty() ? null : testList.get(0);
 				
 				if (dataset != null) {

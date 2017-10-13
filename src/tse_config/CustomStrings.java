@@ -22,7 +22,7 @@ public class CustomStrings {
 	public static final String REPORT_MESSAGE_ID = "reportMessageId";
 	public static final String REPORT_DATASET_ID = "reportDatasetId";
 	public static final String REPORT_STATUS = "reportStatus";
-	public static final String REPORT_VERSION = "ReportVersion";
+	public static final String REPORT_VERSION = "reportVersion";
 	
 	public static final String SUMMARIZED_INFO_TOT_SAMPLES = "totSamplesTested";
 	public static final String SUMMARIZED_INFO_POS_SAMPLES = "totSamplesPositive";
@@ -45,7 +45,6 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_SCREENING_TEST = "AT06A";
 	public static final String SUMMARIZED_INFO_CONFIRMATORY_TEST = "AT08A";
 	public static final String SUMMARIZED_INFO_MOLECULAR_TEST = "AT13A";
-	 
 	
 	public static final String CASE_INFO_SAMPLE_ID = "sampId";
 	public static final String CASE_INFO_ANIMAL_ID = "animalId";
@@ -71,4 +70,14 @@ public class CustomStrings {
 	public static final String PARAM_CODE_COL = "paramCode";
 	public static final String SUMMARIZED_INFO_PARAM_TYPE = "P003A";
 	public static final String RESULT_PARAM_TYPE = "P001A";
+	
+	private static final String COUNTRY = "[a-zA-Z][a-zA-Z]";  // two letters
+	private static final String YEAR_MONTH = "\\d{4}";
+	private static final String VERSION = "(\\.\\d{2})?";  // either .01, .02 or .10, .50 (always two digits)
+	public static final String VALID_SENDER_ID_PATTERN = COUNTRY + YEAR_MONTH + VERSION;
+	
+	// xml tags of dataset
+	public static final String RES_ID_COLUMN = "resId";
+	public static final String SENDER_DATASET_ID_COLUMN = "senderDatasetId";
+	 
 }
