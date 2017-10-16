@@ -124,6 +124,26 @@ public class StartUI {
 		// set the application name in the shell
 		shell.setText(PropertiesReader.getAppName() + " " + PropertiesReader.getAppVersion());
 		
+		// open the main panel
+		new MainPanel(shell);
+		
+		// set the application icon into the shell
+		Image image = new Image(Display.getCurrent(), 
+				ClassLoader.getSystemResourceAsStream(PropertiesReader.getAppIcon()));
+
+		if (image != null)
+			shell.setImage(image);
+	    
+	    // open also an help view for showing general help
+	    if (!DebugConfig.debug) {
+		    File helpFile = new File(AppPaths.HELP_FOLDER + PropertiesReader.getStartupHelpFileName());
+		    HtmlViewer help = new HtmlViewer();
+		    help.open(helpFile);
+	    }
+		
+		// open the shell to the user
+	    shell.open();
+		
 		// check preferences
 		if (!checkPreferences()) {
 			PreferencesDialog pref = new PreferencesDialog(shell);
@@ -152,26 +172,6 @@ public class StartUI {
 			// with the current credentials
 			loginUser();
 		}
-		
-		
-		new MainPanel(shell);
-		
-		// set the application icon into the shell
-		Image image = new Image(Display.getCurrent(), 
-				ClassLoader.getSystemResourceAsStream(PropertiesReader.getAppIcon()));
-
-		if (image != null)
-			shell.setImage(image);
-		
-		// open the shell to the user
-	    shell.open();
-	    
-	    // open also an help view for showing general help
-	    if (!DebugConfig.debug) {
-		    File helpFile = new File(AppPaths.HELP_FOLDER + PropertiesReader.getStartupHelpFileName());
-		    HtmlViewer help = new HtmlViewer();
-		    help.open(helpFile);
-	    }
 		
 		// Event loop
 		while (!shell.isDisposed()) {

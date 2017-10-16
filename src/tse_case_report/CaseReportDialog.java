@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 
+import app_config.AppPaths;
 import dataset.DatasetStatus;
 import table_database.TableDao;
 import table_dialog.DialogBuilder;
@@ -68,7 +69,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				final TableRow caseReport = (TableRow) selection.getFirstElement();
 				
 				if (!caseReport.areMandatoryFilled()) {
-					warnUser("Error", "Cannot add analytical results. Mandatory data are missing!");
+					warnUser("Error", "ERR000: Cannot add analytical results. Mandatory data are missing!");
 					return;
 				}
 				
@@ -166,7 +167,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 
 	private void updateUI() {
 		DialogBuilder panel = getPanelBuilder();
-		String status = report.getLabel(CustomStrings.REPORT_STATUS);
+		String status = report.getLabel(AppPaths.REPORT_STATUS);
 		DatasetStatus datasetStatus = DatasetStatus.fromString(status);
 		boolean editableReport = datasetStatus.isEditable();
 		panel.setTableEditable(editableReport);
@@ -215,7 +216,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	public void addWidgets(DialogBuilder viewer) {
 		
 		String reportMonth = report.getLabel(CustomStrings.REPORT_MONTH);
-		String reportYear = report.getLabel(CustomStrings.REPORT_YEAR);
+		String reportYear = report.getLabel(AppPaths.REPORT_YEAR);
 		String source = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_SOURCE);
 		String part = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_PART);
 		String prod = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_PROD);

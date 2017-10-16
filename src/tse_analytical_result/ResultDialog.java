@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.eclipse.swt.widgets.Shell;
 
+import app_config.AppPaths;
 import dataset.DatasetStatus;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
@@ -52,7 +53,7 @@ public class ResultDialog extends TableDialogWithMenu {
 	 */
 	private void updateUI() {
 		DialogBuilder panel = getPanelBuilder();
-		String status = report.getLabel(CustomStrings.REPORT_STATUS);
+		String status = report.getLabel(AppPaths.REPORT_STATUS);
 		DatasetStatus datasetStatus = DatasetStatus.fromString(status);
 		boolean editableReport = datasetStatus.isEditable();
 		panel.setTableEditable(editableReport);
@@ -99,7 +100,7 @@ public class ResultDialog extends TableDialogWithMenu {
 	public void addWidgets(DialogBuilder viewer) {
 		
 		String reportMonth = report.getLabel(CustomStrings.REPORT_MONTH);
-		String reportYear = report.getLabel(CustomStrings.REPORT_YEAR);
+		String reportYear = report.getLabel(AppPaths.REPORT_YEAR);
 		String sampleId = caseInfo.getLabel(CustomStrings.CASE_INFO_SAMPLE_ID);
 		String animalId = caseInfo.getLabel(CustomStrings.CASE_INFO_ANIMAL_ID);
 		String caseId = caseInfo.getLabel(CustomStrings.CASE_INFO_CASE_ID);

@@ -9,9 +9,12 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
+import app_config.BooleanValue;
+import app_config.GlobalManager;
 import app_config.PropertiesReader;
 import dataset.Dataset;
 import dataset.DatasetList;
+import global_utils.Warnings;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_skeleton.TableColumnValue;
@@ -49,6 +52,10 @@ public class SettingsDialog extends OptionsDialog {
 		
 		if (settings == null)
 			return closeWindow;
+		
+		// enable/disable the data collection of test according to the settings
+		boolean isTest = BooleanValue.isTrue(settings.getCode(CustomStrings.SETTINGS_DC_TEST));
+		GlobalManager.getInstance().setDcTest(isTest);
 		
 		login(settings);
 		
@@ -100,8 +107,8 @@ public class SettingsDialog extends OptionsDialog {
 				DatasetList<Dataset> list = new DatasetList<Dataset>();
 				try {
 					
-					// get dataset list of the data collection
-					GetDatasetList request = new GetDatasetList(PropertiesReader.getDataCollectionCode());
+					// get dataset list of the data collection (in test)
+					GetDatasetList request = new GetDatasetList(PropertiesReader.getTestDataCollectionCode());
 					list = request.getList();
 					
 				} catch (MySOAPException e) {
@@ -109,22 +116,10 @@ public class SettingsDialog extends OptionsDialog {
 					e.printStackTrace();
 					
 					System.err.println("Test connection: failed.");
-					
-					// change the cursor to old cursor
-					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
-					
-					switch(e.getError()) {
-					case NO_CONNECTION:
-						title = "Connection error";
-						message = "It was not possible to connect to the DCF, please check your internet connection.";
-						break;
-					case UNAUTHORIZED:
-					case FORBIDDEN:
-						title = "Wrong credentials";
-						message = "Your credentials are incorrect. Please check them in the Settings.";
-						break;
-					}
-					
+
+					String[] warnings = Warnings.getSOAPWarning(e.getError());
+					title = warnings[0];
+					message = warnings[1];
 				}
 				finally {
 					// change the cursor to old cursor
@@ -150,7 +145,7 @@ public class SettingsDialog extends OptionsDialog {
 				}
 				else {
 					System.err.println("Test connection: failed. " + testReportCode + " report cannot be found in the DCF");
-					warnUser("Error", testReportCode + ": Cannot retrieve the dataset");
+					warnUser("Error", "ERR406: " + testReportCode + ": Cannot retrieve the dataset");
 				}
 			}
 			

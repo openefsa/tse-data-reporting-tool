@@ -11,7 +11,10 @@
 			<description>H-BSE</description>
 		</selection>
 		<selection code="J050A">
-			<description>Inconclusive</description>
+			<description>Inconclusive case</description>
+		</selection>
+		<selection code="J051A">
+			<description>Negative sample</description>
 		</selection>
 	</selectionList>
 	<selectionList id="SCRAPIE">
@@ -25,7 +28,10 @@
 			<description>Classical-scrapie (i.e. BSE-excluded in 1st Molecular test)</description>
 		</selection>
 		<selection code="J050A">
-			<description>Inconclusive</description>
+			<description>Inconclusive case</description>
+		</selection>
+		<selection code="J051A">
+			<description>Negative sample</description>
 		</selection>
 	</selectionList>
 	<selectionList id="CWD">
@@ -33,7 +39,10 @@
 			<description>CWD</description>
 		</selection>
 		<selection code="J050A">
-			<description>Inconclusive</description>
+			<description>Inconclusive case</description>
+		</selection>
+		<selection code="J051A">
+			<description>Negative sample</description>
 		</selection>
 	</selectionList>
 </assessmentLists>

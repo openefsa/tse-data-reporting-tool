@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import dataset.Dataset;
 import dataset.DatasetStatus;
+import global_utils.Warnings;
 import report.ReportException;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
@@ -80,7 +81,7 @@ public class ReportCreatorDialog extends TableDialog {
 		// if the report is already present
 		// show error message
 		if (report.isLocallyPresent()) {
-			warnUser("Error", "The report already exists. Please open it.");
+			warnUser("Error", "WARN304: The report already exists. Please open it.");
 			return false;
 		}
 
@@ -99,21 +100,14 @@ public class ReportCreatorDialog extends TableDialog {
 			
 			e.printStackTrace();
 			
-			switch(e.getError()) {
-			case NO_CONNECTION:
-				title = "Connection error";
-				message = "It was not possible to connect to the DCF, please check your internet connection.";
-				break;
-			case UNAUTHORIZED:
-			case FORBIDDEN:
-				title = "Wrong credentials";
-				message = "Your credentials are incorrect. Please check them in the Settings.";
-				break;
-			}
+			String[] warnings = Warnings.getSOAPWarning(e.getError());
+			title = warnings[0];
+			message = warnings[1];
+			
 		} catch (ReportException e) {
 			e.printStackTrace();
 			title = "General error";
-			message = "It was not possible to retrieve the current report sender id. Please call technical assistance.";
+			message = "ERR700: It was not possible to retrieve the current report sender id. Please call technical assistance.";
 		}
 		finally {
 			// change the cursor to old cursor
@@ -177,26 +171,26 @@ public class ReportCreatorDialog extends TableDialog {
 		
 		switch(oldReport.getStatus()) {
 		case ACCEPTED_DWH:
-			message = "An existing report in DCF with dataset id "
+			message = "ERR301: An existing report in DCF with dataset id "
 					+ oldReport.getId()
 					+ " was found in status ACCEPTED_DWH. To amend it please download and open it.";
 			break;
 		case SUBMITTED:
-			message = "An existing report in DCF with dataset id "
+			message = "ERR302: An existing report in DCF with dataset id "
 					+ oldReport.getId()
 					+ " was found in status SUBMITTED. Please reject it in the validation report if changes are needed.";
 			break;
 		case VALID:
 		case VALID_WITH_WARNINGS:
 		case REJECTED_EDITABLE:
-			message = "An existing report in DCF with dataset id "
+			message = "ERR303: An existing report in DCF with dataset id "
 					+ oldReport.getId()
 					+ " was found in status " 
 					+ oldReport.getStatus() 
 					+ ". To apply changes please download and open it.";
 			break;
 		case PROCESSING:
-			message = "An existing report in DCF with dataset id "
+			message = "ERR300: An existing report in DCF with dataset id "
 					+ oldReport.getId()
 					+ " was found in status PROCESSING. Please wait the completion of the validation.";
 			break;
@@ -204,7 +198,7 @@ public class ReportCreatorDialog extends TableDialog {
 		case REJECTED:
 			break;
 		default:
-			message = "An error occurred due to a conflicting dataset in DCF. Please contact zoonoses_support@efsa.europa.eu.";
+			message = "ERR300: An error occurred due to a conflicting dataset in DCF. Please contact zoonoses_support@efsa.europa.eu.";
 			break;
 		}
 		

@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
+import amend_manager.ReportImporter;
 import dataset.Dataset;
+import dataset.DatasetList;
 import formula.FormulaDecomposer;
 import formula.FormulaException;
 import table_relations.Relation;
@@ -17,35 +20,29 @@ import tse_report.TseReport;
 import tse_summarized_information.SummarizedInfo;
 import xlsx_reader.TableSchemaList;
 
-public class ReportImporterBeta {
+/**
+ * Download and import a dataset, managing also all the amendments
+ * @author avonva
+ *
+ */
+public class TseReportImporter extends ReportImporter {
 
+	// temporary variables
+	private TseReport report;
 	private Collection<SummarizedInfo> summInfos;
 	private HashMap<String, TableRow> cases;  // caseId, case
 
-	private Dataset dataset;
-
-	public ReportImporterBeta(Dataset dataset) {
-		this.dataset = dataset;
+	/**
+	 * Download and import a dataset, managing also all the amendments
+	 * @param datasetVersions a list with all the dataset versions. 
+	 * This is needed to manage amendments.
+	 */
+	public TseReportImporter(DatasetList<Dataset> datasetVersions) {
+		super(datasetVersions, CustomStrings.RES_ID_COLUMN, 
+				CustomStrings.SENDER_DATASET_ID_COLUMN);
+		
 		this.summInfos = new ArrayList<>();
 		this.cases = new HashMap<>(); 
-	}
-
-	/**
-	 * Import the report in the db
-	 */
-	public void start() {
-
-		// create the new report
-		TseReport report = createNewReport();
-
-		// get the dataset rows
-		Collection<TableRow> datasetRows = dataset.getRows();
-
-		// first import the summarized information
-		importSummarizedInformation(report, datasetRows);
-
-		// then import cases and results
-		importCasesAndResults(report, datasetRows);
 	}
 
 	/**
@@ -77,7 +74,9 @@ public class ReportImporterBeta {
 
 				// save it in the database
 				si.save();
+				
 				System.out.println("Imported summ info " + si.getId());
+				
 				// save it in the cache
 				summInfos.add(si);
 			}
@@ -161,19 +160,6 @@ public class ReportImporterBeta {
 	}
 
 	/**
-	 * Create the new report
-	 */
-	private TseReport createNewReport() {
-
-		TseReport report = TseReport.fromDataset(dataset);
-		report.save();
-
-		// TODO check if the report is already present or not, in case overwrite
-
-		return report;
-	}
-
-	/**
 	 * Extract the summarized information data from the current row
 	 * @param report
 	 * @param row
@@ -197,21 +183,21 @@ public class ReportImporterBeta {
 		}
 
 		// set the report as parent of the summ info
-		Relation.injectParent(report, row);
-
+		Relation.injectParent(report, summInfo);
+		
 		// add pref and settings as information
 		try {
-			Relation.injectGlobalParent(row, CustomStrings.PREFERENCES_SHEET);
+			Relation.injectGlobalParent(summInfo, CustomStrings.PREFERENCES_SHEET);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		try {
-			Relation.injectGlobalParent(row, CustomStrings.SETTINGS_SHEET);
+			Relation.injectGlobalParent(summInfo, CustomStrings.SETTINGS_SHEET);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
 		// set also the summarized information type using
 		// the species
 		String type = summInfo.getTypeBySpecies();
@@ -330,9 +316,9 @@ public class ReportImporterBeta {
 		}
 
 		// set the report as parent of the summ info
-		Relation.injectParent(report, row);
-		Relation.injectParent(summInfo, row);
-		Relation.injectParent(caseInfo, row);
+		Relation.injectParent(report, result);
+		Relation.injectParent(summInfo, result);
+		Relation.injectParent(caseInfo, result);
 
 		return result;
 	}
@@ -422,5 +408,24 @@ public class ReportImporterBeta {
 		}
 
 		return rowValues;
+	}
+
+	@Override
+	public void importDatasetMetadata(Dataset dataset) {
+		
+		// extract the information from the dataset
+		// and insert the report into the database
+		this.report = TseReport.fromDataset(dataset);
+		report.save();
+	}
+	
+	@Override
+	public void importDatasetRows(List<TableRow> rows) {
+		
+		// first import the summarized information
+		importSummarizedInformation(report, rows);
+
+		// then import cases and results
+		importCasesAndResults(report, rows);
 	}
 }

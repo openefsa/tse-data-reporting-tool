@@ -438,11 +438,11 @@ public class TseReport extends Report implements TseTableRow {
 	}
 
 	public String getYear() {
-		return this.getCode(CustomStrings.REPORT_YEAR);
+		return this.getCode(AppPaths.REPORT_YEAR);
 	}
 	
 	public void setYear(String year) {
-		this.put(CustomStrings.REPORT_YEAR, 
+		this.put(AppPaths.REPORT_YEAR, 
 				getTableColumnValue(year, CatalogLists.YEARS_LIST));
 	}
 	

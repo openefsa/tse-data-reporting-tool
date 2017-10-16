@@ -3,6 +3,7 @@ package tse_main;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Shell;
 
+import app_config.GlobalManager;
 import tse_report.TseReport;
 import tse_summarized_information.SummarizedInfoDialog;
 
@@ -37,6 +38,7 @@ public class MainPanel {
 	 */
 	public void openReport(TseReport report) {
 		this.reportViewer.setParentFilter(report);
+		GlobalManager.getInstance().setOpenedReport(report);
 	}
 	
 	/**
@@ -56,6 +58,7 @@ public class MainPanel {
 	
 	public void closeReport() {
 		this.reportViewer.clear();
+		GlobalManager.getInstance().setOpenedReport(null);
 	}
 	
 	/**

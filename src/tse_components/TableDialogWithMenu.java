@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.DebugConfig;
+import global_utils.Warnings;
 import table_dialog.HelpViewer;
 import table_dialog.RowCreatorViewer;
 import table_dialog.TableDialog;
@@ -113,9 +114,12 @@ public abstract class TableDialogWithMenu extends TableDialog {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				
+				Warnings.warnUser(getDialog(), "Warning", 
+						"The selected record and all the related data will be permanently deleted. Continue?", 
+						SWT.ICON_WARNING);
 				MessageBox mb = new MessageBox(getDialog(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
 				mb.setText("Warning!");
-				mb.setMessage("The selected record and all the related data will be permanently deleted. Continue?");
+				mb.setMessage("CONF906: The selected record and all the related data will be permanently deleted. Continue?");
 				
 				int val = mb.open();
 				

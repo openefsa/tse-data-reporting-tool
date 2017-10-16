@@ -19,6 +19,7 @@ import app_config.DebugConfig;
 import message.MessageConfigBuilder;
 import message_creator.OperationType;
 import report.ReportException;
+import report_downloader.TseReportDownloader;
 import table_database.TableDao;
 import table_importer.TableImporter;
 import table_skeleton.TableRow;
@@ -232,7 +233,8 @@ public class MainMenu {
 		this.downloadReport.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				UIActions.download(shell);
+				TseReportDownloader downloader = new TseReportDownloader(shell);
+				downloader.download(CustomStrings.VALID_SENDER_ID_PATTERN);
 			}
 		});
 		

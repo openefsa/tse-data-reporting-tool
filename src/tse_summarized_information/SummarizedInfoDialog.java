@@ -20,7 +20,9 @@ import org.eclipse.swt.widgets.Shell;
 import app_config.DebugConfig;
 import dataset.DatasetStatus;
 import global_utils.Warnings;
+import report.Report;
 import report.ReportException;
+import report.ReportActions;
 import table_database.TableDao;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
@@ -32,7 +34,6 @@ import tse_case_report.CaseReportDialog;
 import tse_components.TableDialogWithMenu;
 import tse_config.CatalogLists;
 import tse_config.CustomStrings;
-import tse_main.UIActions;
 import tse_report.TseReport;
 import tse_validator.SummarizedInfoValidator;
 import webservice.MySOAPException;
@@ -111,7 +112,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	private boolean validate(TableRow summInfo) {
 		
 		if (!summInfo.areMandatoryFilled()) {
-			warnUser("Error", "Cannot add cases. Mandatory data are missing!");
+			warnUser("Error", "ERR000: Cannot add cases. Mandatory data are missing!");
 			return false;
 		}
 
@@ -120,7 +121,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 
 		if (expected == 0 && !hasCases) {
 			warnUser("Error", 
-					"No positive or inconclusive cases can be detailed, please check fields Positive and Inconclusive in this table.");
+					"ERR001: No positive or inconclusive cases can be detailed, please check fields Positive and Inconclusive in this table.");
 			return false;
 		}
 
@@ -314,7 +315,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 
-				UIActions.refreshStatus(getDialog(), report, new Listener() {
+				ReportActions.refreshStatus(getDialog(), report, new Listener() {
 
 					@Override
 					public void handleEvent(Event arg0) {
@@ -333,7 +334,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 					return;
 				
 				int val = warnUser("Warning", 
-						"The report editing will be enabled, but be aware this will overwrite the current data.", 
+						"CONF905: The report editing will be enabled, but be aware this will overwrite the current data.", 
 						SWT.ICON_WARNING | SWT.YES | SWT.NO);
 				
 				if (val == SWT.NO)
@@ -361,13 +362,13 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				}
 				
 				try {
-					UIActions.send(getDialog(), report);
+					ReportActions.send(getDialog(), report);
 				} catch (MySOAPException e) {
 					e.printStackTrace();
-					UIActions.showSOAPWarning(getDialog(), e.getError());
+					Warnings.showSOAPWarning(getDialog(), e.getError());
 				} catch (ReportException e) {
 					e.printStackTrace();
-					Warnings.warnUser(getDialog(), "Error", "Something went wrong, "
+					Warnings.warnUser(getDialog(), "Error", "ERR700: Something went wrong, "
 							+ "please check if the report senderDatasetId is set");
 				}
 				
@@ -383,7 +384,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 					return;
 				
 				// reject the report and update the ui
-				UIActions.reject(getDialog(), report, new Listener() {
+				ReportActions.reject(getDialog(), report, new Listener() {
 					
 					@Override
 					public void handleEvent(Event arg0) {
@@ -401,7 +402,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 					return;
 				
 				// reject the report and update the ui
-				UIActions.submit(getDialog(), report, new Listener() {
+				ReportActions.submit(getDialog(), report, new Listener() {
 					
 					@Override
 					public void handleEvent(Event arg0) {
@@ -418,7 +419,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				UIActions.displayAck(getDialog(), report);
+				ReportActions.displayAck(getDialog(), report);
 			}
 		};
 		
@@ -429,14 +430,13 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				UIActions.amend(getDialog(), report, new Listener() {
-					
-					@Override
-					public void handleEvent(Event arg0) {
-						TseReport newReportVersion = (TseReport) arg0.data;
-						setParentFilter(newReportVersion);
-					}
-				});
+				Report newVersion = ReportActions.amend(getDialog(), report);
+				
+				if (newVersion == null)
+					return;
+				
+				// open the new version in the tool
+				setParentFilter(newVersion);
 			}
 		};
 		
@@ -533,7 +533,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		String reportMonth = report.getLabel(CustomStrings.REPORT_MONTH);
 		String reportYear = report.getYear();
-		String status = report.getStatus().getStatus();
+		String status = report.getStatus().getLabel();
 		String messageId = report.getMessageId();
 		String datasetId = report.getDatasetId();
 		
@@ -550,13 +550,13 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		}
 		
 		StringBuilder statusRow = new StringBuilder("Status: ");
-		statusRow.append(checkField(status, DatasetStatus.DRAFT.getStatus()));
+		statusRow.append(checkField(status, DatasetStatus.DRAFT.getLabel()));
 		
 		StringBuilder messageRow = new StringBuilder("DCF Message ID: ");
-		messageRow.append(checkField(messageId, "not assigned yet"));
+		messageRow.append(checkField(messageId, "Not assigned yet"));
 
 		StringBuilder datasetRow = new StringBuilder("DCF Dataset ID: ");
-		datasetRow.append(checkField(datasetId, "not assigned yet"));
+		datasetRow.append(checkField(datasetId, "Not assigned yet"));
 		
 		DialogBuilder panel = getPanelBuilder();
 		panel.setLabelText("reportLabel", reportRow.toString());
@@ -570,13 +570,13 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setTableEditable(editableReport);
 		panel.setRowCreatorEnabled(editableReport);
 		
-		panel.setEnabled("editBtn", datasetStatus.canBeMadeEditable());
+		panel.setEnabled("editBtn", DebugConfig.debug || datasetStatus.canBeMadeEditable());
 		panel.setEnabled("sendBtn", datasetStatus.canBeSent());
 		panel.setEnabled("amendBtn", DebugConfig.debug || datasetStatus.canBeAmended());
 		panel.setEnabled("submitBtn", datasetStatus.canBeSubmitted());
 		panel.setEnabled("rejectBtn", datasetStatus.canBeRejected());
-		panel.setEnabled("displayAckBtn", datasetStatus.canDisplayAck());
-		panel.setEnabled("refreshBtn", datasetStatus.canBeRefreshed());
+		panel.setEnabled("displayAckBtn", DebugConfig.debug || datasetStatus.canDisplayAck());
+		panel.setEnabled("refreshBtn", DebugConfig.debug || datasetStatus.canBeRefreshed());
 	}
 	
 	/**
