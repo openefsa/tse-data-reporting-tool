@@ -12,6 +12,8 @@ import org.eclipse.swt.widgets.Shell;
 import app_config.AppPaths;
 import app_config.DebugConfig;
 import app_config.PropertiesReader;
+import global_utils.EFSARCL;
+import global_utils.Warnings;
 import html_viewer.HtmlViewer;
 import table_database.Database;
 import table_database.TableDao;
@@ -32,7 +34,7 @@ public class StartUI {
 	 * @return
 	 * @throws IOException
 	 */
-	private static boolean checkSettings(String tableName) throws IOException {
+	private static boolean checkSettings(String tableName) {
 
 		TableDao dao = new TableDao(TableSchemaList.getByName(tableName));
 		
@@ -52,7 +54,7 @@ public class StartUI {
 	 * @return
 	 * @throws IOException
 	 */
-	private static boolean checkSettings() throws IOException {
+	private static boolean checkSettings() {
 		return checkSettings(CustomStrings.SETTINGS_SHEET);
 	}
 	
@@ -61,11 +63,11 @@ public class StartUI {
 	 * @return
 	 * @throws IOException
 	 */
-	private static boolean checkPreferences() throws IOException {
+	private static boolean checkPreferences() {
 		return checkSettings(CustomStrings.PREFERENCES_SHEET);
 	}
 	
-	private static void loginUser() throws IOException {
+	private static void loginUser() {
 		
 		// get the settings schema table
 		TableSchema settingsSchema = TableSchemaList.getByName(CustomStrings.SETTINGS_SHEET);
@@ -99,6 +101,8 @@ public class StartUI {
 	 * @param display
 	 */
 	private static void shutdown(Database db, Display display) {
+		
+		System.out.println("Application closed " + System.currentTimeMillis());
 
 		display.dispose();
 		
@@ -109,14 +113,35 @@ public class StartUI {
 		System.exit(0);
 	}
 	
-	public static void main(String args[]) throws IOException {
+	private static void showInitError(String errorCode, String message) {
+		Display display = new Display();
+		Shell shell = new Shell(display);
+		Warnings.warnUser(shell, "Error", errorCode + ": " + message);
+	}
+	
+	public static void main(String args[]) {
 		
 		// application start-up message. Usage of System.err used for red chars
-		System.out.println("Application Started " + System.currentTimeMillis());
+		System.out.println("Application started " + System.currentTimeMillis());
+		
+		// initialize the library
+		try {
+			EFSARCL.initialize();
+		} catch (IOException e) {
+			e.printStackTrace();
+			showInitError("ERR200", e.getMessage());
+			return;
+		}
 		
 		// connect to the database application
 		Database db = new Database();
-		db.connect();
+		try {
+			db.connect();
+		} catch (IOException e) {
+			e.printStackTrace();
+			showInitError("ERR201", e.getMessage());
+			return;
+		}
 		
 		Display display = new Display();
 		Shell shell = new Shell(display);

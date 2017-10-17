@@ -14,9 +14,7 @@ public class CustomStrings {
 	public static final String SETTINGS_USERNAME = "username";
 	public static final String SETTINGS_PASSWORD = "password";
 	public static final String SETTINGS_ORG_CODE = "orgCode";
-	public static final String SETTINGS_DC_TEST = "dcTest";
 
-	public static final String REPORT_MONTH = "reportMonth";
 	public static final String REPORT_COUNTRY = "country";
 	
 	public static final String SUMMARIZED_INFO_TOT_SAMPLES = "totSamplesTested";
@@ -37,6 +35,7 @@ public class CustomStrings {
 	
 	
 	public static final String SUMMARIZED_INFO_SCRAPIE_TYPE = "SCRAPIE";
+	public static final String SUMMARIZED_INFO_CWD_TYPE = "CWD";
 	public static final String SUMMARIZED_INFO_SCREENING_TEST = "AT06A";
 	public static final String SUMMARIZED_INFO_CONFIRMATORY_TEST = "AT08A";
 	public static final String SUMMARIZED_INFO_MOLECULAR_TEST = "AT13A";

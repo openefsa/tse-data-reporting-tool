@@ -9,8 +9,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
-import app_config.BooleanValue;
-import app_config.GlobalManager;
 import app_config.PropertiesReader;
 import dataset.Dataset;
 import dataset.DatasetList;
@@ -52,10 +50,6 @@ public class SettingsDialog extends OptionsDialog {
 		
 		if (settings == null)
 			return closeWindow;
-		
-		// enable/disable the data collection of test according to the settings
-		boolean isTest = BooleanValue.isTrue(settings.getCode(CustomStrings.SETTINGS_DC_TEST));
-		GlobalManager.getInstance().setDcTest(isTest);
 		
 		login(settings);
 		

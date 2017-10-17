@@ -17,8 +17,6 @@ public class CatalogLists {
 	 */
 	public static final String TSE_LIST = "tseLists";
 	public static final String SPECIES_LIST = "animalSpeciesLists";
-	public static final String YEARS_LIST = "yearsList";
-	public static final String MONTHS_LIST = "monthsList";
 	public static final String COUNTRY_LIST = "countryList";
 	public static final String TEST_LIST = "anMethTypesLists";
 	public static final String ALL_TEST_ID = "ALL";

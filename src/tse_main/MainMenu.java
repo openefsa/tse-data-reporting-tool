@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.xml.sax.SAXException;
 
 import app_config.DebugConfig;
+import app_config.PropertiesReader;
 import message.MessageConfigBuilder;
 import message_creator.OperationType;
 import report.ReportException;
@@ -54,6 +55,7 @@ public class MainMenu {
 	private MenuItem closeReport;
 	private MenuItem importReport;
 	private MenuItem downloadReport;
+	private MenuItem exitApplication;
 
 	public MainMenu(MainPanel mainPanel, Shell shell) {
 		this.shell = shell;
@@ -233,8 +235,20 @@ public class MainMenu {
 		this.downloadReport.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				
 				TseReportDownloader downloader = new TseReportDownloader(shell);
 				downloader.download(CustomStrings.VALID_SENDER_ID_PATTERN);
+			}
+		});
+		
+		this.exitApplication = new MenuItem(fileMenu, SWT.PUSH);
+		this.exitApplication.setText("Close application");
+		this.exitApplication.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				shell.close();
+				shell.dispose();
 			}
 		});
 		
@@ -303,6 +317,26 @@ public class MainMenu {
 				public void widgetDefaultSelected(SelectionEvent arg0) {}
 			});
 		}
+		
+		MenuItem getDc = new MenuItem(fileMenu, SWT.PUSH);
+		getDc.setText("[DEBUG] Print current data collection");
+		getDc.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				TseReport report = mainPanel.getOpenedReport();
+				
+				if (report == null) {
+					System.out.println(PropertiesReader.getDataCollectionCode());
+					return;
+				}
+				
+				System.out.println(PropertiesReader.getDataCollectionCode(report.getYear()));
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
 		
 
 		// open preferences

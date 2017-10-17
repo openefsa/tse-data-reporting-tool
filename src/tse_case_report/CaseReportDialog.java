@@ -50,9 +50,6 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		// add 300 px in height
 		addHeight(300);
 		
-		// set the report also as parent of the case
-		addParentTable(report);
-		
 		// update the ui
 		updateUI();
 		
@@ -186,6 +183,10 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		// return the new row
 		TableRow caseRow = new TableRow(schema);
 		
+		// add parents
+		Relation.injectParent(report, caseRow);
+		Relation.injectParent(summInfo, caseRow);
+		
 		return caseRow;
 	}
 
@@ -215,7 +216,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	@Override
 	public void addWidgets(DialogBuilder viewer) {
 		
-		String reportMonth = report.getLabel(CustomStrings.REPORT_MONTH);
+		String reportMonth = report.getLabel(AppPaths.REPORT_MONTH);
 		String reportYear = report.getLabel(AppPaths.REPORT_YEAR);
 		String source = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_SOURCE);
 		String part = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_PART);

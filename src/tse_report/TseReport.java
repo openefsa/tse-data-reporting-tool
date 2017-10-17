@@ -112,7 +112,7 @@ public class TseReport extends Report implements TseTableRow {
 	 * The version is automatically increased
 	 * @return
 	 */
-	public EFSAReport createNewVersion() {
+	public EFSAReport amend() {
 		
 		Stack<TseTableRow> elements = new Stack<>();
 		elements.add(this);
@@ -435,24 +435,6 @@ public class TseReport extends Report implements TseTableRow {
 		}
 		
 		return report;
-	}
-
-	public String getYear() {
-		return this.getCode(AppPaths.REPORT_YEAR);
-	}
-	
-	public void setYear(String year) {
-		this.put(AppPaths.REPORT_YEAR, 
-				getTableColumnValue(year, CatalogLists.YEARS_LIST));
-	}
-	
-	public String getMonth() {
-		return this.getCode(CustomStrings.REPORT_MONTH);
-	}
-	
-	public void setMonth(String month) {
-		this.put(CustomStrings.REPORT_MONTH, 
-				getTableColumnValue(month, CatalogLists.MONTHS_LIST));
 	}
 	
 	public void setCountry(String country) {

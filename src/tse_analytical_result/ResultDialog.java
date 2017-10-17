@@ -9,6 +9,7 @@ import app_config.AppPaths;
 import dataset.DatasetStatus;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
+import table_relations.Relation;
 import table_skeleton.TableRow;
 import tse_components.TableDialogWithMenu;
 import tse_config.CustomStrings;
@@ -41,10 +42,6 @@ public class ResultDialog extends TableDialogWithMenu {
 		// add 300 px in height
 		addHeight(300);
 		
-		// add the parents
-		addParentTable(report);
-		addParentTable(summInfo);
-		
 		updateUI();
 	}
 	
@@ -70,6 +67,11 @@ public class ResultDialog extends TableDialogWithMenu {
 	public TableRow createNewRow(TableSchema schema, Selection element) {
 		
 		TableRow row = new TableRow(schema);
+		
+		Relation.injectParent(report, row);
+		Relation.injectParent(summInfo, row);
+		Relation.injectParent(caseInfo, row);
+		
 		return row;
 	}
 
@@ -99,7 +101,7 @@ public class ResultDialog extends TableDialogWithMenu {
 	@Override
 	public void addWidgets(DialogBuilder viewer) {
 		
-		String reportMonth = report.getLabel(CustomStrings.REPORT_MONTH);
+		String reportMonth = report.getLabel(AppPaths.REPORT_MONTH);
 		String reportYear = report.getLabel(AppPaths.REPORT_YEAR);
 		String sampleId = caseInfo.getLabel(CustomStrings.CASE_INFO_SAMPLE_ID);
 		String animalId = caseInfo.getLabel(CustomStrings.CASE_INFO_ANIMAL_ID);

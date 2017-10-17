@@ -52,7 +52,6 @@ public class ReportCreatorDialog extends TableDialog {
 		// add preferences to the report
 		try {
 			Relation.injectGlobalParent(row, CustomStrings.PREFERENCES_SHEET);
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

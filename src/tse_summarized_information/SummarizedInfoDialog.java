@@ -21,8 +21,9 @@ import app_config.DebugConfig;
 import dataset.DatasetStatus;
 import global_utils.Warnings;
 import report.Report;
-import report.ReportException;
+import report.ReportAckManager;
 import report.ReportActions;
+import report.ReportException;
 import table_database.TableDao;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
@@ -62,14 +63,6 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		// add 300 px in height
 		addHeight(300);
-		
-		// add the parents of preferences and settings
-		try {
-			addParentTable(Relation.getGlobalParent(CustomStrings.PREFERENCES_SHEET));
-			addParentTable(Relation.getGlobalParent(CustomStrings.SETTINGS_SHEET));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		
 		// if double clicked an element of the table
 		// open the cases
@@ -172,12 +165,6 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		// filter the records by the clicked summarized information
 		dialog.setParentFilter(summInfo);
 		
-		// add as parent also the report of the summarized information
-		// which is the parent filter since we have chosen a summarized
-		// information from a single report (the summ info were filtered
-		// by the report)
-		dialog.addParentTable(getParentFilter());
-		
 		dialog.open();
 		
 		// refresh the table when cases are changed
@@ -211,32 +198,42 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		resultRow.initialize();
 		
-		// for each inconclusive
-		for (int i = 0; i < inconclusive; ++i) {
-			
-			// add get the id and update the fields
-			int id = dao.add(resultRow);
-			resultRow.setId(id);
-			
-			resultRow.initialize();
-			
-			// set assessment as inconclusive
-			TableColumnValue value = new TableColumnValue();
-			value.setCode(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE);
-			value.setLabel(CustomStrings.DEFAULT_ASSESS_INC_CASE_LABEL);
-			resultRow.put(CustomStrings.CASE_INFO_ASSESS, value);
-			
-			dao.update(resultRow);
-		}
+		boolean isCervid = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
+			.equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE);
 		
-		// for each positive
-		for (int i = 0; i < positive; ++i) {
+		// for cervids we need double rows
+		int repeats = isCervid ? 2 : 1;
+		
+		// for each repeat add rows
+		for (int j = 0; j < repeats; ++j) {
 			
-			// add get the id and update the fields
-			int id = dao.add(resultRow);
-			resultRow.setId(id);
-			resultRow.initialize();
-			dao.update(resultRow);
+			// for each inconclusive
+			for (int i = 0; i < inconclusive; ++i) {
+				
+				// add get the id and update the fields
+				int id = dao.add(resultRow);
+				resultRow.setId(id);
+				
+				resultRow.initialize();
+				
+				// set assessment as inconclusive
+				TableColumnValue value = new TableColumnValue();
+				value.setCode(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE);
+				value.setLabel(CustomStrings.DEFAULT_ASSESS_INC_CASE_LABEL);
+				resultRow.put(CustomStrings.CASE_INFO_ASSESS, value);
+				
+				dao.update(resultRow);
+			}
+			
+			// for each positive
+			for (int i = 0; i < positive; ++i) {
+				
+				// add get the id and update the fields
+				int id = dao.add(resultRow);
+				resultRow.setId(id);
+				resultRow.initialize();
+				dao.update(resultRow);
+			}
 		}
 	}
 	
@@ -278,7 +275,17 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		TableColumnValue value = new TableColumnValue(element);
 		
 		// create a new summarized information
-		return new SummarizedInfo(CustomStrings.SUMMARIZED_INFO_TYPE, value);
+		SummarizedInfo si = new SummarizedInfo(CustomStrings.SUMMARIZED_INFO_TYPE, value);
+		
+		try {
+			Relation.injectGlobalParent(si, CustomStrings.SETTINGS_SHEET);
+			Relation.injectGlobalParent(si, CustomStrings.PREFERENCES_SHEET);
+			Relation.injectParent(report, si);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return si;
 	}
 
 	@Override
@@ -315,8 +322,10 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 
-				ReportActions.refreshStatus(getDialog(), report, new Listener() {
-
+				// refresh the status
+				ReportAckManager ackManager = new ReportAckManager(getDialog(), report);
+				ackManager.refreshStatus(new Listener() {
+					
 					@Override
 					public void handleEvent(Event arg0) {
 						updateUI();
@@ -362,7 +371,14 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				}
 				
 				try {
-					ReportActions.send(getDialog(), report);
+					ReportActions actions = new ReportActions(getDialog(), report);
+					actions.send(new Listener() {
+						
+						@Override
+						public void handleEvent(Event arg0) {
+							updateUI();
+						}
+					});
 				} catch (MySOAPException e) {
 					e.printStackTrace();
 					Warnings.showSOAPWarning(getDialog(), e.getError());
@@ -383,8 +399,10 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
+				ReportActions actions = new ReportActions(getDialog(), report);
+				
 				// reject the report and update the ui
-				ReportActions.reject(getDialog(), report, new Listener() {
+				actions.reject(new Listener() {
 					
 					@Override
 					public void handleEvent(Event arg0) {
@@ -401,8 +419,10 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
+				ReportActions actions = new ReportActions(getDialog(), report);
+				
 				// reject the report and update the ui
-				ReportActions.submit(getDialog(), report, new Listener() {
+				actions.submit(new Listener() {
 					
 					@Override
 					public void handleEvent(Event arg0) {
@@ -419,7 +439,9 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				ReportActions.displayAck(getDialog(), report);
+				// refresh the status
+				ReportAckManager ackManager = new ReportAckManager(getDialog(), report);
+				ackManager.displayAck();
 			}
 		};
 		
@@ -430,7 +452,9 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				Report newVersion = ReportActions.amend(getDialog(), report);
+				ReportActions actions = new ReportActions(getDialog(), report);
+				
+				Report newVersion = actions.amend();
 				
 				if (newVersion == null)
 					return;
@@ -531,7 +555,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	 */
 	public void updateUI() {
 		
-		String reportMonth = report.getLabel(CustomStrings.REPORT_MONTH);
+		String reportMonth = report.getMonth();
 		String reportYear = report.getYear();
 		String status = report.getStatus().getLabel();
 		String messageId = report.getMessageId();
@@ -570,13 +594,13 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setTableEditable(editableReport);
 		panel.setRowCreatorEnabled(editableReport);
 		
-		panel.setEnabled("editBtn", DebugConfig.debug || datasetStatus.canBeMadeEditable());
+		panel.setEnabled("editBtn", datasetStatus.canBeMadeEditable());
 		panel.setEnabled("sendBtn", datasetStatus.canBeSent());
 		panel.setEnabled("amendBtn", DebugConfig.debug || datasetStatus.canBeAmended());
 		panel.setEnabled("submitBtn", datasetStatus.canBeSubmitted());
 		panel.setEnabled("rejectBtn", datasetStatus.canBeRejected());
-		panel.setEnabled("displayAckBtn", DebugConfig.debug || datasetStatus.canDisplayAck());
-		panel.setEnabled("refreshBtn", DebugConfig.debug || datasetStatus.canBeRefreshed());
+		panel.setEnabled("displayAckBtn", datasetStatus.canDisplayAck());
+		panel.setEnabled("refreshBtn", datasetStatus.canBeRefreshed());
 	}
 	
 	/**

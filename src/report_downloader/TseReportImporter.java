@@ -306,8 +306,28 @@ public class TseReportImporter extends ReportImporter {
 
 		HashMap<String, TableColumnValue> rowValues = new HashMap<>();
 
-		// decompose param code to get alleles
-		rowValues.putAll(decomposeField(CustomStrings.PARAM_CODE_COL, row, true));
+		// parse param code (NOTE cannot use decompose since here we have a too complex formula...)
+		String paramCode = row.getCode(CustomStrings.PARAM_CODE_COL);
+		String[] split = paramCode.split("#");
+		
+		// at least two pieces
+		if (split.length >= 2) {
+			
+			String[] facets = split[0].split("$");
+			
+			// get alleles from param
+			if (facets.length >= 2) {
+				
+				TableColumnValue allele1 = new TableColumnValue();
+				TableColumnValue allele2 = new TableColumnValue();
+				allele1.setCode(facets[0]);
+				allele2.setCode(facets[1]);
+				
+				// decompose param code to get alleles
+				rowValues.put(CustomStrings.RESULT_ALLELE_1, allele1);
+				rowValues.put(CustomStrings.RESULT_ALLELE_2, allele2);
+			}
+		}
 
 		// copy values into the row
 		TableRow result = new TableRow(row);
