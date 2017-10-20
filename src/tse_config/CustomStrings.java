@@ -1,6 +1,10 @@
 package tse_config;
 
+import app_config.AppPaths;
+
 public class CustomStrings {
+	
+	public static final String PREDEFINED_RESULTS_FILE = AppPaths.CONFIG_FOLDER + "predefinedResults.xlsx";
 	
 	// sheets names
 	public static final String RESULT_SHEET = "AnalyticalResults";
@@ -38,6 +42,7 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_CWD_TYPE = "CWD";
 	public static final String SUMMARIZED_INFO_SCREENING_TEST = "AT06A";
 	public static final String SUMMARIZED_INFO_CONFIRMATORY_TEST = "AT08A";
+	public static final String RESULT_DISCRIMINATORY_TEST = "AT12A";
 	public static final String SUMMARIZED_INFO_MOLECULAR_TEST = "AT13A";
 	
 	public static final String CASE_INFO_SAMPLE_ID = "sampId";
@@ -59,8 +64,10 @@ public class CustomStrings {
 	public static final String RESULT_SAMP_MAT_INFO = "sampMatInfo";
 	public static final String RESULT_SAMP_AREA = "sampArea";
 	public static final String RESULT_SAMP_DAY = "sampD";
+	public static final String RESULT_TEST_RESULT = "resQualValue";
 	
 	public static final String PARAM_TYPE_COL = "paramType";
+	public static final String PARAM_CODE_BASE_TERM_COL = "paramCodeBaseTerm";
 	public static final String PARAM_CODE_COL = "paramCode";
 	public static final String SUMMARIZED_INFO_PARAM_TYPE = "P003A";
 	public static final String RESULT_PARAM_TYPE = "P001A";

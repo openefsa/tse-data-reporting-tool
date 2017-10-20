@@ -2,8 +2,6 @@ package tse_report;
 
 import java.util.Collection;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
@@ -18,8 +16,8 @@ import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
 public class ReportListDialog extends TableDialog {
-
-	private Listener listener;
+	
+	private TseReport selectedReport;
 	
 	public ReportListDialog(Shell parent, String title) {
 		super(parent, title, true, true);
@@ -49,6 +47,9 @@ public class ReportListDialog extends TableDialog {
 		// get only last versions
 		DatasetList<TseReport> lastVersions = tseReports.filterOldVersions();
 
+		// sort the list
+		lastVersions.sort();
+		
 		reports.clear();
 		
 		// convert back to table row
@@ -61,23 +62,19 @@ public class ReportListDialog extends TableDialog {
 
 	@Override
 	public boolean apply(TableSchema schema, Collection<TableRow> rows, TableRow selectedRow) {
-
+		
 		if (selectedRow == null) {
 			warnUser("Error", "A report was not selected!");
 			return false;
 		}
 		
-		if (listener != null) {
-			Event event = new Event();
-			event.data = new TseReport(selectedRow);
-			listener.handleEvent(event);
-		}
+		this.selectedReport = new TseReport(selectedRow);
 		
 		return true;
 	}
-	
-	public void setListener(Listener listener) {
-		this.listener = listener;
+
+	public TseReport getSelectedReport() {
+		return selectedReport;
 	}
 
 	@Override

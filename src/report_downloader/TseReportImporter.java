@@ -310,7 +310,12 @@ public class TseReportImporter extends ReportImporter {
 		String paramCode = row.getCode(CustomStrings.PARAM_CODE_COL);
 		String[] split = paramCode.split("#");
 		
-		// at least two pieces
+		// put the base term into the param code base term
+		if (split.length >= 1) {
+			row.put(CustomStrings.PARAM_CODE_BASE_TERM_COL, split[0]);
+		}
+		
+		// at least two pieces, then save alleles
 		if (split.length >= 2) {
 			
 			String[] facets = split[0].split("$");
@@ -318,14 +323,9 @@ public class TseReportImporter extends ReportImporter {
 			// get alleles from param
 			if (facets.length >= 2) {
 				
-				TableColumnValue allele1 = new TableColumnValue();
-				TableColumnValue allele2 = new TableColumnValue();
-				allele1.setCode(facets[0]);
-				allele2.setCode(facets[1]);
-				
 				// decompose param code to get alleles
-				rowValues.put(CustomStrings.RESULT_ALLELE_1, allele1);
-				rowValues.put(CustomStrings.RESULT_ALLELE_2, allele2);
+				row.put(CustomStrings.RESULT_ALLELE_1, facets[0]);
+				row.put(CustomStrings.RESULT_ALLELE_2, facets[1]);
 			}
 		}
 

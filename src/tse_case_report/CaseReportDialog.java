@@ -10,22 +10,20 @@ import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
 import dataset.DatasetStatus;
+import report.Report;
 import table_database.TableDao;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_relations.Relation;
-import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
 import tse_analytical_result.ResultDialog;
 import tse_components.TableDialogWithMenu;
-import tse_config.CatalogLists;
 import tse_config.CustomStrings;
+import tse_summarized_information.SummarizedInfo;
 import tse_validator.CaseReportValidator;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.Selection;
-import xml_catalog_reader.XmlContents;
-import xml_catalog_reader.XmlLoader;
 
 /**
  * Class which allows adding and editing a summarized information report.
@@ -34,10 +32,10 @@ import xml_catalog_reader.XmlLoader;
  */
 public class CaseReportDialog extends TableDialogWithMenu {
 	
-	private TableRow report;
-	private TableRow summInfo;
+	private Report report;
+	private SummarizedInfo summInfo;
 	
-	public CaseReportDialog(Shell parent, TableRow report, TableRow summInfo) {
+	public CaseReportDialog(Shell parent, Report report, SummarizedInfo summInfo) {
 		
 		super(parent, "Case report", true, false);
 		
@@ -77,8 +75,9 @@ public class CaseReportDialog extends TableDialogWithMenu {
 					boolean hasResults = !dao.getByParentId(caseReport.getSchema().getSheetName(), caseReport.getId()).isEmpty();
 					
 					// create default if no results are present
-					if (!hasResults)
-						createDefaultResults(caseReport);
+					if (!hasResults) {
+						CaseReport.createDefaultResults(report, summInfo, caseReport);
+					}
 					
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -96,69 +95,9 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		});
 	}
 	
-	public void createDefaultResults(TableRow caseReport) throws IOException {
-		
-		TableSchema resultSchema = TableSchemaList.getByName(CustomStrings.RESULT_SHEET);
-		
-		TableRow resultRow = new TableRow(resultSchema);
-		
-		// inject the case parent to the result
-		Relation.injectParent(report, resultRow);
-		Relation.injectParent(summInfo, resultRow);
-		Relation.injectParent(caseReport, resultRow);
-
-		// add two default rows
-		TableDao dao = new TableDao(resultSchema);
-		
-		resultRow.initialize();
-		
-		// check if we have a confirmatory test
-		boolean isConfirmatoryTest = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TEST_TYPE)
-				.equals(CustomStrings.SUMMARIZED_INFO_CONFIRMATORY_TEST);
-		
-		boolean isScrapie = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
-				.equals(CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE);
-		
-		// get all the tests lists
-		XmlContents xml = XmlLoader.getByPicklistKey(CatalogLists.TEST_LIST);
-		
-		// get the list with all the tests
-		Collection<Selection> tests = xml.getListElements(CatalogLists.ALL_TEST_ID);
-		
-		// for each test create a row with that test
-		// do not create screening row if we have confirmatory test
-		for (Selection test : tests) {
-		
-			// skip
-			boolean testScreening = test.getCode().equals(CustomStrings.SUMMARIZED_INFO_SCREENING_TEST);
-			boolean testMolecular = test.getCode().equals(CustomStrings.SUMMARIZED_INFO_MOLECULAR_TEST);
-			
-			if (isConfirmatoryTest && testScreening)
-				continue;
-
-			// molecular test only for scrapie
-			if (!isScrapie && testMolecular)
-				continue;
-			
-			// add get the id and update the fields
-			int id = dao.add(resultRow);
-			resultRow.setId(id);
-
-			// initialize values
-			resultRow.initialize();
-			
-			// set test accordingly
-			TableColumnValue value = new TableColumnValue(test);
-			resultRow.put(CustomStrings.RESULT_TEST_TYPE, value);
-			
-			// save in the db
-			dao.update(resultRow);
-		}
-	}
-	
 	@Override
 	public void setParentFilter(TableRow parentFilter) {
-		this.summInfo = parentFilter;
+		this.summInfo = new SummarizedInfo(parentFilter);
 		super.setParentFilter(parentFilter);
 	}
 
@@ -219,7 +158,6 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		String reportMonth = report.getLabel(AppPaths.REPORT_MONTH);
 		String reportYear = report.getLabel(AppPaths.REPORT_YEAR);
 		String source = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_SOURCE);
-		String part = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_PART);
 		String prod = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_PROD);
 		String age = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_AGE);
 		String target = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP);
@@ -239,10 +177,6 @@ public class CaseReportDialog extends TableDialogWithMenu {
 			.append(" ")
 			.append(prod);
 		
-		StringBuilder sampleRow = new StringBuilder();
-		sampleRow.append("Sample: ")
-			.append(part);
-		
 		StringBuilder targetRow = new StringBuilder();
 		targetRow.append("Target group: ")
 			.append(target);
@@ -254,7 +188,6 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		viewer.addHelp("TSEs monitoring data (case level)")
 			.addLabel("reportLabel", reportRow.toString())
 			.addLabel("animalLabel", animalRow.toString())
-			.addLabel("sampLabel", sampleRow.toString())
 			.addLabel("targetLabel", targetRow.toString())
 			.addLabel("statusLabel", statusRow.toString())
 			.addRowCreator("Add data:")

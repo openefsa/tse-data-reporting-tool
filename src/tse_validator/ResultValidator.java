@@ -9,10 +9,17 @@ import tse_config.CustomStrings;
 
 public class ResultValidator extends SimpleRowValidatorLabelProvider {
 
-	private boolean alleleError;
+	private ErrorType error;
+	
+	private enum ErrorType {
+		ALLELE_ERROR,
+		NONE
+	}
 	
 	@Override
 	public int getWarningLevel(TableRow row) {
+		
+		error = ErrorType.NONE;
 		
 		int level = super.getWarningLevel(row);
 		
@@ -30,11 +37,11 @@ public class ResultValidator extends SimpleRowValidatorLabelProvider {
 			String allele1 = row.getCode(CustomStrings.RESULT_ALLELE_1);
 			String allele2 = row.getCode(CustomStrings.RESULT_ALLELE_2);
 			
-			boolean empty = allele1.isEmpty() && allele2.isEmpty();
-			
-			if (!empty) {
+			boolean notEmpty = !allele1.isEmpty() || !allele2.isEmpty();
+
+			if (notEmpty) {
 				level = 1;
-				alleleError = true;
+				error = ErrorType.ALLELE_ERROR;
 			}
 		}
 		
@@ -43,10 +50,10 @@ public class ResultValidator extends SimpleRowValidatorLabelProvider {
 	
 	@Override
 	public String getText(TableRow row) {
-		
-		int level = this.getWarningLevel(row);
 
-		if (alleleError) {
+		getWarningLevel(row);
+		
+		if (error == ErrorType.ALLELE_ERROR) {
 			return "Alleles not reportable";
 		}
 		else return super.getText(row);
@@ -55,9 +62,9 @@ public class ResultValidator extends SimpleRowValidatorLabelProvider {
 	@Override
 	public Color getForeground(TableRow row) {
 
-		int level = this.getWarningLevel(row);
-
-		if (alleleError) {
+		getWarningLevel(row);
+		
+		if (error == ErrorType.ALLELE_ERROR) {
 			return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
 		}
 		else 

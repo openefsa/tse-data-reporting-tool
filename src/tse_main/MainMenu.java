@@ -129,32 +129,24 @@ public class MainMenu {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				
 				ReportListDialog dialog = new ReportListDialog(shell, "Open a report");
 				dialog.setButtonText("Open");
-				dialog.setListener(new Listener() {
-					
-					@Override
-					public void handleEvent(Event arg0) {						
-						
-						if (!(arg0.data instanceof TseReport))
-							return;
-
-						TseReport report = (TseReport) arg0.data;
-
-						mainPanel.setEnabled(true);
-						
-						
-						dialog.getDialog().setCursor(dialog.getDialog()
-								.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
-						
-						mainPanel.openReport(report);
-						
-						dialog.getDialog().setCursor(dialog.getDialog()
-								.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
-					}
-				});
 				
 				dialog.open();
+				
+				TseReport report = dialog.getSelectedReport();
+				
+				if (report == null)
+					return;
+
+				mainPanel.setEnabled(true);
+				
+				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+				
+				mainPanel.openReport(report);
+				
+				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
 			}
 			
 			@Override
@@ -191,39 +183,28 @@ public class MainMenu {
 				
 				ReportListDialog dialog = new ReportListDialog(shell, "Import a report");
 				dialog.setButtonText("Import");
-				dialog.setListener(new Listener() {
-					
-					@Override
-					public void handleEvent(Event arg0) {
-
-						if (!(arg0.data instanceof TableRow))
-							return;
-
-						// import the report into the opened report
-						TableRow report = (TableRow) arg0.data;
-
-						// copy the report summarized information into the opened one
-						TableSchema childSchema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
-
-						if (childSchema == null)
-							return;
-
-						dialog.getDialog().setCursor(dialog.getDialog()
-								.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
-
-						// copy the data into the selected report
-						TableImporter.copyByParent(childSchema, 
-								report, mainPanel.getOpenedReport());
-
-						mainPanel.refresh();
-
-						dialog.getDialog().setCursor(dialog.getDialog()
-								.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
-
-					}
-				});
-				
 				dialog.open();
+				
+				// import the report into the opened report
+				TableRow report = dialog.getSelectedReport();
+				
+				if (report == null)
+					return;
+
+				// copy the report summarized information into the opened one
+				TableSchema childSchema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
+
+				if (childSchema == null)
+					return;
+
+				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+
+				// copy the data into the selected report
+				TableImporter.copyByParent(childSchema, report, mainPanel.getOpenedReport());
+
+				mainPanel.refresh();
+
+				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
 			}
 			
 			@Override
@@ -296,21 +277,17 @@ public class MainMenu {
 				
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
+					
 					ReportListDialog dialog = new ReportListDialog(shell, "Delete a report");
 					dialog.setButtonText("Delete");
-					dialog.setListener(new Listener() {
-						
-						@Override
-						public void handleEvent(Event arg0) {
-							
-							if (!(arg0.data instanceof TseReport))
-								return;
-
-							TseReport report = (TseReport) arg0.data;
-							report.delete();
-						}
-					});
 					dialog.open();
+
+					TseReport report = dialog.getSelectedReport();
+					
+					if (report == null)
+						return;
+					
+					report.delete();
 				}
 				
 				@Override

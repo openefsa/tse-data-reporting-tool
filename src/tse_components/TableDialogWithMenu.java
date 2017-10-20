@@ -7,7 +7,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.DebugConfig;
@@ -48,7 +47,7 @@ public abstract class TableDialogWithMenu extends TableDialog {
 		
 		// remove an item
 		MenuItem remove = new MenuItem(menu, SWT.PUSH);
-		remove.setText("Delete record");
+		remove.setText("Delete records");
 		remove.setEnabled(false);
 		
 		if (DebugConfig.debug) {
@@ -94,10 +93,7 @@ public abstract class TableDialogWithMenu extends TableDialog {
 				}
 				
 				@Override
-				public void widgetDefaultSelected(SelectionEvent arg0) {
-					// TODO Auto-generated method stub
-					
-				}
+				public void widgetDefaultSelected(SelectionEvent arg0) {}
 			});
 		}
 		
@@ -114,17 +110,16 @@ public abstract class TableDialogWithMenu extends TableDialog {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				
-				Warnings.warnUser(getDialog(), "Warning", 
-						"The selected record and all the related data will be permanently deleted. Continue?", 
-						SWT.ICON_WARNING);
-				MessageBox mb = new MessageBox(getDialog(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
-				mb.setText("Warning!");
-				mb.setMessage("CONF906: The selected record and all the related data will be permanently deleted. Continue?");
+				int val = Warnings.warnUser(getDialog(), 
+						"Warning",
+						"CONF906: The selected records and all the related data will be permanently deleted. Continue?", 
+						SWT.ICON_WARNING | SWT.YES | SWT.NO);
 				
-				int val = mb.open();
-				
-				if (val == SWT.YES)
+				if (val == SWT.YES) {
+					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 					removeSelectedRow();
+					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+				}
 			}
 			
 			@Override

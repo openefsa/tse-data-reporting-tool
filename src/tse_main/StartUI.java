@@ -124,14 +124,22 @@ public class StartUI {
 		// application start-up message. Usage of System.err used for red chars
 		System.out.println("Application started " + System.currentTimeMillis());
 		
-		// initialize the library
 		try {
+			
+			// initialize the library
 			EFSARCL.initialize();
+			
+			// check also custom files
+			EFSARCL.checkConfigFiles(CustomStrings.PREDEFINED_RESULTS_FILE, 
+					AppPaths.CONFIG_FOLDER);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 			showInitError("ERR200", e.getMessage());
 			return;
 		}
+		
+		
 		
 		// connect to the database application
 		Database db = new Database();

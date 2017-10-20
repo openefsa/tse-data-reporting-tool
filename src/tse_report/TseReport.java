@@ -269,7 +269,7 @@ public class TseReport extends Report implements TseTableRow {
 		for (TableRow child : children) {
 			
 			int errorLevel = validator.getOverallWarningLevel(child);
-			
+
 			// if we have errors => not valid
 			if (errorLevel > 0) {
 				return false;
@@ -316,7 +316,7 @@ public class TseReport extends Report implements TseTableRow {
 		MySOAPException, ReportException {
 		
 		OperationType op = OperationType.INSERT;
-		this.exportAndSend(getDefaultExportConfiguration(op));
+		this.exportAndSend(op);
 	}
 	
 	/**
@@ -333,7 +333,7 @@ public class TseReport extends Report implements TseTableRow {
 		MySOAPException, ReportException {
 		
 		OperationType op = OperationType.REPLACE;
-		this.exportAndSend(getDefaultExportConfiguration(op));
+		this.exportAndSend(op);
 	}
 	
 	/**
@@ -350,7 +350,7 @@ public class TseReport extends Report implements TseTableRow {
 		MySOAPException, ReportException {
 		
 		OperationType op = OperationType.REJECT;
-		this.exportAndSend(getDefaultExportConfiguration(op));
+		this.exportAndSend(op);
 	}
 	
 	/**
@@ -366,7 +366,7 @@ public class TseReport extends Report implements TseTableRow {
 		MySOAPException, ReportException {
 		
 		OperationType op = OperationType.SUBMIT;
-		this.exportAndSend(getDefaultExportConfiguration(op));
+		this.exportAndSend(op);
 	}
 	
 	/**

@@ -23,7 +23,6 @@ import global_utils.Warnings;
 import report.Report;
 import report.ReportAckManager;
 import report.ReportActions;
-import report.ReportException;
 import table_database.TableDao;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
@@ -37,7 +36,6 @@ import tse_config.CatalogLists;
 import tse_config.CustomStrings;
 import tse_report.TseReport;
 import tse_validator.SummarizedInfoValidator;
-import webservice.MySOAPException;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.Selection;
@@ -92,7 +90,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				}
 
 				// open cases dialog
-				openCases(summInfo);
+				openCases(new SummarizedInfo(summInfo));
 			}
 		});
 	}
@@ -157,10 +155,10 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	/**
 	 * Open the cases dialog of the summarized information
 	 */
-	private void openCases(TableRow summInfo) {
+	private void openCases(SummarizedInfo summInfo) {
 		
 		// create a case passing also the report information
-		CaseReportDialog dialog = new CaseReportDialog(getDialog(), getParentFilter(), summInfo);
+		CaseReportDialog dialog = new CaseReportDialog(getDialog(), this.report, summInfo);
 		
 		// filter the records by the clicked summarized information
 		dialog.setParentFilter(summInfo);
@@ -239,7 +237,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	
 	@Override
 	public void setParentFilter(TableRow parentFilter) {
-		
+
 		this.report = new TseReport(parentFilter);
 		
 		// update ui with report data
@@ -370,23 +368,14 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 					return;
 				}
 				
-				try {
-					ReportActions actions = new ReportActions(getDialog(), report);
-					actions.send(new Listener() {
-						
-						@Override
-						public void handleEvent(Event arg0) {
-							updateUI();
-						}
-					});
-				} catch (MySOAPException e) {
-					e.printStackTrace();
-					Warnings.showSOAPWarning(getDialog(), e.getError());
-				} catch (ReportException e) {
-					e.printStackTrace();
-					Warnings.warnUser(getDialog(), "Error", "ERR700: Something went wrong, "
-							+ "please check if the report senderDatasetId is set");
-				}
+				ReportActions actions = new ReportActions(getDialog(), report);
+				actions.send(new Listener() {
+					
+					@Override
+					public void handleEvent(Event arg0) {
+						updateUI();
+					}
+				});
 				
 				getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
 			}

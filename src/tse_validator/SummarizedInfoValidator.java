@@ -98,6 +98,9 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		case CHECK_CASES:
 			level = 1;
 			break;
+		case WRONG_CASES:
+			level = 2;
+			break;
 		default:
 			break;
 		}
