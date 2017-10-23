@@ -246,7 +246,7 @@ public class MainMenu {
 
 					MessageConfigBuilder config = report.getDefaultExportConfiguration(OperationType.REPLACE);
 					try {
-						report.export(config);
+						report.export(config, null);
 					} catch (IOException | ParserConfigurationException | SAXException | ReportException e) {
 						e.printStackTrace();
 					}
