@@ -28,13 +28,9 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		Collection<TableRow> results = row.getChildren(childSchema);
 		
 		// check children errors
-		ResultValidator resultValidator = new ResultValidator();
-		for (TableRow result : results) {
-			if (resultValidator.getWarningLevel(result) > 0) {
-				return Check.WRONG_RESULTS;
-			}
+		if (row.hasChildrenError()) {
+			return Check.WRONG_RESULTS;
 		}
-		
 		
 		TableSchema parentSchema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
 		TableRow summInfo = row.getParent(parentSchema);
@@ -66,7 +62,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		
 		
 		// at least one confirmatory should be reported
-		boolean hasConfirmatory = false;
+		/*boolean hasConfirmatory = false;
 		for (TableRow result : results) {
 			if (result.getCode(CustomStrings.RESULT_TEST_TYPE)
 					.equals(CustomStrings.SUMMARIZED_INFO_CONFIRMATORY_TEST)) {
@@ -77,7 +73,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		
 		if (!hasConfirmatory) {
 			return Check.CONFIRMATORY_MISSING;
-		}
+		}*/
 		
 
 		String testType = row.getCode(CustomStrings.RESULT_TEST_TYPE);
@@ -99,20 +95,29 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		return Check.OK;
 	}
 	
+	public int getOverallWarningLevel(TableRow row) {
+		int level = this.getWarningLevel(row);
+		int parentLevel = super.getWarningLevel(row);
+		
+		return Math.max(level, parentLevel);
+	}
+	
 	@Override
 	public int getWarningLevel(TableRow row) {
-		
+
+		int level = 0;
+
 		try {
 			Check check = isRecordCorrect(row);
-			
+
 			if (check != Check.OK)
-				return 1;
-			
+				level = 1;
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return 0;
+		return level;
 	}
 	
 	@Override

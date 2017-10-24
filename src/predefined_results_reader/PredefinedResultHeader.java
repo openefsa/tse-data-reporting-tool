@@ -6,15 +6,13 @@ public enum PredefinedResultHeader {
 	// in order to have a simple match
 	// between enum and header
 	RECORD_TYPE("recordType"),
+	CONFIRMATORY_EXECUTED("confirmatoryExecuted"),
 	SAMP_AN_ASSES("sampAnAsses"),
-	SAMP_AN_ASSES_LABEL("sampAnAsses-label"),
-	SCREENING_PARAM_CODE("screeningParamCode"),
-	SCREENING_RESULT("screeningResult"),
-	CONFIRMATORY_PARAM_CODE("confirmatoryParamCode"),
-	CONFIRMATORY_RESULT("confirmatoryResult"),
-	DISCRIMINATORY_PARAM_CODE("discriminatoryParamCode"),
-	DISCRIMINATORY_RESULT("discriminatoryResult"),
-	GENOTYPING("genotyping");
+	SAMP_AN_ASSES_LABEL("sampAnAssesLabel"),
+	SCREENING("screening"),
+	CONFIRMATORY("confirmatory"),
+	DISCRIMINATORY("discriminatory"),
+	GENOTYPING_BASE_TERM("genotypingBaseTerm");
 	
 	private String headerName;
 	

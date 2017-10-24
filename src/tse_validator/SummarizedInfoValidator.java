@@ -1,5 +1,6 @@
 package tse_validator;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.eclipse.swt.SWT;
@@ -12,11 +13,16 @@ import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 
 public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
-
+	
 	private enum SampleCheck {
 		OK,
 		LESS,
-		CHECK_CASES,
+		MISSING_INC_CASES,
+		MISSING_POS_CASES,
+		MISSING_NEG_CASES,
+		TOOMANY_INC_CASES,
+		TOOMANY_POS_CASES,
+		TOOMANY_NEG_CASES,
 		WRONG_CASES,
 		MORE
 	}
@@ -27,7 +33,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 	 * @return
 	 */
 	private SampleCheck isSampleCorrect(TableRow row) {
-
+		
 		try {
 			
 			TableSchema childSchema = TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
@@ -38,38 +44,70 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 			Collection<TableRow> cases = row.getChildren(childSchema);
 			
 			// check children errors
-			CaseReportValidator validator = new CaseReportValidator();
-			for (TableRow caseInfo : cases) {
-				if (validator.getWarningLevel(caseInfo) > 0) {
-					return SampleCheck.WRONG_CASES;
-				}
+			if (row.hasChildrenError()) {
+				return SampleCheck.WRONG_CASES;
 			}
-			
+
 			int incSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
 			int posSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
-			int tot = posSamples + incSamples;
+			int negSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES);
+			int tot = posSamples + incSamples + negSamples;
+			
+			int compare = checkCasesType(cases, CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, negSamples);
+			if (compare == 1)
+				return SampleCheck.TOOMANY_NEG_CASES;
+			else if (compare == -1)
+				return SampleCheck.MISSING_NEG_CASES;
+			
+			compare = checkCasesType(cases, CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, incSamples);
+			if (compare == 1)
+				return SampleCheck.TOOMANY_INC_CASES;
+			else if (compare == -1)
+				return SampleCheck.MISSING_INC_CASES;
+			
+			else {
+				
+				compare = (cases.size() - incSamples - negSamples);
+				
+				// else if inc and negative are equal but count is different
+				if (compare < posSamples)
+					return SampleCheck.MISSING_POS_CASES;
+				else if (compare > posSamples) {
+					return SampleCheck.TOOMANY_POS_CASES;
+				}
+			}
+
 			
 			if (cases.size() > tot)
 				return SampleCheck.MORE;
 			else if (cases.size() < tot)
 				return SampleCheck.LESS;
-			
-			// check inconclusive are coherent with cases
-			int incCases = 0;
-			for (TableRow caseInfo : cases) {
-				if (caseInfo.getCode(CustomStrings.CASE_INFO_ASSESS)
-						.equals(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE))
-					incCases++;
-			}
-			
-			if (incCases != incSamples)
-				return SampleCheck.CHECK_CASES;
 		}
 		catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
 		
 		return SampleCheck.OK;
+	}
+	private int checkCasesType(Collection<TableRow> cases, String value, int declaredValue) {
+		Collection<String> values = new ArrayList<>();
+		values.add(value);
+		return this.checkCasesType(cases, values, declaredValue);
+	}
+	private int checkCasesType(Collection<TableRow> cases, Collection<String> values, int declaredValue) {
+		
+		int incCases = 0;
+		for (TableRow caseInfo : cases) {
+			if (values.contains(caseInfo.getCode(CustomStrings.CASE_INFO_ASSESS)))
+				incCases++;
+		}
+		
+		if (incCases == declaredValue)
+			return 0;
+		else if (declaredValue > incCases)
+			return -1;
+		else
+			return 1;
 	}
 	
 	/**
@@ -89,13 +127,18 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 	 * just for the specific 
 	 */
 	private int getLevel(TableRow row) {
-		
+
 		int level = 0;
 		
 		switch (isSampleCorrect(row)) {
 		case LESS:
 		case MORE:
-		case CHECK_CASES:
+		case MISSING_INC_CASES:
+		case MISSING_NEG_CASES:
+		case MISSING_POS_CASES:
+		case TOOMANY_INC_CASES:
+		case TOOMANY_NEG_CASES:
+		case TOOMANY_POS_CASES:
 			level = 1;
 			break;
 		case WRONG_CASES:
@@ -104,7 +147,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		default:
 			break;
 		}
-		
+
 		return level;
 	}
 	
@@ -129,8 +172,23 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		case MORE:
 			text = "Too many cases reported";
 			break;
-		case CHECK_CASES:
+		case MISSING_INC_CASES:
+			text = "Missing inconclusive cases";
+			break;
+		case MISSING_NEG_CASES:
+			text = "Missing negative cases";
+			break;
+		case MISSING_POS_CASES:
+			text = "Missing positive cases";
+			break;
+		case TOOMANY_INC_CASES:
 			text = "Check inconclusive cases";
+			break;
+		case TOOMANY_NEG_CASES:
+			text = "Check negative cases";
+			break;
+		case TOOMANY_POS_CASES:
+			text = "Check positive cases";
 			break;
 		case WRONG_CASES:
 			text = "Check case report";

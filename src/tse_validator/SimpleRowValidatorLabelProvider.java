@@ -8,7 +8,7 @@ import table_dialog.RowValidatorLabelProvider;
 import table_skeleton.TableRow;
 
 public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
-
+	
 	@Override
 	public String getText(TableRow row) {
 		
@@ -16,7 +16,7 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 
 		switch (row.getRowStatus()) {
 		case OK:
-			text = "Validated";
+			text = "Locally validated";
 			break;
 		case MANDATORY_MISSING:
 			text = "Missing mandatory fields";

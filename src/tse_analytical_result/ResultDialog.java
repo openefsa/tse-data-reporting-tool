@@ -7,9 +7,12 @@ import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
 import dataset.DatasetStatus;
+import predefined_results_reader.PredefinedResult;
 import table_dialog.DialogBuilder;
+import table_dialog.EditorListener;
 import table_dialog.RowValidatorLabelProvider;
 import table_relations.Relation;
+import table_skeleton.TableColumn;
 import table_skeleton.TableRow;
 import tse_components.TableDialogWithMenu;
 import tse_config.CustomStrings;
@@ -41,6 +44,27 @@ public class ResultDialog extends TableDialogWithMenu {
 		
 		// add 300 px in height
 		addHeight(300);
+		
+		setEditorListener(new EditorListener() {
+			
+			@Override
+			public void editStarted() {}
+			
+			@Override
+			public void editEnded(TableRow row, TableColumn field, boolean changed) {
+				
+				// update the base term and the result value if
+				// the test aim was changed
+				if (changed && field.equals(CustomStrings.RESULT_TEST_AIM)) {
+					PredefinedResult.addParamAndResult(row, row.getCode(field.getId()));
+				}
+				
+				// reset the aim of the test if the test type is changed
+				if (changed && field.equals(CustomStrings.RESULT_TEST_TYPE)) {
+					row.put(CustomStrings.RESULT_TEST_AIM, "");
+				}
+			}
+		});
 		
 		updateUI();
 	}

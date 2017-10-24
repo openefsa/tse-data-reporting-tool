@@ -18,11 +18,16 @@ public class CustomStrings {
 	public static final String SETTINGS_USERNAME = "username";
 	public static final String SETTINGS_PASSWORD = "password";
 	public static final String SETTINGS_ORG_CODE = "orgCode";
-
+	
 	public static final String REPORT_COUNTRY = "country";
+	
+	public static final String PREFERENCES_CONFIRMATORY_BSE = "defConfirmatoryBSE";
+	public static final String PREFERENCES_CONFIRMATORY_SCRAPIE = "defConfirmatorySCRAPIE";
+	public static final String PREFERENCES_CONFIRMATORY_CWD = "defConfirmatoryCWD";
 	
 	public static final String SUMMARIZED_INFO_TOT_SAMPLES = "totSamplesTested";
 	public static final String SUMMARIZED_INFO_POS_SAMPLES = "totSamplesPositive";
+	public static final String SUMMARIZED_INFO_NEG_SAMPLES = "totSamplesNegative";
 	public static final String SUMMARIZED_INFO_INC_SAMPLES = "totSamplesInconclusive";
 	public static final String SUMMARIZED_INFO_TYPE = "type";
 	public static final String SUMMARIZED_INFO_SOURCE = "source";
@@ -37,7 +42,7 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_PROG_ID = "progId";
 	public static final String SUMMARIZED_INFO_SAMP_MAT_CODE = "sampMatCode";
 	
-	
+	public static final String SUMMARIZED_INFO_BSE_TYPE = "BSE";
 	public static final String SUMMARIZED_INFO_SCRAPIE_TYPE = "SCRAPIE";
 	public static final String SUMMARIZED_INFO_CWD_TYPE = "CWD";
 	public static final String SUMMARIZED_INFO_SCREENING_TEST = "AT06A";
@@ -49,6 +54,7 @@ public class CustomStrings {
 	public static final String CASE_INFO_ANIMAL_ID = "animalId";
 	public static final String CASE_INFO_CASE_ID = "tseNationalCaseId";
 	public static final String CASE_INFO_ASSESS = "sampAnAsses";
+	public static final String DEFAULT_ASSESS_NEG_CASE_CODE = "J051A";
 	public static final String DEFAULT_ASSESS_INC_CASE_CODE = "J050A";
 	public static final String DEFAULT_ASSESS_INC_CASE_LABEL = "Inconclusive";
 	
@@ -65,6 +71,7 @@ public class CustomStrings {
 	public static final String RESULT_SAMP_AREA = "sampArea";
 	public static final String RESULT_SAMP_DAY = "sampD";
 	public static final String RESULT_TEST_RESULT = "resQualValue";
+	public static final String RESULT_TEST_AIM = "testAim";
 	
 	public static final String PARAM_TYPE_COL = "paramType";
 	public static final String PARAM_CODE_BASE_TERM_COL = "paramCodeBaseTerm";

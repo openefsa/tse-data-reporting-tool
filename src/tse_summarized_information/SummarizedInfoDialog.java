@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -69,19 +68,20 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
 
-				final IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-				if (selection == null || selection.isEmpty())
+				TableRow row = getSelection();
+				
+				if (row == null)
 					return;
-
-				TableRow summInfo = (TableRow) selection.getFirstElement();
-
+				
+				SummarizedInfo summInfo = new SummarizedInfo(row);
+				
 				// first validate the content of the row
 				if (!validate(summInfo))
 					return;
 				
 				// create default cases if no cases
 				// and cases were set in the aggregated data
-				if (!hasCases(summInfo) && getNumberOfExpectedCases(summInfo) > 0) {
+				if (!summInfo.hasCases() && getNumberOfExpectedCases(summInfo) > 0) {
 					try {
 						createDefaultCases(summInfo);
 					} catch (IOException e) {
@@ -90,7 +90,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				}
 
 				// open cases dialog
-				openCases(new SummarizedInfo(summInfo));
+				openCases(summInfo);
 			}
 		});
 	}
@@ -104,15 +104,6 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		if (!summInfo.areMandatoryFilled()) {
 			warnUser("Error", "ERR000: Cannot add cases. Mandatory data are missing!");
-			return false;
-		}
-
-		boolean hasCases = hasCases(summInfo);
-		int expected = getNumberOfExpectedCases(summInfo);
-
-		if (expected == 0 && !hasCases) {
-			warnUser("Error", 
-					"ERR001: No positive or inconclusive cases can be detailed, please check fields Positive and Inconclusive in this table.");
 			return false;
 		}
 
@@ -132,25 +123,6 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		return total;
 	}
-	
-	/**
-	 * Check if the summ info has cases or not
-	 * @param summInfo
-	 * @return
-	 */
-	private boolean hasCases(TableRow summInfo) {
-
-		TableSchema schema = TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
-		
-		if (schema == null)
-			return false;
-		
-		TableDao dao = new TableDao(schema);
-
-		boolean hasCases = !dao.getByParentId(summInfo.getSchema().getSheetName(), summInfo.getId()).isEmpty();
-
-		return hasCases;
-	}
 
 	/**
 	 * Open the cases dialog of the summarized information
@@ -165,8 +137,10 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		dialog.open();
 		
-		// refresh the table when cases are changed
-		refresh(summInfo);
+		// set case errors if present
+		summInfo.updateChildrenErrors();
+		
+		replace(summInfo);
 	}
 	
 	/**

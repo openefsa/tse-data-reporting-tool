@@ -97,7 +97,7 @@ public class ReportListDialog extends TableDialog {
 
 	@Override
 	public void addWidgets(DialogBuilder viewer) {
-		viewer.addHelp(getDialog().getText())
+		viewer.addHelp(getDialog().getText(), false)
 			.addTable(CustomStrings.REPORT_SHEET, false);
 	}
 }

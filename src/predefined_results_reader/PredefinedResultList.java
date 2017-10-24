@@ -3,6 +3,8 @@ package predefined_results_reader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import app_config.BooleanValue;
+
 public class PredefinedResultList extends ArrayList<PredefinedResult> {
 	private static final long serialVersionUID = -6372192676663884532L;
 	
@@ -15,14 +17,20 @@ public class PredefinedResultList extends ArrayList<PredefinedResult> {
 	 * @param sampAnAsses
 	 * @return
 	 */
-	public PredefinedResult get(String recordType, String sampAnAsses) {
+	public PredefinedResult get(String recordType, boolean confirmatoryTested, String sampAnAsses) {
 		
 		for (PredefinedResult prh : this) {
 			
 			String thisRecordType = prh.get(PredefinedResultHeader.RECORD_TYPE);
 			String thisSampAnAsses = prh.get(PredefinedResultHeader.SAMP_AN_ASSES);
+			String thisConfTested = prh.get(PredefinedResultHeader.CONFIRMATORY_EXECUTED);
 			
-			if (thisRecordType.equals(recordType) && thisSampAnAsses.equals(sampAnAsses)) {
+			boolean confCheck = (BooleanValue.isTrue(thisConfTested) && confirmatoryTested)
+					|| (BooleanValue.isFalse(thisConfTested) && !confirmatoryTested);
+			
+			if (thisRecordType.equals(recordType) 
+					&& thisSampAnAsses.equals(sampAnAsses)
+					&& confCheck) {
 				return prh;
 			}
 		}

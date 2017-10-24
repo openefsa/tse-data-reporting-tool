@@ -24,6 +24,7 @@ import report_downloader.TseReportDownloader;
 import table_database.TableDao;
 import table_importer.TableImporter;
 import table_skeleton.TableRow;
+import test_case.ExportTypeDialog;
 import tse_config.CustomStrings;
 import tse_options.PreferencesDialog;
 import tse_options.SettingsDialog;
@@ -232,89 +233,6 @@ public class MainMenu {
 				shell.dispose();
 			}
 		});
-		
-
-		if (DebugConfig.debug) {
-			MenuItem exportReport = new MenuItem(fileMenu, SWT.PUSH);
-			exportReport.setText("[DEBUG] Export report");
-			exportReport.addSelectionListener(new SelectionListener() {
-				
-				@Override
-				public void widgetSelected(SelectionEvent arg0) {
-
-					TseReport report = mainPanel.getOpenedReport();
-
-					MessageConfigBuilder config = report.getDefaultExportConfiguration(OperationType.REPLACE);
-					try {
-						report.export(config, null);
-					} catch (IOException | ParserConfigurationException | SAXException | ReportException e) {
-						e.printStackTrace();
-					}
-				}
-				
-				@Override
-				public void widgetDefaultSelected(SelectionEvent arg0) {}
-			});
-			
-			MenuItem reportVersions = new MenuItem(fileMenu, SWT.PUSH);
-			reportVersions.setText("[DEBUG] Print report versions");
-			reportVersions.addSelectionListener(new SelectionListener() {
-				
-				@Override
-				public void widgetSelected(SelectionEvent arg0) {
-					
-					TseReport report = mainPanel.getOpenedReport();
-					System.out.println(report.getAllVersions());
-				}
-				
-				@Override
-				public void widgetDefaultSelected(SelectionEvent arg0) {}
-			});
-			
-			MenuItem deleteReport = new MenuItem(fileMenu, SWT.PUSH);
-			deleteReport.setText("[DEBUG] Delete report");
-			deleteReport.addSelectionListener(new SelectionListener() {
-				
-				@Override
-				public void widgetSelected(SelectionEvent arg0) {
-					
-					ReportListDialog dialog = new ReportListDialog(shell, "Delete a report");
-					dialog.setButtonText("Delete");
-					dialog.open();
-
-					TseReport report = dialog.getSelectedReport();
-					
-					if (report == null)
-						return;
-					
-					report.delete();
-				}
-				
-				@Override
-				public void widgetDefaultSelected(SelectionEvent arg0) {}
-			});
-		}
-		
-		MenuItem getDc = new MenuItem(fileMenu, SWT.PUSH);
-		getDc.setText("[DEBUG] Print current data collection");
-		getDc.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				TseReport report = mainPanel.getOpenedReport();
-				
-				if (report == null) {
-					System.out.println(PropertiesReader.getDataCollectionCode());
-					return;
-				}
-				
-				System.out.println(PropertiesReader.getDataCollectionCode(report.getYear()));
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {}
-		});
-		
 
 		// open preferences
 		this.preferences.addSelectionListener(new SelectionListener() {
@@ -342,12 +260,114 @@ public class MainMenu {
 			public void widgetDefaultSelected(SelectionEvent arg0) {}
 		});
 
-
-
+		if (DebugConfig.debug) {
+			addDebugItems();
+		}
+		
 		// set the menu
 		this.shell.setMenuBar(main);
 	}
 
+	/**
+	 * Add some debug functionalities
+	 */
+	private void addDebugItems() {
+		
+		MenuItem exportReport = new MenuItem(fileMenu, SWT.PUSH);
+		exportReport.setText("[DEBUG] Export report");
+		exportReport.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+
+				TseReport report = mainPanel.getOpenedReport();
+				
+				if (report == null)
+					return;
+				ExportTypeDialog dialog = new ExportTypeDialog(shell);
+				dialog.open();
+				
+				OperationType opType = dialog.getSelectedOp();
+				
+				if (opType == null)
+					return;
+				
+				MessageConfigBuilder config = report.getDefaultExportConfiguration(opType);
+				try {
+					report.export(config);
+				} catch (IOException | ParserConfigurationException | SAXException | ReportException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
+		
+		MenuItem reportVersions = new MenuItem(fileMenu, SWT.PUSH);
+		reportVersions.setText("[DEBUG] Print report versions");
+		reportVersions.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				TseReport report = mainPanel.getOpenedReport();
+				
+				if (report == null)
+					return;
+				
+				System.out.println(report.getAllVersions());
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
+		
+		MenuItem deleteReport = new MenuItem(fileMenu, SWT.PUSH);
+		deleteReport.setText("[DEBUG] Delete report");
+		deleteReport.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				ReportListDialog dialog = new ReportListDialog(shell, "Delete a report");
+				dialog.setButtonText("Delete");
+				dialog.open();
+
+				TseReport report = dialog.getSelectedReport();
+				
+				if (report == null)
+					return;
+				
+				report.delete();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
+	
+	
+		MenuItem getDc = new MenuItem(fileMenu, SWT.PUSH);
+		getDc.setText("[DEBUG] Print current data collection");
+		getDc.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				TseReport report = mainPanel.getOpenedReport();
+				
+				if (report == null) {
+					System.out.println(PropertiesReader.getDataCollectionCode());
+					return;
+				}
+				
+				System.out.println(PropertiesReader.getDataCollectionCode(report.getYear()));
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
+	}
+	
 	public Menu getMenu() {
 		return main;
 	}

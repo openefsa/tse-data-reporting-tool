@@ -52,7 +52,24 @@ public class TseReport extends Report implements TseTableRow {
 	public static TableSchema getReportSchema() {
 		return TableSchemaList.getByName(CustomStrings.REPORT_SHEET);
 	}
-
+	
+	public static TseReport createDefault() throws IOException {
+		
+		TseReport report = new TseReport();
+		report.setCountry("Default");
+		report.setSenderId("Default");
+		report.setStatus(DatasetStatus.DRAFT);
+		report.setMonth("");
+		report.setYear("");
+		report.setVersion(TableVersion.getFirstVersion());
+		report.setMessageId("");
+		report.setDatasetId("");
+		
+		Relation.injectGlobalParent(report, CustomStrings.PREFERENCES_SHEET);
+		
+		return report;
+	}
+	
 	@Override
 	public Collection<TableRow> getRecords() {
 		
@@ -167,7 +184,7 @@ public class TseReport extends Report implements TseTableRow {
 	}
 	
 	/**
-	 * get all the report versions
+	 * Get all the report versions that are stored locally
 	 */
 	public ReportList getAllVersions() {
 

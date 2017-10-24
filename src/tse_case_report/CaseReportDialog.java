@@ -10,8 +10,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
 import dataset.DatasetStatus;
+import predefined_results_reader.PredefinedResult;
 import report.Report;
-import table_database.TableDao;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_relations.Relation;
@@ -22,7 +22,6 @@ import tse_config.CustomStrings;
 import tse_summarized_information.SummarizedInfo;
 import tse_validator.CaseReportValidator;
 import xlsx_reader.TableSchema;
-import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.Selection;
 
 /**
@@ -61,7 +60,12 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				if (selection == null || selection.isEmpty())
 					return;
 
-				final TableRow caseReport = (TableRow) selection.getFirstElement();
+				TableRow row = getSelection();
+				
+				if (row == null)
+					return;
+				
+				CaseReport caseReport = new CaseReport(row);
 				
 				if (!caseReport.areMandatoryFilled()) {
 					warnUser("Error", "ERR000: Cannot add analytical results. Mandatory data are missing!");
@@ -70,13 +74,9 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				
 				try {
 					
-					TableDao dao = new TableDao(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
-
-					boolean hasResults = !dao.getByParentId(caseReport.getSchema().getSheetName(), caseReport.getId()).isEmpty();
-					
 					// create default if no results are present
-					if (!hasResults) {
-						CaseReport.createDefaultResults(report, summInfo, caseReport);
+					if (!caseReport.hasResults()) {
+						PredefinedResult.createDefaultResults(report, summInfo, caseReport);
 					}
 					
 				} catch (IOException e) {
@@ -89,8 +89,9 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				dialog.setParentFilter(caseReport); // set the case as filter (and parent)
 				dialog.open();
 				
-				// refresh cases when results are closed
-				refresh();
+				caseReport.updateChildrenErrors();
+				
+				replace(caseReport);
 			}
 		});
 	}

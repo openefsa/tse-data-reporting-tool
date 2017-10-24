@@ -1,6 +1,9 @@
 package tse_options;
 
+import java.io.IOException;
 import java.util.Collection;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -8,19 +11,20 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.xml.sax.SAXException;
 
-import app_config.PropertiesReader;
-import dataset.Dataset;
-import dataset.DatasetList;
 import global_utils.Warnings;
+import message.SendMessageException;
+import message_creator.OperationType;
+import report.ReportException;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
+import tse_report.TseReport;
 import tse_validator.SimpleRowValidatorLabelProvider;
 import user.User;
-import webservice.GetDatasetList;
 import webservice.MySOAPException;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
@@ -98,12 +102,22 @@ public class SettingsDialog extends OptionsDialog {
 				
 				String title = null;
 				String message = null;
-				DatasetList<Dataset> list = new DatasetList<Dataset>();
+				int style = SWT.ERROR;
+
+				TseReport report = null;
 				try {
 					
-					// get dataset list of the data collection (in test)
-					GetDatasetList request = new GetDatasetList(PropertiesReader.getTestDataCollectionCode());
-					list = request.getList();
+					report = TseReport.createDefault();
+					
+					// save report in db in order to perform send
+					report.save();
+					
+					report.exportAndSend(OperationType.TEST);
+
+					// here is success
+					title = "Success";
+					message = "Test successfully completed.";
+					style = SWT.ICON_INFORMATION;
 					
 				} catch (MySOAPException e) {
 
@@ -114,32 +128,38 @@ public class SettingsDialog extends OptionsDialog {
 					String[] warnings = Warnings.getSOAPWarning(e.getError());
 					title = warnings[0];
 					message = warnings[1];
+				} catch (ParserConfigurationException | SAXException | IOException e) {
+					e.printStackTrace();
+					title = "Error";
+					message = e.getMessage();
+				} catch (SendMessageException e) {
+					
+					// here we got TRXKO
+					e.printStackTrace();
+					
+					title = "Failure";
+					message = "ERR406: The test was not successful. Got TRXKO as response.";
+					
+				} catch (ReportException e) {
+					// There an invalid operation was used
+					e.printStackTrace();
+					
+					title = "Failure";
+					message = "ERR406: The test was not successful. The used operation type is not correct.";
 				}
 				finally {
+					
 					// change the cursor to old cursor
 					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+					
+					// delete the report from the db
+					if (report != null)
+						report.delete();
 				}
 				
 				// if we have an error message stop and show the error
 				if (message != null) {
-					warnUser(title, message);
-					return;
-				}
-				
-				// search the test dataset
-				String testReportCode = PropertiesReader.getTestReportCode();
-				
-				// get the dataset of TEST
-				DatasetList<Dataset> testList = list.filterBySenderId(testReportCode);
-				Dataset dataset = testList.isEmpty() ? null : testList.get(0);
-				
-				if (dataset != null) {
-					System.out.println("Test connection: completed");
-					warnUser("Ok", "Test successfully completed.", SWT.OK);
-				}
-				else {
-					System.err.println("Test connection: failed. " + testReportCode + " report cannot be found in the DCF");
-					warnUser("Error", "ERR406: " + testReportCode + ": Cannot retrieve the dataset");
+					Warnings.warnUser(getDialog(), title, message, style);
 				}
 			}
 			

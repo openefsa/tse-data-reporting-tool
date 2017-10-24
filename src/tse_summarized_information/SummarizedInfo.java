@@ -10,12 +10,13 @@ import tse_case_report.CaseReport;
 import tse_config.CatalogLists;
 import tse_config.CustomStrings;
 import tse_report.TseTableRow;
+import tse_validator.CaseReportValidator;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.XmlLoader;
 
 public class SummarizedInfo extends TableRow implements TseTableRow {
-
+	
 	public SummarizedInfo(TableRow row) {
 		super(row);
 	}
@@ -73,5 +74,32 @@ public class SummarizedInfo extends TableRow implements TseTableRow {
 		}
 		
 		return output;
+	}
+	
+	public boolean hasCases() {
+		return !getChildren().isEmpty();
+	}
+	
+	public void updateChildrenErrors() {
+		
+		// check children errors
+		boolean errors = false;
+		CaseReportValidator validator = new CaseReportValidator();
+		for (TseTableRow row : this.getChildren()) {
+			
+			CaseReport caseInfo = (CaseReport) row;
+			
+			if (validator.getOverallWarningLevel(caseInfo) > 0) {
+				this.setChildrenError();
+				errors = true;
+				break;
+			}
+		}
+		
+		if (!errors) {
+			this.removeChildrenError();
+		}
+		
+		this.update();
 	}
 }

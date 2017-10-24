@@ -22,7 +22,7 @@ public class ResultValidator extends SimpleRowValidatorLabelProvider {
 		error = ErrorType.NONE;
 		
 		int level = super.getWarningLevel(row);
-		
+
 		// if we have a heavier warning use
 		// the parent one
 		if (level > 1)
