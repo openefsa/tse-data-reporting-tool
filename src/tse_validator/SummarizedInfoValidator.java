@@ -18,13 +18,11 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		OK,
 		LESS,
 		MISSING_INC_CASES,
-		MISSING_POS_CASES,
-		MISSING_NEG_CASES,
 		TOOMANY_INC_CASES,
-		TOOMANY_POS_CASES,
-		TOOMANY_NEG_CASES,
+		MISSING_CASES,
+		TOOMANY_CASES,
 		WRONG_CASES,
-		MORE
+		//MORE
 	}
 	
 	/**
@@ -50,16 +48,14 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 			int incSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
 			int posSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
-			int negSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES);
-			int tot = posSamples + incSamples + negSamples;
+			//int negSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES);
+			int tot = posSamples + incSamples;
 			
-			int compare = checkCasesType(cases, CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, negSamples);
+			/*int compare = checkCasesType(cases, CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, negSamples);
 			if (compare == 1)
-				return SampleCheck.TOOMANY_NEG_CASES;
-			else if (compare == -1)
-				return SampleCheck.MISSING_NEG_CASES;
+				return SampleCheck.TOOMANY_NEG_CASES;*/
 			
-			compare = checkCasesType(cases, CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, incSamples);
+			int compare = checkCasesType(cases, CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, incSamples);
 			if (compare == 1)
 				return SampleCheck.TOOMANY_INC_CASES;
 			else if (compare == -1)
@@ -67,20 +63,20 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 			
 			else {
 				
-				compare = (cases.size() - incSamples - negSamples);
+				//compare = (cases.size() - incSamples - negSamples);
 				
-				// else if inc and negative are equal but count is different
+				/*// else if inc and negative are equal but count is different
 				if (compare < posSamples)
 					return SampleCheck.MISSING_POS_CASES;
 				else if (compare > posSamples) {
 					return SampleCheck.TOOMANY_POS_CASES;
-				}
+				}*/
 			}
 
 			
-			if (cases.size() > tot)
-				return SampleCheck.MORE;
-			else if (cases.size() < tot)
+			//if (cases.size() > tot)
+			//	return SampleCheck.MORE;
+			if (cases.size() < tot)
 				return SampleCheck.LESS;
 		}
 		catch (NumberFormatException e) {
@@ -132,13 +128,12 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		
 		switch (isSampleCorrect(row)) {
 		case LESS:
-		case MORE:
+		//case MORE:
 		case MISSING_INC_CASES:
-		case MISSING_NEG_CASES:
-		case MISSING_POS_CASES:
+		//case MISSING_POS_CASES:
 		case TOOMANY_INC_CASES:
-		case TOOMANY_NEG_CASES:
-		case TOOMANY_POS_CASES:
+		//case TOOMANY_NEG_CASES:
+		//case TOOMANY_POS_CASES:
 			level = 1;
 			break;
 		case WRONG_CASES:
@@ -169,27 +164,24 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		case LESS:
 			text = "Cases report incomplete";
 			break;
-		case MORE:
+		/*case MORE:
 			text = "Too many cases reported";
-			break;
+			break;*/
 		case MISSING_INC_CASES:
 			text = "Missing inconclusive cases";
 			break;
-		case MISSING_NEG_CASES:
-			text = "Missing negative cases";
-			break;
-		case MISSING_POS_CASES:
+		/*case MISSING_POS_CASES:
 			text = "Missing positive cases";
-			break;
+			break;*/
 		case TOOMANY_INC_CASES:
 			text = "Check inconclusive cases";
 			break;
-		case TOOMANY_NEG_CASES:
+		/*case TOOMANY_NEG_CASES:
 			text = "Check negative cases";
 			break;
 		case TOOMANY_POS_CASES:
 			text = "Check positive cases";
-			break;
+			break;*/
 		case WRONG_CASES:
 			text = "Check case report";
 			break;

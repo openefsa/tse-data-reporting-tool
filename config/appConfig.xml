@@ -9,5 +9,6 @@
 <entry key="Application.DataCollectionPattern">TSE.yyyy</entry> <!-- data collection code, yyyy will be replaced by the report year -->
 <entry key="Application.DataCollectionTest">TEST</entry> <!-- code that will be put in the yyyy of DataCollectionPattern if the test data collection should be used -->
 <entry key="Application.DataCollectionStartingYear">2018</entry> <!-- year in which the data collection started, if the year of the opened report is < than this, then the data collection of TEST will be used -->
-<entry key="Application.StartupHelpFile">startupHelp.html</entry> <!-- file name of the html file (in the help folder) which will be visualized when the application starts (leave empty to disable) -->
+<entry key="Application.HelpRepository">https://github.com/openefsa/TSE-data-reporting-tool/wiki</entry> <!-- endpoint where it is stored the help -->
+<entry key="Application.StartupHelpFile">Home</entry> <!-- file name of the html file (in the help folder) which will be visualized when the application starts (leave empty to disable) -->
 </properties>

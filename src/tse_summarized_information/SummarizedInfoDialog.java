@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
+import app_config.AppPaths;
 import app_config.DebugConfig;
 import dataset.DatasetStatus;
 import global_utils.Warnings;
@@ -518,7 +519,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	 */
 	public void updateUI() {
 		
-		String reportMonth = report.getMonth();
+		String reportMonth = report.getLabel(AppPaths.REPORT_MONTH);
 		String reportYear = report.getYear();
 		String status = report.getStatus().getLabel();
 		String messageId = report.getMessageId();
@@ -557,13 +558,13 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setTableEditable(editableReport);
 		panel.setRowCreatorEnabled(editableReport);
 		
-		panel.setEnabled("editBtn", datasetStatus.canBeMadeEditable());
-		panel.setEnabled("sendBtn", datasetStatus.canBeSent());
-		panel.setEnabled("amendBtn", DebugConfig.debug || datasetStatus.canBeAmended());
-		panel.setEnabled("submitBtn", datasetStatus.canBeSubmitted());
-		panel.setEnabled("rejectBtn", datasetStatus.canBeRejected());
-		panel.setEnabled("displayAckBtn", datasetStatus.canDisplayAck());
-		panel.setEnabled("refreshBtn", datasetStatus.canBeRefreshed());
+		panel.setEnabled("editBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeMadeEditable());
+		panel.setEnabled("sendBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeSent());
+		panel.setEnabled("amendBtn", !DebugConfig.disableMainPanel && DebugConfig.debug || datasetStatus.canBeAmended());
+		panel.setEnabled("submitBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeSubmitted());
+		panel.setEnabled("rejectBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeRejected());
+		panel.setEnabled("displayAckBtn", !DebugConfig.disableMainPanel && datasetStatus.canDisplayAck());
+		panel.setEnabled("refreshBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeRefreshed());
 	}
 	
 	/**

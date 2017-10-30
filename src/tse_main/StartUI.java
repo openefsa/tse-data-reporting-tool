@@ -1,6 +1,5 @@
 package tse_main;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -169,9 +168,8 @@ public class StartUI {
 	    
 	    // open also an help view for showing general help
 	    if (!DebugConfig.debug) {
-		    File helpFile = new File(AppPaths.HELP_FOLDER + PropertiesReader.getStartupHelpFileName());
 		    HtmlViewer help = new HtmlViewer();
-		    help.open(helpFile);
+		    help.open(PropertiesReader.getStartupHelpURL());
 	    }
 		
 		// open the shell to the user

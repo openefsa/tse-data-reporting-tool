@@ -95,8 +95,8 @@ public class MainMenu {
 				newReport.setEnabled(!isReportOpened);
 				openReport.setEnabled(hasReport);
 				closeReport.setEnabled(isReportOpened);
-				downloadReport.setEnabled(!isReportOpened);
-				importReport.setEnabled(editable);
+				downloadReport.setEnabled(!DebugConfig.disableFileFuncs && !isReportOpened);
+				importReport.setEnabled(!DebugConfig.disableFileFuncs && editable);
 			}
 		});
 

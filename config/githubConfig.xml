@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Github configuration</comment>
+<entry key="Github.RepositoryName">CatalogueBrowser</entry> <!-- name of the repository you want to connect -->
+<entry key="Github.RepositoryOwner">openefsa</entry> <!-- github username of who created the repository -->
+<entry key="Application.Folder">.</entry> <!-- path of the folder which contains the application to start after update checking. Set . for same directory of github jar -->
+<entry key="Application.JarName">tseTool.jar</entry> <!-- name of the jar to execute after having checked the updates -->
+<entry key="Application.Icon">app-icon.png</entry> <!-- application icon (in the icon folder) -->
+<entry key="Application.JavaPath">.\jre1.8.0_111\bin\java.exe</entry> <!-- java path, use simply "java" without quotes to use the java installed in your machine -->
+
+<entry key="Application.ConfigFile">.\config\appConfig.xml</entry> <!-- configuration file of the real application -->
+<entry key="Application.VersionEntry">Application.Version</entry> <!-- entry of the configuration file which contains the application version (used to check if version is the latest)-->
+</properties>
