@@ -7,6 +7,9 @@
 		<selection code="F02.A0CJN">
 			<description>Lymph node</description>
 		</selection>
+		<selection code="F02.A16YL">
+			<description>Obex</description>
+		</selection>			
 		<selection code="F02.A16HJ">
 			<description>Tonsil</description>
 		</selection>
@@ -18,6 +21,9 @@
 		<selection code="F02.A0CJN">
 			<description>Lymph node</description>
 		</selection>
+		<selection code="F02.A16YL">
+			<description>Obex</description>
+		</selection>			
 		<selection code="F02.A16HJ">
 			<description>Tonsil</description>
 		</selection>
@@ -29,6 +35,9 @@
 		<selection code="F02.A0CJN">
 			<description>Lymph node</description>
 		</selection>
+		<selection code="F02.A16YL">
+			<description>Obex</description>
+		</selection>			
 		<selection code="F02.A16HJ">
 			<description>Tonsil</description>
 		</selection>

@@ -60,8 +60,9 @@ public class TseReportImporter extends ReportImporter {
 	 * Import all the summarized information into the db
 	 * @param report
 	 * @param datasetRows
+	 * @throws FormulaException 
 	 */
-	private void importSummarizedInformation(TseReport report, Collection<TableRow> datasetRows) {
+	private void importSummarizedInformation(TseReport report, Collection<TableRow> datasetRows) throws FormulaException {
 
 		// first process the summarized information
 		for (TableRow row : datasetRows) {
@@ -88,8 +89,9 @@ public class TseReportImporter extends ReportImporter {
 	 * @param report
 	 * @param summInfo
 	 * @param datasetRows
+	 * @throws FormulaException 
 	 */
-	private void importCasesAndResults(TseReport report, Collection<TableRow> datasetRows) {
+	private void importCasesAndResults(TseReport report, Collection<TableRow> datasetRows) throws FormulaException {
 		
 		// process the cases and analytical results
 		for (TableRow row : datasetRows) {
@@ -120,8 +122,9 @@ public class TseReportImporter extends ReportImporter {
 	 * @param report
 	 * @param row
 	 * @return
+	 * @throws FormulaException 
 	 */
-	private TableRow importCase(TseReport report, SummarizedInfo summInfo, TableRow row) {
+	private TableRow importCase(TseReport report, SummarizedInfo summInfo, TableRow row) throws FormulaException {
 
 		// extract the case from the row
 		TableRow currentCaseInfo = extractCase(report, summInfo, row);
@@ -132,9 +135,15 @@ public class TseReportImporter extends ReportImporter {
 			// import case in the db
 			currentCaseInfo.save();
 
-			// save the case in the cache by its case id
-			String caseId = currentCaseInfo.get(CustomStrings.CASE_INFO_CASE_ID).getCode();
-			cases.put(caseId, currentCaseInfo);
+			String sampId = getCaseSampleId(currentCaseInfo);
+			
+			if (sampId == null) {
+				System.err.println("No sample id was found for " + currentCaseInfo);
+				return currentCaseInfo;
+			}
+			
+			// save the case in the cache by its sample id
+			cases.put(sampId, currentCaseInfo);
 		}
 		
 		return currentCaseInfo;
@@ -164,8 +173,9 @@ public class TseReportImporter extends ReportImporter {
 	 * @param report
 	 * @param row
 	 * @return
+	 * @throws FormulaException 
 	 */
-	private SummarizedInfo extractSummarizedInfo(TseReport report, TableRow row) {
+	private SummarizedInfo extractSummarizedInfo(TseReport report, TableRow row) throws FormulaException {
 
 		// set the summarized information schema
 		row.setSchema(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
@@ -206,31 +216,56 @@ public class TseReportImporter extends ReportImporter {
 		return summInfo;
 	}
 
+	private String getCaseSampleId(TableRow row) throws FormulaException {
+		
+		HashMap<String, TableColumnValue> sampIdDecomposed = getDecomposedSampleId(row);
+		
+		TableColumnValue sampIdValue;
+		if (sampIdDecomposed != null && sampIdDecomposed.get(CustomStrings.RESULT_SAMPLE_ID) != null)
+			sampIdValue = sampIdDecomposed.get(CustomStrings.RESULT_SAMPLE_ID);
+		else {
+			return null;
+		}
+		
+		if (sampIdValue == null || sampIdValue.getLabel() == null)
+			return null;
+		
+		String sampId = sampIdValue.getLabel();
+		
+		return sampId;
+	}
+	
+	private HashMap<String, TableColumnValue> getDecomposedSampleId(TableRow row) throws FormulaException {
+		
+		TableColumnValue value = row.get(CustomStrings.RESULT_SAMPLE_ID);
+		
+		HashMap<String, TableColumnValue> sampIdDecomposed = new HashMap<String, TableColumnValue>();
+		sampIdDecomposed.put(CustomStrings.RESULT_SAMPLE_ID, value);
+		
+		return sampIdDecomposed;
+	}
+	
 	/**
 	 * Extract the case row from the analytical result row
 	 * @param report
 	 * @param summInfo
 	 * @param row
 	 * @return
+	 * @throws FormulaException 
 	 */
-	private TableRow extractCase(TseReport report, SummarizedInfo summInfo, TableRow row) {
+	private TableRow extractCase(TseReport report, SummarizedInfo summInfo, TableRow row) throws FormulaException {
 
 		// set schema (required for next step), we are processing a result row,
 		// even if we are extracting the case information data!
 		row.setSchema(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
 		
-		// retrieve the case id from the result row
-		HashMap<String, TableColumnValue> evalInfoDecomposed = 
-				decomposeField(CustomStrings.RESULT_EVAL_INFO, row, true);
-
-		// get the case id from the row
-		String caseId = evalInfoDecomposed.get(CustomStrings.CASE_INFO_CASE_ID).getLabel();
-
+		String sampId = getCaseSampleId(row);
+		
 		// create empty case report
 		TableRow caseReport;
 
 		// if not already added
-		if (cases.get(caseId) == null) {
+		if (cases.get(sampId) == null) {
 
 			// create the case info (we do not copy the data, since this row
 			// is actually an analytical result and we just need to 
@@ -239,6 +274,10 @@ public class TseReportImporter extends ReportImporter {
 
 			HashMap<String, TableColumnValue> rowValues = new HashMap<>();
 
+			// retrieve the case id from the result row
+			HashMap<String, TableColumnValue> evalInfoDecomposed = 
+					decomposeField(CustomStrings.RESULT_EVAL_INFO, row, true);
+			
 			// add the decomposed eval info
 			rowValues.putAll(evalInfoDecomposed);
 
@@ -251,11 +290,16 @@ public class TseReportImporter extends ReportImporter {
 			HashMap<String, TableColumnValue> sampEventInfoDecomposed = 
 					decomposeField(CustomStrings.RESULT_SAMP_EVENT_INFO, row, true);
 			rowValues.putAll(sampEventInfoDecomposed);
+			
+			// extract the part from the analytical result
+			HashMap<String, TableColumnValue> sampMatCodeDecomposed = 
+					decomposeField(CustomStrings.RESULT_SAMP_MAT_CODE, row, true);
+			TableColumnValue part = sampMatCodeDecomposed.get(CustomStrings.SUMMARIZED_INFO_PART);
+			rowValues.put(CustomStrings.SUMMARIZED_INFO_PART, part);
 
 			// save sample id
-			HashMap<String, TableColumnValue> sampId = 
-					decomposeField(CustomStrings.RESULT_SAMPLE_ID, row, true);
-			rowValues.putAll(sampId);
+			HashMap<String, TableColumnValue> sampIdDecomposed = getDecomposedSampleId(row);
+			rowValues.putAll(sampIdDecomposed);
 
 			// save samp mat info
 			HashMap<String, TableColumnValue> sampMatInfo = 
@@ -284,7 +328,7 @@ public class TseReportImporter extends ReportImporter {
 		else {
 
 			// else if already present, get it from the cache
-			caseReport = cases.get(caseId);
+			caseReport = cases.get(sampId);
 		}
 
 		return caseReport;
@@ -366,8 +410,9 @@ public class TseReportImporter extends ReportImporter {
 	 * @param columnId
 	 * @param row
 	 * @return hashmap with the children values
+	 * @throws FormulaException 
 	 */
-	private HashMap<String, TableColumnValue> decomposeField(String columnId, TableRow row, boolean label) {
+	private HashMap<String, TableColumnValue> decomposeField(String columnId, TableRow row, boolean label) throws FormulaException {
 
 		TableColumn column = row.getSchema().getById(columnId);
 		
@@ -440,7 +485,7 @@ public class TseReportImporter extends ReportImporter {
 	}
 	
 	@Override
-	public void importDatasetRows(List<TableRow> rows) {
+	public void importDatasetRows(List<TableRow> rows) throws FormulaException {
 		
 		// first import the summarized information
 		importSummarizedInformation(report, rows);

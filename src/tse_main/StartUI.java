@@ -19,6 +19,7 @@ import table_database.TableDao;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
+import tse_config.GeneralWarnings;
 import tse_options.PreferencesDialog;
 import tse_options.SettingsDialog;
 import user.User;
@@ -157,7 +158,14 @@ public class StartUI {
 		shell.setText(PropertiesReader.getAppName() + " " + PropertiesReader.getAppVersion());
 		
 		// open the main panel
-		new MainPanel(shell);
+		try {
+			new MainPanel(shell);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			
+			GeneralWarnings.showExceptionStack(shell, "Generic error", e);
+		}
 		
 		// set the application icon into the shell
 		Image image = new Image(Display.getCurrent(), 

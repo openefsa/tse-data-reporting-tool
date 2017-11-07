@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<anMethTypesLists>	
-	<selectionList id="ALL">
+<anMethTypesLists>
+	<selectionList id="BSE">
+		<selection code="AT06A">
+			<description>Screening</description>
+		</selection>
+		<selection code="AT08A">
+			<description>Confirmatory</description>
+		</selection>
+		<selection code="AT12A">
+			<description>Discriminatory</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD">
+		<selection code="AT06A">
+			<description>Screening</description>
+		</selection>
+		<selection code="AT08A">
+			<description>Confirmatory</description>
+		</selection>
+		<selection code="AT12A">
+			<description>Discriminatory</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIE">
 		<selection code="AT06A">
 			<description>Screening</description>
 		</selection>
@@ -13,11 +35,11 @@
 		<selection code="AT13A">
 			<description>Molecular characterisation/Genotyping</description>
 		</selection>
-	</selectionList>
+	</selectionList>	
 	<selectionList id="RAPID">
 		<selection code="AT06A">
 			<description>Screening</description>
-		</selection>			
+		</selection>
 	</selectionList>
 	<selectionList id="TG006A">
 		<selection code="AT06A">
@@ -25,6 +47,6 @@
 		</selection>
 		<selection code="AT08A">
 			<description>Confirmatory</description>
-		</selection>		
+		</selection>
 	</selectionList>
 </anMethTypesLists>

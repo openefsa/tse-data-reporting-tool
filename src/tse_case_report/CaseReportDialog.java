@@ -3,9 +3,13 @@ package tse_case_report;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
@@ -49,16 +53,28 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		
 		// update the ui
 		updateUI();
+	}
+	
+	@Override
+	public Menu createMenu() {
 		
-		// when element is double clicked
-		addTableDoubleClickListener(new IDoubleClickListener() {
-			
+		Menu menu = super.createMenu();
+		
+		MenuItem addResult = new MenuItem(menu, SWT.PUSH);
+		addResult.setText("Open analytical results form");
+		addResult.setEnabled(false);
+		
+		addTableSelectionListener(new ISelectionChangedListener() {
+
 			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				
-				final IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-				if (selection == null || selection.isEmpty())
-					return;
+			public void selectionChanged(SelectionChangedEvent arg0) {
+				addResult.setEnabled(!isTableEmpty());
+			}
+		});
+		
+		addResult.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
 
 				TableRow row = getSelection();
 				
@@ -85,7 +101,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				
 				// initialize result passing also the 
 				// report data and the summarized information data
-				ResultDialog dialog = new ResultDialog(parent, report, summInfo, caseReport);
+				ResultDialog dialog = new ResultDialog(getParent(), report, summInfo, caseReport);
 				dialog.setParentFilter(caseReport); // set the case as filter (and parent)
 				dialog.open();
 				
@@ -94,6 +110,10 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				replace(caseReport);
 			}
 		});
+		
+		addRemoveMenuItem(menu);
+			
+		return menu;
 	}
 	
 	@Override

@@ -45,11 +45,6 @@ public abstract class TableDialogWithMenu extends TableDialog {
 
 		Menu menu = new Menu(getDialog());
 		
-		// remove an item
-		MenuItem remove = new MenuItem(menu, SWT.PUSH);
-		remove.setText("Delete records");
-		remove.setEnabled(false);
-		
 		if (DebugConfig.debug) {
 			MenuItem button = new MenuItem(menu, SWT.PUSH);
 			button.setText("Print row");
@@ -97,6 +92,20 @@ public abstract class TableDialogWithMenu extends TableDialog {
 			});
 		}
 		
+		return menu;
+	}
+	
+	/**
+	 * Add the remove menu item to the menu
+	 * @param menu
+	 * @return
+	 */
+	public MenuItem addRemoveMenuItem(Menu menu) {
+		
+		MenuItem remove = new MenuItem(menu, SWT.PUSH);
+		remove.setText("Delete records");
+		remove.setEnabled(false);
+		
 		addTableSelectionListener(new ISelectionChangedListener() {
 			
 			@Override
@@ -126,6 +135,6 @@ public abstract class TableDialogWithMenu extends TableDialog {
 			public void widgetDefaultSelected(SelectionEvent arg0) {}
 		});
 		
-		return menu;
+		return remove;
 	}
 }

@@ -70,6 +70,74 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 		return !confirmatory.isEmpty();
 	}
 	
+	public static String getPreferredTestType(String type, String testType) throws IOException {
+		
+		return Relation.getGlobalParent(CustomStrings.PREFERENCES_SHEET)
+				.getCode(testType);
+	}
+
+	public static String getPreferredTestType(AnalyticalResult row, String recordType, String testType) 
+			throws IOException {
+		
+		String preferredTestType = null;
+		
+		switch(testType) {
+		case CustomStrings.RESULT_SCREENING_TEST:
+			switch(recordType) {
+			case CustomStrings.SUMMARIZED_INFO_BSE_TYPE:
+				preferredTestType = getPreferredTestType(recordType, 
+						CustomStrings.PREFERENCES_SCREENING_BSE);
+				break;
+			case CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE:
+				preferredTestType = getPreferredTestType(recordType, 
+						CustomStrings.PREFERENCES_SCREENING_BSE);
+				break;
+			case CustomStrings.SUMMARIZED_INFO_CWD_TYPE:
+				preferredTestType = getPreferredTestType(recordType, 
+						CustomStrings.PREFERENCES_SCREENING_CWD);
+				break;
+			}
+			break;
+		case CustomStrings.SUMMARIZED_INFO_CONFIRMATORY_TEST:
+			switch(recordType) {
+			case CustomStrings.SUMMARIZED_INFO_BSE_TYPE:
+				preferredTestType = getPreferredTestType(recordType, 
+						CustomStrings.PREFERENCES_CONFIRMATORY_BSE);
+				break;
+			case CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE:
+				preferredTestType = getPreferredTestType(recordType, 
+						CustomStrings.PREFERENCES_CONFIRMATORY_BSE);
+				break;
+			case CustomStrings.SUMMARIZED_INFO_CWD_TYPE:
+				preferredTestType = getPreferredTestType(recordType, 
+						CustomStrings.PREFERENCES_CONFIRMATORY_CWD);
+				break;
+			}
+			break;
+		case CustomStrings.RESULT_DISCRIMINATORY_TEST:
+			switch(recordType) {
+			case CustomStrings.SUMMARIZED_INFO_BSE_TYPE:
+				preferredTestType = getPreferredTestType(recordType, 
+						CustomStrings.PREFERENCES_DISCRIMINATORY_BSE);
+				break;
+			case CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE:
+				preferredTestType = getPreferredTestType(recordType, 
+						CustomStrings.PREFERENCES_DISCRIMINATORY_BSE);
+				break;
+			case CustomStrings.SUMMARIZED_INFO_CWD_TYPE:
+				preferredTestType = getPreferredTestType(recordType, 
+						CustomStrings.PREFERENCES_DISCRIMINATORY_CWD);
+				break;
+			}
+			break;
+		case CustomStrings.SUMMARIZED_INFO_MOLECULAR_TEST:
+			preferredTestType = CustomStrings.AN_METH_CODE_GENOTYPING;
+			break;
+		}
+		
+		return preferredTestType;
+	}
+	
 	/**
 	 * Create a default result for the selected test
 	 * @param report
@@ -111,13 +179,25 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 			resultRow.save();
 			
 			resultRow.initialize();
-			resultRow.updateFormulas();
-			addParamAndResult(resultRow, defaultResult, test);
+			
 			resultRow.put(CustomStrings.RESULT_TEST_TYPE, testTypeCode);
 			
+			// add also the preferred test type
+			String prefTest = getPreferredTestType(resultRow, recordType, testTypeCode);
+			
+			if (prefTest != null)
+				resultRow.put(CustomStrings.AN_METH_CODE, prefTest);
+			else
+				System.out.println("No preferred value of anMethCode was found for anMethType " + testTypeCode);
+			
+			addParamAndResult(resultRow, defaultResult, test);
+			
+			resultRow.updateFormulas();
+
 			resultRow.update();
 		}
 	}
+	
 	
 	/**
 	 * Add the param and the result to the selected row

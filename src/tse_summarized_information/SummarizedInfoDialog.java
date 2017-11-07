@@ -3,8 +3,8 @@ package tse_summarized_information;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -14,6 +14,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
@@ -61,13 +63,29 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		// add 300 px in height
 		addHeight(300);
+	}
+	
+	@Override
+	public Menu createMenu() {
 		
-		// if double clicked an element of the table
-		// open the cases
-		addTableDoubleClickListener(new IDoubleClickListener() {
-			
+		Menu menu = super.createMenu();
+
+		MenuItem addCase = new MenuItem(menu, SWT.PUSH);
+		addCase.setText("Open case/sample form");
+		addCase.setEnabled(false);
+		
+		addTableSelectionListener(new ISelectionChangedListener() {
+
 			@Override
-			public void doubleClick(DoubleClickEvent event) {
+			public void selectionChanged(SelectionChangedEvent arg0) {
+				addCase.setEnabled(!isTableEmpty());
+			}
+		});
+
+		addCase.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
 
 				TableRow row = getSelection();
 				
@@ -89,11 +107,17 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 						e.printStackTrace();
 					}
 				}
-
-				// open cases dialog
+				
 				openCases(summInfo);
 			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
 		});
+		
+		addRemoveMenuItem(menu);
+		
+		return menu;
 	}
 	
 	/**
@@ -176,35 +200,56 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		// for cervids we need double rows
 		int repeats = isCervid ? 2 : 1;
-		
-		// for each repeat add rows
-		for (int j = 0; j < repeats; ++j) {
-			
-			// for each inconclusive
-			for (int i = 0; i < inconclusive; ++i) {
-				
+
+		// for each inconclusive
+		for (int i = 0; i < inconclusive; ++i) {
+
+			for (int j = 0; j < repeats; ++j) {
+
 				// add get the id and update the fields
 				int id = dao.add(resultRow);
 				resultRow.setId(id);
-				
+
 				resultRow.initialize();
-				
+
 				// set assessment as inconclusive
 				TableColumnValue value = new TableColumnValue();
 				value.setCode(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE);
 				value.setLabel(CustomStrings.DEFAULT_ASSESS_INC_CASE_LABEL);
 				resultRow.put(CustomStrings.CASE_INFO_ASSESS, value);
-				
+
+				if (isCervid) {
+					if (j==0) {
+						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
+					}
+					else if (j==1) {
+						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.LYMPH_CODE);
+					}
+				}
+
 				dao.update(resultRow);
 			}
-			
-			// for each positive
-			for (int i = 0; i < positive; ++i) {
+		}
+
+		// for each positive
+		for (int i = 0; i < positive; ++i) {
+
+			for (int j = 0; j < repeats; ++j) {
 				
 				// add get the id and update the fields
 				int id = dao.add(resultRow);
 				resultRow.setId(id);
 				resultRow.initialize();
+
+				if (isCervid) {
+					if (j==0) {
+						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
+					}
+					else if (j==1) {
+						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.LYMPH_CODE);
+					}
+				}
+
 				dao.update(resultRow);
 			}
 		}
@@ -560,7 +605,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		panel.setEnabled("editBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeMadeEditable());
 		panel.setEnabled("sendBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeSent());
-		panel.setEnabled("amendBtn", !DebugConfig.disableMainPanel && DebugConfig.debug || datasetStatus.canBeAmended());
+		panel.setEnabled("amendBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeAmended());
 		panel.setEnabled("submitBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeSubmitted());
 		panel.setEnabled("rejectBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeRejected());
 		panel.setEnabled("displayAckBtn", !DebugConfig.disableMainPanel && datasetStatus.canDisplayAck());

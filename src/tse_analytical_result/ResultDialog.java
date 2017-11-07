@@ -3,6 +3,7 @@ package tse_analytical_result;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
@@ -62,6 +63,7 @@ public class ResultDialog extends TableDialogWithMenu {
 				// reset the aim of the test if the test type is changed
 				if (changed && field.equals(CustomStrings.RESULT_TEST_TYPE)) {
 					row.put(CustomStrings.RESULT_TEST_AIM, "");
+					row.put(CustomStrings.AN_METH_CODE, "");
 				}
 			}
 		});
@@ -120,6 +122,13 @@ public class ResultDialog extends TableDialogWithMenu {
 	@Override
 	public RowValidatorLabelProvider getValidator() {
 		return new ResultValidator();
+	}
+	
+	@Override
+	public Menu createMenu() {
+		Menu menu = super.createMenu();
+		addRemoveMenuItem(menu);
+		return menu;
 	}
 
 	@Override
