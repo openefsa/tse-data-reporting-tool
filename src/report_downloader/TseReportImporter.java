@@ -15,10 +15,12 @@ import table_relations.Relation;
 import table_skeleton.TableColumn;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
+import tse_config.CatalogLists;
 import tse_config.CustomStrings;
 import tse_report.TseReport;
 import tse_summarized_information.SummarizedInfo;
 import xlsx_reader.TableSchemaList;
+import xml_catalog_reader.XmlLoader;
 
 /**
  * Download and import a dataset, managing also all the amendments
@@ -183,9 +185,10 @@ public class TseReportImporter extends ReportImporter {
 		HashMap<String, TableColumnValue> rowValues = new HashMap<>();
 
 		// split compound fields and add them to the summarized information
-		rowValues.putAll(decomposeField(CustomStrings.SUMMARIZED_INFO_SAMP_MAT_CODE, row, true));
+		rowValues.putAll(decomposeField(CustomStrings.SUMMARIZED_INFO_SAMP_MAT_CODE, row, true, true));
 		rowValues.putAll(decomposeField(CustomStrings.SUMMARIZED_INFO_PROG_INFO, row, true));
-
+		rowValues.putAll(decomposeField(CustomStrings.RESULT_SAMP_EVENT_INFO, row, false, true));
+		
 		// copy values into the summarized information
 		SummarizedInfo summInfo = new SummarizedInfo(row);
 		for (String key : rowValues.keySet()) {
@@ -294,6 +297,9 @@ public class TseReportImporter extends ReportImporter {
 			// extract the part from the analytical result
 			HashMap<String, TableColumnValue> sampMatCodeDecomposed = 
 					decomposeField(CustomStrings.RESULT_SAMP_MAT_CODE, row, true);
+			
+			System.out.println(row);
+			System.out.println(sampMatCodeDecomposed);
 			TableColumnValue part = sampMatCodeDecomposed.get(CustomStrings.SUMMARIZED_INFO_PART);
 			rowValues.put(CustomStrings.SUMMARIZED_INFO_PART, part);
 
@@ -354,9 +360,15 @@ public class TseReportImporter extends ReportImporter {
 		String paramCode = row.getCode(CustomStrings.PARAM_CODE_COL);
 		String[] split = paramCode.split("#");
 		
+		String resQualValue = row.getCode(CustomStrings.RESULT_TEST_RESULT);
+		
 		// put the base term into the param code base term
 		if (split.length >= 1) {
-			row.put(CustomStrings.PARAM_CODE_BASE_TERM_COL, split[0]);
+			String paramBase = split[0];
+			row.put(CustomStrings.PARAM_CODE_BASE_TERM_COL, paramBase);
+			
+			String testResult = paramBase + "$" + resQualValue;
+			row.put(CustomStrings.RESULT_TEST_AIM, testResult);
 		}
 		
 		// at least two pieces, then save alleles
@@ -405,6 +417,11 @@ public class TseReportImporter extends ReportImporter {
 		return null;
 	}
 
+	private HashMap<String, TableColumnValue> decomposeField(String columnId, 
+			TableRow row, boolean label) throws FormulaException {
+		return this.decomposeField(columnId, row, label, false);
+	}
+	
 	/**
 	 * Decompose a field into its children
 	 * @param columnId
@@ -412,7 +429,8 @@ public class TseReportImporter extends ReportImporter {
 	 * @return hashmap with the children values
 	 * @throws FormulaException 
 	 */
-	private HashMap<String, TableColumnValue> decomposeField(String columnId, TableRow row, boolean label) throws FormulaException {
+	private HashMap<String, TableColumnValue> decomposeField(String columnId, 
+			TableRow row, boolean label, boolean forSummarized) throws FormulaException {
 
 		TableColumn column = row.getSchema().getById(columnId);
 		
@@ -430,7 +448,11 @@ public class TseReportImporter extends ReportImporter {
 
 		switch(columnId) {
 		case CustomStrings.SUMMARIZED_INFO_SAMP_MAT_CODE:  // foodex code
-			values = decomposer.decomposeFoodexCode(false);
+			if (forSummarized) {
+				values = decomposer.decomposeFoodexCode(false);
+			}
+			else
+				values = decomposer.decomposeRelationFieldAsFoodex();
 			break;
 		case CustomStrings.PARAM_CODE_COL:
 			values = decomposer.decomposeFoodexCode(true);
@@ -438,9 +460,21 @@ public class TseReportImporter extends ReportImporter {
 		case CustomStrings.SUMMARIZED_INFO_PROG_INFO:
 			values = decomposer.decomposeSimpleField("$", true);
 			break;
+		case CustomStrings.RESULT_SAMP_EVENT_INFO:
+			
+			try {
+				if (forSummarized)
+					values = decomposer.decomposeSimpleField("$", true);
+				else {
+					values = decomposer.decomposeRelationField("$", true);
+				}
+			} catch (FormulaException e) {
+				e.printStackTrace();
+			}
+			break;
+			
 		case CustomStrings.RESULT_EVAL_INFO:
 		case CustomStrings.RESULT_SAMP_UNIT_IDS:
-		case CustomStrings.RESULT_SAMP_EVENT_INFO:
 		case CustomStrings.RESULT_SAMP_MAT_INFO:
 			try {
 				values = decomposer.decomposeRelationField("$", true);

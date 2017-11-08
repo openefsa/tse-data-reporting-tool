@@ -95,7 +95,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				SummarizedInfo summInfo = new SummarizedInfo(row);
 				
 				// first validate the content of the row
-				if (!validate(summInfo))
+				if (!validate(summInfo) && isEditable())
 					return;
 				
 				// create default cases if no cases

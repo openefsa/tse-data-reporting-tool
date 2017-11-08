@@ -20,4 +20,5 @@ public class CatalogLists {
 	public static final String COUNTRY_LIST = "countryList";
 	public static final String TEST_LIST = "anMethTypesLists";
 	public static final String ALL_TEST_ID = "ALL";
+	public static final String RESULTS_LISTS = "resultsLists";
 }

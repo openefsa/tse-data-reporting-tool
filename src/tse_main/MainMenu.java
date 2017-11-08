@@ -104,7 +104,7 @@ public class MainMenu {
 		this.preferences.setText("Preferences");
 
 		this.settings = new MenuItem(main, SWT.PUSH);
-		this.settings.setText("Settings");
+		this.settings.setText("User settings");
 
 		// add buttons to the file menu
 		this.newReport = new MenuItem(fileMenu, SWT.PUSH);

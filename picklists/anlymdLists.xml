@@ -12,10 +12,7 @@
 		</selection>
 		<selection code="F643A">
 			<description>Prionics Check PrioSTRIP</description>
-		</selection>
-		<selection code="F644A">
-			<description>Prionics-Check Western test</description>
-		</selection>
+		</selection>		
 		<selection code="F645A">
 			<description>Roboscreen Beta Prion BSE EIA Test Kit</description>
 		</selection>
@@ -116,7 +113,7 @@
 	</selectionList>
 	<selectionList id="SCRAPIE$AT13A">
 		<selection code="F089A">
-			<description>Molecular characterisation/Genotyping method</description>
+			<description>Genotyping</description>
 		</selection>		
 	</selectionList>
 	<selectionList id="CWD$AT06A">

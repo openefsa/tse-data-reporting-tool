@@ -1,12 +1,11 @@
 package tse_config;
 
-import org.eclipse.swt.widgets.Shell;
+import javax.swing.JOptionPane;
 
-import global_utils.Warnings;
+import org.eclipse.swt.widgets.Shell;
 
 public class GeneralWarnings {
 
-	
 	public static void showExceptionStack(Shell shell, String title, Exception e) {
 		
 		StringBuilder sb = new StringBuilder();
@@ -16,7 +15,9 @@ public class GeneralWarnings {
 	    }
 	    String trace = sb.toString();
 		
-		Warnings.warnUser(shell, title, "XERRX: Generic runtime error. Please contact zoonoses_support@efsa.europa.eu. Error message " 
-				+ trace);
+		
+		JOptionPane.showMessageDialog(null, "XERRX: Generic runtime error." 
+				+ " Please contact zoonoses_support@efsa.europa.eu. Error message " + trace, 
+				"Generic error", JOptionPane.ERROR_MESSAGE);
 	}
 }

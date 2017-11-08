@@ -40,7 +40,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	
 	public CaseReportDialog(Shell parent, Report report, SummarizedInfo summInfo) {
 		
-		super(parent, "Case report", true, false);
+		super(parent, "Cases/samples", true, false);
 		
 		this.report = report;
 		this.summInfo = summInfo;
@@ -183,20 +183,27 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		String age = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_AGE);
 		String target = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP);
 		String status = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_STATUS);
+		String progId = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_PROG_ID);
 		
-		StringBuilder reportRow = new StringBuilder();
-		reportRow.append("Monthly report: ")
-			.append(reportMonth)
-			.append(" ")
+		StringBuilder yearRow = new StringBuilder();
+		yearRow.append("Sampling year: ")
 			.append(reportYear);
 		
-		StringBuilder animalRow = new StringBuilder();
-		animalRow.append("Animal: ")
-			.append(source)
-			.append(" ")
-			.append(age)
-			.append(" ")
+		StringBuilder monthRow = new StringBuilder();
+		monthRow.append("Sampling month: ")
+			.append(reportMonth);
+		
+		StringBuilder sourceRow = new StringBuilder();
+		sourceRow.append("Animal species: ")
+			.append(source);
+		
+		StringBuilder prodRow = new StringBuilder();
+		prodRow.append("Type of production: ")
 			.append(prod);
+
+		StringBuilder ageRow = new StringBuilder();
+		ageRow.append("Age class: ")
+			.append(age);
 		
 		StringBuilder targetRow = new StringBuilder();
 		targetRow.append("Target group: ")
@@ -206,12 +213,20 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		statusRow.append("Status of the herd/flock: ")
 			.append(status);
 		
-		viewer.addHelp("TSEs monitoring data (case level)")
-			.addLabel("reportLabel", reportRow.toString())
-			.addLabel("animalLabel", animalRow.toString())
+		StringBuilder progIdRow = new StringBuilder();
+		progIdRow.append("Context ID: ")
+			.append(progId);
+		
+		viewer.addHelp("Cases/samples")
+			.addLabel("yearLabel", yearRow.toString())
+			.addLabel("monthLabel", monthRow.toString())
+			.addLabel("sourceLabel", sourceRow.toString())
+			.addLabel("prodLabel", prodRow.toString())
+			.addLabel("ageLabel", ageRow.toString())
 			.addLabel("targetLabel", targetRow.toString())
 			.addLabel("statusLabel", statusRow.toString())
-			.addRowCreator("Add data:")
+			.addLabel("progIdLabel", progIdRow.toString())
+			.addRowCreator("Add case/sample:")
 			.addTable(CustomStrings.CASE_INFO_SHEET, true);
 	}
 }

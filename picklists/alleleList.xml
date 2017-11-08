@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <alleleList>
-	<selectionList>
+	<selectionList id="F01.A057G">
 		<selection code="AXRR">
 			<description>AXRR</description>
 		</selection>

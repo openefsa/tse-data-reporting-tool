@@ -19,7 +19,7 @@ import xml_catalog_reader.Selection;
 public class PreferencesDialog extends OptionsDialog {
 	
 	public PreferencesDialog(Shell parent) {
-		super(parent, "Tse preferences");
+		super(parent, "Preferences");
 	}
 	
 	@Override
@@ -47,7 +47,7 @@ public class PreferencesDialog extends OptionsDialog {
 
 	@Override
 	public void addWidgets(DialogBuilder viewer) {
-		viewer.addHelp("TSE preferences")
+		viewer.addHelp("Preferences")
 			.addTable(CustomStrings.PREFERENCES_SHEET, true);
 	}
 }

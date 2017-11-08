@@ -42,9 +42,6 @@
 		</selection>
 	</selectionList>
 	<selectionList id="SCRAPIE">
-		<selection code="F31.A16YK">
-			<description>Age classes for Scrapie</description>
-		</selection>
 		<selection code="F31.A16ND">
 			<description>&lt;18 months</description>
 		</selection>

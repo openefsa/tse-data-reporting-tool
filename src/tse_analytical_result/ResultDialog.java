@@ -134,17 +134,9 @@ public class ResultDialog extends TableDialogWithMenu {
 	@Override
 	public void addWidgets(DialogBuilder viewer) {
 		
-		String reportMonth = report.getLabel(AppPaths.REPORT_MONTH);
-		String reportYear = report.getLabel(AppPaths.REPORT_YEAR);
 		String sampleId = caseInfo.getLabel(CustomStrings.CASE_INFO_SAMPLE_ID);
 		String animalId = caseInfo.getLabel(CustomStrings.CASE_INFO_ANIMAL_ID);
 		String caseId = caseInfo.getLabel(CustomStrings.CASE_INFO_CASE_ID);
-		
-		StringBuilder reportRow = new StringBuilder();
-		reportRow.append("Monthly report: ")
-			.append(reportMonth)
-			.append(" ")
-			.append(reportYear);
 		
 		StringBuilder sampleIdRow = new StringBuilder();
 		sampleIdRow.append("Sample id: ")
@@ -160,7 +152,6 @@ public class ResultDialog extends TableDialogWithMenu {
 		
 		viewer.addHelp("Analytical results")
 			.addRowCreator("Add result:")
-			.addLabel("reportLabel", reportRow.toString())
 			.addLabel("sampLabel", sampleIdRow.toString())
 			.addLabel("animalLabel", animalIdRow.toString())
 			.addLabel("caseIdLabel", caseIdRow.toString())
