@@ -17,79 +17,23 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 	private enum Check {
 		OK,
 		WRONG_RESULTS,
-		SCREENING_MISSING,
-		CONFIRMATORY_MISSING,
-		WRONG_ALLELE
+		NO_TEST_SPECIFIED
 	}
 
 	private Check isRecordCorrect(TableRow row) throws IOException {
 
 		TableSchema childSchema = TableSchemaList.getByName(CustomStrings.RESULT_SHEET);
 		Collection<TableRow> results = row.getChildren(childSchema);
+
+		// if in summinfo screening was set, but no screening
+		// was found in the cases
+		if (results.isEmpty()) {
+			return Check.NO_TEST_SPECIFIED;
+		}
 		
 		// check children errors
 		if (row.hasChildrenError()) {
 			return Check.WRONG_RESULTS;
-		}
-		
-		TableSchema parentSchema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
-		TableRow summInfo = row.getParent(parentSchema);
-
-		boolean summScreening = false;
-
-		// if we have a screening in the summarized
-		if (summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TEST_TYPE)
-				.equals(CustomStrings.SUMMARIZED_INFO_SCREENING_TEST)) {
-			summScreening = true;
-			
-		}
-
-		// but no screening in results
-		boolean hasScreening = false;
-		for (TableRow result : results) {
-			if (result.getCode(CustomStrings.RESULT_TEST_TYPE)
-					.equals(CustomStrings.RESULT_SCREENING_TEST)) {
-				hasScreening = true;
-				break;
-			}
-		}
-
-		// if in summinfo screening was set, but no screening
-		// was found in the cases
-		if (summScreening && !hasScreening) {
-			return Check.SCREENING_MISSING;
-		}
-		
-		
-		// at least one confirmatory should be reported
-		/*boolean hasConfirmatory = false;
-		for (TableRow result : results) {
-			if (result.getCode(CustomStrings.RESULT_TEST_TYPE)
-					.equals(CustomStrings.SUMMARIZED_INFO_CONFIRMATORY_TEST)) {
-				hasConfirmatory = true;
-				break;
-			}
-		}
-		
-		if (!hasConfirmatory) {
-			return Check.CONFIRMATORY_MISSING;
-		}*/
-		
-
-		String testType = row.getCode(CustomStrings.RESULT_TEST_TYPE);
-
-		// if it is not molecular test
-		if (!testType.equals(CustomStrings.SUMMARIZED_INFO_MOLECULAR_TEST)) {
-
-			// check if alleles were set (it is an error!)
-			String allele1 = row.getCode(CustomStrings.RESULT_ALLELE_1);
-			String allele2 = row.getCode(CustomStrings.RESULT_ALLELE_2);
-
-			boolean empty = allele1.isEmpty() && allele2.isEmpty();
-
-			if (!empty) {
-				return Check.WRONG_ALLELE;
-			}
 		}
 		
 		return Check.OK;
@@ -135,17 +79,11 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			
 			Check check = isRecordCorrect(row);
 			switch (check) {
-			case WRONG_ALLELE:
-				text = "Alleles not reportable";
-				break;
-			case SCREENING_MISSING:
-				text = "Missing screening/rapid test";
-				break;
-			case CONFIRMATORY_MISSING:
-				text = "Missing confirmatory test";
+			case NO_TEST_SPECIFIED:
+				text = "Add tests details";
 				break;
 			case WRONG_RESULTS:
-				text = "Check analytical results";
+				text = "Check tests details";
 				break;
 			default:
 				break;
@@ -175,11 +113,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		try {
 			Check check = isRecordCorrect(row);
 			switch (check) {
-			case WRONG_ALLELE:
-				color = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
-				break;
-			case SCREENING_MISSING:
-			case CONFIRMATORY_MISSING:
+			case NO_TEST_SPECIFIED:
 			case WRONG_RESULTS:
 				color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);
 				break;

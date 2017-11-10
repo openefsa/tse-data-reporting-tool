@@ -15,12 +15,10 @@ import table_relations.Relation;
 import table_skeleton.TableColumn;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
-import tse_config.CatalogLists;
 import tse_config.CustomStrings;
 import tse_report.TseReport;
 import tse_summarized_information.SummarizedInfo;
 import xlsx_reader.TableSchemaList;
-import xml_catalog_reader.XmlLoader;
 
 /**
  * Download and import a dataset, managing also all the amendments
@@ -187,7 +185,6 @@ public class TseReportImporter extends ReportImporter {
 		// split compound fields and add them to the summarized information
 		rowValues.putAll(decomposeField(CustomStrings.SUMMARIZED_INFO_SAMP_MAT_CODE, row, true, true));
 		rowValues.putAll(decomposeField(CustomStrings.SUMMARIZED_INFO_PROG_INFO, row, true));
-		rowValues.putAll(decomposeField(CustomStrings.RESULT_SAMP_EVENT_INFO, row, false, true));
 		
 		// copy values into the summarized information
 		SummarizedInfo summInfo = new SummarizedInfo(row);
@@ -297,9 +294,7 @@ public class TseReportImporter extends ReportImporter {
 			// extract the part from the analytical result
 			HashMap<String, TableColumnValue> sampMatCodeDecomposed = 
 					decomposeField(CustomStrings.RESULT_SAMP_MAT_CODE, row, true);
-			
-			System.out.println(row);
-			System.out.println(sampMatCodeDecomposed);
+
 			TableColumnValue part = sampMatCodeDecomposed.get(CustomStrings.SUMMARIZED_INFO_PART);
 			rowValues.put(CustomStrings.SUMMARIZED_INFO_PART, part);
 

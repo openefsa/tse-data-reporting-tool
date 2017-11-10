@@ -9,7 +9,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
-import app_config.DebugConfig;
 import app_config.PropertiesReader;
 import global_utils.EFSARCL;
 import global_utils.Warnings;
@@ -19,6 +18,7 @@ import table_database.TableDao;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
+import tse_config.DebugConfig;
 import tse_config.GeneralWarnings;
 import tse_options.PreferencesDialog;
 import tse_options.SettingsDialog;

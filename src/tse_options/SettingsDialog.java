@@ -3,6 +3,8 @@ package tse_options;
 import java.io.IOException;
 import java.util.Collection;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.swt.SWT;
@@ -103,6 +105,7 @@ public class SettingsDialog extends OptionsDialog {
 				String title = null;
 				String message = null;
 				int style = SWT.ERROR;
+				int jStyle = JOptionPane.ERROR_MESSAGE;
 
 				TseReport report = null;
 				try {
@@ -118,6 +121,7 @@ public class SettingsDialog extends OptionsDialog {
 					title = "Success";
 					message = "Test successfully completed.";
 					style = SWT.ICON_INFORMATION;
+					jStyle = JOptionPane.INFORMATION_MESSAGE;
 					
 				} catch (MySOAPException e) {
 
@@ -125,7 +129,7 @@ public class SettingsDialog extends OptionsDialog {
 					
 					System.err.println("Test connection: failed.");
 
-					String[] warnings = Warnings.getSOAPWarning(e.getError());
+					String[] warnings = Warnings.getSOAPWarning(e);
 					title = warnings[0];
 					message = warnings[1];
 				} catch (ParserConfigurationException | SAXException | IOException e) {
@@ -159,7 +163,13 @@ public class SettingsDialog extends OptionsDialog {
 				
 				// if we have an error message stop and show the error
 				if (message != null) {
-					Warnings.warnUser(getDialog(), title, message, style);
+					
+					final JDialog dialog = new JDialog();
+					dialog.setAlwaysOnTop(true);
+					JOptionPane.showMessageDialog(dialog, message, title, jStyle);
+					dialog.dispose();
+					
+					//Warnings.warnUser(getDialog(), title, message, style);
 				}
 			}
 			

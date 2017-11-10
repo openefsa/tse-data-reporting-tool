@@ -99,7 +99,7 @@ public class ReportCreatorDialog extends TableDialog {
 			
 			e.printStackTrace();
 			
-			String[] warnings = Warnings.getSOAPWarning(e.getError());
+			String[] warnings = Warnings.getSOAPWarning(e);
 			title = warnings[0];
 			message = warnings[1];
 			
@@ -154,6 +154,8 @@ public class ReportCreatorDialog extends TableDialog {
 
 		// if no conflicts create the new report
 		report.save();
+		
+		warnUser("Success", "Report successfully created. The new report is not automatically opened. Please open it to see the content.", SWT.ICON_INFORMATION);
 		
 		return true;
 	}

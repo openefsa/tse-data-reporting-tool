@@ -19,16 +19,16 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
-import app_config.DebugConfig;
 import dataset.DatasetStatus;
 import global_utils.Warnings;
 import report.Report;
 import report.ReportAckManager;
 import report.ReportActions;
-import table_database.TableDao;
 import table_dialog.DialogBuilder;
+import table_dialog.EditorListener;
 import table_dialog.RowValidatorLabelProvider;
 import table_relations.Relation;
+import table_skeleton.TableColumn;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
 import table_skeleton.TableVersion;
@@ -36,10 +36,10 @@ import tse_case_report.CaseReportDialog;
 import tse_components.TableDialogWithMenu;
 import tse_config.CatalogLists;
 import tse_config.CustomStrings;
+import tse_config.DebugConfig;
 import tse_report.TseReport;
 import tse_validator.SummarizedInfoValidator;
 import xlsx_reader.TableSchema;
-import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.Selection;
 
 /**
@@ -63,6 +63,27 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		// add 300 px in height
 		addHeight(300);
+		
+		setEditorListener(new EditorListener() {
+			
+			@Override
+			public void editStarted() {}
+			
+			@Override
+			public void editEnded(TableRow row, TableColumn field, boolean changed) {
+				if (changed) {
+					switch(field.getId()) {
+					case CustomStrings.SUMMARIZED_INFO_TARGET_GROUP:
+						row.remove(CustomStrings.SUMMARIZED_INFO_TEST_TYPE);
+						row.remove(CustomStrings.AN_METH_CODE);
+						break;
+					case CustomStrings.SUMMARIZED_INFO_TEST_TYPE:
+						row.remove(CustomStrings.AN_METH_CODE);
+						break;
+					}
+				}
+			}
+		});
 	}
 	
 	@Override
@@ -97,17 +118,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				// first validate the content of the row
 				if (!validate(summInfo) && isEditable())
 					return;
-				
-				// create default cases if no cases
-				// and cases were set in the aggregated data
-				if (!summInfo.hasCases() && getNumberOfExpectedCases(summInfo) > 0) {
-					try {
-						createDefaultCases(summInfo);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				
+
 				openCases(summInfo);
 			}
 
@@ -134,20 +145,6 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 
 		return true;
 	}
-	
-	/**
-	 * get the declared number of cases in the current row
-	 * @param summInfo
-	 * @return
-	 */
-	private int getNumberOfExpectedCases(TableRow summInfo) {
-		
-		int positive = summInfo.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
-		int inconclusive = summInfo.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
-		int total = positive + inconclusive;
-		
-		return total;
-	}
 
 	/**
 	 * Open the cases dialog of the summarized information
@@ -166,93 +163,6 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		summInfo.updateChildrenErrors();
 		
 		replace(summInfo);
-	}
-	
-	/**
-	 * Once a summ info is clicked, create the default cases according to 
-	 * number of positive/inconclusive cases
-	 * @param summInfo
-	 * @param positive
-	 * @param inconclusive
-	 * @throws IOException
-	 */
-	private void createDefaultCases(TableRow summInfo) throws IOException {
-		
-		// check cases number
-		int positive = summInfo.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
-		int inconclusive = summInfo.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
-		
-		TableSchema resultSchema = TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
-		
-		TableRow resultRow = new TableRow(resultSchema);
-		
-		// inject the case parent to the result
-		Relation.injectParent(report, resultRow);
-		Relation.injectParent(summInfo, resultRow);
-
-		// add two default rows
-		TableDao dao = new TableDao(resultSchema);
-		
-		resultRow.initialize();
-		
-		boolean isCervid = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
-			.equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE);
-		
-		// for cervids we need double rows
-		int repeats = isCervid ? 2 : 1;
-
-		// for each inconclusive
-		for (int i = 0; i < inconclusive; ++i) {
-
-			for (int j = 0; j < repeats; ++j) {
-
-				// add get the id and update the fields
-				int id = dao.add(resultRow);
-				resultRow.setId(id);
-
-				resultRow.initialize();
-
-				// set assessment as inconclusive
-				TableColumnValue value = new TableColumnValue();
-				value.setCode(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE);
-				value.setLabel(CustomStrings.DEFAULT_ASSESS_INC_CASE_LABEL);
-				resultRow.put(CustomStrings.CASE_INFO_ASSESS, value);
-
-				if (isCervid) {
-					if (j==0) {
-						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
-					}
-					else if (j==1) {
-						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.LYMPH_CODE);
-					}
-				}
-
-				dao.update(resultRow);
-			}
-		}
-
-		// for each positive
-		for (int i = 0; i < positive; ++i) {
-
-			for (int j = 0; j < repeats; ++j) {
-				
-				// add get the id and update the fields
-				int id = dao.add(resultRow);
-				resultRow.setId(id);
-				resultRow.initialize();
-
-				if (isCervid) {
-					if (j==0) {
-						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
-					}
-					else if (j==1) {
-						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.LYMPH_CODE);
-					}
-				}
-
-				dao.update(resultRow);
-			}
-		}
 	}
 	
 	@Override

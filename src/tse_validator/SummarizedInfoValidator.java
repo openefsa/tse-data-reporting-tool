@@ -16,10 +16,8 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 	
 	private enum SampleCheck {
 		OK,
-		LESS,
-		MISSING_INC_CASES,
-		TOOMANY_INC_CASES,
 		MISSING_CASES,
+		CHECK_INC_CASES,
 		TOOMANY_CASES,
 		WRONG_CASES,
 		//MORE
@@ -41,43 +39,30 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 			
 			Collection<TableRow> cases = row.getChildren(childSchema);
 			
+			int incSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
+			int posSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
+			//int negSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES);
+			int totPosInc = posSamples + incSamples;
+			
+			int detailedIncSamples = getDetailedIncCases(cases);
+			int detailedNegSamples = getDetailedNegCases(cases);
+			int detailedPosSamples = cases.size() - detailedIncSamples - detailedNegSamples;
+			
+			// if #detailed < #declared
+			if (detailedPosSamples + detailedIncSamples < totPosInc)
+				return SampleCheck.MISSING_CASES;
+			// if #declared < #detailed
+			else if (totPosInc < detailedIncSamples + detailedPosSamples)
+				return SampleCheck.TOOMANY_CASES;
+			
+			int compare = checkCasesType(cases, CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, incSamples);
+			if (compare != 0)
+				return SampleCheck.CHECK_INC_CASES;
+			
 			// check children errors
 			if (row.hasChildrenError()) {
 				return SampleCheck.WRONG_CASES;
 			}
-
-			int incSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
-			int posSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
-			//int negSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES);
-			int tot = posSamples + incSamples;
-			
-			/*int compare = checkCasesType(cases, CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, negSamples);
-			if (compare == 1)
-				return SampleCheck.TOOMANY_NEG_CASES;*/
-			
-			int compare = checkCasesType(cases, CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, incSamples);
-			if (compare == 1)
-				return SampleCheck.TOOMANY_INC_CASES;
-			else if (compare == -1)
-				return SampleCheck.MISSING_INC_CASES;
-			
-			else {
-				
-				//compare = (cases.size() - incSamples - negSamples);
-				
-				/*// else if inc and negative are equal but count is different
-				if (compare < posSamples)
-					return SampleCheck.MISSING_POS_CASES;
-				else if (compare > posSamples) {
-					return SampleCheck.TOOMANY_POS_CASES;
-				}*/
-			}
-
-			
-			//if (cases.size() > tot)
-			//	return SampleCheck.MORE;
-			if (cases.size() < tot)
-				return SampleCheck.LESS;
 		}
 		catch (NumberFormatException e) {
 			e.printStackTrace();
@@ -85,6 +70,27 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		
 		return SampleCheck.OK;
 	}
+	
+	private int getDetailedIncCases(Collection<TableRow> cases) {
+		
+		int inc = 0;
+		for (TableRow caseInfo : cases) {
+			if (caseInfo.getCode(CustomStrings.CASE_INFO_ASSESS).equals(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE))
+				inc++;
+		}
+		return inc;
+	}
+	
+	private int getDetailedNegCases(Collection<TableRow> cases) {
+		
+		int neg = 0;
+		for (TableRow caseInfo : cases) {
+			if (caseInfo.getCode(CustomStrings.CASE_INFO_ASSESS).equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE))
+				neg++;
+		}
+		return neg;
+	}
+	
 	private int checkCasesType(Collection<TableRow> cases, String value, int declaredValue) {
 		Collection<String> values = new ArrayList<>();
 		values.add(value);
@@ -127,13 +133,9 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		int level = 0;
 		
 		switch (isSampleCorrect(row)) {
-		case LESS:
-		//case MORE:
-		case MISSING_INC_CASES:
-		//case MISSING_POS_CASES:
-		case TOOMANY_INC_CASES:
-		//case TOOMANY_NEG_CASES:
-		//case TOOMANY_POS_CASES:
+		case MISSING_CASES:
+		case TOOMANY_CASES:
+		case CHECK_INC_CASES:
 			level = 1;
 			break;
 		case WRONG_CASES:
@@ -161,29 +163,17 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		String text = parentText;
 
 		switch (isSampleCorrect(row)) {
-		case LESS:
-			text = "Cases report incomplete";
+		case MISSING_CASES:
+			text = "Add cases details";
 			break;
-		/*case MORE:
-			text = "Too many cases reported";
-			break;*/
-		case MISSING_INC_CASES:
-			text = "Missing inconclusive cases";
+		case TOOMANY_CASES:
+			text = "Too many cases detailed";
 			break;
-		/*case MISSING_POS_CASES:
-			text = "Missing positive cases";
-			break;*/
-		case TOOMANY_INC_CASES:
-			text = "Check inconclusive cases";
+		case CHECK_INC_CASES:
+			text = "Check inconclusive cases number";
 			break;
-		/*case TOOMANY_NEG_CASES:
-			text = "Check negative cases";
-			break;
-		case TOOMANY_POS_CASES:
-			text = "Check positive cases";
-			break;*/
 		case WRONG_CASES:
-			text = "Check case report";
+			text = "Check cases details";
 			break;
 		default:
 			break;

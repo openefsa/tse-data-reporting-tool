@@ -15,17 +15,16 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.xml.sax.SAXException;
 
-import app_config.DebugConfig;
 import app_config.PropertiesReader;
 import message.MessageConfigBuilder;
 import message_creator.OperationType;
 import report.ReportException;
 import report_downloader.TseReportDownloader;
 import table_database.TableDao;
-import table_importer.TableImporter;
 import table_skeleton.TableRow;
 import test_case.ExportTypeDialog;
 import tse_config.CustomStrings;
+import tse_config.DebugConfig;
 import tse_options.PreferencesDialog;
 import tse_options.SettingsDialog;
 import tse_report.ReportCreatorDialog;
@@ -200,8 +199,10 @@ public class MainMenu {
 
 				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 
+				TseSummarizedInfoImporter importer = new TseSummarizedInfoImporter();
+
 				// copy the data into the selected report
-				TableImporter.copyByParent(childSchema, report, mainPanel.getOpenedReport());
+				importer.copyByParent(childSchema, report, mainPanel.getOpenedReport());
 
 				mainPanel.refresh();
 

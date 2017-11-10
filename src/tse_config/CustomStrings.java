@@ -37,6 +37,7 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_POS_SAMPLES = "totSamplesPositive";
 	public static final String SUMMARIZED_INFO_NEG_SAMPLES = "totSamplesNegative";
 	public static final String SUMMARIZED_INFO_INC_SAMPLES = "totSamplesInconclusive";
+	public static final String SUMMARIZED_INFO_UNS_SAMPLES = "totSamplesUnsuitable";
 	public static final String SUMMARIZED_INFO_TYPE = "type";
 	public static final String SUMMARIZED_INFO_SOURCE = "source";
 	
@@ -44,7 +45,7 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_PROD = "prod";
 	public static final String SUMMARIZED_INFO_AGE = "animage";
 	public static final String SUMMARIZED_INFO_TARGET_GROUP = "tseTargetGroup";
-	public static final String SUMMARIZED_INFO_STATUS = "statusHerd";
+	public static final String CASE_INFO_STATUS = "statusHerd";
 	public static final String SUMMARIZED_INFO_TEST_TYPE = "anMethType";
 	public static final String SUMMARIZED_INFO_PROG_INFO = "progInfo";
 	public static final String SUMMARIZED_INFO_PROG_ID = "progId";
@@ -62,6 +63,7 @@ public class CustomStrings {
 	public static final String CASE_INFO_ANIMAL_ID = "animalId";
 	public static final String CASE_INFO_CASE_ID = "tseNationalCaseId";
 	public static final String CASE_INFO_ASSESS = "sampAnAsses";
+	public static final String CASE_INDEX_CASE = "tseIndexCase";
 	public static final String OBEX_CODE = "F02.A16YL";
 	public static final String LYMPH_CODE = "F02.A0CJN";
 	public static final String DEFAULT_ASSESS_NEG_CASE_CODE = "J051A";

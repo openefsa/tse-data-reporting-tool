@@ -7,6 +7,7 @@ import report.Report;
 import table_relations.Relation;
 import table_skeleton.TableRow;
 import tse_analytical_result.AnalyticalResult;
+import tse_case_report.CaseReport;
 import tse_config.CustomStrings;
 import tse_summarized_information.SummarizedInfo;
 
@@ -22,7 +23,7 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 	 * @throws IOException
 	 */
 	public static void createDefaultResults(Report report, 
-			SummarizedInfo summInfo, TableRow caseReport) throws IOException {
+			SummarizedInfo summInfo, CaseReport caseReport) throws IOException {
 
 		createDefaultResult(report, summInfo, caseReport, 
 				PredefinedResultHeader.SCREENING,
@@ -138,6 +139,23 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 		return preferredTestType;
 	}
 	
+	public static PredefinedResult getPredefinedResult(Report report, 
+			SummarizedInfo summInfo, TableRow caseReport) throws IOException {
+		
+		// put the predefined value for the param code and the result
+		PredefinedResultList predResList = PredefinedResultList.getAll();
+
+		// get the info to know which result should be created
+		String recordType = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
+		String sampAnAsses = caseReport.getCode(CustomStrings.CASE_INFO_ASSESS);
+		boolean confirmatoryTested = isConfirmatoryTested(recordType);
+
+		// get the default value
+		PredefinedResult defaultResult = predResList.get(recordType, confirmatoryTested, sampAnAsses);
+		
+		return defaultResult;
+	}
+	
 	/**
 	 * Create a default result for the selected test
 	 * @param report
@@ -158,17 +176,9 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 		Relation.injectParent(report, resultRow);
 		Relation.injectParent(summInfo, resultRow);
 		Relation.injectParent(caseReport, resultRow);
-		
-		// put the predefined value for the param code and the result
-		PredefinedResultList predResList = PredefinedResultList.getAll();
-
-		// get the info to know which result should be created
-		String recordType = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
-		String sampAnAsses = caseReport.getCode(CustomStrings.CASE_INFO_ASSESS);
-		boolean confirmatoryTested = isConfirmatoryTested(recordType);
 
 		// get the default value
-		PredefinedResult defaultResult = predResList.get(recordType, confirmatoryTested, sampAnAsses);
+		PredefinedResult defaultResult = getPredefinedResult(report, summInfo, caseReport);
 		
 		// add the param base term and the related default result
 		boolean added = addParamAndResult(resultRow, defaultResult, test);
@@ -181,6 +191,9 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 			resultRow.initialize();
 			
 			resultRow.put(CustomStrings.RESULT_TEST_TYPE, testTypeCode);
+			
+			// get the info to know which result should be created
+			String recordType = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
 			
 			// add also the preferred test type
 			String prefTest = getPreferredTestType(resultRow, recordType, testTypeCode);
@@ -213,7 +226,8 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 		String code = defValues.get(codeCol);
 		
 		// put the test aim
-		result.put(CustomStrings.RESULT_TEST_AIM, code);
+		if (codeCol != PredefinedResultHeader.GENOTYPING_BASE_TERM && code != null && !code.equals("null"))  // excel fix
+			result.put(CustomStrings.RESULT_TEST_AIM, code);
 		
 		// extract from it the param code and the result
 		// and add them to the row
@@ -241,7 +255,6 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 		
 		boolean added = false;
 		if (paramBaseTerm != null) {
-			
 			result.put(CustomStrings.PARAM_CODE_BASE_TERM_COL, paramBaseTerm);
 			
 			added = true;

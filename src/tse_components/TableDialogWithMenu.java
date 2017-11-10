@@ -9,7 +9,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
-import app_config.DebugConfig;
 import global_utils.Warnings;
 import table_dialog.HelpViewer;
 import table_dialog.RowCreatorViewer;
@@ -17,6 +16,7 @@ import table_dialog.TableDialog;
 import table_dialog.TableView;
 import table_skeleton.TableColumn;
 import table_skeleton.TableRow;
+import tse_config.DebugConfig;
 
 /**
  * Generic class that provides an interface to create {@link TableRow} objects

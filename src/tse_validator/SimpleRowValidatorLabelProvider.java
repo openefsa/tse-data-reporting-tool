@@ -16,7 +16,7 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 
 		switch (row.getRowStatus()) {
 		case OK:
-			text = "Locally validated";
+			text = "OK";
 			break;
 		case MANDATORY_MISSING:
 			text = "Missing mandatory fields";
