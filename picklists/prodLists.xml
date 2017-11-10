@@ -4,16 +4,10 @@
 		<selection code="F21.A07RV">
 			<description>Farmed</description>
 		</selection>
-		<selection code="F21.A07RX">
-			<description>Semi-domesticated</description>
-		</selection>
 	</selectionList>
 	<selectionList id="SCRAPIE">
 		<selection code="F21.A07RV">
 			<description>Farmed</description>
-		</selection>
-		<selection code="F21.A07RX">
-			<description>Semi-domesticated</description>
 		</selection>
 	</selectionList>
 	<selectionList id="CWD">

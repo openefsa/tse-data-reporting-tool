@@ -151,6 +151,8 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	 */
 	private void openCases(SummarizedInfo summInfo) {
 		
+		Relation.emptyCache();
+		
 		// create a case passing also the report information
 		CaseReportDialog dialog = new CaseReportDialog(getDialog(), this.report, summInfo);
 		

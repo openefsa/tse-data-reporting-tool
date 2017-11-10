@@ -223,6 +223,8 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				if (row == null)
 					return;
 				
+				Relation.emptyCache();
+				
 				CaseReport caseReport = new CaseReport(row);
 				
 				if (!caseReport.areMandatoryFilled()) {

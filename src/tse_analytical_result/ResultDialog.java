@@ -74,6 +74,8 @@ public class ResultDialog extends TableDialogWithMenu {
 							row.put(CustomStrings.PARAM_CODE_BASE_TERM_COL, 
 									predRes.get(PredefinedResultHeader.GENOTYPING_BASE_TERM));
 
+							System.out.println(predRes.get(PredefinedResultHeader.GENOTYPING_BASE_TERM));
+							
 						} catch (IOException e) {
 							e.printStackTrace();
 						}

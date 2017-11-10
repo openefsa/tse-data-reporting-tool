@@ -3,7 +3,7 @@
 <properties>
 <comment>Application configuration</comment>
 <entry key="Application.Name">EFSA TSE data submission tool</entry> <!-- main title of the application -->
-<entry key="Application.Version">1.0.3</entry> <!-- version of the application that will displayed after the application name -->
+<entry key="Application.Version">1.0.4</entry> <!-- version of the application that will displayed after the application name -->
 <entry key="Application.Icon">app-icon.png</entry> <!-- application icon (in the icon folder) -->
 <entry key="Application.DataCollectionTable">SSD2_CENTRAL_2017</entry> <!-- code that will be used to send report to the dcf -->
 <entry key="Application.DataCollectionPattern">TSE.yyyy</entry> <!-- data collection code, yyyy will be replaced by the report year -->

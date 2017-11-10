@@ -111,8 +111,12 @@ public class TseReportImporter extends ReportImporter {
 				
 				// import the result
 				TableRow result = importResult(report, summInfo, caseInfo, row);
-				
+
+				System.out.println("AN RESULT " + result.getLabel(CustomStrings.RES_ID_COLUMN));
 				System.out.println("Imported result " + result.getId());
+			}
+			else {
+				System.out.println("SUMMARIZED INFO FOUND");
 			}
 		}
 	}
@@ -141,6 +145,8 @@ public class TseReportImporter extends ReportImporter {
 				System.err.println("No sample id was found for " + currentCaseInfo);
 				return currentCaseInfo;
 			}
+			
+			System.out.println("CASE REPORT SAMP ID " + sampId);
 			
 			// save the case in the cache by its sample id
 			cases.put(sampId, currentCaseInfo);
@@ -390,7 +396,7 @@ public class TseReportImporter extends ReportImporter {
 		Relation.injectParent(report, result);
 		Relation.injectParent(summInfo, result);
 		Relation.injectParent(caseInfo, result);
-
+		
 		return result;
 	}
 
