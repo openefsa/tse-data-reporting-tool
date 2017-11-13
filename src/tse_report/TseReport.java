@@ -156,6 +156,9 @@ public class TseReport extends Report implements TseTableRow {
 				
 				// new version is in draft
 				this.setStatus(DatasetStatus.DRAFT);
+				
+				this.setDatasetId("");
+				this.setMessageId("");
 			}
 			else if (currentElement instanceof SummarizedInfo) {
 				summInfo = (SummarizedInfo) currentElement;
