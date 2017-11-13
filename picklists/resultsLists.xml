@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <resultsLists xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<selectionList id="BSEAT06A">
-		<selection code="RF-00004628-PAR$NEG">
+		<selection code="RF-00004884-PAR$NEG">
 			<description>Negative</description>
 		</selection>
 		<selection code="RF-00004884-PAR$POS">
@@ -29,12 +29,12 @@
 		<selection code="RF-00004887-PAR$POS">
 			<description>L-Type</description>
 		</selection>
-		<selection code="RF-00004888-PAR$INC">
-			<description>Other BSE (Inconclusive)</description>
+		<selection code="RF-00004888-PAR$POS">
+			<description>Other BSE (POSonclusive)</description>
 		</selection>
 	</selectionList>
 	<selectionList id="SCRAPIEAT06A">
-		<selection code="RF-00004628-PAR$NEG">
+		<selection code="RF-00004889-PAR$NEG">
 			<description>Negative</description>
 		</selection>
 		<selection code="RF-00004889-PAR$POS">
@@ -68,12 +68,12 @@
 		<selection code="RF-00004893-PAR$POS">
 			<description>CH1641 like</description>
 		</selection>
-		<selection code="RF-00004894-PAR$INC">
-			<description>Other Scrapie (Inconclusive)</description>
+		<selection code="RF-00004894-PAR$POS">
+			<description>Other Scrapie (POSonclusive)</description>
 		</selection>
 	</selectionList>
 	<selectionList id="CWDAT06A">
-		<selection code="RF-00004628-PAR$NEG">
+		<selection code="RF-00004895-PAR$NEG">
 			<description>Negative</description>
 		</selection>
 		<selection code="RF-00004895-PAR$POS">
@@ -98,8 +98,8 @@
 		<selection code="RF-00004897-PAR$POS">
 			<description>BSE like</description>
 		</selection>
-		<selection code="RF-00004898-PAR$INC">
-			<description>Other CWD (Inconclusive)</description>
+		<selection code="RF-00004898-PAR$POS">
+			<description>Other CWD (POSonclusive)</description>
 		</selection>
 	</selectionList>
 </resultsLists>

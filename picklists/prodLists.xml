@@ -12,7 +12,7 @@
 	</selectionList>
 	<selectionList id="CWD">
 		<selection code="F21.A07RV">
-			<description>Farmed</description>
+			<description>Farmed/Captive</description>
 		</selection>
 		<selection code="F21.A07RX">
 			<description>Semi-domesticated</description>
