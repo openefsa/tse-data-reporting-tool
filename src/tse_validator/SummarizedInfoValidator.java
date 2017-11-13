@@ -1,7 +1,7 @@
 package tse_validator;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -23,6 +23,24 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		//MORE
 	}
 	
+	private int getDistinctCaseIndex(Collection<TableRow> cases, 
+			String sampAnAssesType, boolean exclude) {
+		
+		HashSet<String> hash = new HashSet<>();
+		
+		for (TableRow caseReport : cases) {
+			
+			String caseId = caseReport.getCode(CustomStrings.CASE_INFO_CASE_ID);
+			String sampAnAsses = caseReport.getCode(CustomStrings.CASE_INFO_ASSESS);
+			
+			if ((sampAnAsses.equals(sampAnAssesType) && !exclude) 
+					||(!sampAnAsses.equals(sampAnAssesType) && exclude))
+				hash.add(caseId);
+		}
+		
+		return hash.size();
+	}
+	
 	/**
 	 * Check if the row is correct or not
 	 * @param row
@@ -39,24 +57,33 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 			
 			Collection<TableRow> cases = row.getChildren(childSchema);
 			
+			// declared inc/pos
 			int incSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
 			int posSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
-			//int negSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES);
 			int totPosInc = posSamples + incSamples;
 			
-			int detailedIncSamples = getDetailedIncCases(cases);
-			int detailedNegSamples = getDetailedNegCases(cases);
-			int detailedPosSamples = cases.size() - detailedIncSamples - detailedNegSamples;
+			// detailed inc
+			int detailedIncSamples = getDistinctCaseIndex(cases, 
+					CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, false);
+			
+			// detaled inc and pos together
+			int detailedIncAndPos = getDistinctCaseIndex(cases, 
+					CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, true);
+	
+			/*System.out.println("Dec inc " + incSamples);
+			System.out.println("Det inc " + detailedIncSamples);
+			System.out.println("Dec pos/inc " + totPosInc);
+			System.out.println("Det pos/inc " + detailedIncAndPos);*/
 			
 			// if #detailed < #declared
-			if (detailedPosSamples + detailedIncSamples < totPosInc)
+			if (detailedIncAndPos < totPosInc)
 				return SampleCheck.MISSING_CASES;
 			// if #declared < #detailed
-			else if (totPosInc < detailedIncSamples + detailedPosSamples)
+			else if (detailedIncAndPos > totPosInc)
 				return SampleCheck.TOOMANY_CASES;
 			
-			int compare = checkCasesType(cases, CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, incSamples);
-			if (compare != 0)
+			// if #detailed != #declared
+			if (detailedIncSamples != incSamples)
 				return SampleCheck.CHECK_INC_CASES;
 			
 			// check children errors
@@ -70,48 +97,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		
 		return SampleCheck.OK;
 	}
-	
-	private int getDetailedIncCases(Collection<TableRow> cases) {
-		
-		int inc = 0;
-		for (TableRow caseInfo : cases) {
-			if (caseInfo.getCode(CustomStrings.CASE_INFO_ASSESS).equals(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE))
-				inc++;
-		}
-		return inc;
-	}
-	
-	private int getDetailedNegCases(Collection<TableRow> cases) {
-		
-		int neg = 0;
-		for (TableRow caseInfo : cases) {
-			if (caseInfo.getCode(CustomStrings.CASE_INFO_ASSESS).equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE))
-				neg++;
-		}
-		return neg;
-	}
-	
-	private int checkCasesType(Collection<TableRow> cases, String value, int declaredValue) {
-		Collection<String> values = new ArrayList<>();
-		values.add(value);
-		return this.checkCasesType(cases, values, declaredValue);
-	}
-	private int checkCasesType(Collection<TableRow> cases, Collection<String> values, int declaredValue) {
-		
-		int incCases = 0;
-		for (TableRow caseInfo : cases) {
-			if (values.contains(caseInfo.getCode(CustomStrings.CASE_INFO_ASSESS)))
-				incCases++;
-		}
-		
-		if (incCases == declaredValue)
-			return 0;
-		else if (declaredValue > incCases)
-			return -1;
-		else
-			return 1;
-	}
-	
+
 	/**
 	 * Get the warning level of the current row
 	 * @param row
