@@ -12,6 +12,11 @@ import tse_validator.ResultValidator;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 
+/**
+ * Case report object of TSE data collection
+ * @author avonva
+ *
+ */
 public class CaseReport extends TableRow implements TseTableRow {
 
 	public CaseReport(TableRow row) {

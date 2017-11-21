@@ -34,7 +34,7 @@ import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.Selection;
 
 /**
- * Class which allows adding and editing a summarized information report.
+ * Dialog which shows cases report related to a summarized information parent
  * @author avonva
  *
  */

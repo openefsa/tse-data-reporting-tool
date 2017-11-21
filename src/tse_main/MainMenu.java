@@ -220,7 +220,7 @@ public class MainMenu {
 			public void widgetSelected(SelectionEvent arg0) {
 				
 				TseReportDownloader downloader = new TseReportDownloader(shell);
-				downloader.download(CustomStrings.VALID_SENDER_ID_PATTERN);
+				downloader.download();
 			}
 		});
 		

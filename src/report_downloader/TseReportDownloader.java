@@ -18,7 +18,7 @@ import xml_catalog_reader.XmlContents;
 import xml_catalog_reader.XmlLoader;
 
 /**
- * Download a report into the db
+ * Download a report into the local database.
  * @author avonva
  *
  */

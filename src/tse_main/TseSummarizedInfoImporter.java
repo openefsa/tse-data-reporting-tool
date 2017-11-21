@@ -4,6 +4,12 @@ import table_importer.TableImporter;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 
+/**
+ * Copy the summarized information of a report into another report.
+ * Note that data related to samples, prog id and res id are reset.
+ * @author avonva
+ *
+ */
 public class TseSummarizedInfoImporter extends TableImporter {
 
 	@Override
