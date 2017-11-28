@@ -14,7 +14,7 @@ import xlsx_reader.TableSchemaList;
 
 public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 	
-	private enum SampleCheck {
+	public enum SampleCheck {
 		OK,
 		MISSING_CASES,
 		CHECK_INC_CASES,
@@ -46,7 +46,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 	 * @param row
 	 * @return
 	 */
-	private SampleCheck isSampleCorrect(TableRow row) {
+	public SampleCheck isSampleCorrect(TableRow row) {
 		
 		try {
 			

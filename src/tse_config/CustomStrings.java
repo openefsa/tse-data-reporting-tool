@@ -40,6 +40,7 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_UNS_SAMPLES = "totSamplesUnsuitable";
 	public static final String SUMMARIZED_INFO_TYPE = "type";
 	public static final String SUMMARIZED_INFO_SOURCE = "source";
+	public static final String SOURCE_SHEEP_CODE = "F01.A057G";
 	
 	public static final String SUMMARIZED_INFO_PART = "part";
 	public static final String SUMMARIZED_INFO_PROD = "prod";
@@ -64,8 +65,10 @@ public class CustomStrings {
 	public static final String CASE_INFO_CASE_ID = "tseNationalCaseId";
 	public static final String CASE_INFO_ASSESS = "sampAnAsses";
 	public static final String CASE_INDEX_CASE = "tseIndexCase";
+	public static final String BRAIN_CODE = "F02.A06AM";
 	public static final String OBEX_CODE = "F02.A16YL";
 	public static final String LYMPH_CODE = "F02.A0CJN";
+	public static final String BLOOD_CODE = "F02.A06AL";
 	public static final String DEFAULT_ASSESS_NEG_CASE_CODE = "J051A";
 	public static final String DEFAULT_ASSESS_INC_CASE_CODE = "J050A";
 	public static final String DEFAULT_ASSESS_INC_CASE_LABEL = "Inconclusive";

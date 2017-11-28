@@ -1,5 +1,6 @@
 package tse_main;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,9 +20,11 @@ import app_config.PropertiesReader;
 import message.MessageConfigBuilder;
 import message_creator.OperationType;
 import report.ReportException;
+import report.ReportSendOperation;
 import report_downloader.TseReportDownloader;
 import table_database.TableDao;
 import table_skeleton.TableRow;
+import table_skeleton.TableVersion;
 import test_case.ExportTypeDialog;
 import tse_config.CustomStrings;
 import tse_config.DebugConfig;
@@ -30,6 +33,7 @@ import tse_options.SettingsDialog;
 import tse_report.ReportCreatorDialog;
 import tse_report.ReportListDialog;
 import tse_report.TseReport;
+import webservice.MySOAPException;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 
@@ -55,6 +59,7 @@ public class MainMenu {
 	private MenuItem closeReport;
 	private MenuItem importReport;
 	private MenuItem downloadReport;
+	private MenuItem exportReport;
 	private MenuItem exitApplication;
 
 	public MainMenu(MainPanel mainPanel, Shell shell) {
@@ -95,6 +100,9 @@ public class MainMenu {
 				openReport.setEnabled(hasReport);
 				closeReport.setEnabled(isReportOpened);
 				downloadReport.setEnabled(!DebugConfig.disableFileFuncs && !isReportOpened);
+				
+				// can only export valid reports
+				exportReport.setEnabled(isReportOpened && mainPanel.getOpenedReport().getStatus().isValid());
 				importReport.setEnabled(!DebugConfig.disableFileFuncs && editable);
 			}
 		});
@@ -224,6 +232,57 @@ public class MainMenu {
 			}
 		});
 		
+		this.exportReport = new MenuItem(fileMenu, SWT.PUSH);
+		exportReport.setText("Export report");
+		exportReport.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+
+				TseReport report = mainPanel.getOpenedReport();
+				
+				if (report == null)
+					return;
+			
+				// save the file
+				TseFileDialog fileDialog = new TseFileDialog(shell);
+				String filename = TableVersion.mergeNameAndVersion(report.getSenderId(), report.getVersion());
+				File exportFile = fileDialog.saveXml(filename);
+				
+				if (exportFile == null)
+					return;
+				
+				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+				
+				ReportSendOperation opSendType = null;
+				try {
+					opSendType = report.getSendOperation();
+				} catch (MySOAPException | ReportException e1) {
+					e1.printStackTrace();
+				}
+				
+				if (opSendType == null)
+					return;
+				
+				OperationType opType = opSendType.getOpType();
+				
+				if (opType == null)
+					return;
+
+				MessageConfigBuilder config = report.getDefaultExportConfiguration(opType, exportFile);
+				try {
+					report.export(config);
+				} catch (IOException | ParserConfigurationException | SAXException | ReportException e) {
+					e.printStackTrace();
+				}
+				
+				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
+		
 		this.exitApplication = new MenuItem(fileMenu, SWT.PUSH);
 		this.exitApplication.setText("Close application");
 		this.exitApplication.addSelectionListener(new SelectionAdapter() {
@@ -260,7 +319,7 @@ public class MainMenu {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {}
 		});
-
+		
 		if (DebugConfig.debug) {
 			addDebugItems();
 		}
@@ -273,6 +332,25 @@ public class MainMenu {
 	 * Add some debug functionalities
 	 */
 	private void addDebugItems() {
+		
+		MenuItem reportVersions = new MenuItem(fileMenu, SWT.PUSH);
+		reportVersions.setText("[DEBUG] Print report versions");
+		reportVersions.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				TseReport report = mainPanel.getOpenedReport();
+				
+				if (report == null)
+					return;
+				
+				System.out.println(report.getAllVersions());
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
 		
 		MenuItem exportReport = new MenuItem(fileMenu, SWT.PUSH);
 		exportReport.setText("[DEBUG] Export report");
@@ -299,25 +377,6 @@ public class MainMenu {
 				} catch (IOException | ParserConfigurationException | SAXException | ReportException e) {
 					e.printStackTrace();
 				}
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {}
-		});
-		
-		MenuItem reportVersions = new MenuItem(fileMenu, SWT.PUSH);
-		reportVersions.setText("[DEBUG] Print report versions");
-		reportVersions.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				
-				TseReport report = mainPanel.getOpenedReport();
-				
-				if (report == null)
-					return;
-				
-				System.out.println(report.getAllVersions());
 			}
 			
 			@Override

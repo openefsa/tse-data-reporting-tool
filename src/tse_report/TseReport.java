@@ -1,5 +1,6 @@
 package tse_report;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -72,14 +73,35 @@ public class TseReport extends Report implements TseTableRow {
 	
 	@Override
 	public Collection<TableRow> getRecords() {
-		
-		Collection<TableRow> records = new ArrayList<>();
-		
+
 		// children schemas
 		TableSchema[] schemas = new TableSchema[] {
 				TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET),
 				TableSchemaList.getByName(CustomStrings.RESULT_SHEET)
 		};
+
+		return getRecords(schemas);
+	}
+	
+	/**
+	 * Get all the elements of the report (summ info, case, analytical results)
+	 * @return
+	 */
+	public Collection<TableRow> getAllRecords() {
+
+		// children schemas
+		TableSchema[] schemas = new TableSchema[] {
+				TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET),
+				TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET),
+				TableSchemaList.getByName(CustomStrings.RESULT_SHEET)
+		};
+
+		return getRecords(schemas);
+	}
+	
+	public Collection<TableRow> getRecords(TableSchema[] schemas) {
+		
+		Collection<TableRow> records = new ArrayList<>();
 		
 		// for each child schema get the rows related to the report
 		for (TableSchema schema : schemas) {
@@ -300,11 +322,23 @@ public class TseReport extends Report implements TseTableRow {
 	}
 	
 	/**
-	 * get the message configuration for the current report
+	 * Get the message configuration for the current report
+	 * the report will be exported in a temporary file
 	 * @param opType
 	 * @return
 	 */
 	public MessageConfigBuilder getDefaultExportConfiguration(OperationType opType) {
+		return this.getDefaultExportConfiguration(opType, null);
+	}
+	
+	/**
+	 * get the message configuration for the current report
+	 * the report will be exported in the specified {@code out} file
+	 * @param opType
+	 * @param out
+	 * @return
+	 */
+	public MessageConfigBuilder getDefaultExportConfiguration(OperationType opType, File out) {
 		
 		Collection<TableRow> messageParents = new ArrayList<>();
 
@@ -318,7 +352,14 @@ public class TseReport extends Report implements TseTableRow {
 			e.printStackTrace();
 		}
 		
-		MessageConfigBuilder builder = new MessageConfigBuilder(messageParents, opType);
+		MessageConfigBuilder builder;
+		if (out == null) {
+			builder = new MessageConfigBuilder(messageParents, opType);
+		}
+		else {
+			builder = new MessageConfigBuilder(messageParents, opType, out);
+		}
+		
 		return builder;
 	}
 	

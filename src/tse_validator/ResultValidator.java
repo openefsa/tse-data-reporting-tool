@@ -11,9 +11,14 @@ public class ResultValidator extends SimpleRowValidatorLabelProvider {
 
 	private ErrorType error;
 	
-	private enum ErrorType {
+	public enum ErrorType {
 		ALLELE_ERROR,
 		NONE
+	}
+	
+	public ErrorType getError(TableRow row) {
+		getWarningLevel(row);
+		return error;
 	}
 	
 	@Override

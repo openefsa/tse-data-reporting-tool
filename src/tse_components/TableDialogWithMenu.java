@@ -47,7 +47,7 @@ public abstract class TableDialogWithMenu extends TableDialog {
 		
 		if (DebugConfig.debug) {
 			MenuItem button = new MenuItem(menu, SWT.PUSH);
-			button.setText("Print row");
+			button.setText("[DEBUG] Print row");
 			button.addSelectionListener(new SelectionListener() {
 				
 				@Override
@@ -67,7 +67,7 @@ public abstract class TableDialogWithMenu extends TableDialog {
 			});
 			
 			MenuItem button2 = new MenuItem(menu, SWT.PUSH);
-			button2.setText("Check mandatory fields");
+			button2.setText("[DEBUG] Check mandatory fields");
 			button2.addSelectionListener(new SelectionListener() {
 				
 				@Override
@@ -84,6 +84,28 @@ public abstract class TableDialogWithMenu extends TableDialog {
 					for (TableColumn col : getSchema()) {
 						System.out.println(col.getId() + "; mandatory= " + col.isMandatory(row) 
 							+ " with formula " + col.getMandatoryFormula());
+					}
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {}
+			});
+			
+			MenuItem button3 = new MenuItem(menu, SWT.PUSH);
+			button3.setText("[DEBUG] Check editability");
+			button3.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					
+					TableRow row = getSelection();
+					
+					if (row == null)
+						return;
+					
+					for (TableColumn col : getSchema()) {
+						System.out.println(col.getId() + "; editable=" + col.isEditable(row) 
+							+ " with formula " + col.getEditableFormula());
 					}
 				}
 				

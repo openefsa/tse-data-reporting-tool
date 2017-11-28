@@ -14,13 +14,13 @@ import xlsx_reader.TableSchemaList;
 
 public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 	
-	private enum Check {
+	public enum Check {
 		OK,
 		WRONG_RESULTS,
 		NO_TEST_SPECIFIED
 	}
 
-	private Check isRecordCorrect(TableRow row) throws IOException {
+	public Check isRecordCorrect(TableRow row) throws IOException {
 
 		TableSchema childSchema = TableSchemaList.getByName(CustomStrings.RESULT_SHEET);
 		Collection<TableRow> results = row.getChildren(childSchema);

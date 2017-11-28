@@ -24,6 +24,7 @@ import global_utils.Warnings;
 import report.Report;
 import report.ReportAckManager;
 import report.ReportActions;
+import report_validator.ReportError;
 import table_dialog.DialogBuilder;
 import table_dialog.EditorListener;
 import table_dialog.RowValidatorLabelProvider;
@@ -39,6 +40,7 @@ import tse_config.CustomStrings;
 import tse_config.DebugConfig;
 import tse_report.TseReport;
 import tse_validator.SummarizedInfoValidator;
+import tse_validator.TseReportValidator;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -385,6 +387,47 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			}
 		};
 		
+		SelectionListener validateListener = new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				if (report == null)
+					return;
+
+				// validate and show the errors in the browser
+				TseReportValidator validator = new TseReportValidator(report);
+				try {
+					
+					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+					
+					// validate the report
+					Collection<ReportError> errors = validator.validate();
+					
+					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+					
+					// if no errors update report status
+					if (errors.isEmpty()) {
+						report.setStatus(DatasetStatus.LOCALLY_VALIDATED);
+						report.update();
+						updateUI();
+						warnUser("Success", 
+								"The report is correct and can now be sent to DCF. If you need to make further changes, please click the edit button.",
+								SWT.ICON_INFORMATION);
+					}
+					else { // otherwise show them to the user
+						validator.show(errors);
+						warnUser("Failed", 
+								"WARN001: The report contains errors. The list of errors will be shown in your default internet browser.");
+					}
+					
+				} catch (IOException e) {
+					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+					e.printStackTrace();
+					warnUser("Error", "ERRA00: Cannot write the list of errors in .html file. Error: " + Warnings.getStackTrace(e));
+				}
+			}
+		};
+		
 		viewer.addHelp("TSEs monitoring data (aggregated level)")
 		
 			.addComposite("labelsComp", new GridLayout(1, false), null)
@@ -393,20 +436,21 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			.addLabelToComposite("messageIdLabel", "labelsComp")
 			.addLabelToComposite("datasetIdLabel", "labelsComp")
 			
-			.addComposite("panel", new GridLayout(2, false), null)
+			.addComposite("panel", new GridLayout(1, false), null)
 			
-			.addGroupToComposite("rowCreatorComp", "panel", "Add record", new GridLayout(1, false), null)
-			.addRowCreatorToComposite("rowCreatorComp", "Add data related to monitoring of:", CatalogLists.TSE_LIST)
-			
-			.addGroupToComposite("buttonsComp", "panel", "Toolbar", new GridLayout(7, false), null)
+			.addGroupToComposite("buttonsComp", "panel", "Toolbar", new GridLayout(8, false), null)
 			
 			.addButtonToComposite("editBtn", "buttonsComp", "Edit", editListener)
+			.addButtonToComposite("validateBtn", "buttonsComp", "Check", validateListener)
 			.addButtonToComposite("sendBtn", "buttonsComp", "Send", sendListener)
 			.addButtonToComposite("submitBtn", "buttonsComp", "Submit", submitListener)
 			.addButtonToComposite("amendBtn", "buttonsComp", "Amend", amendListener)
 			.addButtonToComposite("rejectBtn", "buttonsComp", "Reject", rejectListener)
 			.addButtonToComposite("refreshBtn", "buttonsComp", "Refresh status", refreshStateListener)
 			.addButtonToComposite("displayAckBtn", "buttonsComp", "Display ack", displayAckListener)
+			
+			.addGroupToComposite("rowCreatorComp", "panel", "Add record", new GridLayout(1, false), null)
+			.addRowCreatorToComposite("rowCreatorComp", "Add data related to:", CatalogLists.TSE_LIST)
 			
 			.addTable(CustomStrings.SUMMARIZED_INFO_SHEET, true);
 
@@ -422,6 +466,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		// disable refresh until a report is opened
 		panel.setEnabled("refreshBtn", false);
+		panel.setEnabled("validateBtn", false);
 		panel.setEnabled("editBtn", false);
 		panel.setEnabled("sendBtn", false);
 		panel.setEnabled("rejectBtn", false);
@@ -433,6 +478,11 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		Image editImage = new Image(Display.getCurrent(), this.getClass()
 				.getClassLoader().getResourceAsStream("edit-icon.png"));
 		panel.addButtonImage("editBtn", editImage);
+		
+		// add image to send button
+		Image validateImage = new Image(Display.getCurrent(), this.getClass()
+				.getClassLoader().getResourceAsStream("checkReport-icon.png"));
+		panel.addButtonImage("validateBtn", validateImage);
 		
 		// add image to send button
 		Image sendImage = new Image(Display.getCurrent(), this.getClass()
@@ -516,6 +566,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setRowCreatorEnabled(editableReport);
 		
 		panel.setEnabled("editBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeMadeEditable());
+		panel.setEnabled("validateBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeChecked());
 		panel.setEnabled("sendBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeSent());
 		panel.setEnabled("amendBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeAmended());
 		panel.setEnabled("submitBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeSubmitted());
