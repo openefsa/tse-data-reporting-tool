@@ -360,6 +360,6 @@ public class CaseReportDialog extends TableDialogWithMenu {
 			.addLabel("targetLabel", targetRow.toString())
 			.addLabel("progIdLabel", progIdRow.toString())
 			.addRowCreator("Add case/sample:")
-			.addTable(CustomStrings.CASE_INFO_SHEET, true);
+			.addTable(CustomStrings.CASE_INFO_SHEET, true, report, summInfo);
 	}
 }

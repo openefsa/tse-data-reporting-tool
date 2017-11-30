@@ -3,53 +3,81 @@
 	<selectionList id="BSE">
 		<selection code="F31.A16NK">
 			<description>&lt;24 months</description>
+			<lt>24</lt>
 		</selection>
 		<selection code="F31.A16NJ">
 			<description>24-35 months</description>
+			<min>24</min>
+			<max>35</max>
 		</selection>
 		<selection code="F31.A16YG">
 			<description>36-47 months</description>
+			<min>36</min>
+			<max>47</max>
 		</selection>
 		<selection code="F31.A16NL">
 			<description>48-59 months</description>
+			<min>48</min>
+			<max>59</max>
 		</selection>
 		<selection code="F31.A16NM">
 			<description>60-71 months</description>
+			<min>60</min>
+			<max>71</max>
 		</selection>
 		<selection code="F31.A16NN">
 			<description>72-83 months</description>
+			<min>72</min>
+			<max>83</max>
 		</selection>
 		<selection code="F31.A16NP">
 			<description>84-95 months</description>
+			<min>84</min>
+			<max>95</max>
 		</selection>
 		<selection code="F31.A16NQ">
 			<description>96-107 months</description>
+			<min>96</min>
+			<max>107</max>
 		</selection>
 		<selection code="F31.A16NR">
 			<description>108-119 months</description>
+			<min>108</min>
+			<max>119</max>
 		</selection>
 		<selection code="F31.A16NS">
 			<description>120-131 months</description>
+			<min>120</min>
+			<max>131</max>
 		</selection>
 		<selection code="F31.A16NT">
 			<description>132-143 months</description>
+			<min>132</min>
+			<max>143</max>
 		</selection>
 		<selection code="F31.A16NV">
 			<description>144-155 months</description>
+			<min>144</min>
+			<max>155</max>
 		</selection>
 		<selection code="F31.A16NX">
 			<description>&gt;=156 months</description>
+			<gte>156</gte>
 		</selection>
 	</selectionList>
 	<selectionList id="SCRAPIE">
 		<selection code="F31.A16ND">
 			<description>&lt;18 months</description>
+			<lt>18</lt>
 		</selection>
 		<selection code="F31.A16NE">
 			<description>18-47 months</description>
+			<min>18</min>
+			<max>47</max>
 		</selection>
 		<selection code="F31.A16NH">
 			<description>&gt;=48 months</description>
+			<gte>48</gte>
 		</selection>
 		<selection code="F31.A16PN">
 			<description>Unknown</description>
@@ -58,9 +86,11 @@
 	<selectionList id="CWD">
 		<selection code="F31.A16NF">
 			<description>&lt;12 months</description>
+			<lt>12</lt>
 		</selection>
 		<selection code="F31.A16NG">
 			<description>&gt;=12 months</description>
+			<gte>12</gte>
 		</selection>
 		<selection code="F31.A16PN">
 			<description>Unknown</description>

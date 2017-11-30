@@ -112,6 +112,28 @@ public abstract class TableDialogWithMenu extends TableDialog {
 				@Override
 				public void widgetDefaultSelected(SelectionEvent arg0) {}
 			});
+			
+			MenuItem button4 = new MenuItem(menu, SWT.PUSH);
+			button4.setText("[DEBUG] Check visibility");
+			button4.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					
+					TableRow row = getSelection();
+					
+					if (row == null)
+						return;
+					
+					for (TableColumn col : getSchema()) {
+						System.out.println(col.getId() + "; visible=" + col.isVisible(row) 
+							+ " with formula " + col.getVisibleFormula());
+					}
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {}
+			});
 		}
 		
 		return menu;

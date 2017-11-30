@@ -99,6 +99,11 @@ public class TseReport extends Report implements TseTableRow {
 		return getRecords(schemas);
 	}
 	
+	public Collection<TableRow> getRecords(TableSchema schema) {
+		TableSchema[] schemas = new TableSchema[] {schema};
+		return getRecords(schemas);
+	}
+	
 	public Collection<TableRow> getRecords(TableSchema[] schemas) {
 		
 		Collection<TableRow> records = new ArrayList<>();

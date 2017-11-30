@@ -208,6 +208,6 @@ public class ResultDialog extends TableDialogWithMenu {
 			.addLabel("sampLabel", sampleIdRow.toString())
 			.addLabel("animalLabel", animalIdRow.toString())
 			.addLabel("caseIdLabel", caseIdRow.toString())
-			.addTable(CustomStrings.RESULT_SHEET, true, summInfo);  // add parent to be able to solve isVisible field
+			.addTable(CustomStrings.RESULT_SHEET, true, report, summInfo, caseInfo);  // add parent to be able to solve isVisible field
 	}
 }

@@ -5,12 +5,13 @@ import java.util.Collection;
 
 import report_validator.ReportError;
 
-public class NoTestSpecifiedError implements ReportError {
+public class DuplicatedSampleIdError implements ReportError {
 
-	private String caseId;
-	
-	public NoTestSpecifiedError(String caseId) {
-		this.caseId = caseId;
+	private String rowId1;
+	private String rowId2;
+	public DuplicatedSampleIdError(String rowId1, String rowId2) {
+		this.rowId1 = rowId1;
+		this.rowId2 = rowId2;
 	}
 	
 	@Override
@@ -20,12 +21,12 @@ public class NoTestSpecifiedError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return "No analytical result was specified in the case";
+		return "Duplicated sample ID field (it must be unique)";
 	}
 
 	@Override
 	public Collection<String> getInvolvedRowsIdsMessage() {
-		return Arrays.asList(caseId);
+		return Arrays.asList(rowId1, rowId2);
 	}
 
 	@Override

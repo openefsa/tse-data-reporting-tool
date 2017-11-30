@@ -6,6 +6,7 @@ public enum PredefinedResultHeader {
 	// in order to have a simple match
 	// between enum and header
 	RECORD_TYPE("recordType"),
+	SOURCE("source"),
 	CONFIRMATORY_EXECUTED("confirmatoryExecuted"),
 	SAMP_AN_ASSES("sampAnAsses"),
 	SAMP_AN_ASSES_LABEL("sampAnAssesLabel"),

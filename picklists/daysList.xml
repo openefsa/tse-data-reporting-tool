@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <daysList>
 	<selectionList>
-		<selection code="01">
+		<selection code="1">
 			<description>1</description>
 		</selection>
-		<selection code="02">
+		<selection code="2">
 			<description>2</description>
 		</selection>
-		<selection code="03">
+		<selection code="3">
 			<description>3</description>
 		</selection>
-		<selection code="04">
+		<selection code="4">
 			<description>4</description>
 		</selection>
-		<selection code="05">
+		<selection code="5">
 			<description>5</description>
 		</selection>
-		<selection code="06">
+		<selection code="6">
 			<description>6</description>
 		</selection>
-		<selection code="07">
+		<selection code="7">
 			<description>7</description>
 		</selection>
-		<selection code="08">
+		<selection code="8">
 			<description>8</description>
 		</selection>
-		<selection code="09">
+		<selection code="9">
 			<description>9</description>
 		</selection>
 		<selection code="10">

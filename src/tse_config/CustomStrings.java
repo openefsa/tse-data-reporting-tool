@@ -46,7 +46,7 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_PROD = "prod";
 	public static final String SUMMARIZED_INFO_AGE = "animage";
 	public static final String SUMMARIZED_INFO_TARGET_GROUP = "tseTargetGroup";
-	public static final String CASE_INFO_STATUS = "statusHerd";
+
 	public static final String SUMMARIZED_INFO_TEST_TYPE = "anMethType";
 	public static final String SUMMARIZED_INFO_PROG_INFO = "progInfo";
 	public static final String SUMMARIZED_INFO_PROG_ID = "progId";
@@ -55,16 +55,24 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_BSE_TYPE = "BSE";
 	public static final String SUMMARIZED_INFO_SCRAPIE_TYPE = "SCRAPIE";
 	public static final String SUMMARIZED_INFO_CWD_TYPE = "CWD";
+	public static final String SUMMARIZED_INFO_RGT_TYPE = "RGT";
 	public static final String SUMMARIZED_INFO_SCREENING_TEST = "AT06A";
 	public static final String SUMMARIZED_INFO_CONFIRMATORY_TEST = "AT08A";
 	public static final String RESULT_DISCRIMINATORY_TEST = "AT12A";
 	public static final String SUMMARIZED_INFO_MOLECULAR_TEST = "AT13A";
 	
+	public static final String CASE_INFO_STATUS = "statusHerd";
 	public static final String CASE_INFO_SAMPLE_ID = "sampId";
+	public static final String CASE_INFO_HERD_ID = "herdId";
 	public static final String CASE_INFO_ANIMAL_ID = "animalId";
 	public static final String CASE_INFO_CASE_ID = "tseNationalCaseId";
+	public static final String CASE_INFO_HOLDING_ID = "sampHoldingId";
 	public static final String CASE_INFO_ASSESS = "sampAnAsses";
 	public static final String CASE_INDEX_CASE = "tseIndexCase";
+	public static final String CASE_BIRTH_COUNTRY = "birthCountry";
+	public static final String CASE_INFO_BORN_FLOCK = "birthInFlockHerd";
+	public static final String CASE_INFO_BREED = "breed";
+	public static final String CASE_INFO_COMMENT = "evalCom";
 	public static final String BRAIN_CODE = "F02.A06AM";
 	public static final String OBEX_CODE = "F02.A16YL";
 	public static final String LYMPH_CODE = "F02.A0CJN";
@@ -72,6 +80,9 @@ public class CustomStrings {
 	public static final String DEFAULT_ASSESS_NEG_CASE_CODE = "J051A";
 	public static final String DEFAULT_ASSESS_INC_CASE_CODE = "J050A";
 	public static final String DEFAULT_ASSESS_INC_CASE_LABEL = "Inconclusive";
+	
+	public static final String CASE_INFO_BIRTH_YEAR = "birthYear";
+	public static final String CASE_INDEX_BIRTH_MONTH = "birthMonth";
 	
 	public static final String RESULT_ALLELE_1 = "allele1";
 	public static final String RESULT_ALLELE_2 = "allele2";

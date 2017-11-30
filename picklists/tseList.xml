@@ -2,13 +2,16 @@
 <tseLists>
 	<selectionList>
 		<selection code="BSE">
-			<description>BSE</description>
+			<description>monitoring of BSE</description>
 		</selection>
 		<selection code="SCRAPIE">
-			<description>SCRAPIE</description>
+			<description>monitoring of SCRAPIE</description>
 		</selection>
 		<selection code="CWD">
-			<description>CWD</description>
+			<description>monitoring of CWD</description>
+		</selection>
+		<selection code="RGT">
+			<description>random genotyping</description>
 		</selection>
 	</selectionList>
 </tseLists>

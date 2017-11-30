@@ -11,6 +11,7 @@ import dataset.Dataset;
 import dataset.DatasetList;
 import formula.FormulaDecomposer;
 import formula.FormulaException;
+import report.EFSAReport;
 import table_relations.Relation;
 import table_skeleton.TableColumn;
 import table_skeleton.TableColumnValue;
@@ -511,12 +512,14 @@ public class TseReportImporter extends ReportImporter {
 	}
 
 	@Override
-	public void importDatasetMetadata(Dataset dataset) {
+	public TableRow importDatasetMetadata(Dataset dataset) {
 		
 		// extract the information from the dataset
 		// and insert the report into the database
 		this.report = TseReport.fromDataset(dataset);
 		report.save();
+		
+		return this.report;
 	}
 	
 	@Override

@@ -69,4 +69,9 @@
 			<description>Wild forest reindeer (Rangifer tarandus fennicus)</description>
 		</selection>
 	</selectionList>
+		<selectionList id="RGT">
+		<selection code="F01.A057G">
+			<description>Sheep (Ovis aries L.)</description>
+		</selection>
+	</selectionList>
 </animalSpeciesLists>

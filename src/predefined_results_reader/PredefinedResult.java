@@ -91,7 +91,7 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 				break;
 			case CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE:
 				preferredTestType = getPreferredTestType(recordType, 
-						CustomStrings.PREFERENCES_SCREENING_BSE);
+						CustomStrings.PREFERENCES_SCREENING_SCRAPIE);
 				break;
 			case CustomStrings.SUMMARIZED_INFO_CWD_TYPE:
 				preferredTestType = getPreferredTestType(recordType, 
@@ -107,7 +107,7 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 				break;
 			case CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE:
 				preferredTestType = getPreferredTestType(recordType, 
-						CustomStrings.PREFERENCES_CONFIRMATORY_BSE);
+						CustomStrings.PREFERENCES_CONFIRMATORY_SCRAPIE);
 				break;
 			case CustomStrings.SUMMARIZED_INFO_CWD_TYPE:
 				preferredTestType = getPreferredTestType(recordType, 
@@ -123,7 +123,7 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 				break;
 			case CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE:
 				preferredTestType = getPreferredTestType(recordType, 
-						CustomStrings.PREFERENCES_DISCRIMINATORY_BSE);
+						CustomStrings.PREFERENCES_DISCRIMINATORY_SCRAPIE);
 				break;
 			case CustomStrings.SUMMARIZED_INFO_CWD_TYPE:
 				preferredTestType = getPreferredTestType(recordType, 
@@ -147,11 +147,12 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 
 		// get the info to know which result should be created
 		String recordType = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
+		String source = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_SOURCE);
 		String sampAnAsses = caseReport.getCode(CustomStrings.CASE_INFO_ASSESS);
 		boolean confirmatoryTested = isConfirmatoryTested(recordType);
 
 		// get the default value
-		PredefinedResult defaultResult = predResList.get(recordType, confirmatoryTested, sampAnAsses);
+		PredefinedResult defaultResult = predResList.get(recordType, source, confirmatoryTested, sampAnAsses);
 		
 		return defaultResult;
 	}

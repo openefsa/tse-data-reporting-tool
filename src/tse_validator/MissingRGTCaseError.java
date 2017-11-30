@@ -5,12 +5,11 @@ import java.util.Collection;
 
 import report_validator.ReportError;
 
-public class NoTestSpecifiedError implements ReportError {
+public class MissingRGTCaseError implements ReportError {
 
-	private String caseId;
-	
-	public NoTestSpecifiedError(String caseId) {
-		this.caseId = caseId;
+	private String rowId;
+	public MissingRGTCaseError(String rowId) {
+		this.rowId = rowId;
 	}
 	
 	@Override
@@ -20,12 +19,12 @@ public class NoTestSpecifiedError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return "No analytical result was specified in the case";
+		return "No case was specified for random genotyping record";
 	}
 
 	@Override
 	public Collection<String> getInvolvedRowsIdsMessage() {
-		return Arrays.asList(caseId);
+		return Arrays.asList(rowId);
 	}
 
 	@Override

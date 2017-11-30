@@ -5,15 +5,22 @@ import java.util.Collection;
 
 import report_validator.ReportError;
 
-public class AlleleNotReportableError implements ReportError {
+public class WrongAgeClassError implements ReportError {
 
 	private String rowId;
-	private String wrongValue1;
-	private String wrongValue2;
-	public AlleleNotReportableError(String rowId, String wrongValue1, String wrongValue2) {
+	private String ageClass;
+	private int monthsFound;
+	
+	/**
+	 * 
+	 * @param rowId
+	 * @param ageClass
+	 * @param monthsFound
+	 */
+	public WrongAgeClassError(String rowId, String ageClass, int monthsFound) {
 		this.rowId = rowId;
-		this.wrongValue1 = wrongValue1;
-		this.wrongValue2 = wrongValue2;
+		this.ageClass = ageClass;
+		this.monthsFound = monthsFound;
 	}
 	
 	@Override
@@ -23,7 +30,7 @@ public class AlleleNotReportableError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return "Alleles cannot be specified for non-genotyping tests";
+		return "Wrong animage range selected for " + monthsFound + " month-old animal";
 	}
 
 	@Override
@@ -38,7 +45,7 @@ public class AlleleNotReportableError implements ReportError {
 
 	@Override
 	public Collection<String> getErroneousValues() {
-		return Arrays.asList(wrongValue1, wrongValue2);
+		return Arrays.asList(ageClass);
 	}
 
 }

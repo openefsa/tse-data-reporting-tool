@@ -27,6 +27,9 @@
 		<selection code="F02.A16HJ">
 			<description>Tonsil</description>
 		</selection>
+		<selection code="F02.A06AL">
+			<description>Blood</description>
+		</selection>
 	</selectionList>
 	<selectionList id="CWD">
 		<selection code="F02.A06AM">
@@ -42,4 +45,10 @@
 			<description>Tonsil</description>
 		</selection>
 	</selectionList>
+	<selectionList id="RGT">
+		<selection code="F02.A06AL">
+			<description>Blood</description>
+		</selection>
+	</selectionList>
+		
 </partLists>

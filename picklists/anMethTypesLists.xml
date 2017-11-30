@@ -36,6 +36,11 @@
 			<description>Molecular characterisation/Genotyping</description>
 		</selection>
 	</selectionList>	
+	<selectionList id="RGT">
+		<selection code="AT13A">
+			<description>Molecular characterisation/Genotyping</description>
+		</selection>
+	</selectionList>
 	<selectionList id="RAPID">
 		<selection code="AT06A">
 			<description>Screening</description>

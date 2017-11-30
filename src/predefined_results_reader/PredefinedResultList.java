@@ -17,25 +17,47 @@ public class PredefinedResultList extends ArrayList<PredefinedResult> {
 	 * @param sampAnAsses
 	 * @return
 	 */
-	public PredefinedResult get(String recordType, boolean confirmatoryTested, String sampAnAsses) {
+	public PredefinedResult get(String recordType, String source, boolean confirmatoryTested, String sampAnAsses) {
 		
 		for (PredefinedResult prh : this) {
 			
 			String thisRecordType = prh.get(PredefinedResultHeader.RECORD_TYPE);
+			String thisSource = prh.get(PredefinedResultHeader.SOURCE);
 			String thisSampAnAsses = prh.get(PredefinedResultHeader.SAMP_AN_ASSES);
 			String thisConfTested = prh.get(PredefinedResultHeader.CONFIRMATORY_EXECUTED);
 			
 			boolean confCheck = (BooleanValue.isTrue(thisConfTested) && confirmatoryTested)
 					|| (BooleanValue.isFalse(thisConfTested) && !confirmatoryTested);
-			
-			if (thisRecordType.equals(recordType) 
-					&& thisSampAnAsses.equals(sampAnAsses)
+
+			if (isFieldEqual(thisRecordType, recordType)
+					&& isFieldEqual(thisSource, source)
+					&& isFieldEqual(thisSampAnAsses, sampAnAsses)
 					&& confCheck) {
 				return prh;
 			}
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Check if field a is equal to field b or not
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	private boolean isFieldEqual(String predefResValue, String rowValue) {
+		
+		// always match an empty field in the configuration
+		if(predefResValue == null || predefResValue.isEmpty() || predefResValue.equals("null")) {
+			return true;
+		}
+		
+		// no match if our value is null
+		if (rowValue == null)
+			return false;
+		
+		return rowValue.equals(predefResValue);
 	}
 
 	/**

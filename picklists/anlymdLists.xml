@@ -114,7 +114,7 @@
 	<selectionList id="SCRAPIE$AT13A">
 		<selection code="F089A">
 			<description>Genotyping</description>
-		</selection>		
+		</selection>	
 	</selectionList>
 	<selectionList id="CWD$AT06A">
 		<selection code="F080A">
@@ -166,5 +166,10 @@
 		<selection code="F108A">
 			<description>Mouse Bioassay</description>
 		</selection>
+	</selectionList>
+	<selectionList id="RGT$AT13A">
+		<selection code="F089A">
+			<description>Genotyping</description>
+		</selection>	
 	</selectionList>
 </anlymdLists>

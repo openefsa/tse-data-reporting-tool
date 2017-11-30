@@ -1,5 +1,8 @@
 package tse_validator;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import report_validator.ReportError;
 
 public class MissingMandatoryFieldError implements ReportError {
@@ -23,8 +26,8 @@ public class MissingMandatoryFieldError implements ReportError {
 	}
 
 	@Override
-	public String getInvolvedRowsIdsMessage() {
-		return rowId;
+	public Collection<String> getInvolvedRowsIdsMessage() {
+		return Arrays.asList(rowId);
 	}
 
 	@Override
@@ -33,7 +36,7 @@ public class MissingMandatoryFieldError implements ReportError {
 	}
 
 	@Override
-	public String getErroneousValue() {
+	public Collection<String> getErroneousValues() {
 		return null;
 	}
 
