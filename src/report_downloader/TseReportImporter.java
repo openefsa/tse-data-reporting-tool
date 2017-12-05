@@ -11,7 +11,6 @@ import dataset.Dataset;
 import dataset.DatasetList;
 import formula.FormulaDecomposer;
 import formula.FormulaException;
-import report.EFSAReport;
 import table_relations.Relation;
 import table_skeleton.TableColumn;
 import table_skeleton.TableColumnValue;

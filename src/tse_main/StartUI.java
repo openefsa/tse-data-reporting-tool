@@ -1,6 +1,7 @@
 package tse_main;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Collection;
 
 import org.eclipse.swt.SWT;
@@ -28,6 +29,9 @@ import xlsx_reader.TableSchemaList;
 
 public class StartUI {
 
+	private static Display display;
+	private static Shell shell;
+	
 	/**
 	 * Check if the mandatory fields of a generic settings table are filled or not
 	 * @param tableName
@@ -67,6 +71,10 @@ public class StartUI {
 		return checkSettings(CustomStrings.PREFERENCES_SHEET);
 	}
 	
+	/**
+	 * Login the user into the system in order to be able to
+	 * perform web-service calls
+	 */
 	private static void loginUser() {
 		
 		// get the settings schema table
@@ -96,7 +104,7 @@ public class StartUI {
 	}
 	
 	/**
-	 * Close the application
+	 * Close the application (db + interface)
 	 * @param db
 	 * @param display
 	 */
@@ -113,33 +121,56 @@ public class StartUI {
 		System.exit(0);
 	}
 	
+	/**
+	 * Show an error to the user
+	 * @param errorCode
+	 * @param message
+	 */
 	private static void showInitError(String errorCode, String message) {
 		Display display = new Display();
 		Shell shell = new Shell(display);
 		Warnings.warnUser(shell, "Error", errorCode + ": " + message);
 	}
 	
+	/**
+	 * Create the main panel for the user interface
+	 * @return
+	 */
+	private static Shell createUi() {
+		
+		display = new Display();
+		shell = new Shell(display);
+		
+		// set the application name in the shell
+		shell.setText(PropertiesReader.getAppName() + " " + PropertiesReader.getAppVersion());
+		
+		// open the main panel
+		try {
+			new MainPanel(shell);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			GeneralWarnings.showExceptionStack(shell, "Generic error", e);
+		}
+		
+		// set the application icon into the shell
+		Image image = new Image(Display.getCurrent(), 
+				ClassLoader.getSystemResourceAsStream(PropertiesReader.getAppIcon()));
+
+		if (image != null)
+			shell.setImage(image);
+		
+		return shell;
+	}
+	
+	/**
+	 * Start the TSE data reporting tool interface & database
+	 * @param args
+	 */
 	public static void main(String args[]) {
 		
 		// application start-up message. Usage of System.err used for red chars
 		System.out.println("Application started " + System.currentTimeMillis());
-		
-		try {
-			
-			// initialize the library
-			EFSARCL.initialize();
-			
-			// check also custom files
-			EFSARCL.checkConfigFiles(CustomStrings.PREDEFINED_RESULTS_FILE, 
-					AppPaths.CONFIG_FOLDER);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-			showInitError("ERR200", e.getMessage());
-			return;
-		}
-		
-		
 		
 		// connect to the database application
 		Database db = new Database();
@@ -151,28 +182,23 @@ public class StartUI {
 			return;
 		}
 		
-		Display display = new Display();
-		Shell shell = new Shell(display);
-		
-		// set the application name in the shell
-		shell.setText(PropertiesReader.getAppName() + " " + PropertiesReader.getAppVersion());
-		
-		// open the main panel
 		try {
-			new MainPanel(shell);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
 			
-			GeneralWarnings.showExceptionStack(shell, "Generic error", e);
+			// initialize the library
+			EFSARCL.init();
+			
+			// check also custom files
+			EFSARCL.checkConfigFiles(CustomStrings.PREDEFINED_RESULTS_FILE, 
+					AppPaths.CONFIG_FOLDER);
+			
+		} catch (IOException | SQLException e) {
+			e.printStackTrace();
+			showInitError("ERR200", e.getMessage());
+			return;
 		}
-		
-		// set the application icon into the shell
-		Image image = new Image(Display.getCurrent(), 
-				ClassLoader.getSystemResourceAsStream(PropertiesReader.getAppIcon()));
 
-		if (image != null)
-			shell.setImage(image);
+		// create the main panel
+		createUi();
 	    
 	    // open also an help view for showing general help
 	    if (!DebugConfig.debug) {
