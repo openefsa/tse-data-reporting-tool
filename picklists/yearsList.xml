@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <yearsList>
 	<selectionList>
+		<selection code="1995">
+			<description>1995</description>
+		</selection>
+		<selection code="1996">
+			<description>1996</description>
+		</selection>
+		<selection code="1997">
+			<description>1997</description>
+		</selection>
+		<selection code="1998">
+			<description>1998</description>
+		</selection>
+		<selection code="1999">
+			<description>1999</description>
+		</selection>
+		<selection code="2000">
+			<description>2000</description>
+		</selection>
+		<selection code="2001">
+			<description>2001</description>
+		</selection>
+		<selection code="2002">
+			<description>2002</description>
+		</selection>
+		<selection code="2003">
+			<description>2003</description>
+		</selection>
+		<selection code="2004">
+			<description>2004</description>
+		</selection>
+		<selection code="2005">
+			<description>2005</description>
+		</selection>
+		<selection code="2006">
+			<description>2006</description>
+		</selection>
+		<selection code="2007">
+			<description>2007</description>
+		</selection>
+		<selection code="2008">
+			<description>2008</description>
+		</selection>
+		<selection code="2009">
+			<description>2009</description>
+		</selection>
 		<selection code="2010">
 			<description>2010</description>
 		</selection>

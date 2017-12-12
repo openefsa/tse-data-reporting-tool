@@ -3,6 +3,7 @@ package tse_validator;
 import java.util.Arrays;
 import java.util.Collection;
 
+import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 
 public class MissingMandatoryFieldError implements ReportError {
@@ -22,7 +23,7 @@ public class MissingMandatoryFieldError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return "Mandatory field missing: " + field;
+		return TSEMessages.get("mandatory.missing.message", field);
 	}
 
 	@Override
@@ -31,7 +32,7 @@ public class MissingMandatoryFieldError implements ReportError {
 	}
 
 	@Override
-	public String getCorrectExample() {
+	public String getSuggestions() {
 		return null;
 	}
 

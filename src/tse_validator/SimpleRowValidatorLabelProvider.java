@@ -4,6 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
+import i18n_messages.TSEMessages;
 import table_dialog.RowValidatorLabelProvider;
 import table_skeleton.TableRow;
 
@@ -16,10 +17,10 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 
 		switch (row.getRowStatus()) {
 		case OK:
-			text = "OK";
+			text = TSEMessages.get("row.locally.validated");
 			break;
 		case MANDATORY_MISSING:
-			text = "Missing mandatory fields";
+			text = TSEMessages.get("row.mandatory.fields.missing");
 			break;
 		default:
 			break;

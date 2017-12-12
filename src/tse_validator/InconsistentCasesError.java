@@ -3,6 +3,7 @@ package tse_validator;
 import java.util.Arrays;
 import java.util.Collection;
 
+import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 
 public class InconsistentCasesError implements ReportError {
@@ -43,7 +44,7 @@ public class InconsistentCasesError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return "Cases with same " + idField + " (" + idFieldValue + ") but with different " + field;
+		return TSEMessages.get("inconsistent.cases.message", idField, idFieldValue, field);
 	}
 
 	@Override
@@ -52,18 +53,18 @@ public class InconsistentCasesError implements ReportError {
 	}
 
 	@Override
-	public String getCorrectExample() {
+	public String getSuggestions() {
 		
-		String example = "Put in both records";
+		String example;
 		
 		if (!value1.isEmpty() && !value2.isEmpty())
-			example = example + " " + value1 + " or " + value2;
+			example = TSEMessages.get("inconsistent.cases.tip2", value1, value2, field, idField);
 		else if (value1.isEmpty())
-			example = example + " " + value2;
+			example = TSEMessages.get("inconsistent.cases.tip1", value2, field, idField);
 		else
-			example = example + " " + value1;
+			example = TSEMessages.get("inconsistent.cases.tip1", value1, field, idField);
 		
-		return  example + " for " + field + ", or change " + idField + " for one of them";
+		return example;
 	}
 
 	@Override

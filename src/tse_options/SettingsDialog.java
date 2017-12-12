@@ -15,7 +15,9 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.xml.sax.SAXException;
 
+import app_config.PropertiesReader;
 import global_utils.Warnings;
+import i18n_messages.TSEMessages;
 import message.SendMessageException;
 import message_creator.OperationType;
 import report.ReportException;
@@ -39,7 +41,7 @@ import xml_catalog_reader.Selection;
 public class SettingsDialog extends OptionsDialog {
 
 	public SettingsDialog(Shell parent) {
-		super(parent, "User settings");
+		super(parent, TSEMessages.get("settings.title"));
 	}
 
 	@Override
@@ -83,7 +85,7 @@ public class SettingsDialog extends OptionsDialog {
 		
 		Menu menu = new Menu(getDialog());
 		MenuItem test = new MenuItem(menu, SWT.PUSH);
-		test.setText("Test connection");
+		test.setText(TSEMessages.get("settings.test.connection"));
 		
 		// check if it is possible to make a get dataset
 		// list request and possibly download the
@@ -118,7 +120,7 @@ public class SettingsDialog extends OptionsDialog {
 					report.exportAndSend(OperationType.TEST);
 
 					// here is success
-					title = "Success";
+					title = TSEMessages.get("success.title");
 					message = "Test successfully completed.";
 					style = SWT.ICON_INFORMATION;
 					jStyle = JOptionPane.INFORMATION_MESSAGE;
@@ -134,22 +136,23 @@ public class SettingsDialog extends OptionsDialog {
 					message = warnings[1];
 				} catch (ParserConfigurationException | SAXException | IOException e) {
 					e.printStackTrace();
-					title = "Error";
-					message = e.getMessage();
+					title = TSEMessages.get("error.title");
+					message = TSEMessages.get("test.connection.fail3", 
+							PropertiesReader.getSupportEmail(), e.getMessage());
 				} catch (SendMessageException e) {
 					
 					// here we got TRXKO
 					e.printStackTrace();
 					
-					title = "Failure";
-					message = "ERR406: The test was not successful. Got TRXKO as response.";
+					title = TSEMessages.get("error.title");
+					message = TSEMessages.get("test.connection.fail");
 					
 				} catch (ReportException e) {
 					// There an invalid operation was used
 					e.printStackTrace();
-					
-					title = "Failure";
-					message = "ERR406: The test was not successful. The used operation type is not correct.";
+					title = TSEMessages.get("error.title");
+					message = TSEMessages.get("test.connection.fail2", 
+							PropertiesReader.getSupportEmail(), e.getMessage());
 				}
 				finally {
 					
@@ -195,7 +198,7 @@ public class SettingsDialog extends OptionsDialog {
 
 	@Override
 	public void addWidgets(DialogBuilder viewer) {
-		viewer.addHelp("User settings")
+		viewer.addHelp(TSEMessages.get("settings.help.title"))
 			.addTable(CustomStrings.SETTINGS_SHEET, true);
 	}
 }

@@ -3,6 +3,7 @@ package tse_validator;
 import java.util.Arrays;
 import java.util.Collection;
 
+import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 
 public class NoTestSpecifiedError implements ReportError {
@@ -20,7 +21,7 @@ public class NoTestSpecifiedError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return "No analytical result was specified in the case";
+		return TSEMessages.get("missing.results.message");
 	}
 
 	@Override
@@ -29,7 +30,7 @@ public class NoTestSpecifiedError implements ReportError {
 	}
 
 	@Override
-	public String getCorrectExample() {
+	public String getSuggestions() {
 		return null;
 	}
 

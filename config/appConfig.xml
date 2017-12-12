@@ -6,6 +6,7 @@
 <entry key="Application.Version">1.0.6</entry> <!-- version of the application that will displayed after the application name -->
 <entry key="Db.MinRequiredVersion">1.0.6</entry> <!-- version of the database needed -->
 <entry key="Application.Icon">app-icon.png</entry> <!-- application icon (in the icon folder) -->
+<entry key="TechnicalSupport.Email">zoonoses_support@efsa.europa.eu</entry> <!-- email which will be displayed in occasion of serious errors (when the unique possibility is to contact EFSA) -->
 <entry key="Application.DataCollectionTable">SSD2_CENTRAL_2017</entry> <!-- code that will be used to send report to the dcf -->
 <entry key="Application.DataCollectionPattern">TSE.yyyy</entry> <!-- data collection code, yyyy will be replaced by the report year -->
 <entry key="Application.DataCollectionTest">TEST</entry> <!-- code that will be put in the yyyy of DataCollectionPattern if the test data collection should be used -->

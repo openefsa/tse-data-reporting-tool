@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
 import global_utils.Warnings;
+import i18n_messages.TSEMessages;
 import table_dialog.HelpViewer;
 import table_dialog.RowCreatorViewer;
 import table_dialog.TableDialog;
@@ -147,7 +148,7 @@ public abstract class TableDialogWithMenu extends TableDialog {
 	public MenuItem addRemoveMenuItem(Menu menu) {
 		
 		MenuItem remove = new MenuItem(menu, SWT.PUSH);
-		remove.setText("Delete records");
+		remove.setText(TSEMessages.get("delete.records"));
 		remove.setEnabled(false);
 		
 		addTableSelectionListener(new ISelectionChangedListener() {
@@ -164,8 +165,8 @@ public abstract class TableDialogWithMenu extends TableDialog {
 			public void widgetSelected(SelectionEvent arg0) {
 				
 				int val = Warnings.warnUser(getDialog(), 
-						"Warning",
-						"CONF906: The selected records and all the related data will be permanently deleted. Continue?", 
+						TSEMessages.get("warning.title"),
+						TSEMessages.get("delete.confirm"), 
 						SWT.ICON_WARNING | SWT.YES | SWT.NO);
 				
 				if (val == SWT.YES) {

@@ -6,6 +6,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
+import i18n_messages.TSEMessages;
+
 public class TseFileDialog {
 
 	private Shell shell;
@@ -22,7 +24,7 @@ public class TseFileDialog {
 	 */
 	public File select(int style, String fileFormat, String filename) {
         FileDialog fd = new FileDialog(shell, style);
-        fd.setText("Save");
+        fd.setText(TSEMessages.get("export.report.button"));
         String[] filterExt = { fileFormat };
         fd.setFilterExtensions(filterExt);
         fd.setFileName(filename);

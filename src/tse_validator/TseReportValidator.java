@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import app_config.AppPaths;
+import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 import report_validator.ReportValidator;
 import table_skeleton.TableColumn;
@@ -26,7 +27,7 @@ public class TseReportValidator extends ReportValidator {
 
 	private TseReport report;
 	
-	/**
+	/**	
 	 * Validate an entire tse report and returns the errors
 	 * in a list. It is also possible to show the list of
 	 * errors by using the {@link #show(Collection)}
@@ -145,13 +146,16 @@ public class TseReportValidator extends ReportValidator {
 		
 		switch(type) {
 		case SUMM:
-			id = "Context ID: " + row.getCode(CustomStrings.SUMMARIZED_INFO_PROG_ID);
+			id = TSEMessages.get("si.id.label", 
+					row.getCode(CustomStrings.SUMMARIZED_INFO_PROG_ID));
 			break;
 		case CASE:
-			id = "Sample ID: " + row.getCode(CustomStrings.CASE_INFO_SAMPLE_ID);
+			id = TSEMessages.get("case.id.label", 
+					row.getCode(CustomStrings.CASE_INFO_SAMPLE_ID));
 			break;
 		case RESULT:
-			id = "Result ID: " + row.getCode(CustomStrings.RES_ID_COLUMN);
+			id = TSEMessages.get("result.id.label", 
+					row.getCode(CustomStrings.RES_ID_COLUMN));
 			break;
 		default:
 			id = "";
@@ -167,7 +171,7 @@ public class TseReportValidator extends ReportValidator {
 		
 		String trace = null;
 		
-		final String arrowCharacter = " &#10148; "; // html arrow
+		final String arrowCharacter = TSEMessages.get("table.html.arrow"); // html arrow
 		
 		switch(type) {
 		case SUMM:
@@ -285,7 +289,8 @@ public class TseReportValidator extends ReportValidator {
 				CustomStrings.CASE_INFO_ANIMAL_ID
 			};
 		
-		return checkIdField(reportRecords, CustomStrings.CASE_INFO_CASE_ID, "National case ID", fieldsToCheck);
+		return checkIdField(reportRecords, CustomStrings.CASE_INFO_CASE_ID, 
+				TSEMessages.get("inconsistent.national.case.id"), fieldsToCheck);
 	}
 	
 	private Collection<ReportError> checkAnimalId(Collection<TableRow> reportRecords) {
@@ -306,7 +311,8 @@ public class TseReportValidator extends ReportValidator {
 				CustomStrings.CASE_INFO_COMMENT
 			};
 		
-		return checkIdField(reportRecords, CustomStrings.CASE_INFO_ANIMAL_ID, "Animal ID", fieldsToCheck);
+		return checkIdField(reportRecords, CustomStrings.CASE_INFO_ANIMAL_ID, 
+				TSEMessages.get("inconsistent.animal.id"), fieldsToCheck);
 	}
 	
 	/**

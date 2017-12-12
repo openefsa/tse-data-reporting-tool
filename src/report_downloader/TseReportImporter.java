@@ -76,7 +76,7 @@ public class TseReportImporter extends ReportImporter {
 				// save it in the database
 				si.save();
 				
-				System.out.println("Imported summ info " + si.getId());
+				System.out.println("Imported summ info; progId=" + si.getProgId());
 				
 				// save it in the cache
 				summInfos.add(si);
@@ -101,6 +101,8 @@ public class TseReportImporter extends ReportImporter {
 				// foreign key with the summarized information
 				String progId = row.getLabel(CustomStrings.RESULT_PROG_ID);
 				
+				System.out.println("Getting summarized information related to result. ProgId=" + progId);
+				
 				// get the summarized info related to the case/result
 				SummarizedInfo summInfo = getSummInfoByProgId(progId);
 				
@@ -116,7 +118,7 @@ public class TseReportImporter extends ReportImporter {
 				System.out.println("Imported result " + result.getId());
 			}
 			else {
-				System.out.println("SUMMARIZED INFO FOUND");
+				//System.out.println("SUMMARIZED INFO FOUND");
 			}
 		}
 	}
@@ -194,6 +196,7 @@ public class TseReportImporter extends ReportImporter {
 		
 		// copy values into the summarized information
 		SummarizedInfo summInfo = new SummarizedInfo(row);
+		
 		for (String key : rowValues.keySet()) {
 			summInfo.put(key, rowValues.get(key));
 		}

@@ -3,6 +3,7 @@ package tse_validator;
 import java.util.Arrays;
 import java.util.Collection;
 
+import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 
 public class TooManyCasesError implements ReportError {
@@ -19,7 +20,7 @@ public class TooManyCasesError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return "Number of specified cases is greater than number of declared cases";
+		return TSEMessages.get("too.many.cases.message");
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class TooManyCasesError implements ReportError {
 	}
 
 	@Override
-	public String getCorrectExample() {
+	public String getSuggestions() {
 		return null;
 	}
 

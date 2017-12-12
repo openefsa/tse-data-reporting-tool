@@ -3,6 +3,7 @@ package tse_validator;
 import java.util.Arrays;
 import java.util.Collection;
 
+import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 
 public class MissingRGTCaseError implements ReportError {
@@ -19,7 +20,7 @@ public class MissingRGTCaseError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return "No case was specified for random genotyping record";
+		return TSEMessages.get("missing.cases.RGT.message");
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class MissingRGTCaseError implements ReportError {
 	}
 
 	@Override
-	public String getCorrectExample() {
+	public String getSuggestions() {
 		return null;
 	}
 

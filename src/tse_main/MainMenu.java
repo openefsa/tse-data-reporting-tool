@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.xml.sax.SAXException;
 
 import app_config.PropertiesReader;
+import i18n_messages.TSEMessages;
 import message.MessageConfigBuilder;
 import message_creator.OperationType;
 import report.ReportException;
@@ -75,7 +76,7 @@ public class MainMenu {
 		this.fileMenu = new Menu(shell, SWT.DROP_DOWN);
 
 		this.file = new MenuItem(main, SWT.CASCADE);
-		this.file.setText("File");
+		this.file.setText(TSEMessages.get("file.item"));
 		this.file.setMenu(fileMenu);
 		
 		this.fileMenu.addListener(SWT.Show, new Listener() {
@@ -108,21 +109,21 @@ public class MainMenu {
 		});
 
 		this.preferences = new MenuItem(main, SWT.PUSH);
-		this.preferences.setText("Preferences");
+		this.preferences.setText(TSEMessages.get("pref.item"));
 
 		this.settings = new MenuItem(main, SWT.PUSH);
-		this.settings.setText("User settings");
+		this.settings.setText(TSEMessages.get("settings.item"));
 
 		// add buttons to the file menu
 		this.newReport = new MenuItem(fileMenu, SWT.PUSH);
-		this.newReport.setText("New report");
+		this.newReport.setText(TSEMessages.get("new.report.item"));
 
 		this.newReport.addSelectionListener(new SelectionListener() {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				ReportCreatorDialog dialog = new ReportCreatorDialog(shell);
-				dialog.setButtonText("Create");
+				dialog.setButtonText(TSEMessages.get("new.report.button"));
 				dialog.open();
 			}
 
@@ -131,15 +132,15 @@ public class MainMenu {
 		});
 
 		this.openReport = new MenuItem(fileMenu, SWT.PUSH);
-		this.openReport.setText("Open report");
+		this.openReport.setText(TSEMessages.get("open.report.item"));
 		
 		this.openReport.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				
-				ReportListDialog dialog = new ReportListDialog(shell, "Open a report");
-				dialog.setButtonText("Open");
+				ReportListDialog dialog = new ReportListDialog(shell, TSEMessages.get("open.report.title"));
+				dialog.setButtonText(TSEMessages.get("open.report.button"));
 				
 				dialog.open();
 				
@@ -162,7 +163,7 @@ public class MainMenu {
 		});
 		
 		this.closeReport = new MenuItem(fileMenu, SWT.PUSH);
-		this.closeReport.setText("Close report");
+		this.closeReport.setText(TSEMessages.get("close.report.item"));
 		
 		this.closeReport.addSelectionListener(new SelectionListener() {
 			
@@ -182,15 +183,15 @@ public class MainMenu {
 		
 		// add buttons to the file menu
 		this.importReport = new MenuItem(fileMenu, SWT.PUSH);
-		this.importReport.setText("Import aggregated data");
+		this.importReport.setText(TSEMessages.get("import.report.item"));
 		this.importReport.setEnabled(false);
 		this.importReport.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				
-				ReportListDialog dialog = new ReportListDialog(shell, "Import a report");
-				dialog.setButtonText("Import");
+				ReportListDialog dialog = new ReportListDialog(shell, TSEMessages.get("import.report.title"));
+				dialog.setButtonText(TSEMessages.get("import.report.button"));
 				dialog.open();
 				
 				// import the report into the opened report
@@ -222,7 +223,7 @@ public class MainMenu {
 		});
 		
 		this.downloadReport = new MenuItem(fileMenu, SWT.PUSH);
-		this.downloadReport.setText("Download report");
+		this.downloadReport.setText(TSEMessages.get("download.report.item"));
 		this.downloadReport.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
@@ -233,7 +234,7 @@ public class MainMenu {
 		});
 		
 		this.exportReport = new MenuItem(fileMenu, SWT.PUSH);
-		exportReport.setText("Export report");
+		exportReport.setText(TSEMessages.get("export.report.item"));
 		exportReport.addSelectionListener(new SelectionListener() {
 			
 			@Override
@@ -284,7 +285,7 @@ public class MainMenu {
 		});
 		
 		this.exitApplication = new MenuItem(fileMenu, SWT.PUSH);
-		this.exitApplication.setText("Close application");
+		this.exitApplication.setText(TSEMessages.get("close.app.item"));
 		this.exitApplication.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {

@@ -4,6 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
+import i18n_messages.TSEMessages;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 
@@ -59,7 +60,7 @@ public class ResultValidator extends SimpleRowValidatorLabelProvider {
 		getWarningLevel(row);
 		
 		if (error == ErrorType.ALLELE_ERROR) {
-			return "Alleles not reportable";
+			return TSEMessages.get("results.alleles.not.reportable");
 		}
 		else return super.getText(row);
 	}

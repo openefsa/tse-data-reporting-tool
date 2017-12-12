@@ -3,8 +3,9 @@ package tse_options;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
-import table_dialog.RowValidatorLabelProvider;
+import i18n_messages.TSEMessages;
 import table_dialog.DialogBuilder;
+import table_dialog.RowValidatorLabelProvider;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 import tse_validator.SimpleRowValidatorLabelProvider;
@@ -19,7 +20,7 @@ import xml_catalog_reader.Selection;
 public class PreferencesDialog extends OptionsDialog {
 	
 	public PreferencesDialog(Shell parent) {
-		super(parent, "Preferences");
+		super(parent, TSEMessages.get("pref.title"));
 	}
 	
 	@Override
@@ -47,7 +48,7 @@ public class PreferencesDialog extends OptionsDialog {
 
 	@Override
 	public void addWidgets(DialogBuilder viewer) {
-		viewer.addHelp("Preferences")
+		viewer.addHelp(TSEMessages.get("pref.help.title"))
 			.addTable(CustomStrings.PREFERENCES_SHEET, true);
 	}
 }

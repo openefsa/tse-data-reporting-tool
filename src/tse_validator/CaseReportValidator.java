@@ -7,6 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
+import i18n_messages.TSEMessages;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 import xlsx_reader.TableSchema;
@@ -80,10 +81,10 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			Check check = isRecordCorrect(row);
 			switch (check) {
 			case NO_TEST_SPECIFIED:
-				text = "Add tests details";
+				text = TSEMessages.get("cases.missing.results");
 				break;
 			case WRONG_RESULTS:
-				text = "Check tests details";
+				text = TSEMessages.get("cases.wrong.results");
 				break;
 			default:
 				break;

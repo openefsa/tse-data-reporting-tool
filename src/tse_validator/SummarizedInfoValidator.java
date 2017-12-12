@@ -7,6 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
+import i18n_messages.TSEMessages;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 import xlsx_reader.TableSchema;
@@ -163,16 +164,16 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		switch (isSampleCorrect(row)) {
 		case MISSING_CASES:
 		case MISSING_RGT_CASE:
-			text = "Add cases details";
+			text = TSEMessages.get("si.missing.cases");
 			break;
 		case TOOMANY_CASES:
-			text = "Too many cases detailed";
+			text = TSEMessages.get("si.too.many.cases");
 			break;
 		case CHECK_INC_CASES:
-			text = "Check inconclusive cases number";
+			text = TSEMessages.get("si.wrong.inc.cases");
 			break;
 		case WRONG_CASES:
-			text = "Check cases details";
+			text = TSEMessages.get("si.wrong.cases");
 			break;
 		default:
 			break;

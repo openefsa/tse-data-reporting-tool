@@ -3,6 +3,7 @@ package tse_validator;
 import java.util.Arrays;
 import java.util.Collection;
 
+import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 
 public class DuplicatedSampleIdError implements ReportError {
@@ -21,7 +22,7 @@ public class DuplicatedSampleIdError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return "Duplicated sample ID field (it must be unique)";
+		return TSEMessages.get("duplicated.samp.id.message");
 	}
 
 	@Override
@@ -30,7 +31,7 @@ public class DuplicatedSampleIdError implements ReportError {
 	}
 
 	@Override
-	public String getCorrectExample() {
+	public String getSuggestions() {
 		return null;
 	}
 

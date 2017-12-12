@@ -3,6 +3,7 @@ package tse_validator;
 import java.util.Arrays;
 import java.util.Collection;
 
+import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 
 public class WrongAgeClassError implements ReportError {
@@ -30,7 +31,8 @@ public class WrongAgeClassError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return "Wrong animage range selected for " + monthsFound + " month-old animal";
+		return TSEMessages.get("wrong.animage.message", 
+				String.valueOf(monthsFound));
 	}
 
 	@Override
@@ -39,7 +41,7 @@ public class WrongAgeClassError implements ReportError {
 	}
 
 	@Override
-	public String getCorrectExample() {
+	public String getSuggestions() {
 		return null;
 	}
 

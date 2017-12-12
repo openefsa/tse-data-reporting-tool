@@ -14,7 +14,9 @@ import app_config.PropertiesReader;
 import global_utils.EFSARCL;
 import global_utils.Warnings;
 import html_viewer.HtmlViewer;
+import i18n_messages.TSEMessages;
 import table_database.Database;
+import table_database.DatabaseVersionException;
 import table_database.TableDao;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
@@ -112,7 +114,8 @@ public class StartUI {
 		
 		System.out.println("Application closed " + System.currentTimeMillis());
 
-		display.dispose();
+		if (display != null)
+			display.dispose();
 		
 		// close the database
 		db.shutdown();
@@ -126,11 +129,28 @@ public class StartUI {
 	 * @param errorCode
 	 * @param message
 	 */
-	private static void showInitError(String errorCode, String message) {
+	private static void showInitError(String message) {
 		Display display = new Display();
 		Shell shell = new Shell(display);
-		Warnings.warnUser(shell, "Error", errorCode + ": " + message);
+		Warnings.warnUser(shell, TSEMessages.get("error.title"), message);
+		
+		shell.dispose();
+		display.dispose();
 	}
+	
+	private static int ask(String message) {
+		Display display = new Display();
+		Shell shell = new Shell(display);
+		int val = Warnings.warnUser(shell, TSEMessages.get("warning.title"), 
+				message, 
+				SWT.YES | SWT.NO | SWT.ICON_WARNING);
+		
+		shell.dispose();
+		display.dispose();
+		
+		return val;
+	}
+	
 	
 	/**
 	 * Create the main panel for the user interface
@@ -150,7 +170,7 @@ public class StartUI {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			GeneralWarnings.showExceptionStack(shell, "Generic error", e);
+			GeneralWarnings.showExceptionStack(shell, e);
 		}
 		
 		// set the application icon into the shell
@@ -178,7 +198,7 @@ public class StartUI {
 			db.connect();
 		} catch (IOException e) {
 			e.printStackTrace();
-			showInitError("ERR201", e.getMessage());
+			showInitError(TSEMessages.get("db.init.error", e.getMessage()));
 			return;
 		}
 		
@@ -193,8 +213,36 @@ public class StartUI {
 			
 		} catch (IOException | SQLException e) {
 			e.printStackTrace();
-			showInitError("ERR200", e.getMessage());
+			showInitError(TSEMessages.get("efsa.rcl.init.error", e.getMessage()));
 			return;
+		} catch (DatabaseVersionException e) {
+			e.printStackTrace();
+			
+			int val = ask(TSEMessages.get("db.need.removal"));
+			
+			// close application
+			if (val == SWT.NO)
+				shutdown(db, display);
+			else {
+				
+				// delete the database
+				try {
+					
+					// delete the old database
+					db.delete();
+					
+					// reconnect to the database and
+					// create a new one
+					db.connect();
+					
+				} catch (IOException e1) {
+					e1.printStackTrace();
+					
+					showInitError(TSEMessages.get("db.removal.error"));
+					
+					shutdown(db, display);
+				}
+			}
 		}
 
 		// create the main panel
@@ -213,8 +261,7 @@ public class StartUI {
 		if (!checkPreferences()) {
 			PreferencesDialog pref = new PreferencesDialog(shell);
 			pref.open();
-			
-			// if the preferences were not set
+						// if the preferences were not set
 			if (pref.getStatus() == SWT.CANCEL) {
 				// close the application
 				shutdown(db, display);

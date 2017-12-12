@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 import app_config.AppPaths;
 import dataset.DatasetStatus;
 import global_utils.Warnings;
+import i18n_messages.TSEMessages;
 import predefined_results_reader.PredefinedResult;
 import predefined_results_reader.PredefinedResultHeader;
 import report.Report;
@@ -40,7 +41,7 @@ public class ResultDialog extends TableDialogWithMenu {
 	
 	public ResultDialog(Shell parent, Report report, SummarizedInfo summInfo, CaseReport caseInfo) {
 		
-		super(parent, "Analytical results", true, false);
+		super(parent, TSEMessages.get("result.title"), true, false);
 		
 		this.report = report;
 		this.summInfo = summInfo;
@@ -103,8 +104,8 @@ public class ResultDialog extends TableDialogWithMenu {
 		// create default if no results are present
 		if (!caseInfo.hasResults() && isEditable()) {
 
-			int val = Warnings.warnUser(getDialog(), "Confirmation", 
-					"Would you like the tool to create default test results based on TSE testing schemes?",
+			int val = Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"), 
+					TSEMessages.get("result.confirm.default"),
 					SWT.YES | SWT.NO | SWT.ICON_QUESTION);
 			
 			if (val == SWT.NO)
@@ -113,9 +114,8 @@ public class ResultDialog extends TableDialogWithMenu {
 			try {
 				PredefinedResult.createDefaultResults(report, summInfo, caseInfo);
 				
-				warnUser("Warning", 
-						"Please carefully check all the records that were automatically "
-						+ "created in order to ensure that they reflect the real sequence of tests executed on the samples.",
+				warnUser(TSEMessages.get("warning.title"), 
+						TSEMessages.get("result.check.default"),
 						SWT.ICON_WARNING);
 
 			} catch (IOException e) {
@@ -191,20 +191,12 @@ public class ResultDialog extends TableDialogWithMenu {
 		String animalId = caseInfo.getLabel(CustomStrings.CASE_INFO_ANIMAL_ID);
 		String caseId = caseInfo.getLabel(CustomStrings.CASE_INFO_CASE_ID);
 		
-		StringBuilder sampleIdRow = new StringBuilder();
-		sampleIdRow.append("Sample id: ")
-			.append(sampleId);
+		String sampleIdRow = TSEMessages.get("result.sample.id", sampleId);
+		String animalIdRow = TSEMessages.get("result.animal.id", animalId);
+		String caseIdRow = TSEMessages.get("result.case.id", caseId);
 		
-		StringBuilder animalIdRow = new StringBuilder();
-		animalIdRow.append("Animal id: ")
-			.append(animalId);
-		
-		StringBuilder caseIdRow = new StringBuilder();
-		caseIdRow.append("Case id: ")
-			.append(caseId);
-		
-		viewer.addHelp("Analytical results")
-			.addRowCreator("Add result:")
+		viewer.addHelp(TSEMessages.get("result.help.title"))
+			.addRowCreator(TSEMessages.get("result.add.record"))
 			.addLabel("sampLabel", sampleIdRow.toString())
 			.addLabel("animalLabel", animalIdRow.toString())
 			.addLabel("caseIdLabel", caseIdRow.toString())

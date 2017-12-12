@@ -8,9 +8,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
+import app_config.PropertiesReader;
 import dataset.Dataset;
 import dataset.DatasetStatus;
 import global_utils.Warnings;
+import i18n_messages.TSEMessages;
 import report.ReportException;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
@@ -32,7 +34,7 @@ import xml_catalog_reader.Selection;
 public class ReportCreatorDialog extends TableDialog {
 	
 	public ReportCreatorDialog(Shell parent) {
-		super(parent, "New report", true, true);
+		super(parent, TSEMessages.get("new.report.title"), true, true);
 		
 		// create the parent structure
 		super.create();
@@ -80,7 +82,7 @@ public class ReportCreatorDialog extends TableDialog {
 		// if the report is already present
 		// show error message
 		if (report.isLocallyPresent()) {
-			warnUser("Error", "WARN304: The report already exists. Please open it.");
+			warnUser(TSEMessages.get("error.title"), TSEMessages.get("new.report.fail"));
 			return false;
 		}
 
@@ -105,8 +107,9 @@ public class ReportCreatorDialog extends TableDialog {
 			
 		} catch (ReportException e) {
 			e.printStackTrace();
-			title = "General error";
-			message = "ERR700: It was not possible to retrieve the current report sender id. Please call technical assistance.";
+			title = TSEMessages.get("error.title");
+			message = TSEMessages.get("new.report.failed.no.senderId", 
+					PropertiesReader.getSupportEmail(), e.getMessage());
 		}
 		finally {
 			// change the cursor to old cursor
@@ -128,7 +131,7 @@ public class ReportCreatorDialog extends TableDialog {
 
 			// if there are errors
 			if (errorMessage != null) {
-				warnUser("Error", errorMessage);
+				warnUser(TSEMessages.get("error.title"), errorMessage);
 				return false;
 			}
 
@@ -155,7 +158,7 @@ public class ReportCreatorDialog extends TableDialog {
 		// if no conflicts create the new report
 		report.save();
 		
-		warnUser("Success", "Report successfully created. The new report is not automatically opened. Please open it to see the content.", SWT.ICON_INFORMATION);
+		warnUser(TSEMessages.get("success.title"), TSEMessages.get("new.report.success"), SWT.ICON_INFORMATION);
 		
 		return true;
 	}
@@ -172,34 +175,24 @@ public class ReportCreatorDialog extends TableDialog {
 		
 		switch(oldReport.getStatus()) {
 		case ACCEPTED_DWH:
-			message = "ERR301: An existing report in DCF with dataset id "
-					+ oldReport.getId()
-					+ " was found in status ACCEPTED_DWH. To amend it please download and open it.";
+			message = TSEMessages.get("new.report.acc.dwh", oldReport.getId());
 			break;
 		case SUBMITTED:
-			message = "ERR302: An existing report in DCF with dataset id "
-					+ oldReport.getId()
-					+ " was found in status SUBMITTED. Please reject it in the validation report if changes are needed.";
+			message = TSEMessages.get("new.report.submitted", oldReport.getId());
 			break;
 		case VALID:
 		case VALID_WITH_WARNINGS:
 		case REJECTED_EDITABLE:
-			message = "ERR303: An existing report in DCF with dataset id "
-					+ oldReport.getId()
-					+ " was found in status " 
-					+ oldReport.getStatus() 
-					+ ". To apply changes please download and open it.";
+			message = TSEMessages.get("new.report.other", oldReport.getId(), oldReport.getStatus().getLabel());
 			break;
 		case PROCESSING:
-			message = "ERR300: An existing report in DCF with dataset id "
-					+ oldReport.getId()
-					+ " was found in status PROCESSING. Please wait the completion of the validation.";
+			message = TSEMessages.get("new.report.processing", oldReport.getId());
 			break;
 		case DELETED:
 		case REJECTED:
 			break;
 		default:
-			message = "ERR300: An error occurred due to a conflicting dataset in DCF. Please contact zoonoses_support@efsa.europa.eu.";
+			message = TSEMessages.get("new.report.failed", PropertiesReader.getSupportEmail());
 			break;
 		}
 		
@@ -228,7 +221,7 @@ public class ReportCreatorDialog extends TableDialog {
 	@Override
 	public void addWidgets(DialogBuilder viewer) {
 
-		viewer.addHelp("Creation of a new report")
+		viewer.addHelp(TSEMessages.get("new.report.help.title"))
 			.addTable(CustomStrings.REPORT_SHEET, true);
 	}
 }

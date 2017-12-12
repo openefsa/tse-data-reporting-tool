@@ -3,6 +3,7 @@ package tse_validator;
 import java.util.Arrays;
 import java.util.Collection;
 
+import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 
 public class ReportDateExceededError implements ReportError {
@@ -35,8 +36,7 @@ public class ReportDateExceededError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return "Invalid birth year/month selected. Birth should be prior to report date (" 
-				+ reportMonth + " " + reportYear + ")";
+		return TSEMessages.get("invalid.case.birth.date.message", reportMonth, reportYear);
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class ReportDateExceededError implements ReportError {
 	}
 
 	@Override
-	public String getCorrectExample() {
+	public String getSuggestions() {
 		return null;
 	}
 

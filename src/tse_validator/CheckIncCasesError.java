@@ -3,6 +3,7 @@ package tse_validator;
 import java.util.Arrays;
 import java.util.Collection;
 
+import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 
 public class CheckIncCasesError implements ReportError {
@@ -19,7 +20,7 @@ public class CheckIncCasesError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return "Number of declared inconclusive cases not consistent with number of specified inconclusive cases";
+		return TSEMessages.get("wrong.inc.cases.number.message");
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class CheckIncCasesError implements ReportError {
 	}
 
 	@Override
-	public String getCorrectExample() {
+	public String getSuggestions() {
 		return null;
 	}
 

@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
 import dataset.DatasetList;
+import i18n_messages.TSEMessages;
 import table_database.TableDao;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
@@ -64,7 +65,7 @@ public class ReportListDialog extends TableDialog {
 	public boolean apply(TableSchema schema, Collection<TableRow> rows, TableRow selectedRow) {
 		
 		if (selectedRow == null) {
-			warnUser("Error", "A report was not selected!");
+			warnUser(TSEMessages.get("error.title"), TSEMessages.get("report.not.selected"));
 			return false;
 		}
 		

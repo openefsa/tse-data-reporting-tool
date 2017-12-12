@@ -3,6 +3,7 @@ package tse_validator;
 import java.util.Arrays;
 import java.util.Collection;
 
+import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 
 public class AlleleNotReportableError implements ReportError {
@@ -23,7 +24,7 @@ public class AlleleNotReportableError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return "Alleles cannot be specified for non-genotyping tests";
+		return TSEMessages.get("alleles.message");
 	}
 
 	@Override
@@ -32,7 +33,7 @@ public class AlleleNotReportableError implements ReportError {
 	}
 
 	@Override
-	public String getCorrectExample() {
+	public String getSuggestions() {
 		return null;
 	}
 

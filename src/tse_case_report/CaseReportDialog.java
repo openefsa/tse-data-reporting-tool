@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Shell;
 import app_config.AppPaths;
 import dataset.DatasetStatus;
 import global_utils.Warnings;
+import i18n_messages.TSEMessages;
 import report.Report;
 import table_database.TableDao;
 import table_dialog.DialogBuilder;
@@ -45,7 +46,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	
 	public CaseReportDialog(Shell parent, Report report, SummarizedInfo summInfo) {
 		
-		super(parent, "Cases/samples", true, false);
+		super(parent, TSEMessages.get("case.title"), true, false);
 		
 		this.report = report;
 		this.summInfo = summInfo;
@@ -83,8 +84,8 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		if (isEditable() && !summInfo.hasCases() 
 				&& getNumberOfExpectedCases(summInfo) > 0) {
 			
-			Warnings.warnUser(getDialog(), "Warning", 
-					"The tool will initialize the table of cases/samples for the selected context, based on the number of inconclusive and positive cases.", 
+			Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"), 
+					TSEMessages.get("case.check.default"), 
 					SWT.ICON_INFORMATION);
 			
 			try {
@@ -208,19 +209,19 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		
 		Menu menu = super.createMenu();
 		
-		MenuItem addResult = new MenuItem(menu, SWT.PUSH);
-		addResult.setText("Open analytical results form");
-		addResult.setEnabled(false);
+		MenuItem openResults = new MenuItem(menu, SWT.PUSH);
+		openResults.setText(TSEMessages.get("case.open.results"));
+		openResults.setEnabled(false);
 		
 		addTableSelectionListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent arg0) {
-				addResult.setEnabled(!isTableEmpty());
+				openResults.setEnabled(!isTableEmpty());
 			}
 		});
 		
-		addResult.addSelectionListener(new SelectionAdapter() {
+		openResults.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 
@@ -234,7 +235,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				CaseReport caseReport = new CaseReport(row);
 				
 				if (!caseReport.areMandatoryFilled()) {
-					warnUser("Error", "ERR000: Cannot add analytical results. Mandatory data are missing!");
+					warnUser(TSEMessages.get("error.title"), TSEMessages.get("case.open.results.error"));
 					return;
 				}
 
@@ -323,43 +324,23 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		String target = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP);
 		String progId = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_PROG_ID);
 		
-		StringBuilder yearRow = new StringBuilder();
-		yearRow.append("Sampling year: ")
-			.append(reportYear);
+		String yearRow = TSEMessages.get("case.samp.year", reportYear);
+		String monthRow = TSEMessages.get("case.samp.month", reportMonth);
+		String sourceRow = TSEMessages.get("case.animal.species", source);
+		String prodRow = TSEMessages.get("case.production.type", prod);
+		String ageRow = TSEMessages.get("case.age.class", age);
+		String targetRow = TSEMessages.get("case.target.group", target);
+		String progIdRow = TSEMessages.get("case.context.id", progId);
 		
-		StringBuilder monthRow = new StringBuilder();
-		monthRow.append("Sampling month: ")
-			.append(reportMonth);
-		
-		StringBuilder sourceRow = new StringBuilder();
-		sourceRow.append("Animal species: ")
-			.append(source);
-		
-		StringBuilder prodRow = new StringBuilder();
-		prodRow.append("Type of production: ")
-			.append(prod);
-
-		StringBuilder ageRow = new StringBuilder();
-		ageRow.append("Age class: ")
-			.append(age);
-		
-		StringBuilder targetRow = new StringBuilder();
-		targetRow.append("Target group: ")
-			.append(target);
-		
-		StringBuilder progIdRow = new StringBuilder();
-		progIdRow.append("Context ID: ")
-			.append(progId);
-		
-		viewer.addHelp("Cases/samples")
-			.addLabel("yearLabel", yearRow.toString())
-			.addLabel("monthLabel", monthRow.toString())
-			.addLabel("sourceLabel", sourceRow.toString())
-			.addLabel("prodLabel", prodRow.toString())
-			.addLabel("ageLabel", ageRow.toString())
-			.addLabel("targetLabel", targetRow.toString())
-			.addLabel("progIdLabel", progIdRow.toString())
-			.addRowCreator("Add case/sample:")
+		viewer.addHelp(TSEMessages.get("case.help.title"))
+			.addLabel("yearLabel", yearRow)
+			.addLabel("monthLabel", monthRow)
+			.addLabel("sourceLabel", sourceRow)
+			.addLabel("prodLabel", prodRow)
+			.addLabel("ageLabel", ageRow)
+			.addLabel("targetLabel", targetRow)
+			.addLabel("progIdLabel", progIdRow)
+			.addRowCreator(TSEMessages.get("case.add.record"))
 			.addTable(CustomStrings.CASE_INFO_SHEET, true, report, summInfo);
 	}
 }

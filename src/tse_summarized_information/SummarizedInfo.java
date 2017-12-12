@@ -34,6 +34,10 @@ public class SummarizedInfo extends TableRow implements TseTableRow {
 		return this.getCode(CustomStrings.SUMMARIZED_INFO_SOURCE);
 	}
 	
+	public String getProgId() {
+		return this.getLabel(CustomStrings.SUMMARIZED_INFO_PROG_ID);
+	}
+	
 	public void setType(String type) {
 		this.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
 				getTableColumnValue(type, CatalogLists.TSE_LIST));

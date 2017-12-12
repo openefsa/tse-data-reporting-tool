@@ -4,9 +4,12 @@ import javax.swing.JOptionPane;
 
 import org.eclipse.swt.widgets.Shell;
 
+import app_config.PropertiesReader;
+import i18n_messages.TSEMessages;
+
 public class GeneralWarnings {
 
-	public static void showExceptionStack(Shell shell, String title, Exception e) {
+	public static void showExceptionStack(Shell shell, Exception e) {
 		
 		StringBuilder sb = new StringBuilder();
 		for (StackTraceElement ste : e.getStackTrace()) {
@@ -16,8 +19,7 @@ public class GeneralWarnings {
 	    String trace = sb.toString();
 		
 		
-		JOptionPane.showMessageDialog(null, "XERRX: Generic runtime error." 
-				+ " Please contact zoonoses_support@efsa.europa.eu. Error message " + trace, 
-				"Generic error", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, TSEMessages.get("generic.error", PropertiesReader.getSupportEmail(), trace), 
+				TSEMessages.get("error.title"), JOptionPane.ERROR_MESSAGE);
 	}
 }

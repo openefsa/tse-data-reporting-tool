@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Shell;
 import app_config.AppPaths;
 import dataset.DatasetStatus;
 import global_utils.Warnings;
+import i18n_messages.TSEMessages;
 import report.Report;
 import report.ReportAckManager;
 import report.ReportActions;
@@ -94,7 +95,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		Menu menu = super.createMenu();
 
 		MenuItem addCase = new MenuItem(menu, SWT.PUSH);
-		addCase.setText("Open case/sample form");
+		addCase.setText(TSEMessages.get("si.open.cases"));
 		addCase.setEnabled(false);
 		
 		addTableSelectionListener(new ISelectionChangedListener() {
@@ -141,7 +142,8 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	private boolean validate(TableRow summInfo) {
 		
 		if (!summInfo.areMandatoryFilled()) {
-			warnUser("Error", "ERR000: Cannot add cases. Mandatory data are missing!");
+			warnUser(TSEMessages.get("error.title"), 
+					TSEMessages.get("si.open.cases.error"));
 			return false;
 		}
 
@@ -274,8 +276,8 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				int val = warnUser("Warning", 
-						"CONF905: The report editing will be enabled, but be aware this will overwrite the current data.", 
+				int val = warnUser(TSEMessages.get("warning.title"), 
+						TSEMessages.get("edit.confirm"), 
 						SWT.ICON_WARNING | SWT.YES | SWT.NO);
 				
 				if (val == SWT.NO)
@@ -298,11 +300,12 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 					return;
 				
 				if (report.isEmpty()) {
-					Warnings.warnUser(getDialog(), "Error", "Cannot send an empty report!");
+					Warnings.warnUser(getDialog(), TSEMessages.get("error.title"), 
+							TSEMessages.get("send.empty.report"));
 					return;
 				}
 				
-				ReportActions actions = new ReportActions(getDialog(), report);
+				ReportActions actions = new TseReportActions(getDialog(), report);
 				actions.send(new Listener() {
 					
 					@Override
@@ -322,7 +325,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				ReportActions actions = new ReportActions(getDialog(), report);
+				ReportActions actions = new TseReportActions(getDialog(), report);
 				
 				// reject the report and update the ui
 				actions.reject(new Listener() {
@@ -342,7 +345,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				ReportActions actions = new ReportActions(getDialog(), report);
+				ReportActions actions = new TseReportActions(getDialog(), report);
 				
 				// reject the report and update the ui
 				actions.submit(new Listener() {
@@ -375,7 +378,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				ReportActions actions = new ReportActions(getDialog(), report);
+				ReportActions actions = new TseReportActions(getDialog(), report);
 				
 				Report newVersion = actions.amend();
 				
@@ -398,37 +401,40 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				TseReportValidator validator = new TseReportValidator(report);
 				try {
 					
-					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+					getDialog().setCursor(getDialog().getDisplay()
+							.getSystemCursor(SWT.CURSOR_WAIT));
 					
 					// validate the report
 					Collection<ReportError> errors = validator.validate();
 					
-					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+					getDialog().setCursor(getDialog().getDisplay()
+							.getSystemCursor(SWT.CURSOR_ARROW));
 					
 					// if no errors update report status
 					if (errors.isEmpty()) {
 						report.setStatus(DatasetStatus.LOCALLY_VALIDATED);
 						report.update();
 						updateUI();
-						warnUser("Success", 
-								"The report is correct and can now be sent to DCF. If you need to make further changes, please click the edit button.",
+						warnUser(TSEMessages.get("success.title"), TSEMessages.get("check.success"),
 								SWT.ICON_INFORMATION);
 					}
 					else { // otherwise show them to the user
 						validator.show(errors);
-						warnUser("Failed", 
-								"WARN001: The report contains errors. The list of errors will be shown in your default internet browser.");
+						warnUser(TSEMessages.get("error.title"), 
+								TSEMessages.get("check.report.failed"));
 					}
 					
 				} catch (IOException e) {
 					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
 					e.printStackTrace();
-					warnUser("Error", "ERRA00: Cannot write the list of errors in .html file. Error: " + Warnings.getStackTrace(e));
+					warnUser(TSEMessages.get("error.title"), 
+							TSEMessages.get("check.report.error", 
+									Warnings.getStackTrace(e)));
 				}
 			}
 		};
 		
-		viewer.addHelp("TSEs monitoring data (aggregated level)")
+		viewer.addHelp(TSEMessages.get("si.help.title"))
 		
 			.addComposite("labelsComp", new GridLayout(1, false), null)
 			.addLabelToComposite("reportLabel", "labelsComp")
@@ -449,8 +455,8 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			.addButtonToComposite("refreshBtn", "buttonsComp", "Refresh status", refreshStateListener)
 			.addButtonToComposite("displayAckBtn", "buttonsComp", "Display ack", displayAckListener)
 			
-			.addGroupToComposite("rowCreatorComp", "panel", "Add record", new GridLayout(1, false), null)
-			.addRowCreatorToComposite("rowCreatorComp", "Add data related to:", CatalogLists.TSE_LIST)
+			.addGroupToComposite("rowCreatorComp", "panel", TSEMessages.get("si.add.record"), new GridLayout(1, false), null)
+			.addRowCreatorToComposite("rowCreatorComp", TSEMessages.get("si.add.record.label"), CatalogLists.TSE_LIST)
 			
 			.addTable(CustomStrings.SUMMARIZED_INFO_SHEET, true);
 
@@ -514,10 +520,14 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				.getClassLoader().getResourceAsStream("refresh-icon.png"));
 		panel.addButtonImage("refreshBtn", refreshImage);
 		
-		panel.setLabelText("reportLabel", "Monthly report: no report is currently opened!");
-		panel.setLabelText("statusLabel", "Status: -");
-		panel.setLabelText("messageIdLabel", "DCF Message ID: -");
-		panel.setLabelText("datasetIdLabel", "DCF Dataset ID: -");
+		panel.setLabelText("reportLabel", TSEMessages.get("si.report.void"));
+		panel.setLabelText("statusLabel", TSEMessages.get("si.dataset.status", TSEMessages.get("si.no.data")));
+		
+		panel.setLabelText("messageIdLabel", TSEMessages.get("si.message.id", 
+				TSEMessages.get("si.no.data")));
+		
+		panel.setLabelText("datasetIdLabel", TSEMessages.get("si.dataset.id", 
+				TSEMessages.get("si.no.data")));
 	}
 	
 	/**
@@ -532,32 +542,32 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		String messageId = report.getMessageId();
 		String datasetId = report.getDatasetId();
 		
-		StringBuilder reportRow = new StringBuilder();
-		reportRow.append("Monthly report: ")
-			.append(reportMonth)
-			.append(" ")
-			.append(reportYear);
+		String reportRow;
 		
 		// add version if possible
 		if (!TableVersion.isFirstVersion(report.getVersion())) {
-			reportRow.append(" revision ")
-				.append(Integer.valueOf(report.getVersion())); // remove 0 from 01..
+			int revisionInt = Integer.valueOf(report.getVersion()); // remove 0 from 01..
+			String revision = String.valueOf(revisionInt);
+			reportRow = TSEMessages.get("si.report.opened.revision", reportYear, reportMonth, revision);
 		}
-		
-		StringBuilder statusRow = new StringBuilder("Status: ");
-		statusRow.append(checkField(status, DatasetStatus.DRAFT.getLabel()));
-		
-		StringBuilder messageRow = new StringBuilder("DCF Message ID: ");
-		messageRow.append(checkField(messageId, "Not assigned yet"));
+		else {
+			reportRow = TSEMessages.get("si.report.opened", reportYear, reportMonth);
+		}
 
-		StringBuilder datasetRow = new StringBuilder("DCF Dataset ID: ");
-		datasetRow.append(checkField(datasetId, "Not assigned yet"));
+		String statusRow = TSEMessages.get("si.dataset.status", 
+				checkField(status, DatasetStatus.DRAFT.getLabel()));
+		
+		String messageRow = TSEMessages.get("si.message.id", 
+				checkField(messageId, TSEMessages.get("si.missing.data")));
+
+		String datasetRow = TSEMessages.get("si.dataset.id", 
+				checkField(datasetId, TSEMessages.get("si.missing.data")));
 		
 		DialogBuilder panel = getPanelBuilder();
-		panel.setLabelText("reportLabel", reportRow.toString());
-		panel.setLabelText("statusLabel", statusRow.toString());
-		panel.setLabelText("messageIdLabel", messageRow.toString());
-		panel.setLabelText("datasetIdLabel", datasetRow.toString());
+		panel.setLabelText("reportLabel", reportRow);
+		panel.setLabelText("statusLabel", statusRow);
+		panel.setLabelText("messageIdLabel", messageRow);
+		panel.setLabelText("datasetIdLabel", datasetRow);
 		
 		// enable the table only if report status if correct
 		DatasetStatus datasetStatus = DatasetStatus.fromString(status);
