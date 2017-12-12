@@ -11,7 +11,6 @@ import org.xml.sax.SAXException;
 import app_config.AppPaths;
 import app_config.PropertiesReader;
 import global_utils.Warnings;
-import i18n_messages.Messages;
 import i18n_messages.TSEMessages;
 import message.SendMessageException;
 import report.Report;
@@ -366,7 +365,7 @@ public class TseReportActions extends ReportActions {
 		
 		String dc = PropertiesReader.getDataCollectionCode(report.getYear());
 		int val = Warnings.warnUser(shell, TSEMessages.get("warning.title"), 
-				Messages.get("send.confirm.dc", dc),
+				TSEMessages.get("send.confirm.dc", dc),
 				SWT.ICON_WARNING | SWT.YES | SWT.NO);
 		
 		return val == SWT.YES;

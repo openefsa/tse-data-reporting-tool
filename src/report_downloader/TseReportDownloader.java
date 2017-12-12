@@ -1,6 +1,7 @@
 package report_downloader;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -18,7 +19,6 @@ import dataset.DatasetList;
 import dataset.NoAttachmentException;
 import formula.FormulaException;
 import global_utils.Warnings;
-import i18n_messages.Messages;
 import i18n_messages.TSEMessages;
 import report.DownloadReportDialog;
 import report.ReportDownloader;
@@ -156,6 +156,11 @@ public class TseReportDownloader extends ReportDownloader {
 			message = TSEMessages.get("download.no.attachment", 
 					PropertiesReader.getSupportEmail(), e.getMessage());
 		}
+		else if (e instanceof ParseException) {
+			title = TSEMessages.get("error.title");
+			message = TSEMessages.get("download.bad.parsing", 
+					PropertiesReader.getSupportEmail(), e.getMessage());
+		}
 		else {
 			StringBuilder sb = new StringBuilder();
 			for (StackTraceElement ste : e.getStackTrace()) {
@@ -185,8 +190,8 @@ public class TseReportDownloader extends ReportDownloader {
 	@Override
 	public boolean askConfirmation() {
 		
-		int val = Warnings.warnUser(shell, Messages.get("warning.title"), 
-				Messages.get("download.replace"), 
+		int val = Warnings.warnUser(shell, TSEMessages.get("warning.title"), 
+				TSEMessages.get("download.replace"), 
 				SWT.YES | SWT.NO | SWT.ICON_WARNING);
 		
 		return val == SWT.YES;

@@ -50,7 +50,7 @@ public class SummarizedInfo extends TableRow implements TseTableRow {
 	public String getTypeBySpecies() {
 		
 		String species = getSpecies();
-		
+
 		// get the type whose species is the current one
 		String listId = XmlLoader.getByPicklistKey(CatalogLists.SPECIES_LIST)
 				.getElementByCode(species).getListId();
