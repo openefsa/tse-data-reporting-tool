@@ -106,7 +106,6 @@ public class SettingsDialog extends OptionsDialog {
 				
 				String title = null;
 				String message = null;
-				int style = SWT.ERROR;
 				int jStyle = JOptionPane.ERROR_MESSAGE;
 
 				TseReport report = null;
@@ -122,7 +121,6 @@ public class SettingsDialog extends OptionsDialog {
 					// here is success
 					title = TSEMessages.get("success.title");
 					message = "Test successfully completed.";
-					style = SWT.ICON_INFORMATION;
 					jStyle = JOptionPane.INFORMATION_MESSAGE;
 					
 				} catch (MySOAPException e) {

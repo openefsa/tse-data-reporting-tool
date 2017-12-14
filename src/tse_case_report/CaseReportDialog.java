@@ -79,21 +79,53 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	
 	public void askForDefault() {
 		
+		boolean hasExpectedCases = getNumberOfExpectedCases(summInfo) > 0;
+		boolean isRGT = summInfo.isRGT();
+
 		// create default cases if no cases
 		// and cases were set in the aggregated data
 		if (isEditable() && !summInfo.hasCases() 
-				&& getNumberOfExpectedCases(summInfo) > 0) {
+				&& (hasExpectedCases || isRGT)) {
 			
 			Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"), 
 					TSEMessages.get("case.check.default"), 
 					SWT.ICON_INFORMATION);
 			
-			try {
-				createDefaultCases(summInfo);
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (hasExpectedCases) {
+				try {
+					createDefaultCases(summInfo);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			else if (isRGT) {
+				createDefaultRGTCase(summInfo);
 			}
 		}
+	}
+	
+	private void createDefaultRGTCase(TableRow summInfo) {
+		
+		TableSchema caseSchema = TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
+		TableRow resultRow = new TableRow(caseSchema);
+		
+		// inject the case parent to the result
+		Relation.injectParent(report, resultRow);
+		Relation.injectParent(summInfo, resultRow);
+
+		// add two default rows
+		TableDao dao = new TableDao(caseSchema);
+		
+		resultRow.initialize();
+		
+		// add get the id and update the fields
+		int id = dao.add(resultRow);
+		resultRow.setId(id);
+		resultRow.initialize();
+		
+		resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.BLOOD_CODE);
+		
+		resultRow.update();
 	}
 	
 	/**

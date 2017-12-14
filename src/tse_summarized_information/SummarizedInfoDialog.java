@@ -34,6 +34,8 @@ import table_skeleton.TableColumn;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
 import table_skeleton.TableVersion;
+import test_case.EnumPicker;
+import test_case.NumberInputDialog;
 import tse_case_report.CaseReportDialog;
 import tse_components.TableDialogWithMenu;
 import tse_config.CatalogLists;
@@ -434,26 +436,106 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			}
 		};
 		
-		viewer.addHelp(TSEMessages.get("si.help.title"))
+		SelectionListener changeStatusListener = new SelectionAdapter() {
+		
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				EnumPicker<DatasetStatus> dialog = new EnumPicker<>(getDialog(), DatasetStatus.class);
+				dialog.setDefaultValue(report.getStatus());
+				dialog.open();
+				
+				DatasetStatus status = (DatasetStatus) dialog.getSelection();
+				
+				if (status == null)
+					return;
+				
+				// update the report status and UI
+				report.setStatus(status);
+				report.update();
+				updateUI();
+			}
+		};
+		
+		SelectionListener changeMessageIdListener = new SelectionAdapter() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				NumberInputDialog dialog = new NumberInputDialog(getDialog());
+				dialog.setDefaultValue(report.getMessageId());
+				Integer messageIdNumeric = dialog.open();
+				
+				String messageId = "";
+				if (messageIdNumeric != null) {
+					messageId = String.valueOf(messageIdNumeric);
+				}
+				
+				if (!dialog.wasCancelled()) {
+
+					report.setMessageId(messageId);
+					report.update();
+					updateUI();
+				}
+			}
+		};	
+		
+		SelectionListener changeDatasetIdListener = new SelectionAdapter() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				NumberInputDialog dialog = new NumberInputDialog(getDialog());
+				dialog.setDefaultValue(report.getDatasetId());
+				Integer dataIdNumeric = dialog.open();
+				
+				String datasetId = "";
+				if (dataIdNumeric != null) {
+					datasetId = String.valueOf(dataIdNumeric);
+				}
+				
+				if (!dialog.wasCancelled()) {
+					report.setDatasetId(datasetId);
+					report.update();
+					updateUI();
+				}
+			}
+		};
+		
+		viewer
+			.addHelp(TSEMessages.get("si.help.title"))
 		
 			.addComposite("labelsComp", new GridLayout(1, false), null)
 			.addLabelToComposite("reportLabel", "labelsComp")
 			.addLabelToComposite("statusLabel", "labelsComp")
 			.addLabelToComposite("messageIdLabel", "labelsComp")
-			.addLabelToComposite("datasetIdLabel", "labelsComp")
-			
+			.addLabelToComposite("datasetIdLabel", "labelsComp");
+
+			// if debug add change status button
+			if (DebugConfig.debug) {
+				viewer
+					.addGroup("debugPanel", TSEMessages.get("si.debug.panel"), new GridLayout(3, false), null)
+					.addButtonToComposite("changeStatusBtn", "debugPanel", 
+						TSEMessages.get("si.debug.change.status"), changeStatusListener)
+					.addButtonToComposite("changeMessageIdBtn", "debugPanel", 
+						TSEMessages.get("si.debug.change.mexid"), changeMessageIdListener)
+					.addButtonToComposite("changeDatasetIdBtn", "debugPanel", 
+						TSEMessages.get("si.debug.change.dataid"), changeDatasetIdListener);
+			}
+		
+		viewer	
 			.addComposite("panel", new GridLayout(1, false), null)
 			
-			.addGroupToComposite("buttonsComp", "panel", "Toolbar", new GridLayout(8, false), null)
+			.addGroupToComposite("buttonsComp", "panel", TSEMessages.get("si.toolbar.title"), new GridLayout(8, false), null)
 			
-			.addButtonToComposite("editBtn", "buttonsComp", "Edit", editListener)
-			.addButtonToComposite("validateBtn", "buttonsComp", "Check", validateListener)
-			.addButtonToComposite("sendBtn", "buttonsComp", "Send", sendListener)
-			.addButtonToComposite("submitBtn", "buttonsComp", "Submit", submitListener)
-			.addButtonToComposite("amendBtn", "buttonsComp", "Amend", amendListener)
-			.addButtonToComposite("rejectBtn", "buttonsComp", "Reject", rejectListener)
-			.addButtonToComposite("refreshBtn", "buttonsComp", "Refresh status", refreshStateListener)
-			.addButtonToComposite("displayAckBtn", "buttonsComp", "Display ack", displayAckListener)
+			.addButtonToComposite("editBtn", "buttonsComp", TSEMessages.get("si.toolbar.edit"), editListener)
+			.addButtonToComposite("validateBtn", "buttonsComp", TSEMessages.get("si.toolbar.check"), validateListener)
+			.addButtonToComposite("sendBtn", "buttonsComp", TSEMessages.get("si.toolbar.send"), sendListener)
+			.addButtonToComposite("submitBtn", "buttonsComp", TSEMessages.get("si.toolbar.submit"), submitListener)
+			.addButtonToComposite("amendBtn", "buttonsComp", TSEMessages.get("si.toolbar.amend"), amendListener)
+			.addButtonToComposite("rejectBtn", "buttonsComp", TSEMessages.get("si.toolbar.reject"), rejectListener)
+			.addButtonToComposite("refreshBtn", "buttonsComp", TSEMessages.get("si.toolbar.refresh.status"), refreshStateListener)
+			.addButtonToComposite("displayAckBtn", "buttonsComp", TSEMessages.get("si.toolbar.display.ack"), displayAckListener)
 			
 			.addGroupToComposite("rowCreatorComp", "panel", TSEMessages.get("si.add.record"), new GridLayout(1, false), null)
 			.addRowCreatorToComposite("rowCreatorComp", TSEMessages.get("si.add.record.label"), CatalogLists.TSE_LIST)
@@ -479,6 +561,9 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setEnabled("submitBtn", false);
 		panel.setEnabled("amendBtn", false);
 		panel.setEnabled("displayAckBtn", false);
+		panel.setEnabled("changeStatusBtn", false);
+		panel.setEnabled("changeMessageIdBtn", false);
+		panel.setEnabled("changeDatasetIdBtn", false);
 		
 		// add image to edit button
 		Image editImage = new Image(Display.getCurrent(), this.getClass()
@@ -583,6 +668,9 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setEnabled("rejectBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeRejected());
 		panel.setEnabled("displayAckBtn", !DebugConfig.disableMainPanel && datasetStatus.canDisplayAck());
 		panel.setEnabled("refreshBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeRefreshed());
+		panel.setEnabled("changeStatusBtn", true);
+		panel.setEnabled("changeMessageIdBtn", true);
+		panel.setEnabled("changeDatasetIdBtn", true);
 	}
 	
 	/**

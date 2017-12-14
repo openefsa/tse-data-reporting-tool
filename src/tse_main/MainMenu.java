@@ -26,7 +26,7 @@ import report_downloader.TseReportDownloader;
 import table_database.TableDao;
 import table_skeleton.TableRow;
 import table_skeleton.TableVersion;
-import test_case.ExportTypeDialog;
+import test_case.EnumPicker;
 import tse_config.CustomStrings;
 import tse_config.DebugConfig;
 import tse_options.PreferencesDialog;
@@ -364,10 +364,11 @@ public class MainMenu {
 				
 				if (report == null)
 					return;
-				ExportTypeDialog dialog = new ExportTypeDialog(shell);
+				
+				EnumPicker<OperationType> dialog = new EnumPicker<>(shell, OperationType.class);
 				dialog.open();
 				
-				OperationType opType = dialog.getSelectedOp();
+				OperationType opType = (OperationType) dialog.getSelection();
 				
 				if (opType == null)
 					return;

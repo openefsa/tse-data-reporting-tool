@@ -26,12 +26,24 @@ public class SummarizedInfo extends TableRow implements TseTableRow {
 		super.put(typeColumnId, type);
 	}
 
+	public static boolean isSummarizedInfo(TableRow row) {
+		return row.getSchema().equals(SummarizedInfo.getSummarizedInfoSchema());
+	}
+	
 	public static TableSchema getSummarizedInfoSchema() {
 		return TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
 	}
 	
 	public String getSpecies() {
 		return this.getCode(CustomStrings.SUMMARIZED_INFO_SOURCE);
+	}
+	
+	public String getType() {
+		return this.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
+	}
+	
+	public boolean isRGT() {
+		return this.getType().equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
 	}
 	
 	public String getProgId() {

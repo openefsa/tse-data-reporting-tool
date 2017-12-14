@@ -44,9 +44,13 @@ public class TseReportValidator extends ReportValidator {
 		
 		Collection<TableRow> reportRecords = this.report.getAllRecords();
 		
+		if (reportRecords.isEmpty()) {
+			errors.add(new EmptyReportError());
+		}
+		
 		// check errors on single row (no interdependency is evaluated)
 		for (TableRow row : reportRecords) {
-
+			
 			errors.addAll(checkMandatoryFields(row));
 			
 			RowType type = getRowType(row);
@@ -245,6 +249,22 @@ public class TseReportValidator extends ReportValidator {
 		default:
 			break;
 		}
+		
+		// check declared cases
+		if (!row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
+				.equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE)) {
+			
+			// if not RGT type, then check declared cases
+			
+			String total = row.getLabel(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES);
+			String unsuitable = row.getLabel(CustomStrings.SUMMARIZED_INFO_UNS_SAMPLES);
+			
+			// if no declared case, then show error
+			if (total.equals("0") && unsuitable.equals("0")) {
+				errors.add(new NoCaseDeclaredError(getRowId(row)));
+			}
+		}
+		
 		
 		return errors;
 	}

@@ -24,6 +24,7 @@ public class TseFileDialog {
 	 */
 	public File select(int style, String fileFormat, String filename) {
         FileDialog fd = new FileDialog(shell, style);
+        fd.setOverwrite(true);
         fd.setText(TSEMessages.get("export.report.button"));
         String[] filterExt = { fileFormat };
         fd.setFilterExtensions(filterExt);
