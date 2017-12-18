@@ -108,10 +108,10 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_PARAM_TYPE = "P003A";
 	public static final String RESULT_PARAM_TYPE = "P001A";
 	
-	private static final String COUNTRY = "[a-zA-Z][a-zA-Z]";  // two letters
-	private static final String YEAR_MONTH = "\\d{4}";
-	private static final String VERSION = "(\\.\\d{2})?";  // either .01, .02 or .10, .50 (always two digits)
-	public static final String VALID_SENDER_ID_PATTERN = COUNTRY + YEAR_MONTH + VERSION;
+	public static final String COUNTRY_REGEX = "[a-zA-Z][a-zA-Z]";  // two letters
+	public static final String YEAR_MONTH_REGEX = "\\d{4}";
+	public static final String VERSION_REGEX = AppPaths.REPORT_VERSION_REGEX;
+	public static final String VALID_SENDER_ID_PATTERN = COUNTRY_REGEX + YEAR_MONTH_REGEX + VERSION_REGEX;
 	
 	// xml tags of dataset
 	public static final String RES_ID_COLUMN = "resId";

@@ -20,7 +20,7 @@ public class CheckIncCasesError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return TSEMessages.get("wrong.inc.cases.number.message");
+		return TSEMessages.get("wrong.inc.cases.number.messages");
 	}
 
 	@Override
