@@ -68,11 +68,13 @@ public class TseReportValidator extends ReportValidator {
 		
 		// check errors across different rows
 		errors.addAll(checkDuplicatedSampleId(reportRecords));
+		errors.addAll(checkDuplicatedResId(reportRecords));
 		errors.addAll(checkNationalCaseId(reportRecords));
 		errors.addAll(checkAnimalId(reportRecords));
 		
 		return errors;
 	}
+	
 	
 	/**
 	 * Check if there are case reports with the same sample id
@@ -101,6 +103,39 @@ public class TseReportValidator extends ReportValidator {
 			else {
 				// otherwise standard insert
 				cases.put(currentSampId, row);
+			}
+		}
+		
+		return errors;
+	}
+	
+	/**
+	 * Check if there are analytical results with the same result id
+	 * @param reportRecords
+	 * @return
+	 */
+	private Collection<ReportError> checkDuplicatedResId(Collection<TableRow> reportRecords) {
+
+		Collection<ReportError> errors = new ArrayList<>();
+		
+		HashMap<String, TableRow> results = new HashMap<>();
+		for (TableRow row : reportRecords) {
+			
+			if (getRowType(row) != RowType.RESULT)
+				continue;
+			
+			String currentId = row.getLabel(CustomStrings.RES_ID_COLUMN);
+			
+			// if there is already an element, error! duplicated value
+			if (results.containsKey(currentId)) {
+				TableRow conflict = results.get(currentId);
+				String rowId1 = getStackTrace(row);
+				String rowId2 = getStackTrace(conflict);
+				errors.add(new DuplicatedResultIdError(rowId1, rowId2));
+			}
+			else {
+				// otherwise standard insert
+				results.put(currentId, row);
 			}
 		}
 		
