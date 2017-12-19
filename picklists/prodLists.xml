@@ -21,4 +21,9 @@
 			<description>Wild</description>
 		</selection>
 	</selectionList>
+	<selectionList id="RGT">
+		<selection code="F21.A07RV">
+			<description>Farmed</description>
+		</selection>
+	</selectionList>
 </prodLists>
