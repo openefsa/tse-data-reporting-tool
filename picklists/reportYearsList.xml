@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<yearsList>
+<reportYearsList>
 	<selectionList>
-		<selection code="1995">
-			<description>1995</description>
-		</selection>
-		<selection code="1996">
-			<description>1996</description>
-		</selection>
-		<selection code="1997">
-			<description>1997</description>
-		</selection>
-		<selection code="1998">
-			<description>1998</description>
-		</selection>
-		<selection code="1999">
-			<description>1999</description>
-		</selection>
-		<selection code="2000">
-			<description>2000</description>
-		</selection>
 		<selection code="2001">
 			<description>2001</description>
 		</selection>
@@ -317,4 +299,4 @@
 			<description>2099</description>
 		</selection>
 	</selectionList>
-</yearsList>
+</reportYearsList>
