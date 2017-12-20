@@ -26,6 +26,7 @@ import table_dialog.RowValidatorLabelProvider;
 import table_skeleton.TableColumnValue;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
+import tse_config.GeneralWarnings;
 import tse_report.TseReport;
 import tse_validator.SimpleRowValidatorLabelProvider;
 import user.User;
@@ -142,8 +143,9 @@ public class SettingsDialog extends OptionsDialog {
 					// here we got TRXKO
 					e.printStackTrace();
 					
-					title = TSEMessages.get("error.title");
-					message = TSEMessages.get("test.connection.fail");
+					String[] warning = GeneralWarnings.getSendMessageWarning(e);
+					title = warning[0];
+					message = warning[1];
 					
 				} catch (ReportException e) {
 					// There an invalid operation was used

@@ -18,6 +18,7 @@ import report.ReportActions;
 import report.ReportException;
 import report.ReportSendOperation;
 import report.UnsupportedReportActionException;
+import tse_config.GeneralWarnings;
 import webservice.MySOAPException;
 
 public class TseReportActions extends ReportActions {
@@ -130,30 +131,11 @@ public class TseReportActions extends ReportActions {
 			
 			SendMessageException sendE = (SendMessageException) e;
 			
-			switch(sendE.getResponse().getErrorType()) {
-			case NON_DP_USER:
-				
-				title = TSEMessages.get("error.title");
-				message = TSEMessages.get("account.incomplete", PropertiesReader.getSupportEmail());
-				icon = SWT.ICON_ERROR;
-
-				break;
-				
-			case USER_WITHOUT_ORG:
-				
-				title = TSEMessages.get("error.title");
-				message = TSEMessages.get("account.incorrect", PropertiesReader.getSupportEmail());
-				icon = SWT.ICON_ERROR;
-				
-				break;
-				
-			default:
-				
-				title = TSEMessages.get("error.title");
-				message = TSEMessages.get("send.message.failed", PropertiesReader.getSupportEmail(), sendE.getErrorMessage());
-				icon = SWT.ICON_ERROR;
-				break;
-			}
+			String[] warning = GeneralWarnings.getSendMessageWarning(sendE);
+			
+			title = warning[0];
+			message = warning[1];
+			icon = SWT.ICON_ERROR;
 			
 		}
 		else if (e instanceof ReportException) {
