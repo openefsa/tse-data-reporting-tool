@@ -77,9 +77,9 @@ public class TseReportActions extends ReportActions {
 			message = TSEMessages.get("report.io.error", PropertiesReader.getSupportEmail(), e.getMessage());
 		}
 		else if (e instanceof SendMessageException) {
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("send.message.failed", PropertiesReader.getSupportEmail(),
-					((SendMessageException) e).getErrorMessage());
+			String[] warning = GeneralWarnings.getSendMessageWarning((SendMessageException) e);
+			title = warning[0];
+			message = warning[1];
 		}
 		else if (e instanceof MySOAPException) {
 			String[] warning = Warnings.getSOAPWarning((MySOAPException) e);

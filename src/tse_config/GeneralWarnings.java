@@ -35,11 +35,8 @@ public class GeneralWarnings {
 		
 		String messageError = sendE.getMessage();
 		
-		System.err.println(messageError);
-		
-		
 		SendMessageErrorType type = SendMessageErrorType.fromString(messageError);
-		System.err.println(type);
+
 		switch(type) {
 		case NON_DP_USER:
 			
