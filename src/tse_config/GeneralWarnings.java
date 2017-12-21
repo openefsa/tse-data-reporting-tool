@@ -27,6 +27,7 @@ public class GeneralWarnings {
 		JOptionPane.showMessageDialog(null, TSEMessages.get("generic.error", PropertiesReader.getSupportEmail(), trace), 
 				TSEMessages.get("error.title"), JOptionPane.ERROR_MESSAGE);
 	}
+
 	
 	public static String[] getSendMessageWarning(SendMessageException sendE) {
 		
@@ -56,7 +57,7 @@ public class GeneralWarnings {
 			}
 			message = TSEMessages.get("account.wrong.org", orgCode);
 			break;
-		case USER_NO_ORG:
+		case USER_WRONG_PROFILE:
 			
 			title = TSEMessages.get("error.title");
 			message = TSEMessages.get("account.incorrect", PropertiesReader.getSupportEmail());
