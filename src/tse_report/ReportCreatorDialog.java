@@ -10,10 +10,11 @@ import org.eclipse.swt.widgets.Shell;
 
 import app_config.PropertiesReader;
 import dataset.Dataset;
-import dataset.DatasetStatus;
+import dataset.RCLDatasetStatus;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import report.ReportException;
+import soap.MySOAPException;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_dialog.TableDialog;
@@ -22,7 +23,6 @@ import table_skeleton.TableRow;
 import table_skeleton.TableVersion;
 import tse_config.CustomStrings;
 import tse_validator.SimpleRowValidatorLabelProvider;
-import webservice.MySOAPException;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -64,7 +64,7 @@ public class ReportCreatorDialog extends TableDialog {
 		row.setVersion(TableVersion.getFirstVersion());
 		
 		// by default the report status is draft for new reports
-		row.setStatus(DatasetStatus.DRAFT.getStatus());
+		row.setStatus(RCLDatasetStatus.DRAFT.getStatus());
 		
 		// update the formulas of the report
 		// to compute the sender id
@@ -137,7 +137,7 @@ public class ReportCreatorDialog extends TableDialog {
 
 			// if no errors, then we are able to create the report
 			
-			switch (oldReport.getStatus()) {
+			switch (oldReport.getRCLStatus()) {
 			case DELETED:
 				// we ignore deleted datasets
 				report.save();
@@ -173,7 +173,7 @@ public class ReportCreatorDialog extends TableDialog {
 		
 		String message = null;
 		
-		switch(oldReport.getStatus()) {
+		switch(oldReport.getRCLStatus()) {
 		case ACCEPTED_DWH:
 			message = TSEMessages.get("new.report.acc.dwh", oldReport.getId());
 			break;
@@ -183,7 +183,8 @@ public class ReportCreatorDialog extends TableDialog {
 		case VALID:
 		case VALID_WITH_WARNINGS:
 		case REJECTED_EDITABLE:
-			message = TSEMessages.get("new.report.other", oldReport.getId(), oldReport.getStatus().getLabel());
+			message = TSEMessages.get("new.report.other", oldReport.getId(), 
+					oldReport.getRCLStatus().getLabel());
 			break;
 		case PROCESSING:
 			message = TSEMessages.get("new.report.processing", oldReport.getId());

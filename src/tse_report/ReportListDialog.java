@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
 import dataset.DatasetList;
+import dataset.IDataset;
 import i18n_messages.TSEMessages;
 import table_database.TableDao;
 import table_dialog.DialogBuilder;
@@ -39,14 +40,14 @@ public class ReportListDialog extends TableDialog {
 		Collection<TableRow> reports = dao.getAll();
 		
 		// convert to dataset list
-		DatasetList<TseReport> tseReports = new DatasetList<>();
+		DatasetList tseReports = new DatasetList();
 		for (TableRow r : reports) {
 			TseReport report = new TseReport(r);
 			tseReports.add(report);
 		}
 		
 		// get only last versions
-		DatasetList<TseReport> lastVersions = tseReports.filterOldVersions();
+		DatasetList lastVersions = tseReports.filterOldVersions();
 
 		// sort the list
 		lastVersions.sort();
@@ -54,7 +55,10 @@ public class ReportListDialog extends TableDialog {
 		reports.clear();
 		
 		// convert back to table row
-		for (TseReport tseReport : lastVersions) {
+		for (IDataset dataset : lastVersions) {
+			
+			TseReport tseReport = (TseReport) dataset;
+			
 			reports.add(new TableRow(tseReport));
 		}
 		

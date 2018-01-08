@@ -23,6 +23,7 @@ import message_creator.OperationType;
 import report.ReportException;
 import report.ReportSendOperation;
 import report_downloader.TseReportDownloader;
+import soap.MySOAPException;
 import table_database.TableDao;
 import table_skeleton.TableRow;
 import table_skeleton.TableVersion;
@@ -34,7 +35,6 @@ import tse_options.SettingsDialog;
 import tse_report.ReportCreatorDialog;
 import tse_report.ReportListDialog;
 import tse_report.TseReport;
-import webservice.MySOAPException;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 
@@ -103,7 +103,8 @@ public class MainMenu {
 				downloadReport.setEnabled(!DebugConfig.disableFileFuncs && !isReportOpened);
 				
 				// can only export valid reports
-				exportReport.setEnabled(isReportOpened && mainPanel.getOpenedReport().getStatus().isValid());
+				exportReport.setEnabled(isReportOpened && mainPanel
+						.getOpenedReport().getRCLStatus().isValid());
 				importReport.setEnabled(!DebugConfig.disableFileFuncs && editable);
 			}
 		});

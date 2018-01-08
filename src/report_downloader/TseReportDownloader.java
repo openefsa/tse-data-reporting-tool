@@ -22,8 +22,8 @@ import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import report.DownloadReportDialog;
 import report.ReportDownloader;
+import soap.MySOAPException;
 import tse_config.CustomStrings;
-import webservice.MySOAPException;
 import xml_catalog_reader.Selection;
 import xml_catalog_reader.XmlContents;
 import xml_catalog_reader.XmlLoader;
@@ -43,7 +43,7 @@ public class TseReportDownloader extends ReportDownloader {
 	}
 
 	@Override
-	public ReportImporter getImporter(DatasetList<Dataset> allVersions) {
+	public ReportImporter getImporter(DatasetList allVersions) {
 		return new TseReportImporter(allVersions);
 	}
 
@@ -60,7 +60,7 @@ public class TseReportDownloader extends ReportDownloader {
 		yearCol.setLabelProvider(new ColumnLabelProvider() {
 			 @Override
 			public String getText(Object element) {
-				 
+
 				Dataset dataset = (Dataset) element;
 
 				String senderId = dataset.getSenderId();

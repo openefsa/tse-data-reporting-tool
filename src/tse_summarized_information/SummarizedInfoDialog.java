@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
-import dataset.DatasetStatus;
+import dataset.RCLDatasetStatus;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import report.Report;
@@ -414,7 +414,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 					
 					// if no errors update report status
 					if (errors.isEmpty()) {
-						report.setStatus(DatasetStatus.LOCALLY_VALIDATED);
+						report.setStatus(RCLDatasetStatus.LOCALLY_VALIDATED);
 						report.update();
 						updateUI();
 						warnUser(TSEMessages.get("success.title"), TSEMessages.get("check.success"),
@@ -441,11 +441,11 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				
-				EnumPicker<DatasetStatus> dialog = new EnumPicker<>(getDialog(), DatasetStatus.class);
-				dialog.setDefaultValue(report.getStatus());
+				EnumPicker<RCLDatasetStatus> dialog = new EnumPicker<>(getDialog(), RCLDatasetStatus.class);
+				dialog.setDefaultValue(report.getRCLStatus());
 				dialog.open();
 				
-				DatasetStatus status = (DatasetStatus) dialog.getSelection();
+				RCLDatasetStatus status = (RCLDatasetStatus) dialog.getSelection();
 				
 				if (status == null)
 					return;
@@ -623,7 +623,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		String reportMonth = report.getLabel(AppPaths.REPORT_MONTH);
 		String reportYear = report.getYear();
-		String status = report.getStatus().getLabel();
+		String status = report.getRCLStatus().getLabel();
 		String messageId = report.getMessageId();
 		String datasetId = report.getDatasetId();
 		
@@ -640,7 +640,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		}
 
 		String statusRow = TSEMessages.get("si.dataset.status", 
-				checkField(status, DatasetStatus.DRAFT.getLabel()));
+				checkField(status, RCLDatasetStatus.DRAFT.getLabel()));
 		
 		String messageRow = TSEMessages.get("si.message.id", 
 				checkField(messageId, TSEMessages.get("si.missing.data")));
@@ -655,7 +655,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setLabelText("datasetIdLabel", datasetRow);
 		
 		// enable the table only if report status if correct
-		DatasetStatus datasetStatus = DatasetStatus.fromString(status);
+		RCLDatasetStatus datasetStatus = RCLDatasetStatus.fromString(status);
 		boolean editableReport = datasetStatus.isEditable();
 		panel.setTableEditable(editableReport);
 		panel.setRowCreatorEnabled(editableReport);

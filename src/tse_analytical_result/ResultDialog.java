@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
-import dataset.DatasetStatus;
+import dataset.RCLDatasetStatus;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import predefined_results_reader.PredefinedResult;
@@ -130,7 +130,7 @@ public class ResultDialog extends TableDialogWithMenu {
 	private void updateUI() {
 		DialogBuilder panel = getPanelBuilder();
 		String status = report.getLabel(AppPaths.REPORT_STATUS);
-		DatasetStatus datasetStatus = DatasetStatus.fromString(status);
+		RCLDatasetStatus datasetStatus = RCLDatasetStatus.fromString(status);
 		boolean editableReport = datasetStatus.isEditable();
 		panel.setTableEditable(editableReport);
 		panel.setRowCreatorEnabled(editableReport);

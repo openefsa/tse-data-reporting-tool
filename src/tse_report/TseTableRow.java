@@ -5,7 +5,7 @@ import java.util.Collection;
 import xlsx_reader.TableSchema;
 
 public interface TseTableRow {
-	public int getId();
+	public int getDatabaseId();
 	public Collection<TseTableRow> getChildren();
 	public int save();
 	public TableSchema getSchema();

@@ -18,8 +18,8 @@ import report.ReportActions;
 import report.ReportException;
 import report.ReportSendOperation;
 import report.UnsupportedReportActionException;
+import soap.MySOAPException;
 import tse_config.GeneralWarnings;
-import webservice.MySOAPException;
 
 public class TseReportActions extends ReportActions {
 
@@ -194,7 +194,7 @@ public class TseReportActions extends ReportActions {
 	
 	private String[] getUnsupportedOpWarning(ReportSendOperation operation) {
 		
-		String datasetId = operation.getDataset().getDatasetId();
+		String datasetId = operation.getDataset().getId();
 	
 		String title;
 		String message;
@@ -298,8 +298,8 @@ public class TseReportActions extends ReportActions {
 	@Override
 	public boolean askReplaceConfirmation(ReportSendOperation sendOp) {
 		
-		String datasetId = sendOp.getDataset().getDatasetId();
-		String status = sendOp.getDataset().getStatus().getLabel();
+		String datasetId = sendOp.getDataset().getId();
+		String status = sendOp.getDataset().getRCLStatus().getLabel();
 		
 		String title = TSEMessages.get("warning.title");
 		String message = TSEMessages.get("send.warning.replace", datasetId, status);

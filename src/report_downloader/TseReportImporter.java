@@ -36,7 +36,7 @@ public class TseReportImporter extends ReportImporter {
 	 * @param datasetVersions a list with all the dataset versions. 
 	 * This is needed to manage amendments.
 	 */
-	public TseReportImporter(DatasetList<Dataset> datasetVersions) {
+	public TseReportImporter(DatasetList datasetVersions) {
 		super(datasetVersions, CustomStrings.RES_ID_COLUMN, 
 				CustomStrings.SENDER_DATASET_ID_COLUMN);
 		
@@ -110,13 +110,13 @@ public class TseReportImporter extends ReportImporter {
 				// import the case
 				TableRow caseInfo = importCase(report, summInfo, row);
 				
-				System.out.println("Imported caseInfo " + caseInfo.getId());
+				System.out.println("Imported caseInfo " + caseInfo.getDatabaseId());
 				
 				// import the result
 				TableRow result = importResult(report, summInfo, caseInfo, row);
 
 				System.out.println("AN RESULT " + result.getLabel(CustomStrings.RES_ID_COLUMN));
-				System.out.println("Imported result " + result.getId());
+				System.out.println("Imported result " + result.getDatabaseId());
 			}
 			else {
 				//System.out.println("SUMMARIZED INFO FOUND");
@@ -138,7 +138,7 @@ public class TseReportImporter extends ReportImporter {
 		TableRow currentCaseInfo = extractCase(report, summInfo, row);
 
 		// import the case info if not already imported
-		if (currentCaseInfo.getId() == -1) {
+		if (currentCaseInfo.getDatabaseId() == -1) {
 
 			// import case in the db
 			currentCaseInfo.save();

@@ -82,7 +82,7 @@ public class SummarizedInfo extends TableRow implements TseTableRow {
 		
 		TableDao dao = new TableDao(caseSchema);
 		Collection<TableRow> children = dao.getByParentId(CustomStrings.SUMMARIZED_INFO_SHEET, 
-				this.getId(), "desc");
+				this.getDatabaseId(), "desc");
 		
 		// create it as case report
 		for (TableRow child : children) {

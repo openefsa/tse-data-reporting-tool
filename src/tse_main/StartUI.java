@@ -25,7 +25,7 @@ import tse_config.DebugConfig;
 import tse_config.GeneralWarnings;
 import tse_options.PreferencesDialog;
 import tse_options.SettingsDialog;
-import user.User;
+import user.DcfUser;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 
@@ -101,7 +101,7 @@ public class StartUI {
 		String username = usernameVal.getLabel();
 		String password = passwordVal.getLabel();
 		
-		User user = User.getInstance();
+		DcfUser user = DcfUser.getInstance();
 		user.login(username, password);
 	}
 	

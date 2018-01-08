@@ -21,6 +21,7 @@ import i18n_messages.TSEMessages;
 import message.SendMessageException;
 import message_creator.OperationType;
 import report.ReportException;
+import soap.MySOAPException;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_skeleton.TableColumnValue;
@@ -29,8 +30,7 @@ import tse_config.CustomStrings;
 import tse_config.GeneralWarnings;
 import tse_report.TseReport;
 import tse_validator.SimpleRowValidatorLabelProvider;
-import user.User;
-import webservice.MySOAPException;
+import user.DcfUser;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -78,7 +78,7 @@ public class SettingsDialog extends OptionsDialog {
 		String username = usernameVal.getLabel();
 		String password = passwordVal.getLabel();
 
-		User.getInstance().login(username, password);
+		DcfUser.getInstance().login(username, password);
 	}
 	
 	@Override

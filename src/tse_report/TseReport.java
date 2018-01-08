@@ -13,7 +13,8 @@ import org.xml.sax.SAXException;
 
 import app_config.AppPaths;
 import dataset.Dataset;
-import dataset.DatasetStatus;
+import dataset.DcfDatasetStatus;
+import dataset.RCLDatasetStatus;
 import message.MessageConfigBuilder;
 import message.SendMessageException;
 import message_creator.OperationType;
@@ -21,6 +22,7 @@ import report.EFSAReport;
 import report.Report;
 import report.ReportException;
 import report.ReportList;
+import soap.MySOAPException;
 import table_database.TableDao;
 import table_relations.Relation;
 import table_skeleton.TableRow;
@@ -31,7 +33,6 @@ import tse_config.CatalogLists;
 import tse_config.CustomStrings;
 import tse_summarized_information.SummarizedInfo;
 import tse_validator.SummarizedInfoValidator;
-import webservice.MySOAPException;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 
@@ -59,7 +60,7 @@ public class TseReport extends Report implements TseTableRow {
 		TseReport report = new TseReport();
 		report.setCountry("Default");
 		report.setSenderId("Default");
-		report.setStatus(DatasetStatus.DRAFT);
+		report.setStatus(RCLDatasetStatus.DRAFT);
 		report.setMonth("");
 		report.setYear("");
 		report.setVersion(TableVersion.getFirstVersion());
@@ -113,7 +114,7 @@ public class TseReport extends Report implements TseTableRow {
 			
 			TableDao dao = new TableDao(schema);
 			
-			Collection<TableRow> children = dao.getByParentId(CustomStrings.REPORT_SHEET, this.getId(), "desc");
+			Collection<TableRow> children = dao.getByParentId(CustomStrings.REPORT_SHEET, this.getDatabaseId(), "desc");
 			
 			records.addAll(children);
 		}
@@ -133,7 +134,7 @@ public class TseReport extends Report implements TseTableRow {
 		
 		TableDao dao = new TableDao(summInfoSchema);
 		Collection<TableRow> children = dao.getByParentId(CustomStrings.REPORT_SHEET, 
-				this.getId(), "desc");
+				this.getDatabaseId(), "desc");
 		
 		// create it as summarized info array
 		for (TableRow child : children) {
@@ -182,7 +183,7 @@ public class TseReport extends Report implements TseTableRow {
 				this.setVersion(newVersion);
 				
 				// new version is in draft
-				this.setStatus(DatasetStatus.DRAFT);
+				this.setStatus(RCLDatasetStatus.DRAFT);
 				
 				this.setDatasetId("");
 				this.setMessageId("");
@@ -463,10 +464,10 @@ public class TseReport extends Report implements TseTableRow {
 		
 		report.setSenderId(senderId);
 		
-		if (dataset.getStatus() != null)
-			report.setStatus(dataset.getStatus().getStatus());
+		if (dataset.getRCLStatus() != null)
+			report.setStatus(dataset.getRCLStatus());
 		else
-			report.setStatus(DatasetStatus.DRAFT.getStatus());
+			report.setStatus(RCLDatasetStatus.DRAFT);
 		
 		// split FR1705... into country year and month
 		if (senderId.length() < 6) {
@@ -522,11 +523,27 @@ public class TseReport extends Report implements TseTableRow {
 	 * @return
 	 */
 	public boolean isEditable() {
-		return getStatus().isEditable();
+		return getRCLStatus().isEditable();
 	}
 
 	@Override
 	public String getDecomposedSenderId() {
 		return this.getSenderId();  // for report is already decomposed
+	}
+
+	@Override
+	public void setId(String id) {}
+
+	@Override
+	public void setStatus(DcfDatasetStatus status) {}
+
+	@Override
+	public String getId() {
+		return null;
+	}
+
+	@Override
+	public DcfDatasetStatus getStatus() {
+		return null;
 	}
 }
