@@ -30,7 +30,7 @@ import tse_config.CustomStrings;
 import tse_config.GeneralWarnings;
 import tse_report.TseReport;
 import tse_validator.SimpleRowValidatorLabelProvider;
-import user.DcfUser;
+import user.User;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -78,7 +78,7 @@ public class SettingsDialog extends OptionsDialog {
 		String username = usernameVal.getLabel();
 		String password = passwordVal.getLabel();
 
-		DcfUser.getInstance().login(username, password);
+		User.getInstance().login(username, password);
 	}
 	
 	@Override
@@ -121,7 +121,7 @@ public class SettingsDialog extends OptionsDialog {
 
 					// here is success
 					title = TSEMessages.get("success.title");
-					message = "Test successfully completed.";
+					message = TSEMessages.get("test.connection.success");
 					jStyle = JOptionPane.INFORMATION_MESSAGE;
 					
 				} catch (MySOAPException e) {
