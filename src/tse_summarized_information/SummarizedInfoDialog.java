@@ -486,7 +486,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			public void widgetSelected(SelectionEvent arg0) {
 				
 				NumberInputDialog dialog = new NumberInputDialog(getDialog());
-				dialog.setDefaultValue(report.getDatasetId());
+				dialog.setDefaultValue(report.getId());
 				Integer dataIdNumeric = dialog.open();
 				
 				String datasetId = "";
@@ -495,7 +495,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				}
 				
 				if (!dialog.wasCancelled()) {
-					report.setDatasetId(datasetId);
+					report.setId(datasetId);
 					report.update();
 					updateUI();
 				}
@@ -625,7 +625,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		String reportYear = report.getYear();
 		String status = report.getRCLStatus().getLabel();
 		String messageId = report.getMessageId();
-		String datasetId = report.getDatasetId();
+		String datasetId = report.getId();
 		
 		String reportRow;
 		

@@ -65,7 +65,7 @@ public class TseReport extends Report implements TseTableRow {
 		report.setYear("");
 		report.setVersion(TableVersion.getFirstVersion());
 		report.setMessageId("");
-		report.setDatasetId("");
+		report.setId("");
 		
 		Relation.injectGlobalParent(report, CustomStrings.PREFERENCES_SHEET);
 		
@@ -185,7 +185,7 @@ public class TseReport extends Report implements TseTableRow {
 				// new version is in draft
 				this.setStatus(RCLDatasetStatus.DRAFT);
 				
-				this.setDatasetId("");
+				this.setId("");
 				this.setMessageId("");
 			}
 			else if (currentElement instanceof SummarizedInfo) {
@@ -447,7 +447,7 @@ public class TseReport extends Report implements TseTableRow {
 		
 		String senderDatasetId = dataset.getOperation().getSenderDatasetId();
 		
-		report.setDatasetId(dataset.getOperation().getDatasetId());
+		report.setId(dataset.getId());
 		
 		String[] split = Dataset.splitSenderId(senderDatasetId);
 		
@@ -532,18 +532,25 @@ public class TseReport extends Report implements TseTableRow {
 	}
 
 	@Override
-	public void setId(String id) {}
-
-	@Override
-	public void setStatus(DcfDatasetStatus status) {}
-
-	@Override
-	public String getId() {
-		return null;
+	public void setStatus(DcfDatasetStatus status) {
+		try {
+			throw new UnsupportedOperationException("Cannot use this method");
+		}
+		catch(UnsupportedOperationException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public DcfDatasetStatus getStatus() {
+		
+		try {
+			throw new UnsupportedOperationException("Cannot use this method");
+		}
+		catch(UnsupportedOperationException e) {
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 }

@@ -377,6 +377,7 @@ public class TseReportImporter extends ReportImporter {
 		// extract the information from the dataset
 		// and insert the report into the database
 		this.report = TseReport.fromDataset(dataset);
+		
 		report.save();
 		
 		return this.report;

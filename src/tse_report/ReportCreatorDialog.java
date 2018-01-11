@@ -95,7 +95,7 @@ public class ReportCreatorDialog extends TableDialog {
 		
 		try {
 			
-			oldReport = report.getDataset();
+			oldReport = report.getLatestDataset();
 			
 		} catch (MySOAPException e) {
 			
@@ -146,7 +146,7 @@ public class ReportCreatorDialog extends TableDialog {
 				// we mantain the same dataset id
 				// of the rejected dataset, but actually
 				// we create a new report with that
-				report.setDatasetId(oldReport.getId());
+				report.setId(oldReport.getId());
 				report.save();
 				break;
 				
