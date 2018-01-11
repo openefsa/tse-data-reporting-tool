@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Stack;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.SOAPException;
@@ -81,7 +84,26 @@ public class TseReport extends Report implements TseTableRow {
 				TableSchemaList.getByName(CustomStrings.RESULT_SHEET)
 		};
 
-		return getRecords(schemas);
+		Collection<TableRow> records = getRecords(schemas);
+		
+		// remove random genotyping from the summarized information
+		List<TableRow> filteredRecords = records.stream().filter(new Predicate<TableRow>() {
+			@Override
+			public boolean test(TableRow arg0) {
+				
+				if (SummarizedInfo.isSummarizedInfo(arg0)) {
+					
+					String type = arg0.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
+					
+					if (type.equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE))
+						return false;
+				}
+				
+				return true;
+			}
+		}).collect(Collectors.toList());
+		
+		return filteredRecords;
 	}
 	
 	/**
