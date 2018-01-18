@@ -327,6 +327,9 @@ public class TseReportValidator extends ReportValidator {
 			case NO_TEST_SPECIFIED:
 				errors.add(new NoTestSpecifiedError(getStackTrace(row)));
 				break;
+			case DUPLICATED_TEST:
+				errors.add(new DuplicatedTestError(getStackTrace(row)));
+				break;
 			default:
 				break;
 			}

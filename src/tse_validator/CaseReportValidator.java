@@ -2,6 +2,7 @@ package tse_validator;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -18,7 +19,8 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 	public enum Check {
 		OK,
 		WRONG_RESULTS,
-		NO_TEST_SPECIFIED
+		NO_TEST_SPECIFIED,
+		DUPLICATED_TEST
 	}
 
 	public Check isRecordCorrect(TableRow row) throws IOException {
@@ -32,12 +34,26 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			return Check.NO_TEST_SPECIFIED;
 		}
 		
+		if (isTestDuplicated(results)) {
+			return Check.DUPLICATED_TEST;
+		}
+		
 		// check children errors
 		if (row.hasChildrenError()) {
 			return Check.WRONG_RESULTS;
 		}
 		
 		return Check.OK;
+	}
+	
+	public boolean isTestDuplicated(Collection<TableRow> results) {
+		
+		HashSet<String> set = new HashSet<>();
+		for (TableRow row : results) {
+			set.add(row.getCode(CustomStrings.RESULT_TEST_TYPE));
+		}
+		
+		return (set.size() != results.size());
 	}
 	
 	public int getOverallWarningLevel(TableRow row) {
@@ -86,6 +102,9 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			case WRONG_RESULTS:
 				text = TSEMessages.get("cases.wrong.results");
 				break;
+			case DUPLICATED_TEST:
+				text = TSEMessages.get("cases.duplicated.test.type");
+				break;
 			default:
 				break;
 			}
@@ -116,6 +135,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			switch (check) {
 			case NO_TEST_SPECIFIED:
 			case WRONG_RESULTS:
+			case DUPLICATED_TEST:
 				color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);
 				break;
 			default:
