@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Shell;
 import amend_manager.ReportImporter;
 import app_config.AppPaths;
 import app_config.PropertiesReader;
+import data_collection.IDcfDataCollection;
 import dataset.Dataset;
 import dataset.DatasetList;
 import dataset.NoAttachmentException;
@@ -52,9 +53,9 @@ public class TseReportDownloader extends ReportDownloader {
 	}
 	
 	@Override
-	public DownloadReportDialog getDownloadDialog() {
+	public DownloadReportDialog getDownloadDialog(IDcfDataCollection dc) {
 		
-		DownloadReportDialog dialog = new DownloadReportDialog(shell, 
+		DownloadReportDialog dialog = new DownloadReportDialog(dc, shell, 
 				CustomStrings.VALID_SENDER_ID_PATTERN);
 		
 		// here the shell is initialized
@@ -132,7 +133,13 @@ public class TseReportDownloader extends ReportDownloader {
 		dialog.addStatusCol();
 		dialog.addRevisionCol();
 		
+		
+		shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+		
 		dialog.loadDatasets();
+		
+		shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+		
 		
 		boolean restored = window.restore(TSERestoreableWindowDao.class);
 

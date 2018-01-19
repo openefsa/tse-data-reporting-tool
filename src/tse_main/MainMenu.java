@@ -230,7 +230,11 @@ public class MainMenu {
 			public void widgetSelected(SelectionEvent arg0) {
 				
 				TseReportDownloader downloader = new TseReportDownloader(shell);
-				downloader.download();
+				try {
+					downloader.download();
+				} catch (MySOAPException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		
