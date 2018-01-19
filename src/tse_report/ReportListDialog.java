@@ -8,16 +8,21 @@ import org.eclipse.swt.widgets.Shell;
 import dataset.DatasetList;
 import dataset.IDataset;
 import i18n_messages.TSEMessages;
+import session_manager.TSERestoreableWindowDao;
 import table_database.TableDao;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_dialog.TableDialog;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
+import window_restorer.RestoreableWindow;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
 public class ReportListDialog extends TableDialog {
+	
+	private RestoreableWindow window;
+	private static final String WINDOW_CODE = "ReportList";
 	
 	private TseReport selectedReport;
 	
@@ -26,6 +31,10 @@ public class ReportListDialog extends TableDialog {
 		
 		// create the parent structure
 		super.create();
+		
+		this.window = new RestoreableWindow(getDialog(), WINDOW_CODE);
+		window.restore(TSERestoreableWindowDao.class);
+		window.saveOnClosure(TSERestoreableWindowDao.class);
 	}
 
 	@Override

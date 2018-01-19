@@ -17,6 +17,7 @@ import dataset.RCLDatasetStatus;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import report.Report;
+import session_manager.TSERestoreableWindowDao;
 import table_database.TableDao;
 import table_dialog.DialogBuilder;
 import table_dialog.EditorListener;
@@ -30,6 +31,7 @@ import tse_components.TableDialogWithMenu;
 import tse_config.CustomStrings;
 import tse_summarized_information.SummarizedInfo;
 import tse_validator.CaseReportValidator;
+import window_restorer.RestoreableWindow;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.Selection;
@@ -40,6 +42,9 @@ import xml_catalog_reader.Selection;
  *
  */
 public class CaseReportDialog extends TableDialogWithMenu {
+	
+	private RestoreableWindow window;
+	private static final String WINDOW_CODE = "CaseReport";
 	
 	private Report report;
 	private SummarizedInfo summInfo;
@@ -54,8 +59,13 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		// create the parent structure
 		super.create();
 		
+		this.window = new RestoreableWindow(getDialog(), WINDOW_CODE);
+		boolean restored = window.restore(TSERestoreableWindowDao.class);
+		window.saveOnClosure(TSERestoreableWindowDao.class);
+		
 		// add 300 px in height
-		addHeight(300);
+		if (!restored)
+			addHeight(300);
 		
 		// update the ui
 		updateUI();

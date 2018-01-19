@@ -26,6 +26,7 @@ import report.Report;
 import report.ReportAckManager;
 import report.ReportActions;
 import report_validator.ReportError;
+import session_manager.TSERestoreableWindowDao;
 import table_dialog.DialogBuilder;
 import table_dialog.EditorListener;
 import table_dialog.RowValidatorLabelProvider;
@@ -44,6 +45,7 @@ import tse_config.DebugConfig;
 import tse_report.TseReport;
 import tse_validator.SummarizedInfoValidator;
 import tse_validator.TseReportValidator;
+import window_restorer.RestoreableWindow;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -54,6 +56,9 @@ import xml_catalog_reader.Selection;
  */
 public class SummarizedInfoDialog extends TableDialogWithMenu {
 
+	private RestoreableWindow window;
+	private static final String WINDOW_CODE = "SummarizedInformation";
+	
 	private TseReport report;
 	
 	public SummarizedInfoDialog(Shell parent) {
@@ -66,8 +71,13 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		// default disabled
 		setRowCreationEnabled(false);
 		
+		this.window = new RestoreableWindow(getDialog(), WINDOW_CODE);
+		boolean restored = window.restore(TSERestoreableWindowDao.class);
+		window.saveOnClosure(TSERestoreableWindowDao.class);
+		
 		// add 300 px in height
-		addHeight(300);
+		if (!restored)
+			addHeight(300);
 		
 		setEditorListener(new EditorListener() {
 			

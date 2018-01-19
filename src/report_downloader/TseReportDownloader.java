@@ -22,8 +22,10 @@ import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import report.DownloadReportDialog;
 import report.ReportDownloader;
+import session_manager.TSERestoreableWindowDao;
 import soap.MySOAPException;
 import tse_config.CustomStrings;
+import window_restorer.RestoreableWindow;
 import xml_catalog_reader.Selection;
 import xml_catalog_reader.XmlContents;
 import xml_catalog_reader.XmlLoader;
@@ -35,6 +37,8 @@ import xml_catalog_reader.XmlLoader;
  */
 public class TseReportDownloader extends ReportDownloader {
 
+	private RestoreableWindow window;
+	private static final String WINDOW_CODE = "TSEReportDownloader";
 	private Shell shell;
 	
 	public TseReportDownloader(Shell shell) {
@@ -46,12 +50,16 @@ public class TseReportDownloader extends ReportDownloader {
 	public ReportImporter getImporter(DatasetList allVersions) {
 		return new TseReportImporter(allVersions);
 	}
-
+	
 	@Override
-	public DownloadReportDialog getDialog() {
+	public DownloadReportDialog getDownloadDialog() {
 		
 		DownloadReportDialog dialog = new DownloadReportDialog(shell, 
 				CustomStrings.VALID_SENDER_ID_PATTERN);
+		
+		// here the shell is initialized
+		this.window = new RestoreableWindow(dialog.getDialog(), WINDOW_CODE);
+		window.saveOnClosure(TSERestoreableWindowDao.class);
 		
 		TableViewer table = dialog.getTable();
 		TableViewerColumn yearCol = new TableViewerColumn(table, SWT.NONE);
@@ -125,7 +133,14 @@ public class TseReportDownloader extends ReportDownloader {
 		dialog.addRevisionCol();
 		
 		dialog.loadDatasets();
+		
+		boolean restored = window.restore(TSERestoreableWindowDao.class);
 
+		if (!restored) {
+			dialog.getDialog().pack();
+			dialog.getDialog().setSize(dialog.getDialog().getSize().x, 500);
+		}
+		
 		return dialog;
 	}
 

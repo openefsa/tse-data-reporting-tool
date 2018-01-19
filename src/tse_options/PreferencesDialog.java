@@ -19,8 +19,10 @@ import xml_catalog_reader.Selection;
  */
 public class PreferencesDialog extends OptionsDialog {
 	
+	public static final String WINDOW_CODE = "Preferences";
+	
 	public PreferencesDialog(Shell parent) {
-		super(parent, TSEMessages.get("pref.title"));
+		super(parent, TSEMessages.get("pref.title"), WINDOW_CODE);
 	}
 	
 	@Override

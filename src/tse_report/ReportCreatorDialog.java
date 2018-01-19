@@ -14,6 +14,7 @@ import dataset.RCLDatasetStatus;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import report.ReportException;
+import session_manager.TSERestoreableWindowDao;
 import soap.MySOAPException;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
@@ -23,6 +24,7 @@ import table_skeleton.TableRow;
 import table_skeleton.TableVersion;
 import tse_config.CustomStrings;
 import tse_validator.SimpleRowValidatorLabelProvider;
+import window_restorer.RestoreableWindow;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -33,11 +35,18 @@ import xml_catalog_reader.Selection;
  */
 public class ReportCreatorDialog extends TableDialog {
 	
+	private RestoreableWindow window;
+	private static final String WINDOW_CODE = "ReportCreator";
+	
 	public ReportCreatorDialog(Shell parent) {
 		super(parent, TSEMessages.get("new.report.title"), true, true);
 		
 		// create the parent structure
 		super.create();
+		
+		this.window = new RestoreableWindow(getDialog(), WINDOW_CODE);
+		window.restore(TSERestoreableWindowDao.class);
+		window.saveOnClosure(TSERestoreableWindowDao.class);
 	}
 	
 	@Override

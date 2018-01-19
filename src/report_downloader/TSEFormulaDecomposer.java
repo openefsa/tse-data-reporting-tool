@@ -105,33 +105,6 @@ public class TSEFormulaDecomposer extends FormulaDecomposer {
 	 * @return
 	 * @throws ParseException 
 	 */
-	private HashMap<String, TableColumnValue> splitFoodexWithNames(String value) throws ParseException {
-		
-		FoodexElement foodexCode = this.splitFoodex(value, 
-				AttributeIdentifier.NAME_VALUE);
-		
-		HashMap<String, TableColumnValue> rowValues = new HashMap<>();
-		
-		for (AttributeElement facet : foodexCode.getFacetList()) {
-			
-			TableColumnValue colVal = new TableColumnValue();
-			colVal.setCode(facet.getValue());
-			
-			// save value with id the attribute id
-			rowValues.put(facet.getId(), colVal);
-		}
-		
-		return rowValues;
-	}
-	
-	
-	/**
-	 * Split a foodex code with headers and return the row values
-	 * related to them
-	 * @param value
-	 * @return
-	 * @throws ParseException 
-	 */
 	private HashMap<String, TableColumnValue> splitFoodexWithHeaders(String value) throws ParseException {
 		
 		FoodexElement foodexCode = this.splitFoodex(value, 

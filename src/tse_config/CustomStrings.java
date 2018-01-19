@@ -5,6 +5,7 @@ import app_config.AppPaths;
 public class CustomStrings {
 	
 	public static final String PREDEFINED_RESULTS_FILE = AppPaths.CONFIG_FOLDER + "predefinedResults.xlsx";
+	public static final String PREFERENCE_FOLDER = "preferences" + System.getProperty("file.separator");
 	
 	// sheets names
 	public static final String RESULT_SHEET = "AnalyticalResults";

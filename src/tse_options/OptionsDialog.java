@@ -5,22 +5,29 @@ import java.util.Collection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
+import session_manager.TSERestoreableWindowDao;
 import table_database.TableDao;
 import table_dialog.TableDialog;
 import table_relations.Relation;
 import table_skeleton.TableRow;
+import window_restorer.RestoreableWindow;
 import xlsx_reader.TableSchema;
 
 public abstract class OptionsDialog extends TableDialog {
 	
+	private RestoreableWindow window;
 	private OptionsChangedListener listener;
 	private int status; 
 	
-	public OptionsDialog(Shell parent, String title) {
+	public OptionsDialog(Shell parent, String title, String windowCode) {
 		super(parent, title, true, true);
 		
 		// create the parent structure
-		super.create();
+		Shell dialog = super.create();
+
+		this.window = new RestoreableWindow(dialog, windowCode);
+		window.restore(TSERestoreableWindowDao.class);
+		window.saveOnClosure(TSERestoreableWindowDao.class);
 		
 		this.status = SWT.CANCEL;
 	}

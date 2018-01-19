@@ -41,8 +41,10 @@ import xml_catalog_reader.Selection;
  */
 public class SettingsDialog extends OptionsDialog {
 
+	public static final String WINDOW_CODE = "Settings";
+	
 	public SettingsDialog(Shell parent) {
-		super(parent, TSEMessages.get("settings.title"));
+		super(parent, TSEMessages.get("settings.title"), WINDOW_CODE);
 	}
 
 	@Override

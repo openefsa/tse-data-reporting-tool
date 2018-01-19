@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Shell;
 import app_config.AppPaths;
 import app_config.PropertiesReader;
 import global_utils.EFSARCL;
+import global_utils.FileUtils;
 import global_utils.Warnings;
 import html_viewer.HtmlViewer;
 import i18n_messages.TSEMessages;
@@ -204,6 +205,8 @@ public class StartUI {
 		}
 		
 		try {
+			
+			FileUtils.createFolder(CustomStrings.PREFERENCE_FOLDER);
 			
 			// initialize the library
 			EFSARCL.init();

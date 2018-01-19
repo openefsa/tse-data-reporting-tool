@@ -14,6 +14,7 @@ import i18n_messages.TSEMessages;
 import predefined_results_reader.PredefinedResult;
 import predefined_results_reader.PredefinedResultHeader;
 import report.Report;
+import session_manager.TSERestoreableWindowDao;
 import table_dialog.DialogBuilder;
 import table_dialog.EditorListener;
 import table_dialog.RowValidatorLabelProvider;
@@ -25,6 +26,7 @@ import tse_components.TableDialogWithMenu;
 import tse_config.CustomStrings;
 import tse_summarized_information.SummarizedInfo;
 import tse_validator.ResultValidator;
+import window_restorer.RestoreableWindow;
 import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
@@ -34,6 +36,9 @@ import xml_catalog_reader.Selection;
  *
  */
 public class ResultDialog extends TableDialogWithMenu {
+	
+	private RestoreableWindow window;
+	private static final String WINDOW_CODE = "AnalyticalResult";
 	
 	private Report report;
 	private SummarizedInfo summInfo;
@@ -50,8 +55,13 @@ public class ResultDialog extends TableDialogWithMenu {
 		// create the dialog
 		super.create();
 		
+		this.window = new RestoreableWindow(getDialog(), WINDOW_CODE);
+		boolean restored = window.restore(TSERestoreableWindowDao.class);
+		window.saveOnClosure(TSERestoreableWindowDao.class);
+		
 		// add 300 px in height
-		addHeight(300);
+		if (!restored)
+			addHeight(300);
 		
 		setEditorListener(new EditorListener() {
 			
