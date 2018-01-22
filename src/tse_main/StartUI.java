@@ -1,5 +1,6 @@
 package tse_main;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -16,6 +17,7 @@ import global_utils.FileUtils;
 import global_utils.Warnings;
 import html_viewer.HtmlViewer;
 import i18n_messages.TSEMessages;
+import log.ConsolePrinter;
 import table_database.Database;
 import table_database.DatabaseVersionException;
 import table_database.TableDao;
@@ -33,9 +35,10 @@ import xlsx_reader.TableSchemaList;
 
 public class StartUI {
 
+	private static String sessionId;
 	private static Display display;
 	private static Shell shell;
-	
+
 	/**
 	 * Check if the mandatory fields of a generic settings table are filled or not
 	 * @param tableName
@@ -45,18 +48,18 @@ public class StartUI {
 	private static boolean checkSettings(String tableName) {
 
 		TableDao dao = new TableDao(TableSchemaList.getByName(tableName));
-		
+
 		Collection<TableRow> data = dao.getAll();
-		
+
 		if(data.isEmpty())
 			return false;
-		
+
 		TableRow firstRow = data.iterator().next();
-		
+
 		// check if the mandatory fields are filled or not
 		return firstRow.areMandatoryFilled();
 	}
-	
+
 	/**
 	 * Check if the settings were set or not
 	 * @return
@@ -65,7 +68,7 @@ public class StartUI {
 	private static boolean checkSettings() {
 		return checkSettings(CustomStrings.SETTINGS_SHEET);
 	}
-	
+
 	/**
 	 * Check if the preferences were set or not
 	 * @return
@@ -74,58 +77,59 @@ public class StartUI {
 	private static boolean checkPreferences() {
 		return checkSettings(CustomStrings.PREFERENCES_SHEET);
 	}
-	
+
 	/**
 	 * Login the user into the system in order to be able to
 	 * perform web-service calls
 	 */
 	private static void loginUser() {
-		
+
 		// get the settings schema table
 		TableSchema settingsSchema = TableSchemaList.getByName(CustomStrings.SETTINGS_SHEET);
-		
+
 		TableDao dao = new TableDao(settingsSchema);
-		
+
 		// get the settings
 		TableRow settings = dao.getAll().iterator().next();
-		
+
 		if (settings == null)
 			return;
-		
+
 		// get credentials
 		TableColumnValue usernameVal = settings.get(CustomStrings.SETTINGS_USERNAME);
 		TableColumnValue passwordVal = settings.get(CustomStrings.SETTINGS_PASSWORD);
-		
+
 		if (usernameVal == null || passwordVal == null)
 			return;
-		
+
 		// login the user
 		String username = usernameVal.getLabel();
 		String password = passwordVal.getLabel();
-		
+
 		DcfUser user = User.getInstance();
 		user.login(username, password);
 	}
-	
+
 	/**
 	 * Close the application (db + interface)
 	 * @param db
 	 * @param display
 	 */
 	private static void shutdown(Database db, Display display) {
-		
+
 		System.out.println("Application closed " + System.currentTimeMillis());
 
 		if (display != null)
 			display.dispose();
-		
+
 		// close the database
-		db.shutdown();
-		
+		if (db != null)
+			db.shutdown();
+
 		// exit the application
 		System.exit(0);
 	}
-	
+
 	/**
 	 * Show an error to the user
 	 * @param errorCode
@@ -135,37 +139,37 @@ public class StartUI {
 		Display display = new Display();
 		Shell shell = new Shell(display);
 		Warnings.warnUser(shell, TSEMessages.get("error.title"), message);
-		
+
 		shell.dispose();
 		display.dispose();
 	}
-	
+
 	private static int ask(String message) {
 		Display display = new Display();
 		Shell shell = new Shell(display);
 		int val = Warnings.warnUser(shell, TSEMessages.get("warning.title"), 
 				message, 
 				SWT.YES | SWT.NO | SWT.ICON_WARNING);
-		
+
 		shell.dispose();
 		display.dispose();
-		
+
 		return val;
 	}
-	
-	
+
+
 	/**
 	 * Create the main panel for the user interface
 	 * @return
 	 */
 	private static Shell createUi() {
-		
+
 		display = new Display();
 		shell = new Shell(display);
-		
+
 		// set the application name in the shell
 		shell.setText(PropertiesReader.getAppName() + " " + PropertiesReader.getAppVersion());
-		
+
 		// open the main panel
 		try {
 			new MainPanel(shell);
@@ -174,26 +178,43 @@ public class StartUI {
 			e.printStackTrace();
 			GeneralWarnings.showExceptionStack(shell, e);
 		}
-		
+
 		// set the application icon into the shell
 		Image image = new Image(Display.getCurrent(), 
 				ClassLoader.getSystemResourceAsStream(PropertiesReader.getAppIcon()));
 
 		if (image != null)
 			shell.setImage(image);
-		
+
 		return shell;
 	}
-	
+
 	/**
 	 * Start the TSE data reporting tool interface & database
 	 * @param args
+	 * @throws IOException 
 	 */
-	public static void main(String args[]) {
+	public static void main(String args[]) throws IOException {
+
+		// log the session
+		ConsolePrinter consolePrinter = ConsolePrinter.getInstance();
+		
+		sessionId = String.valueOf(System.nanoTime());
+		File logDir = new File(CustomStrings.LOG_FOLDER);
+		consolePrinter.start(sessionId, logDir);
+		
+		Database db = launch();
+		
+		consolePrinter.close();
+		
+		shutdown(db, display);
+	}
+
+	private static Database launch() {
 		
 		// application start-up message. Usage of System.err used for red chars
 		System.out.println("Application started " + System.currentTimeMillis());
-		
+
 		// connect to the database application
 		Database db = new Database();
 		try {
@@ -201,86 +222,86 @@ public class StartUI {
 		} catch (IOException e) {
 			e.printStackTrace();
 			showInitError(TSEMessages.get("db.init.error", e.getMessage()));
-			return;
+			return null;
 		}
-		
+
 		try {
-			
+
 			FileUtils.createFolder(CustomStrings.PREFERENCE_FOLDER);
-			
+
 			// initialize the library
 			EFSARCL.init();
-			
+
 			// check also custom files
 			EFSARCL.checkConfigFiles(CustomStrings.PREDEFINED_RESULTS_FILE, 
 					AppPaths.CONFIG_FOLDER);
-			
+
 		} catch (IOException | SQLException e) {
 			e.printStackTrace();
 			showInitError(TSEMessages.get("efsa.rcl.init.error", e.getMessage()));
-			return;
+			return db;
 		} catch (DatabaseVersionException e) {
 			e.printStackTrace();
-			
+
 			int val = ask(TSEMessages.get("db.need.removal"));
-			
+
 			// close application
 			if (val == SWT.NO)
-				shutdown(db, display);
+				return db;
 			else {
-				
+
 				// delete the database
 				try {
-					
+
 					// delete the old database
 					db.delete();
-					
+
 					// reconnect to the database and
 					// create a new one
 					db.connect();
-					
+
 				} catch (IOException e1) {
 					e1.printStackTrace();
-					
+
 					showInitError(TSEMessages.get("db.removal.error"));
-					
-					shutdown(db, display);
+
+					return db;
 				}
 			}
 		}
 
 		// create the main panel
 		createUi();
-	    
-	    // open also an help view for showing general help
-	    if (!DebugConfig.debug) {
-		    HtmlViewer help = new HtmlViewer();
-		    help.open(PropertiesReader.getStartupHelpURL());
-	    }
-		
+
+		// open also an help view for showing general help
+		if (!DebugConfig.debug) {
+			HtmlViewer help = new HtmlViewer();
+			help.open(PropertiesReader.getStartupHelpURL());
+		}
+
 		// open the shell to the user
-	    shell.open();
-		
+		shell.open();
+
 		// check preferences
 		if (!checkPreferences()) {
 			PreferencesDialog pref = new PreferencesDialog(shell);
 			pref.open();
-						// if the preferences were not set
+			// if the preferences were not set
 			if (pref.getStatus() == SWT.CANCEL) {
 				// close the application
-				shutdown(db, display);
+				return db;
 			}
 		}
-		
+
 		// check settings
 		if (!checkSettings()) {
 			SettingsDialog settings = new SettingsDialog(shell);
 			settings.open();
-			
+
 			// if the settings were not set
 			if (settings.getStatus() == SWT.CANCEL) {
 				// close the application
-				shutdown(db, display);
+				return db;
 			}
 		}
 		else {
@@ -288,14 +309,13 @@ public class StartUI {
 			// with the current credentials
 			loginUser();
 		}
-		
+
 		// Event loop
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch())
 				display.sleep();
 		}
 
-		// close the application
-		shutdown(db, display);
+		return db;
 	}
 }

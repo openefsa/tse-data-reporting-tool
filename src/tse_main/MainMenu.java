@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.xml.sax.SAXException;
 
 import app_config.PropertiesReader;
+import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import message.MessageConfigBuilder;
 import message_creator.OperationType;
@@ -234,6 +235,7 @@ public class MainMenu {
 					downloader.download();
 				} catch (MySOAPException e) {
 					e.printStackTrace();
+					Warnings.showSOAPWarning(shell, e);
 				}
 			}
 		});

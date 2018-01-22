@@ -5,7 +5,7 @@ import javax.swing.JOptionPane;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.PropertiesReader;
-import exception_manager.ExceptionConverter;
+import converter.ExceptionConverter;
 import i18n_messages.TSEMessages;
 import message.SendMessageErrorType;
 import message.SendMessageException;
