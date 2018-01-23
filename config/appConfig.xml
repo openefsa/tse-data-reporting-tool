@@ -3,7 +3,7 @@
 <properties>
 <comment>Application configuration</comment>
 <entry key="Application.Name">EFSA TSE data submission tool</entry> <!-- main title of the application -->
-<entry key="Application.Version">1.1.2</entry> <!-- version of the application that will displayed after the application name -->
+<entry key="Application.Version">1.1.3</entry> <!-- version of the application that will displayed after the application name -->
 <entry key="Db.MinRequiredVersion">1.1.0</entry> <!-- version of the database needed -->
 <entry key="Application.Icon">app-icon.png</entry> <!-- application icon (in the icon folder) -->
 <entry key="TechnicalSupport.Email">zoonoses_support@efsa.europa.eu</entry> <!-- email which will be displayed in occasion of serious errors (when the unique possibility is to contact EFSA) -->
