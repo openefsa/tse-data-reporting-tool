@@ -3,16 +3,21 @@ package predefined_results_reader;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import report.Report;
 import table_relations.Relation;
 import table_skeleton.TableRow;
 import tse_analytical_result.AnalyticalResult;
 import tse_case_report.CaseReport;
 import tse_config.CustomStrings;
+import tse_main.StartUI;
 import tse_summarized_information.SummarizedInfo;
 
 public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 	
+	private static final Logger LOGGER = LogManager.getLogger(PredefinedResult.class);
 	private static final long serialVersionUID = 1L;
 	
 	/**
@@ -202,7 +207,7 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 			if (prefTest != null)
 				resultRow.put(CustomStrings.AN_METH_CODE, prefTest);
 			else
-				System.out.println("No preferred value of anMethCode was found for anMethType " + testTypeCode);
+				LOGGER.warn("No preferred value of anMethCode was found for anMethType " + testTypeCode);
 			
 			addParamAndResult(resultRow, defaultResult, test);
 			

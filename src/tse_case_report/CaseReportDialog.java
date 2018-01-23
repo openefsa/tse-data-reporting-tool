@@ -24,7 +24,7 @@ import table_dialog.EditorListener;
 import table_dialog.RowValidatorLabelProvider;
 import table_relations.Relation;
 import table_skeleton.TableColumn;
-import table_skeleton.TableColumnValue;
+import table_skeleton.TableCell;
 import table_skeleton.TableRow;
 import tse_analytical_result.ResultDialog;
 import tse_components.TableDialogWithMenu;
@@ -183,7 +183,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				resultRow.initialize();
 
 				// set assessment as inconclusive
-				TableColumnValue value = new TableColumnValue();
+				TableCell value = new TableCell();
 				value.setCode(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE);
 				value.setLabel(CustomStrings.DEFAULT_ASSESS_INC_CASE_LABEL);
 				resultRow.put(CustomStrings.CASE_INFO_ASSESS, value);

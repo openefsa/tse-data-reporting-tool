@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import table_database.TableDao;
-import table_skeleton.TableColumnValue;
+import table_skeleton.TableCell;
 import table_skeleton.TableRow;
 import tse_case_report.CaseReport;
 import tse_config.CatalogLists;
@@ -21,7 +21,7 @@ public class SummarizedInfo extends TableRow implements TseTableRow {
 		super(row);
 	}
 	
-	public SummarizedInfo(String typeColumnId, TableColumnValue type) {
+	public SummarizedInfo(String typeColumnId, TableCell type) {
 		super(getSummarizedInfoSchema());
 		super.put(typeColumnId, type);
 	}

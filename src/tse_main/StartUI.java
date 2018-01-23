@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -21,7 +23,7 @@ import log.ConsolePrinter;
 import table_database.Database;
 import table_database.DatabaseVersionException;
 import table_database.TableDao;
-import table_skeleton.TableColumnValue;
+import table_skeleton.TableCell;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 import tse_config.DebugConfig;
@@ -35,7 +37,8 @@ import xlsx_reader.TableSchemaList;
 
 public class StartUI {
 
-	private static String sessionId;
+	private static final Logger LOGGER = LogManager.getLogger(StartUI.class);
+	
 	private static Display display;
 	private static Shell shell;
 
@@ -96,8 +99,8 @@ public class StartUI {
 			return;
 
 		// get credentials
-		TableColumnValue usernameVal = settings.get(CustomStrings.SETTINGS_USERNAME);
-		TableColumnValue passwordVal = settings.get(CustomStrings.SETTINGS_PASSWORD);
+		TableCell usernameVal = settings.get(CustomStrings.SETTINGS_USERNAME);
+		TableCell passwordVal = settings.get(CustomStrings.SETTINGS_PASSWORD);
 
 		if (usernameVal == null || passwordVal == null)
 			return;
@@ -116,8 +119,8 @@ public class StartUI {
 	 * @param display
 	 */
 	private static void shutdown(Database db, Display display) {
-
-		System.out.println("Application closed " + System.currentTimeMillis());
+		
+		Logger.getRootLogger().info("Application closed " + System.currentTimeMillis());
 
 		if (display != null)
 			display.dispose();
@@ -176,6 +179,7 @@ public class StartUI {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			LOGGER.fatal("Generic error occurred", e);
 			GeneralWarnings.showExceptionStack(shell, e);
 		}
 
@@ -195,32 +199,30 @@ public class StartUI {
 	 * @throws IOException 
 	 */
 	public static void main(String args[]) throws IOException {
-
-		// log the session
-		ConsolePrinter consolePrinter = ConsolePrinter.getInstance();
 		
-		sessionId = String.valueOf(System.nanoTime());
-		File logDir = new File(CustomStrings.LOG_FOLDER);
-		consolePrinter.start(sessionId, logDir);
+		File logFolder = new File(CustomStrings.LOG_FOLDER);
+		ConsolePrinter logPrinter = ConsolePrinter.getInstance();
+		logPrinter.start(System.nanoTime(), logFolder);
 		
 		Database db = launch();
 		
-		consolePrinter.close();
-		
+		logPrinter.close();
 		shutdown(db, display);
 	}
 
 	private static Database launch() {
 		
 		// application start-up message. Usage of System.err used for red chars
-		System.out.println("Application started " + System.currentTimeMillis());
+		LOGGER.warn("Application started " + System.currentTimeMillis());
 
 		// connect to the database application
 		Database db = new Database();
+
+		LOGGER.info("Connecting to the database...");
 		try {
 			db.connect();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Database not found or incompatible", e);
 			showInitError(TSEMessages.get("db.init.error", e.getMessage()));
 			return null;
 		}
@@ -237,11 +239,12 @@ public class StartUI {
 					AppPaths.CONFIG_FOLDER);
 
 		} catch (IOException | SQLException e) {
-			e.printStackTrace();
+			LOGGER.fatal("Cannot initialize the EFSARCL library and accessory files", e);
 			showInitError(TSEMessages.get("efsa.rcl.init.error", e.getMessage()));
 			return db;
 		} catch (DatabaseVersionException e) {
-			e.printStackTrace();
+			
+			LOGGER.warn("Old version of the database found", e);
 
 			int val = ask(TSEMessages.get("db.need.removal"));
 
@@ -261,8 +264,7 @@ public class StartUI {
 					db.connect();
 
 				} catch (IOException e1) {
-					e1.printStackTrace();
-
+					LOGGER.fatal(e1);
 					showInitError(TSEMessages.get("db.removal.error"));
 
 					return db;

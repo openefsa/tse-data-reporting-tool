@@ -20,7 +20,7 @@ public abstract class OptionsDialog extends TableDialog {
 	private int status; 
 	
 	public OptionsDialog(Shell parent, String title, String windowCode) {
-		super(parent, title, true, true);
+		super(parent, title, true, true, false);
 		
 		// create the parent structure
 		Shell dialog = super.create();
@@ -80,9 +80,12 @@ public abstract class OptionsDialog extends TableDialog {
 		
 		TableRow row = rows.iterator().next();
 		
+		// save the values in the db
+		this.saveRows(row);
+		
 		// update preferences
-		TableDao dao = new TableDao(schema);
-		dao.update(row);
+		/*TableDao dao = new TableDao(schema);
+		dao.update(row);*/
 		
 		// update the cache of the relations
 		Relation.updateCache(row);

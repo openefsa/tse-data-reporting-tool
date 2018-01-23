@@ -7,7 +7,7 @@ import java.util.HashMap;
 import formula.AttributeElement;
 import formula.FoodexElement;
 import formula.FormulaDecomposer;
-import table_skeleton.TableColumnValue;
+import table_skeleton.TableCell;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 
@@ -19,9 +19,9 @@ public class TSEFormulaDecomposer extends FormulaDecomposer {
 		this.row = row;
 	}
 	
-	public HashMap<String, TableColumnValue> decompose(String columnId) throws ParseException {
+	public HashMap<String, TableCell> decompose(String columnId) throws ParseException {
 		
-		HashMap<String, TableColumnValue> values = new HashMap<>();
+		HashMap<String, TableCell> values = new HashMap<>();
 		
 		String rowValue = row.getCode(columnId);
 		
@@ -53,15 +53,15 @@ public class TSEFormulaDecomposer extends FormulaDecomposer {
 	 * @return
 	 * @throws ParseException 
 	 */
-	private HashMap<String, TableColumnValue> splitSimple(String value) throws ParseException {
+	private HashMap<String, TableCell> splitSimple(String value) throws ParseException {
 	
-		HashMap<String, TableColumnValue> rowValues = new HashMap<>();
+		HashMap<String, TableCell> rowValues = new HashMap<>();
 		
 		Collection<AttributeElement> list = this.split(value);
 		
 		for (AttributeElement elem : list) {
 			
-			TableColumnValue colVal = new TableColumnValue();
+			TableCell colVal = new TableCell();
 			colVal.setCode(elem.getValue());
 			colVal.setLabel(elem.getValue());
 			
@@ -71,19 +71,19 @@ public class TSEFormulaDecomposer extends FormulaDecomposer {
 		return rowValues;
 	}
 	
-	private HashMap<String, TableColumnValue> splitAlleles(String value) throws ParseException {
+	private HashMap<String, TableCell> splitAlleles(String value) throws ParseException {
 		
 		FoodexElement foodexCode = this.splitFoodex(value, 
 				AttributeIdentifier.NAME_VALUE);
 		
-		HashMap<String, TableColumnValue> rowValues = new HashMap<>();
+		HashMap<String, TableCell> rowValues = new HashMap<>();
 		
 		int count = 0;
 		for (AttributeElement facet : foodexCode.getFacetList()) {
 			
 			if (facet.getId().equals("allele")) {
 				
-				TableColumnValue colVal = new TableColumnValue();
+				TableCell colVal = new TableCell();
 				colVal.setCode(facet.getValue());
 				
 				String colId = count == 0 ? CustomStrings.RESULT_ALLELE_1 : CustomStrings.RESULT_ALLELE_2;
@@ -105,12 +105,12 @@ public class TSEFormulaDecomposer extends FormulaDecomposer {
 	 * @return
 	 * @throws ParseException 
 	 */
-	private HashMap<String, TableColumnValue> splitFoodexWithHeaders(String value) throws ParseException {
+	private HashMap<String, TableCell> splitFoodexWithHeaders(String value) throws ParseException {
 		
 		FoodexElement foodexCode = this.splitFoodex(value, 
 				AttributeIdentifier.FACET_HEADER);
 		
-		HashMap<String, TableColumnValue> rowValues = new HashMap<>();
+		HashMap<String, TableCell> rowValues = new HashMap<>();
 		
 		for (AttributeElement facet : foodexCode.getFacetList()) {
 			
@@ -123,7 +123,7 @@ public class TSEFormulaDecomposer extends FormulaDecomposer {
 				continue;
 			}
 			
-			TableColumnValue colVal = new TableColumnValue();
+			TableCell colVal = new TableCell();
 			colVal.setCode(facet.getId() + "." + facet.getValue());  // we want both header and value for code
 			
 			// save the mapping between the row column and the extracted value

@@ -32,7 +32,7 @@ import table_dialog.EditorListener;
 import table_dialog.RowValidatorLabelProvider;
 import table_relations.Relation;
 import table_skeleton.TableColumn;
-import table_skeleton.TableColumnValue;
+import table_skeleton.TableCell;
 import table_skeleton.TableRow;
 import table_skeleton.TableVersion;
 import test_case.EnumPicker;
@@ -218,7 +218,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	@Override
 	public TableRow createNewRow(TableSchema schema, Selection element) {
 
-		TableColumnValue value = new TableColumnValue(element);
+		TableCell value = new TableCell(element);
 		
 		// create a new summarized information
 		SummarizedInfo si = new SummarizedInfo(CustomStrings.SUMMARIZED_INFO_TYPE, value);
