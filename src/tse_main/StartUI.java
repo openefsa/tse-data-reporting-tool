@@ -202,7 +202,7 @@ public class StartUI {
 		
 		File logFolder = new File(CustomStrings.LOG_FOLDER);
 		ConsolePrinter logPrinter = ConsolePrinter.getInstance();
-		logPrinter.start(System.nanoTime(), logFolder);
+		//logPrinter.start(System.nanoTime(), logFolder);
 		
 		Database db = launch();
 		

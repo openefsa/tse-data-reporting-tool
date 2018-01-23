@@ -59,6 +59,18 @@ public class TseReportImporter extends ReportImporter {
 		return row.getCode(CustomStrings.PARAM_TYPE_COL)
 				.equals(CustomStrings.SUMMARIZED_INFO_PARAM_TYPE);
 	}
+	
+	/**
+	 * TODO to be implemented!!
+	 * @param row
+	 * @return
+	 */
+	private boolean isRGT(TableRow row) {
+		/*
+		 * TODO 
+		 */
+		return false;
+	}
 
 	/**
 	 * Import all the summarized information into the db
@@ -109,6 +121,12 @@ public class TseReportImporter extends ReportImporter {
 				
 				// get the summarized info related to the case/result
 				SummarizedInfo summInfo = getSummInfoByProgId(progId);
+				
+				if (summInfo == null && !isRGT(row)) {
+					ParseException e = new ParseException("No summarized information found in dataset with progId=" + progId, -1);
+					LOGGER.error("Cannot create cases and results without the related summarized information", e);
+					throw e;
+				}
 				
 				// import the case
 				TableRow caseInfo = importCase(report, summInfo, row);

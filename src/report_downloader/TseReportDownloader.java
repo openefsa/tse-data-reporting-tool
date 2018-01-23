@@ -133,14 +133,6 @@ public class TseReportDownloader extends ReportDownloader {
 		dialog.addStatusCol();
 		dialog.addRevisionCol();
 		
-		
-		shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
-		
-		dialog.loadDatasets();
-		
-		shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
-		
-		
 		boolean restored = window.restore(TSERestoreableWindowDao.class);
 
 		if (!restored) {
