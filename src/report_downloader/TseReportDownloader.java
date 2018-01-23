@@ -55,7 +55,7 @@ public class TseReportDownloader extends ReportDownloader {
 	@Override
 	public DownloadReportDialog getDownloadDialog(IDcfDataCollection dc) {
 		
-		DownloadReportDialog dialog = new DownloadReportDialog(dc, shell, 
+		DownloadReportDialog dialog = new DownloadReportDialog(shell, 
 				CustomStrings.VALID_SENDER_ID_PATTERN);
 		
 		// here the shell is initialized

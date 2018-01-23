@@ -19,20 +19,27 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
+import app_config.PropertiesReader;
+import converter.ExceptionConverter;
 import dataset.RCLDatasetStatus;
+import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
+import progress_bar.IndeterminateProgressDialog;
+import report.DisplayAckThread;
+import report.RefreshStatusThread;
 import report.Report;
-import report.ReportAckManager;
 import report.ReportActions;
+import report.ThreadFinishedListener;
 import report_validator.ReportError;
 import session_manager.TSERestoreableWindowDao;
+import soap.MySOAPException;
 import table_dialog.DialogBuilder;
 import table_dialog.EditorListener;
 import table_dialog.RowValidatorLabelProvider;
 import table_relations.Relation;
-import table_skeleton.TableColumn;
 import table_skeleton.TableCell;
+import table_skeleton.TableColumn;
 import table_skeleton.TableRow;
 import table_skeleton.TableVersion;
 import test_case.EnumPicker;
@@ -268,15 +275,57 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 
-				// refresh the status
-				ReportAckManager ackManager = new ReportAckManager(getDialog(), report);
-				ackManager.refreshStatus(new Listener() {
+				IndeterminateProgressDialog progressBar = new IndeterminateProgressDialog(getDialog(), 
+						SWT.APPLICATION_MODAL, 
+						TSEMessages.get("refresh.status.progress.bar.label"));
+				
+				progressBar.open();
+				
+				RefreshStatusThread refreshStatus = new RefreshStatusThread(report);
+				
+				refreshStatus.setListener(new ThreadFinishedListener() {
 					
 					@Override
-					public void handleEvent(Event arg0) {
-						updateUI();
+					public void finished(Runnable thread) {
+						
+						getDialog().getDisplay().asyncExec(new Runnable() {
+							
+							@Override
+							public void run() {
+								updateUI();
+								
+								progressBar.close();
+								
+								Message log = refreshStatus.getLog();
+								
+								if (log != null)
+									log.open(getDialog());
+							}
+						});
+					}
+
+					@Override
+					public void terminated(Runnable thread, Exception e) {
+						
+						getDialog().getDisplay().asyncExec(new Runnable() {
+							
+							@Override
+							public void run() {
+								progressBar.close();
+								
+								String message = (e instanceof MySOAPException) ? 
+										Warnings.getSOAPWarning((MySOAPException) e)[1] : 
+											TSEMessages.get("refresh.status.error", 
+													PropertiesReader.getSupportEmail(),
+													ExceptionConverter.getStackTrace(e));
+								
+								Warnings.warnUser(getDialog(), TSEMessages.get("error.title"), message);
+							}
+						});
 					}
 				});
+				
+				refreshStatus.start();
 			}
 		};
 		
@@ -377,9 +426,57 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				// refresh the status
-				ReportAckManager ackManager = new ReportAckManager(getDialog(), report);
-				ackManager.displayAck();
+				IndeterminateProgressDialog progressBar = new IndeterminateProgressDialog(getDialog(), 
+						SWT.APPLICATION_MODAL, 
+						TSEMessages.get("display.ack.progress.bar.label"));
+				
+				progressBar.open();
+				
+				DisplayAckThread displayAck = new DisplayAckThread(report);
+				
+				displayAck.setListener(new ThreadFinishedListener() {
+					
+					@Override
+					public void finished(Runnable thread) {
+						
+						getDialog().getDisplay().asyncExec(new Runnable() {
+							
+							@Override
+							public void run() {
+								updateUI();
+								
+								progressBar.close();
+								
+								Message log = displayAck.getLog();
+								
+								if (log != null)
+									log.open(getDialog());
+							}
+						});
+					}
+
+					@Override
+					public void terminated(Runnable thread, Exception e) {
+						getDialog().getDisplay().asyncExec(new Runnable() {
+							
+							@Override
+							public void run() {
+								
+								progressBar.close();
+								
+								String message = (e instanceof MySOAPException) ? 
+										Warnings.getSOAPWarning((MySOAPException) e)[1] : 
+											TSEMessages.get("display.ack.error", 
+													PropertiesReader.getSupportEmail(),
+													ExceptionConverter.getStackTrace(e));
+								
+								Warnings.warnUser(getDialog(), TSEMessages.get("error.title"), message);
+							}
+						});
+					}
+				});
+				
+				displayAck.start();
 			}
 		};
 		
