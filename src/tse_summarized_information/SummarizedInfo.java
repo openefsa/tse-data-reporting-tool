@@ -25,6 +25,11 @@ public class SummarizedInfo extends TableRow implements TseTableRow {
 		super(getSummarizedInfoSchema());
 		super.put(typeColumnId, type);
 	}
+	
+	public SummarizedInfo(String typeColumnId, String type) {
+		super(getSummarizedInfoSchema());
+		super.put(typeColumnId, type);
+	}
 
 	public static boolean isSummarizedInfo(TableRow row) {
 		return row.getSchema().equals(SummarizedInfo.getSummarizedInfoSchema());

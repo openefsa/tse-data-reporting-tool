@@ -13,7 +13,6 @@ import formula.FormulaDecomposer;
 import table_skeleton.TableCell;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
-import xml_catalog_reader.XmlParser;
 
 public class TSEFormulaDecomposer extends FormulaDecomposer {
 

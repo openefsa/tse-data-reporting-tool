@@ -43,6 +43,7 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_TYPE = "type";
 	public static final String SUMMARIZED_INFO_SOURCE = "source";
 	public static final String SOURCE_SHEEP_CODE = "F01.A057G";
+	public static final String SOURCE_GOAT_CODE = "F01.A057P";
 	
 	public static final String SUMMARIZED_INFO_PART = "part";
 	public static final String SUMMARIZED_INFO_PROD = "prod";

@@ -59,18 +59,6 @@ public class TseReportImporter extends ReportImporter {
 		return row.getCode(CustomStrings.PARAM_TYPE_COL)
 				.equals(CustomStrings.SUMMARIZED_INFO_PARAM_TYPE);
 	}
-	
-	/**
-	 * TODO to be implemented!!
-	 * @param row
-	 * @return
-	 */
-	private boolean isRGT(TableRow row) {
-		/*
-		 * TODO 
-		 */
-		return false;
-	}
 
 	/**
 	 * Import all the summarized information into the db
@@ -102,6 +90,18 @@ public class TseReportImporter extends ReportImporter {
 	}
 
 	/**
+	 * Check if the summarized information has as source sheep
+	 * or goat.
+	 * @param row
+	 * @return
+	 */
+	private boolean isSheepOrGoat(TableRow row) {
+		String source = row.getCode(CustomStrings.SUMMARIZED_INFO_SOURCE);
+		return source.equals(CustomStrings.SOURCE_SHEEP_CODE) ||
+				source.equals(CustomStrings.SOURCE_GOAT_CODE);
+	}
+	
+	/**
 	 * Import all the cases and analytical results
 	 * @param report
 	 * @param summInfo
@@ -121,15 +121,36 @@ public class TseReportImporter extends ReportImporter {
 				
 				// get the summarized info related to the case/result
 				SummarizedInfo summInfo = getSummInfoByProgId(progId);
-				
-				if (summInfo == null && !isRGT(row)) {
-					ParseException e = new ParseException("No summarized information found in dataset with progId=" + progId, -1);
-					LOGGER.error("Cannot create cases and results without the related summarized information", e);
-					throw e;
+
+				if (summInfo == null) {
+					
+					// try to extract it from the result, since
+					// it could be a RGT
+					summInfo = extractSummarizedInfo(report, row);
+
+					if (isSheepOrGoat(summInfo)) {
+						
+						// we have a RGT record (RGT does not have summarized information
+						// in DCF and has as type sheep or goat)
+
+						// set RGT type
+						summInfo.setType(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
+						
+						// create the summarized information
+						summInfo.save();
+						
+						// add in the cache in order to avoid to save the same summInfo
+						// for the different results
+						summInfos.add(summInfo);
+						
+						LOGGER.info("Imported RGT summarized information; progId=" + summInfo.getProgId());
+					}
+					else {
+						ParseException e = new ParseException("No summarized information found in dataset with progId=" + progId, -1);
+						LOGGER.error("Cannot create cases and results without the related summarized information", e);
+						throw e;
+					}
 				}
-				
-				// TODO if summInfo == null && isRGT(row) => create summarized information
-				// using the row data and then import case and results
 				
 				// import the case
 				TableRow caseInfo = importCase(report, summInfo, row);
