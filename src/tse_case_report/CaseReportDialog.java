@@ -195,8 +195,8 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				value.setLabel(CustomStrings.DEFAULT_ASSESS_INC_CASE_LABEL);
 				resultRow.put(CustomStrings.CASE_INFO_ASSESS, value);
 				
-				// default always brain
-				resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.BRAIN_CODE);
+				// default always obex
+				resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
 				
 				if (isCervid) {
 					if (j==0) {
@@ -221,8 +221,8 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				resultRow.setId(id);
 				resultRow.initialize();
 
-				// default always brain
-				resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.BRAIN_CODE);
+				// default always obex
+				resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
 				
 				if (isCervid) {
 					if (j==0) {

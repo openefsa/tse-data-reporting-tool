@@ -90,15 +90,22 @@ public class TseReportImporter extends ReportImporter {
 	}
 
 	/**
-	 * Check if the summarized information has as source sheep
-	 * or goat.
+	 * Check if the row is random genotyping
 	 * @param row
 	 * @return
 	 */
-	private boolean isSheepOrGoat(TableRow row) {
-		String source = row.getCode(CustomStrings.SUMMARIZED_INFO_SOURCE);
-		return source.equals(CustomStrings.SOURCE_SHEEP_CODE) ||
-				source.equals(CustomStrings.SOURCE_GOAT_CODE);
+	private boolean isRGT(TableRow row) {
+		
+		boolean rgtSource = row.getCode(CustomStrings.SUMMARIZED_INFO_SOURCE)
+				.equals(CustomStrings.SOURCE_SHEEP_CODE);
+		
+		boolean rgtPart = row.getCode(CustomStrings.SUMMARIZED_INFO_PART)
+				.equals(CustomStrings.BLOOD_CODE);
+		
+		boolean rgtTest = row.getCode(CustomStrings.AN_METH_CODE)
+				.equals(CustomStrings.AN_METH_CODE_GENOTYPING);
+		
+		return rgtSource && rgtPart && rgtTest;
 	}
 	
 	/**
@@ -128,7 +135,7 @@ public class TseReportImporter extends ReportImporter {
 					// it could be a RGT
 					summInfo = extractSummarizedInfo(report, row);
 
-					if (isSheepOrGoat(summInfo)) {
+					if (isRGT(summInfo)) {
 						
 						// we have a RGT record (RGT does not have summarized information
 						// in DCF and has as type sheep or goat)
