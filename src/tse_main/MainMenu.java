@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -46,6 +48,8 @@ import xlsx_reader.TableSchemaList;
  */
 public class MainMenu {
 
+	private static final Logger LOGGER = LogManager.getLogger(MainMenu.class);
+	
 	private MainPanel mainPanel;
 	private Shell shell;
 
@@ -124,6 +128,9 @@ public class MainMenu {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				
+				LOGGER.debug("Opening new report dialog");
+				
 				ReportCreatorDialog dialog = new ReportCreatorDialog(shell);
 				dialog.setButtonText(TSEMessages.get("new.report.button"));
 				dialog.open();
@@ -141,6 +148,8 @@ public class MainMenu {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				
+				LOGGER.debug("Opening open report dialog");
+				
 				ReportListDialog dialog = new ReportListDialog(shell, TSEMessages.get("open.report.title"));
 				dialog.setButtonText(TSEMessages.get("open.report.button"));
 				
@@ -151,6 +160,8 @@ public class MainMenu {
 				if (report == null)
 					return;
 
+				LOGGER.info("Opening report=" + report.getSenderId());
+				
 				mainPanel.setEnabled(true);
 				
 				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
@@ -172,6 +183,8 @@ public class MainMenu {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				
+				LOGGER.info("Closing report=" + mainPanel.getOpenedReport().getSenderId());
+				
 				mainPanel.closeReport();
 			}
 			
@@ -192,6 +205,8 @@ public class MainMenu {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				
+				LOGGER.debug("Opening import report dialog");
+				
 				ReportListDialog dialog = new ReportListDialog(shell, TSEMessages.get("import.report.title"));
 				dialog.setButtonText(TSEMessages.get("import.report.button"));
 				dialog.open();
@@ -208,6 +223,10 @@ public class MainMenu {
 				if (childSchema == null)
 					return;
 
+				LOGGER.info("Importing summarized information from report=" 
+						+ report.getCode(CustomStrings.SENDER_DATASET_ID_COLUMN)
+						+ " to report=" + mainPanel.getOpenedReport().getSenderId());
+				
 				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 
 				TseSummarizedInfoImporter importer = new TseSummarizedInfoImporter();
@@ -230,11 +249,14 @@ public class MainMenu {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				
+				LOGGER.debug("Opening download report dialog");
+				
 				TseReportDownloader downloader = new TseReportDownloader(shell);
 				try {
 					downloader.download();
 				} catch (MySOAPException e) {
 					e.printStackTrace();
+					LOGGER.error("Download report failed", e);
 					Warnings.showSOAPWarning(shell, e);
 				}
 			}
@@ -277,11 +299,14 @@ public class MainMenu {
 				if (opType == null)
 					return;
 
+				LOGGER.info("Exporting report=" + report.getSenderId());
+				
 				MessageConfigBuilder config = report.getDefaultExportConfiguration(opType, exportFile);
 				try {
 					report.export(config);
 				} catch (IOException | ParserConfigurationException | SAXException | ReportException e) {
 					e.printStackTrace();
+					LOGGER.error("Export report failed", e);
 				}
 				
 				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
@@ -307,6 +332,9 @@ public class MainMenu {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				
+				LOGGER.debug("Opening preferences dialog");
+				
 				PreferencesDialog dialog = new PreferencesDialog(shell);
 				dialog.open();
 			}
@@ -320,6 +348,9 @@ public class MainMenu {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				
+				LOGGER.debug("Opening settings dialog");
+				
 				SettingsDialog dialog = new SettingsDialog(shell);
 				dialog.open();
 			}
@@ -353,7 +384,7 @@ public class MainMenu {
 				if (report == null)
 					return;
 				
-				System.out.println(report.getAllVersions());
+				LOGGER.debug("Report versions=" + report.getAllVersions());
 			}
 			
 			@Override
@@ -380,11 +411,14 @@ public class MainMenu {
 				if (opType == null)
 					return;
 				
+				LOGGER.debug("Exporting report " + report.getSenderId());
+				
 				MessageConfigBuilder config = report.getDefaultExportConfiguration(opType);
 				try {
 					report.export(config);
 				} catch (IOException | ParserConfigurationException | SAXException | ReportException e) {
 					e.printStackTrace();
+					LOGGER.error("Export report failed", e);
 				}
 			}
 			
@@ -408,6 +442,8 @@ public class MainMenu {
 				if (report == null)
 					return;
 				
+				LOGGER.debug("Report " + report.getSenderId() + " deleted from disk");
+				
 				report.delete();
 			}
 			
@@ -424,12 +460,10 @@ public class MainMenu {
 			public void widgetSelected(SelectionEvent arg0) {
 				TseReport report = mainPanel.getOpenedReport();
 				
-				if (report == null) {
-					System.out.println(PropertiesReader.getDataCollectionCode());
-					return;
-				}
+				String dcCode = report == null ? PropertiesReader.getDataCollectionCode()
+						: PropertiesReader.getDataCollectionCode(report.getYear());
 				
-				System.out.println(PropertiesReader.getDataCollectionCode(report.getYear()));
+				LOGGER.debug("The tool points to the data collection=" + dcCode);
 			}
 			
 			@Override

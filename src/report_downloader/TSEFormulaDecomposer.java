@@ -4,15 +4,21 @@ import java.text.ParseException;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import formula.AttributeElement;
 import formula.FoodexElement;
 import formula.FormulaDecomposer;
 import table_skeleton.TableCell;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
+import xml_catalog_reader.XmlParser;
 
 public class TSEFormulaDecomposer extends FormulaDecomposer {
 
+	private static final Logger LOGGER = LogManager.getLogger(TSEFormulaDecomposer.class);
+	
 	private TableRow row;
 	
 	public TSEFormulaDecomposer(TableRow row) {
@@ -119,7 +125,7 @@ public class TSEFormulaDecomposer extends FormulaDecomposer {
 			String columnId = getColumnByHeader(facetHeader);
 			
 			if (columnId == null) {
-				System.err.println("Not supported facet header " + facetHeader);
+				LOGGER.error("Not supported facet header " + facetHeader);
 				continue;
 			}
 			

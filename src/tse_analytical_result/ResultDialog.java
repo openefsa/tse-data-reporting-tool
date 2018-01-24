@@ -3,6 +3,8 @@ package tse_analytical_result;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -36,6 +38,8 @@ import xml_catalog_reader.Selection;
  *
  */
 public class ResultDialog extends TableDialogWithMenu {
+	
+	private static final Logger LOGGER = LogManager.getLogger(ResultDialog.class);
 	
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "AnalyticalResult";
@@ -84,8 +88,6 @@ public class ResultDialog extends TableDialogWithMenu {
 
 							row.put(CustomStrings.PARAM_CODE_BASE_TERM_COL, 
 									predRes.get(PredefinedResultHeader.GENOTYPING_BASE_TERM));
-
-							System.out.println(predRes.get(PredefinedResultHeader.GENOTYPING_BASE_TERM));
 							
 						} catch (IOException e) {
 							e.printStackTrace();
@@ -105,7 +107,6 @@ public class ResultDialog extends TableDialogWithMenu {
 		
 		updateUI();
 		
-		
 		askForDefault();
 	}
 	
@@ -118,6 +119,8 @@ public class ResultDialog extends TableDialogWithMenu {
 					TSEMessages.get("result.confirm.default"),
 					SWT.YES | SWT.NO | SWT.ICON_QUESTION);
 			
+			LOGGER.info("Add default results to the list? " + (val == SWT.YES));
+			
 			if (val == SWT.NO)
 				return;
 			
@@ -128,6 +131,8 @@ public class ResultDialog extends TableDialogWithMenu {
 						TSEMessages.get("result.check.default"),
 						SWT.ICON_WARNING);
 
+				LOGGER.info("Default results created");
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -138,6 +143,9 @@ public class ResultDialog extends TableDialogWithMenu {
 	 * make table non editable if needed
 	 */
 	private void updateUI() {
+		
+		LOGGER.info("Updating GUI");
+		
 		DialogBuilder panel = getPanelBuilder();
 		String status = report.getLabel(AppPaths.REPORT_STATUS);
 		RCLDatasetStatus datasetStatus = RCLDatasetStatus.fromString(status);
@@ -154,6 +162,8 @@ public class ResultDialog extends TableDialogWithMenu {
 	 */
 	@Override
 	public TableRow createNewRow(TableSchema schema, Selection element) {
+		
+		LOGGER.info("Creating a new result");
 		
 		TableRow row = new TableRow(schema);
 		

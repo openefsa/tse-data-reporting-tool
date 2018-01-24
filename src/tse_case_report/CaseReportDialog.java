@@ -89,8 +89,9 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	
 	public void askForDefault() {
 		
-		boolean hasExpectedCases = getNumberOfExpectedCases(summInfo) > 0;
 		boolean isRGT = summInfo.isRGT();
+		boolean hasExpectedCases = !isRGT // cannot compute expected cases for RGT
+				&& getNumberOfExpectedCases(summInfo) > 0;
 
 		// create default cases if no cases
 		// and cases were set in the aggregated data

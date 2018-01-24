@@ -7,6 +7,8 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -46,6 +48,8 @@ import xml_catalog_reader.Selection;
  */
 public class SettingsDialog extends OptionsDialog {
 
+	private static final Logger LOGGER = LogManager.getLogger(SettingsDialog.class);
+	
 	public static final String WINDOW_CODE = "Settings";
 	
 	public SettingsDialog(Shell parent) {
@@ -80,7 +84,7 @@ public class SettingsDialog extends OptionsDialog {
 
 		if (usernameVal == null || passwordVal == null)
 			return false;
-
+		
 		// login the user
 		String username = usernameVal.getLabel();
 		String password = passwordVal.getLabel();
@@ -133,13 +137,14 @@ public class SettingsDialog extends OptionsDialog {
 	 */
 	private void testConnection() {
 		
-		System.out.println("Test connection: started");
-		
 		getPanelBuilder().selectRow(0);
 		
 		TableRow settings = getRows().iterator().next();
 
 		if (settings == null || !settings.areMandatoryFilled()) {
+			
+			LOGGER.error("Cannot perform test connection. Credentials missing.");
+			
 			Warnings.warnUser(getDialog(), 
 					TSEMessages.get("error.title"), 
 					TSEMessages.get("settings.test.connection.warning"));
@@ -151,6 +156,8 @@ public class SettingsDialog extends OptionsDialog {
 		
 		if (!ok)
 			return;
+		
+		LOGGER.info("Test connection started");
 		
 		// change the cursor to wait
 		getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
@@ -174,24 +181,32 @@ public class SettingsDialog extends OptionsDialog {
 			message = TSEMessages.get("test.connection.success");
 			jStyle = JOptionPane.INFORMATION_MESSAGE;
 			
+			LOGGER.info("Test connection successfully completed");
+			
 		} catch (MySOAPException e) {
 
 			e.printStackTrace();
 			
-			System.err.println("Test connection: failed.");
+			LOGGER.error("Test connection failed", e);
 
 			String[] warnings = Warnings.getSOAPWarning(e);
 			title = warnings[0];
 			message = warnings[1];
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			e.printStackTrace();
+			
+			LOGGER.error("Test connection failed", e);
+			
 			title = TSEMessages.get("error.title");
 			message = TSEMessages.get("test.connection.fail3", 
 					PropertiesReader.getSupportEmail(), e.getMessage());
+			
 		} catch (SendMessageException e) {
 			
 			// here we got TRXKO
 			e.printStackTrace();
+			
+			LOGGER.error("Test connection failed", e);
 			
 			String[] warning = GeneralWarnings.getSendMessageWarning(e);
 			title = warning[0];
@@ -200,6 +215,9 @@ public class SettingsDialog extends OptionsDialog {
 		} catch (ReportException e) {
 			// There an invalid operation was used
 			e.printStackTrace();
+			
+			LOGGER.error("Test connection failed", e);
+			
 			title = TSEMessages.get("error.title");
 			message = TSEMessages.get("test.connection.fail2", 
 					PropertiesReader.getSupportEmail(), e.getMessage());

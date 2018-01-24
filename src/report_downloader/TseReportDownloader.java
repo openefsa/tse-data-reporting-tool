@@ -5,6 +5,8 @@ import java.text.ParseException;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -38,6 +40,8 @@ import xml_catalog_reader.XmlLoader;
  */
 public class TseReportDownloader extends ReportDownloader {
 
+	private static final Logger LOGGER = LogManager.getLogger(TseReportDownloader.class);
+	
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "TSEReportDownloader";
 	private Shell shell;
@@ -78,14 +82,14 @@ public class TseReportDownloader extends ReportDownloader {
 				XmlContents contents = XmlLoader.getByPicklistKey(AppPaths.YEARS_LIST);
 				
 				if (contents == null) {
-					System.err.println("No " + AppPaths.YEARS_LIST + " was found in " + AppPaths.CONFIG_FOLDER);
+					LOGGER.error("No " + AppPaths.YEARS_LIST + " was found in " + AppPaths.CONFIG_FOLDER);
 					return year;
 				}
 				
 				Selection sel = contents.getElementByCode(year);
 				
 				if (sel == null) {
-					System.err.println("No value found in " + AppPaths.YEARS_LIST + " for " + year);
+					LOGGER.error("No value found in " + AppPaths.YEARS_LIST + " for " + year);
 					return year;
 				}
 				
@@ -113,14 +117,14 @@ public class TseReportDownloader extends ReportDownloader {
 				XmlContents contents = XmlLoader.getByPicklistKey(AppPaths.MONTHS_LIST);
 				
 				if (contents == null) {
-					System.err.println("No " + AppPaths.MONTHS_LIST + " was found in " + AppPaths.CONFIG_FOLDER);
+					LOGGER.error("No " + AppPaths.MONTHS_LIST + " was found in " + AppPaths.CONFIG_FOLDER);
 					return month;
 				}
 				
 				Selection sel = contents.getElementByCode(month);
 				
 				if (sel == null) {
-					System.err.println("No value found in " + AppPaths.MONTHS_LIST + " for " + month);
+					LOGGER.error("No value found in " + AppPaths.MONTHS_LIST + " for " + month);
 					return month;
 				}
 				

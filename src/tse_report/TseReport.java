@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.SOAPException;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import app_config.AppPaths;
@@ -46,6 +48,8 @@ import xlsx_reader.TableSchemaList;
  */
 public class TseReport extends Report implements TseTableRow {
 
+	private static final Logger LOGGER = LogManager.getLogger(TseReport.class);
+	
 	public TseReport() {
 		super(getReportSchema());
 	}
@@ -493,7 +497,7 @@ public class TseReport extends Report implements TseTableRow {
 		
 		// split FR1705... into country year and month
 		if (senderId.length() < 6) {
-			System.err.println("Report#fromDataset Cannot parse sender dataset id, expected at least 6 characters, found " 
+			LOGGER.error("Report#fromDataset Cannot parse sender dataset id, expected at least 6 characters, found " 
 					+ senderId);
 			report.setCountry("");
 			report.setYear("");

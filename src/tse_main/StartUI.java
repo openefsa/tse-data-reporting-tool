@@ -3,7 +3,9 @@ package tse_main;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -38,7 +40,7 @@ import xlsx_reader.TableSchemaList;
 public class StartUI {
 
 	private static final Logger LOGGER = LogManager.getLogger(StartUI.class);
-	
+
 	private static Display display;
 	private static Shell shell;
 
@@ -120,7 +122,7 @@ public class StartUI {
 	 */
 	private static void shutdown(Database db, Display display) {
 		
-		Logger.getRootLogger().info("Application closed " + System.currentTimeMillis());
+		LOGGER.info("Application closed " + System.currentTimeMillis());
 
 		if (display != null)
 			display.dispose();
@@ -213,12 +215,11 @@ public class StartUI {
 	private static Database launch() {
 		
 		// application start-up message. Usage of System.err used for red chars
-		LOGGER.warn("Application started " + System.currentTimeMillis());
+		LOGGER.info("Application started " + System.currentTimeMillis());
 
 		// connect to the database application
 		Database db = new Database();
 
-		LOGGER.info("Connecting to the database...");
 		try {
 			db.connect();
 		} catch (IOException e) {
