@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -35,6 +37,8 @@ import xml_catalog_reader.Selection;
  */
 public class ReportCreatorDialog extends TableDialog {
 	
+	private static final Logger LOGGER = LogManager.getLogger(ReportCreatorDialog.class);
+	
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "ReportCreator";
 	
@@ -65,6 +69,7 @@ public class ReportCreatorDialog extends TableDialog {
 			Relation.injectGlobalParent(row, CustomStrings.PREFERENCES_SHEET);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOGGER.error("Cannot inject global parent=" + CustomStrings.PREFERENCES_SHEET, e);
 		}
 		
 		row.initialize();
@@ -110,12 +115,17 @@ public class ReportCreatorDialog extends TableDialog {
 			
 			e.printStackTrace();
 			
+			LOGGER.error("Cannot create report", e);
+			
 			String[] warnings = Warnings.getSOAPWarning(e);
 			title = warnings[0];
 			message = warnings[1];
 			
 		} catch (ReportException e) {
 			e.printStackTrace();
+			
+			LOGGER.error("Cannot create report", e);
+			
 			title = TSEMessages.get("error.title");
 			message = TSEMessages.get("new.report.failed.no.senderId", 
 					PropertiesReader.getSupportEmail(), e.getMessage());

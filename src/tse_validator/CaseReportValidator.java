@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
@@ -15,6 +17,8 @@ import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 
 public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
+	
+	private static final Logger LOGGER = LogManager.getLogger(CaseReportValidator.class);
 	
 	public enum Check {
 		OK,
@@ -76,6 +80,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOGGER.error("Cannot check if the case is correct", e);
 		}
 
 		return level;
@@ -111,6 +116,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOGGER.error("Cannot check if the case is correct", e);
 		}
 
 		if (text == null)
@@ -143,6 +149,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOGGER.error("Cannot check if the case is correct", e);
 		}
 		
 		if (color == null)

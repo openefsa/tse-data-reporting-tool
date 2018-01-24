@@ -91,6 +91,8 @@ public class ResultDialog extends TableDialogWithMenu {
 							
 						} catch (IOException e) {
 							e.printStackTrace();
+							LOGGER.error("Cannot fill results field=" 
+									+ CustomStrings.PARAM_CODE_BASE_TERM_COL + " using the predefined results", e);
 						}
 					}
 					else
@@ -135,6 +137,8 @@ public class ResultDialog extends TableDialogWithMenu {
 				
 			} catch (IOException e) {
 				e.printStackTrace();
+				LOGGER.error("Cannot create predefined results for case with sampId=" 
+				+ caseInfo.getCode(CustomStrings.CASE_INFO_SAMPLE_ID), e);
 			}
 		}
 	}

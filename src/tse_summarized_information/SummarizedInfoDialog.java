@@ -3,6 +3,8 @@ package tse_summarized_information;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -63,6 +65,8 @@ import xml_catalog_reader.Selection;
  */
 public class SummarizedInfoDialog extends TableDialogWithMenu {
 
+	private static final Logger LOGGER = LogManager.getLogger(SummarizedInfoDialog.class);
+	
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "SummarizedInformation";
 	
@@ -236,6 +240,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			Relation.injectParent(report, si);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOGGER.error("Cannot create a new summarized information", e);
 		}
 		
 		return si;
@@ -536,6 +541,9 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				} catch (IOException e) {
 					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
 					e.printStackTrace();
+					
+					LOGGER.error("Cannot validate the report=" + report.getSenderId(), e);
+					
 					warnUser(TSEMessages.get("error.title"), 
 							TSEMessages.get("check.report.error", 
 									Warnings.getStackTrace(e)));

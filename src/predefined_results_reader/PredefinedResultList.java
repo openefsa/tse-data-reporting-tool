@@ -3,11 +3,16 @@ package predefined_results_reader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import app_config.BooleanValue;
 
 public class PredefinedResultList extends ArrayList<PredefinedResult> {
-	private static final long serialVersionUID = -6372192676663884532L;
 	
+	private static final Logger LOGGER = LogManager.getLogger(PredefinedResultList.class);
+	
+	private static final long serialVersionUID = -6372192676663884532L;
 	
 	private static PredefinedResultList predefinedResultsCache;
 	
@@ -84,6 +89,7 @@ public class PredefinedResultList extends ArrayList<PredefinedResult> {
 				
 			} catch (IOException e) {
 				e.printStackTrace();
+				LOGGER.error("Cannot retrieve predefined results list", e);
 			}
 		}
 

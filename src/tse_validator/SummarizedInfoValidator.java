@@ -3,6 +3,8 @@ package tse_validator;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
@@ -15,6 +17,8 @@ import xlsx_reader.TableSchemaList;
 
 public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
+	private static final Logger LOGGER = LogManager.getLogger(SummarizedInfoValidator.class);
+	
 	public enum SampleCheck {
 		OK,
 		MISSING_CASES,
@@ -98,6 +102,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		}
 		catch (NumberFormatException e) {
 			e.printStackTrace();
+			LOGGER.error("Cannot check if the summarized information is correct", e);
 		}
 
 

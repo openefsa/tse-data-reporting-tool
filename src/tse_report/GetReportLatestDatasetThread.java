@@ -1,5 +1,8 @@
 package tse_report;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import dataset.IDataset;
 import report.EFSAReport;
 import report.ReportException;
@@ -8,6 +11,8 @@ import soap.MySOAPException;
 
 public class GetReportLatestDatasetThread extends Thread {
 
+	private static final Logger LOGGER = LogManager.getLogger(GetReportLatestDatasetThread.class);
+	
 	private IDataset dataset;
 	private ThreadFinishedListener listener;
 	private EFSAReport report;
@@ -28,6 +33,7 @@ public class GetReportLatestDatasetThread extends Thread {
 				listener.finished(this);
 		} catch (MySOAPException | ReportException e) {
 			e.printStackTrace();
+			LOGGER.error("Cannot retrieve latest dataset of report=" + report.getSenderId(), e);
 			if (listener != null)
 				listener.terminated(this, e);
 		}

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import app_config.AppPaths;
 import i18n_messages.TSEMessages;
 import report_validator.ReportError;
@@ -25,6 +28,8 @@ import xlsx_reader.TableSchemaList;
  */
 public class TseReportValidator extends ReportValidator {
 
+	private static final Logger LOGGER = LogManager.getLogger(TseReportValidator.class);
+	
 	private TseReport report;
 	
 	/**	
@@ -320,6 +325,7 @@ public class TseReportValidator extends ReportValidator {
 			check = validator.isRecordCorrect(row);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOGGER.error("Cannot check if case is correct", e);
 		}
 
 		if (check != null) {
@@ -463,6 +469,7 @@ public class TseReportValidator extends ReportValidator {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOGGER.error("Cannot check age class", e);
 		}
 		
 		return errors;

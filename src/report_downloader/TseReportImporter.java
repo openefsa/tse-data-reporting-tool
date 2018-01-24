@@ -128,6 +128,9 @@ public class TseReportImporter extends ReportImporter {
 					throw e;
 				}
 				
+				// TODO if summInfo == null && isRGT(row) => create summarized information
+				// using the row data and then import case and results
+				
 				// import the case
 				TableRow caseInfo = importCase(report, summInfo, row);
 				
@@ -229,12 +232,14 @@ public class TseReportImporter extends ReportImporter {
 			Relation.injectGlobalParent(summInfo, CustomStrings.PREFERENCES_SHEET);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOGGER.error("Cannot inject global parent=" + CustomStrings.PREFERENCES_SHEET, e);
 		}
 
 		try {
 			Relation.injectGlobalParent(summInfo, CustomStrings.SETTINGS_SHEET);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOGGER.error("Cannot inject global parent=" + CustomStrings.SETTINGS_SHEET, e);
 		}
 		
 		// set also the summarized information type using
