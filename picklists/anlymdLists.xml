@@ -19,7 +19,7 @@
 	</selectionList>
 	<selectionList id="BSE$AT08A">
 		<selection code="F626A">
-			<description>Bio-Rad TeSeE Western Blot </description>
+			<description>Bio-Rad TeSeE Western Blot</description>
 		</selection>
 		<selection code="F155A">
 			<description>ImmunoHistoChemistry (IHC)</description>
@@ -32,6 +32,9 @@
 		</selection>
 	</selectionList>
 	<selectionList id="BSE$AT12A">
+		<selection code="F626A">
+			<description>Bio-Rad TeSeE Western Blot</description>
+		</selection>
 		<selection code="F623A">
 			<description>APHA Bio-Rad Hybrid Western Blot</description>
 		</selection>
@@ -73,13 +76,16 @@
 	</selectionList>
 	<selectionList id="SCRAPIE$AT08A">
 		<selection code="F626A">
-			<description>Bio-Rad TeSeE Western Blot </description>
+			<description>Bio-Rad TeSeE Western Blot</description>
 		</selection>
 		<selection code="F072A">
 			<description>Western Blot</description>
 		</selection>
 	</selectionList>
 	<selectionList id="SCRAPIE$AT12A">
+		<selection code="F626A">
+			<description>Bio-Rad TeSeE Western Blot</description>
+		</selection>
 		<selection code="F622A">
 			<description>ANSES Discriminatory Western blot method</description>
 		</selection>
@@ -141,7 +147,7 @@
 			<description>Bio-Rad Discriminatory Test (based on the CEA Discriminatory Western blot Method)</description>
 		</selection>
 		<selection code="F626A">
-			<description>Bio-Rad TeSeE Western Blot </description>
+			<description>Bio-Rad TeSeE Western Blot</description>
 		</selection>
 		<selection code="F627A">
 			<description>CIDC-Lelystad Discriminatory Western blot method</description>
@@ -160,6 +166,9 @@
 		</selection>
 	</selectionList>
 	<selectionList id="CWD$AT12A">
+		<selection code="F626A">
+			<description>Bio-Rad TeSeE Western Blot</description>
+		</selection>
 		<selection code="F621A">
 			<description>ImmunoHistoChemistry (IHC) using C-terminal Ab and P4/12B2</description>
 		</selection>
