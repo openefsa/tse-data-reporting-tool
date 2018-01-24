@@ -343,7 +343,7 @@ public class TseReportActions extends ReportActions {
 	}
 
 	@Override
-	public boolean askTestDataCollectionConfirmation(Report report) {
+	public boolean askDataCollectionConfirmation(Report report) {
 		
 		String dc = PropertiesReader.getDataCollectionCode(report.getYear());
 		int val = Warnings.warnUser(shell, TSEMessages.get("warning.title"), 
