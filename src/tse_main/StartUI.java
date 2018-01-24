@@ -1,11 +1,8 @@
 package tse_main;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Date;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -21,7 +18,6 @@ import global_utils.FileUtils;
 import global_utils.Warnings;
 import html_viewer.HtmlViewer;
 import i18n_messages.TSEMessages;
-import log.ConsolePrinter;
 import table_database.Database;
 import table_database.DatabaseVersionException;
 import table_database.TableDao;
@@ -201,14 +197,7 @@ public class StartUI {
 	 * @throws IOException 
 	 */
 	public static void main(String args[]) throws IOException {
-		
-		File logFolder = new File(CustomStrings.LOG_FOLDER);
-		ConsolePrinter logPrinter = ConsolePrinter.getInstance();
-		//logPrinter.start(System.nanoTime(), logFolder);
-		
 		Database db = launch();
-		
-		logPrinter.close();
 		shutdown(db, display);
 	}
 

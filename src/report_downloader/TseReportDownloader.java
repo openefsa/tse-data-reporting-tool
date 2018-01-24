@@ -16,7 +16,9 @@ import org.eclipse.swt.widgets.Shell;
 import amend_manager.ReportImporter;
 import app_config.AppPaths;
 import app_config.PropertiesReader;
+import data_collection.IDataCollectionsDialog;
 import data_collection.IDcfDataCollection;
+import data_collection.IDcfDataCollectionsList;
 import dataset.Dataset;
 import dataset.DatasetList;
 import dataset.NoAttachmentException;
@@ -24,6 +26,7 @@ import formula.FormulaException;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import report.DownloadReportDialog;
+import report.IDownloadReportDialog;
 import report.ReportDownloader;
 import session_manager.TSERestoreableWindowDao;
 import soap.MySOAPException;
@@ -57,7 +60,7 @@ public class TseReportDownloader extends ReportDownloader {
 	}
 	
 	@Override
-	public DownloadReportDialog getDownloadDialog(IDcfDataCollection dc) {
+	public IDownloadReportDialog getDownloadDialog(IDcfDataCollection dc) {
 		
 		DownloadReportDialog dialog = new DownloadReportDialog(shell, 
 				CustomStrings.VALID_SENDER_ID_PATTERN);
@@ -213,5 +216,11 @@ public class TseReportDownloader extends ReportDownloader {
 				SWT.YES | SWT.NO | SWT.ICON_WARNING);
 		
 		return val == SWT.YES;
+	}
+
+	@Override
+	public IDataCollectionsDialog getDataCollectionsDialog(Shell shell,
+			IDcfDataCollectionsList<IDcfDataCollection> list) {
+		return new TSEDataCollectionsListDialog(shell, list);
 	}
 }
