@@ -24,6 +24,9 @@
 		<selection code="TG003A">
 			<description>EM (eradication measures)</description>
 		</selection>
+		<selection code="TG004A">
+			<description>AM (clinical signs at ante mortem)</description>
+		</selection>
 		<selection code="TG006A">
 			<description>SUS (clinical suspect animals)</description>
 		</selection>
