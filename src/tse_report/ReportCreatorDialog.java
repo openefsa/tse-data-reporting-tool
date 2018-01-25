@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Shell;
 import app_config.PropertiesReader;
 import dataset.Dataset;
 import dataset.RCLDatasetStatus;
+import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import report.ReportException;
@@ -103,8 +104,7 @@ public class ReportCreatorDialog extends TableDialog {
 		// change the cursor to wait
 		getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 		
-		String title = null;
-		String message = null;
+		Message msg = null;
 		Dataset oldReport = null;
 		
 		try {
@@ -116,19 +116,14 @@ public class ReportCreatorDialog extends TableDialog {
 			e.printStackTrace();
 			
 			LOGGER.error("Cannot create report", e);
-			
-			String[] warnings = Warnings.getSOAPWarning(e);
-			title = warnings[0];
-			message = warnings[1];
+			msg = Warnings.createSOAPWarning(e);
 			
 		} catch (ReportException e) {
 			e.printStackTrace();
 			
 			LOGGER.error("Cannot create report", e);
-			
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("new.report.failed.no.senderId", 
-					PropertiesReader.getSupportEmail(), e.getMessage());
+			msg = Warnings.createFatal(TSEMessages.get("new.report.failed.no.senderId", 
+					PropertiesReader.getSupportEmail()));
 		}
 		finally {
 			// change the cursor to old cursor
@@ -136,8 +131,8 @@ public class ReportCreatorDialog extends TableDialog {
 		}
 		
 		// if we had an exception warn user and return
-		if (message != null) {
-			warnUser(title, message);
+		if (msg != null) {
+			msg.open(getDialog());
 			return false;
 		}
 		
@@ -146,11 +141,11 @@ public class ReportCreatorDialog extends TableDialog {
 		if (oldReport != null) {
 			
 			// check if there are errors
-			String errorMessage = getErrorMessage(oldReport);
+			Message errMsg = getErrorMessage(oldReport);
 
 			// if there are errors
-			if (errorMessage != null) {
-				warnUser(TSEMessages.get("error.title"), errorMessage);
+			if (errMsg != null) {
+				errMsg.open(getDialog());
 				return false;
 			}
 
@@ -188,9 +183,10 @@ public class ReportCreatorDialog extends TableDialog {
 	 * @param oldReport
 	 * @return
 	 */
-	private String getErrorMessage(Dataset oldReport) {
+	private Message getErrorMessage(Dataset oldReport) {
 		
 		String message = null;
+		boolean fatal = false;
 		
 		switch(oldReport.getRCLStatus()) {
 		case ACCEPTED_DWH:
@@ -212,11 +208,14 @@ public class ReportCreatorDialog extends TableDialog {
 		case REJECTED:
 			break;
 		default:
+			fatal = true;
 			message = TSEMessages.get("new.report.failed", PropertiesReader.getSupportEmail());
 			break;
 		}
 		
-		return message;
+		Message msg = fatal ? Warnings.createFatal(message) : Warnings.create(message);
+		
+		return msg != null ? msg : null;
 	}
 
 

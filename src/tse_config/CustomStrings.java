@@ -6,8 +6,7 @@ public class CustomStrings {
 	
 	public static final String PREDEFINED_RESULTS_FILE = AppPaths.CONFIG_FOLDER + "predefinedResults.xlsx";
 	public static final String PREFERENCE_FOLDER = "preferences" + System.getProperty("file.separator");
-	public static final String LOG_FOLDER = "logs" + System.getProperty("file.separator");
-	
+
 	// sheets names
 	public static final String RESULT_SHEET = "AnalyticalResults";
 	public static final String CASE_INFO_SHEET = "CasesInformation";

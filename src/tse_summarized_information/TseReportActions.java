@@ -10,6 +10,7 @@ import org.xml.sax.SAXException;
 
 import app_config.AppPaths;
 import app_config.PropertiesReader;
+import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import message.SendMessageException;
@@ -19,7 +20,7 @@ import report.ReportException;
 import report.ReportSendOperation;
 import report.UnsupportedReportActionException;
 import soap.MySOAPException;
-import tse_config.GeneralWarnings;
+import tse_config.TSEWarnings;
 
 public class TseReportActions extends ReportActions {
 
@@ -68,98 +69,63 @@ public class TseReportActions extends ReportActions {
 	
 	private void rejectSubmitException(Exception e) {
 		
-		String title;
-		String message;
+		Message msg = null;
 		
 		if (e instanceof IOException || e instanceof ParserConfigurationException
 				|| e instanceof SAXException) {
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("report.io.error", PropertiesReader.getSupportEmail(), e.getMessage());
+			msg = Warnings.createFatal(TSEMessages.get("report.io.error", PropertiesReader.getSupportEmail()));
 		}
 		else if (e instanceof SendMessageException) {
-			String[] warning = GeneralWarnings.getSendMessageWarning((SendMessageException) e);
-			title = warning[0];
-			message = warning[1];
+			msg = TSEWarnings.getSendMessageWarning((SendMessageException) e);
 		}
 		else if (e instanceof MySOAPException) {
-			String[] warning = Warnings.getSOAPWarning((MySOAPException) e);
-			title = warning[0];
-			message = warning[1];
+			msg = Warnings.createSOAPWarning((MySOAPException) e);
 		}
 		else if (e instanceof ReportException) {
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("report.unsupported.action");
+			String title = TSEMessages.get("error.title");
+			String message = TSEMessages.get("report.unsupported.action");
+			msg = Warnings.create(title, message, SWT.ICON_ERROR);
 		}
 		else {
-		    String trace = Warnings.getStackTrace(e);
-		    message = TSEMessages.get("generic.error", trace);
-			title = TSEMessages.get("error.title");
+			msg = Warnings.createFatal(TSEMessages.get("generic.error", PropertiesReader.getSupportEmail()));
 		}
 		
-		Warnings.warnUser(shell, title, message);
+		if (msg != null)
+			msg.open(shell);
 	}
 	
 	private void sendException(Exception e) {
 		
-		String title = "";
-		String message = "";
-		int icon = SWT.ICON_ERROR;
+		Message msg = null;
 		
 		if (e instanceof IOException) {
-			
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("report.io.error", PropertiesReader.getSupportEmail(), e.getMessage());
-			icon = SWT.ICON_ERROR;
+			msg = Warnings.createFatal(TSEMessages.get("report.io.error", PropertiesReader.getSupportEmail()));
 		}
 		else if (e instanceof MySOAPException) {
-			
-			String[] warnings = Warnings.getSOAPWarning(((MySOAPException) e));
-			title = warnings[0];
-			message = warnings[1];
-			icon = SWT.ICON_ERROR;
-			
+			msg = Warnings.createSOAPWarning((MySOAPException) e);
 		}
 		else if (e instanceof SAXException || e instanceof ParserConfigurationException) {
-			
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("gde2.missing", AppPaths.MESSAGE_GDE2_XSD, 
-					PropertiesReader.getSupportEmail(), e.getMessage());
-			icon = SWT.ICON_ERROR;
-			
+			msg = Warnings.createFatal(TSEMessages.get("gde2.missing", AppPaths.MESSAGE_GDE2_XSD, 
+					PropertiesReader.getSupportEmail()));
 		}
 		else if (e instanceof SendMessageException) {
 			
 			SendMessageException sendE = (SendMessageException) e;
 			
-			String[] warning = GeneralWarnings.getSendMessageWarning(sendE);
-			
-			title = warning[0];
-			message = warning[1];
-			icon = SWT.ICON_ERROR;
-			
+			msg = TSEWarnings.getSendMessageWarning(sendE);
 		}
 		else if (e instanceof ReportException) {
-			
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("send.failed.no.senderId", 
-					PropertiesReader.getSupportEmail(), e.getMessage());
-			icon = SWT.ICON_ERROR;
+			msg = Warnings.createFatal(TSEMessages.get("send.failed.no.senderId", PropertiesReader.getSupportEmail()));
 		}
 		else if (e instanceof UnsupportedReportActionException) {
-			String[] warning = getUnsupportedOpWarning(((UnsupportedReportActionException) e).getOperation());
-			title = warning[0];
-			message = warning[1];
+			msg = getUnsupportedOpWarning(((UnsupportedReportActionException) e).getOperation());
 		}
 		else {
-
-		    String trace = Warnings.getStackTrace(e);
-
-		    message = TSEMessages.get("generic.error", PropertiesReader.getSupportEmail(), trace);
-			
-			title = TSEMessages.get("error.title");
+			msg = Warnings.createFatal(TSEMessages.get("generic.error", PropertiesReader.getSupportEmail()));
 		}
 		
-		Warnings.warnUser(shell, title, message, icon);
+		if (msg != null)
+			msg.open(shell);
 	}
 	
 	private void unsupportedEnd() {
@@ -192,33 +158,31 @@ public class TseReportActions extends ReportActions {
 		Warnings.warnUser(shell, title, message, style);
 	}
 	
-	private String[] getUnsupportedOpWarning(ReportSendOperation operation) {
+	private Message getUnsupportedOpWarning(ReportSendOperation operation) {
 		
 		String datasetId = operation.getDataset().getId();
-	
-		String title;
+
+		String title = TSEMessages.get("error.title");
 		String message;
+		boolean fatal = false;
 		
 		switch(operation.getStatus()) {
 		case ACCEPTED_DWH:
-			title = TSEMessages.get("error.title");
 			message = TSEMessages.get("send.warning.acc.dwh", datasetId);
 			break;
 		case SUBMITTED:
-			title = TSEMessages.get("error.title");
 			message = TSEMessages.get("send.warning.submitted", datasetId);
 			break;
 		case PROCESSING:
-			title = TSEMessages.get("error.title");
 			message = TSEMessages.get("send.warning.processing", datasetId);
 			break;
 		default:
-			title = TSEMessages.get("error.title");
 			message = TSEMessages.get("send.error.acc.dcf", PropertiesReader.getSupportEmail());
+			fatal = true;
 			break;
 		}
 		
-		return new String[] {title, message};
+		return fatal ? Warnings.createFatal(message) : Warnings.create(title, message, SWT.ICON_ERROR);
 	}
 	
 	/**

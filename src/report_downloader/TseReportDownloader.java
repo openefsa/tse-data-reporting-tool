@@ -23,6 +23,7 @@ import dataset.Dataset;
 import dataset.DatasetList;
 import dataset.NoAttachmentException;
 import formula.FormulaException;
+import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import report.DownloadReportDialog;
@@ -153,51 +154,36 @@ public class TseReportDownloader extends ReportDownloader {
 	@Override
 	public void manageException(Exception e) {
 
-		String title = null;
-		String message = null;
+		Message msg = null;
 
 		if (e instanceof MySOAPException) {
-			String[] warnings = Warnings.getSOAPWarning(((MySOAPException) e));
-			title = warnings[0];
-			message = warnings[1];
+			msg = Warnings.createSOAPWarning((MySOAPException) e);
 		}
 		else if (e instanceof XMLStreamException
 				|| e instanceof IOException) {
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("download.bad.format",
-					PropertiesReader.getSupportEmail(), e.getMessage());
+			
+			msg = Warnings.createFatal(TSEMessages.get("download.bad.format",
+					PropertiesReader.getSupportEmail()));
 		}
 		else if (e instanceof FormulaException) { 
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("download.bad.parsing", 
-					PropertiesReader.getSupportEmail(), e.getMessage());
+			msg = Warnings.createFatal(TSEMessages.get("download.bad.parsing",
+					PropertiesReader.getSupportEmail()));
 		}
 		else if (e instanceof NoAttachmentException) {
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("download.no.attachment", 
-					PropertiesReader.getSupportEmail(), e.getMessage());
+			msg = Warnings.createFatal(TSEMessages.get("download.no.attachment",
+					PropertiesReader.getSupportEmail()));
 		}
 		else if (e instanceof ParseException) {
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("download.bad.parsing", 
-					PropertiesReader.getSupportEmail(), e.getMessage());
+			msg = Warnings.createFatal(TSEMessages.get("download.bad.parsing",
+					PropertiesReader.getSupportEmail()));
 		}
 		else {
-			StringBuilder sb = new StringBuilder();
-			for (StackTraceElement ste : e.getStackTrace()) {
-		        sb.append("\n\tat ");
-		        sb.append(ste);
-		    }
-		    String trace = sb.toString();
-		    
-		    message = TSEMessages.get("generic.error", 
-		    		PropertiesReader.getSupportEmail(), trace);
 			
-			title = TSEMessages.get("error.title");
+			msg = Warnings.createFatal(TSEMessages.get("generic.error",
+					PropertiesReader.getSupportEmail()));
 		}
 		
-		
-		Warnings.warnUser(shell, title, message);
+		msg.open(shell);
 	}
 
 	@Override

@@ -3,8 +3,6 @@ package tse_options;
 import java.io.IOException;
 import java.util.Collection;
 
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.LogManager;
@@ -23,6 +21,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.xml.sax.SAXException;
 
 import app_config.PropertiesReader;
+import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import message.SendMessageException;
@@ -34,7 +33,7 @@ import table_dialog.RowValidatorLabelProvider;
 import table_skeleton.TableCell;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
-import tse_config.GeneralWarnings;
+import tse_config.TSEWarnings;
 import tse_report.TseReport;
 import tse_validator.SimpleRowValidatorLabelProvider;
 import user.User;
@@ -162,9 +161,7 @@ public class SettingsDialog extends OptionsDialog {
 		// change the cursor to wait
 		getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 		
-		String title = null;
-		String message = null;
-		int jStyle = JOptionPane.ERROR_MESSAGE;
+		Message msg = null;
 
 		TseReport report = null;
 		try {
@@ -177,9 +174,11 @@ public class SettingsDialog extends OptionsDialog {
 			report.exportAndSend(OperationType.TEST);
 
 			// here is success
-			title = TSEMessages.get("success.title");
-			message = TSEMessages.get("test.connection.success");
-			jStyle = JOptionPane.INFORMATION_MESSAGE;
+			String title = TSEMessages.get("success.title");
+			String message = TSEMessages.get("test.connection.success");
+			int style = SWT.ICON_INFORMATION;
+			
+			msg = Warnings.create(title, message, style);
 			
 			LOGGER.info("Test connection successfully completed");
 			
@@ -189,17 +188,14 @@ public class SettingsDialog extends OptionsDialog {
 			
 			LOGGER.error("Test connection failed", e);
 
-			String[] warnings = Warnings.getSOAPWarning(e);
-			title = warnings[0];
-			message = warnings[1];
+			msg = Warnings.createSOAPWarning(e);
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			e.printStackTrace();
 			
 			LOGGER.error("Test connection failed", e);
 			
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("test.connection.fail3", 
-					PropertiesReader.getSupportEmail(), e.getMessage());
+			msg = Warnings.createFatal(TSEMessages.get("test.connection.fail3", 
+					PropertiesReader.getSupportEmail()));
 			
 		} catch (SendMessageException e) {
 			
@@ -208,9 +204,7 @@ public class SettingsDialog extends OptionsDialog {
 			
 			LOGGER.error("Test connection failed", e);
 			
-			String[] warning = GeneralWarnings.getSendMessageWarning(e);
-			title = warning[0];
-			message = warning[1];
+			msg = TSEWarnings.getSendMessageWarning(e);
 			
 		} catch (ReportException e) {
 			// There an invalid operation was used
@@ -218,9 +212,8 @@ public class SettingsDialog extends OptionsDialog {
 			
 			LOGGER.error("Test connection failed", e);
 			
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("test.connection.fail2", 
-					PropertiesReader.getSupportEmail(), e.getMessage());
+			msg = Warnings.createFatal(TSEMessages.get("test.connection.fail2",
+					PropertiesReader.getSupportEmail()));
 		}
 		finally {
 			
@@ -233,14 +226,8 @@ public class SettingsDialog extends OptionsDialog {
 		}
 		
 		// if we have an error message stop and show the error
-		if (message != null) {
-			
-			final JDialog dialog = new JDialog();
-			dialog.setAlwaysOnTop(true);
-			JOptionPane.showMessageDialog(dialog, message, title, jStyle);
-			dialog.dispose();
-			
-			//Warnings.warnUser(getDialog(), title, message, style);
+		if (msg != null) {
+			msg.open(getDialog());
 		}
 	}
 	

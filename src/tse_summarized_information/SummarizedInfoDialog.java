@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
 import app_config.PropertiesReader;
-import converter.ExceptionConverter;
 import dataset.RCLDatasetStatus;
 import global_utils.Message;
 import global_utils.Warnings;
@@ -318,13 +317,12 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 							public void run() {
 								progressBar.close();
 								
-								String message = (e instanceof MySOAPException) ? 
-										Warnings.getSOAPWarning((MySOAPException) e)[1] : 
-											TSEMessages.get("refresh.status.error", 
-													PropertiesReader.getSupportEmail(),
-													ExceptionConverter.getStackTrace(e));
+								Message msg = (e instanceof MySOAPException) ? 
+										Warnings.createSOAPWarning((MySOAPException) e) : 
+											Warnings.createFatal(TSEMessages.get("refresh.status.error", 
+													PropertiesReader.getSupportEmail()));
 								
-								Warnings.warnUser(getDialog(), TSEMessages.get("error.title"), message);
+								msg.open(getDialog());
 							}
 						});
 					}
@@ -469,13 +467,12 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 								
 								progressBar.close();
 								
-								String message = (e instanceof MySOAPException) ? 
-										Warnings.getSOAPWarning((MySOAPException) e)[1] : 
-											TSEMessages.get("display.ack.error", 
-													PropertiesReader.getSupportEmail(),
-													ExceptionConverter.getStackTrace(e));
+								Message msg = (e instanceof MySOAPException) ? 
+										Warnings.createSOAPWarning((MySOAPException) e) : 
+											Warnings.createFatal(TSEMessages.get("display.ack.error", 
+													PropertiesReader.getSupportEmail()));
 								
-								Warnings.warnUser(getDialog(), TSEMessages.get("error.title"), message);
+								msg.open(getDialog());
 							}
 						});
 					}

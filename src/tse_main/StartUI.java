@@ -25,7 +25,6 @@ import table_skeleton.TableCell;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 import tse_config.DebugConfig;
-import tse_config.GeneralWarnings;
 import tse_options.PreferencesDialog;
 import tse_options.SettingsDialog;
 import user.DcfUser;
@@ -178,7 +177,10 @@ public class StartUI {
 		catch (Exception e) {
 			e.printStackTrace();
 			LOGGER.fatal("Generic error occurred", e);
-			GeneralWarnings.showExceptionStack(shell, e);
+			
+			Warnings.createFatal(TSEMessages.get("generic.error", 
+					PropertiesReader.getSupportEmail())).open(shell);
+			
 		}
 
 		// set the application icon into the shell

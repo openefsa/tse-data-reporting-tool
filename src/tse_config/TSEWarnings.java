@@ -1,11 +1,10 @@
 package tse_config;
 
-import javax.swing.JOptionPane;
-
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.SWT;
 
 import app_config.PropertiesReader;
-import converter.ExceptionConverter;
+import global_utils.Message;
+import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import message.SendMessageErrorType;
 import message.SendMessageException;
@@ -13,37 +12,22 @@ import table_database.TableDao;
 import table_skeleton.TableRowList;
 import xlsx_reader.TableSchemaList;
 
-public class GeneralWarnings {
-
-	public static void showExceptionStack(Shell shell, Exception e) {
-		
-		String trace = ExceptionConverter.getStackTrace(e);
-		
-		JOptionPane.showMessageDialog(null, TSEMessages.get("generic.error", 
-				PropertiesReader.getSupportEmail(), trace), 
-				TSEMessages.get("error.title"), JOptionPane.ERROR_MESSAGE);
-	}
-
+public class TSEWarnings {
 	
-	public static String[] getSendMessageWarning(SendMessageException sendE) {
+	public static Message getSendMessageWarning(SendMessageException sendE) {
 		
-		String title;
-		String message;
-		
+		Message msg = null;
 		String messageError = sendE.getMessage();
 		
 		SendMessageErrorType type = SendMessageErrorType.fromString(messageError);
 
 		switch(type) {
 		case NON_DP_USER:
-			
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("account.incomplete", PropertiesReader.getSupportEmail());
-
+			msg = Warnings.createFatal(TSEMessages.get("account.incomplete",
+					PropertiesReader.getSupportEmail()));
 			break;
 			
 		case USER_WRONG_ORG:
-			title = TSEMessages.get("error.title");
 			TableDao dao = new TableDao(TableSchemaList.getByName(CustomStrings.SETTINGS_SHEET));
 
 			String orgCode = "";
@@ -51,22 +35,24 @@ public class GeneralWarnings {
 			if (!settingsList.isEmpty()) {
 				orgCode = settingsList.get(0).getLabel(CustomStrings.SETTINGS_ORG_CODE);
 			}
-			message = TSEMessages.get("account.wrong.org", orgCode);
+			
+			msg = Warnings.create(TSEMessages.get("error.title"), 
+					TSEMessages.get("account.wrong.org", orgCode), SWT.ICON_ERROR);
 			break;
 		case USER_WRONG_PROFILE:
 			
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("account.incorrect", PropertiesReader.getSupportEmail());
+			msg = Warnings.createFatal(TSEMessages.get("account.incorrect",
+					PropertiesReader.getSupportEmail()));
 			
 			break;
 			
 		default:
 			
-			title = TSEMessages.get("error.title");
-			message = TSEMessages.get("send.message.failed", PropertiesReader.getSupportEmail(), sendE.getErrorMessage());
+			msg = Warnings.createFatal(TSEMessages.get("send.message.failed",
+					PropertiesReader.getSupportEmail()));
 			break;
 		}
 		
-		return new String[] {title, message};
+		return msg;
 	}
 }
