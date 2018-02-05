@@ -51,7 +51,16 @@
 			<description>NSHC (not slaughtered for human consumption)</description>
 		</selection>
 		<selection code="TG009A">
-			<description>Road/predator killed</description>
+			<description>RK Road/predator killed</description>
+		</selection>
+		<selection code="TG010A">
+			<description>FC (Fallen/culled)</description>
+		</selection>
+		<selection code="TG011A">
+			<description>HSNHC (Hunted/slaughtered not fit for HC)</description>
+		</selection>
+		<selection code="TG012A">
+			<description>HSHC (Hunted/slaughtered fit for HC)</description>
 		</selection>
 	</selectionList>
 </targetGroupLists>

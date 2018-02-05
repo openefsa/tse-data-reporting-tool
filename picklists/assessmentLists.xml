@@ -24,6 +24,9 @@
 		<selection code="J044A">
 			<description>BSE-not excluded (i.e. BSE like)</description>
 		</selection>
+		<selection code="J052A">
+			<description>CH1641-like</description>
+		</selection>
 		<selection code="J045A">
 			<description>Classical-scrapie (i.e. BSE-excluded in 1st Molecular test)</description>
 		</selection>
@@ -35,6 +38,9 @@
 		</selection>
 	</selectionList>
 	<selectionList id="CWD">
+		<selection code="J044A">
+			<description>BSE-not excluded (i.e. BSE like)</description>
+		</selection>
 		<selection code="J049A">
 			<description>CWD</description>
 		</selection>
