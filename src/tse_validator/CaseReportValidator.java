@@ -28,9 +28,9 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 	}
 
 	public Check isRecordCorrect(TableRow row) throws IOException {
-
+		
 		TableSchema childSchema = TableSchemaList.getByName(CustomStrings.RESULT_SHEET);
-		Collection<TableRow> results = row.getChildren(childSchema);
+		Collection<TableRow> results = row.getChildren(childSchema, false);
 
 		// if in summinfo screening was set, but no screening
 		// was found in the cases
@@ -90,11 +90,9 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 	public String getText(TableRow row) {
 		
 		String text = null;
-		
-		int level = this.getWarningLevel(row);
 		int parentLevel = super.getWarningLevel(row);
 		
-		if (parentLevel > level)
+		if (parentLevel > 1)
 			return super.getText(row);
 		
 		try {

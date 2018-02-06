@@ -34,7 +34,7 @@ import report.ReportActions;
 import report.ThreadFinishedListener;
 import report_validator.ReportError;
 import session_manager.TSERestoreableWindowDao;
-import soap.MySOAPException;
+import soap.DetailedSOAPException;
 import table_dialog.DialogBuilder;
 import table_dialog.EditorListener;
 import table_dialog.RowValidatorLabelProvider;
@@ -317,10 +317,10 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 							public void run() {
 								progressBar.close();
 								
-								Message msg = (e instanceof MySOAPException) ? 
-										Warnings.createSOAPWarning((MySOAPException) e) : 
+								Message msg = (e instanceof DetailedSOAPException) ? 
+										Warnings.createSOAPWarning((DetailedSOAPException) e) : 
 											Warnings.createFatal(TSEMessages.get("refresh.status.error", 
-													PropertiesReader.getSupportEmail()));
+													PropertiesReader.getSupportEmail()), report);
 								
 								msg.open(getDialog());
 							}
@@ -467,10 +467,10 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 								
 								progressBar.close();
 								
-								Message msg = (e instanceof MySOAPException) ? 
-										Warnings.createSOAPWarning((MySOAPException) e) : 
+								Message msg = (e instanceof DetailedSOAPException) ? 
+										Warnings.createSOAPWarning((DetailedSOAPException) e) : 
 											Warnings.createFatal(TSEMessages.get("display.ack.error", 
-													PropertiesReader.getSupportEmail()));
+													PropertiesReader.getSupportEmail()), report);
 								
 								msg.open(getDialog());
 							}

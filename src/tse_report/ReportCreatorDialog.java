@@ -12,13 +12,14 @@ import org.eclipse.swt.widgets.Shell;
 
 import app_config.PropertiesReader;
 import dataset.Dataset;
+import dataset.IDataset;
 import dataset.RCLDatasetStatus;
 import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import report.ReportException;
 import session_manager.TSERestoreableWindowDao;
-import soap.MySOAPException;
+import soap.DetailedSOAPException;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_dialog.TableDialog;
@@ -111,7 +112,7 @@ public class ReportCreatorDialog extends TableDialog {
 			
 			oldReport = report.getLatestDataset();
 			
-		} catch (MySOAPException e) {
+		} catch (DetailedSOAPException e) {
 			
 			e.printStackTrace();
 			
@@ -123,7 +124,7 @@ public class ReportCreatorDialog extends TableDialog {
 			
 			LOGGER.error("Cannot create report", e);
 			msg = Warnings.createFatal(TSEMessages.get("new.report.failed.no.senderId", 
-					PropertiesReader.getSupportEmail()));
+					PropertiesReader.getSupportEmail()), report);
 		}
 		finally {
 			// change the cursor to old cursor
@@ -141,7 +142,7 @@ public class ReportCreatorDialog extends TableDialog {
 		if (oldReport != null) {
 			
 			// check if there are errors
-			Message errMsg = getErrorMessage(oldReport);
+			Message errMsg = getErrorMessage(report, oldReport);
 
 			// if there are errors
 			if (errMsg != null) {
@@ -183,7 +184,7 @@ public class ReportCreatorDialog extends TableDialog {
 	 * @param oldReport
 	 * @return
 	 */
-	private Message getErrorMessage(Dataset oldReport) {
+	private Message getErrorMessage(IDataset report, IDataset oldReport) {
 		
 		String message = null;
 		boolean fatal = false;
@@ -213,7 +214,7 @@ public class ReportCreatorDialog extends TableDialog {
 			break;
 		}
 		
-		Message msg = fatal ? Warnings.createFatal(message) : Warnings.create(message);
+		Message msg = fatal ? Warnings.createFatal(message, report, oldReport) : Warnings.create(message);
 		
 		return msg != null ? msg : null;
 	}

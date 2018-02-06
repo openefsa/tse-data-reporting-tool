@@ -9,10 +9,10 @@ import org.apache.log4j.Logger;
 import report.Report;
 import table_relations.Relation;
 import table_skeleton.TableRow;
+import table_skeleton.TableRowList;
 import tse_analytical_result.AnalyticalResult;
 import tse_case_report.CaseReport;
 import tse_config.CustomStrings;
-import tse_main.StartUI;
 import tse_summarized_information.SummarizedInfo;
 
 public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
@@ -27,24 +27,37 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 	 * @param caseReport
 	 * @throws IOException
 	 */
-	public static void createDefaultResults(Report report, 
+	public static TableRowList createDefaultResults(Report report, 
 			SummarizedInfo summInfo, CaseReport caseReport) throws IOException {
 
-		createDefaultResult(report, summInfo, caseReport, 
+		TableRowList results = new TableRowList();
+		
+		AnalyticalResult r = createDefaultResult(report, summInfo, caseReport, 
 				PredefinedResultHeader.SCREENING,
 				CustomStrings.RESULT_SCREENING_TEST);
+		if (r != null)
+			results.add(r);
 		
-		createDefaultResult(report, summInfo, caseReport, 
+		r = createDefaultResult(report, summInfo, caseReport, 
 				PredefinedResultHeader.CONFIRMATORY, 
 				CustomStrings.SUMMARIZED_INFO_CONFIRMATORY_TEST);
+		if (r != null)
+			results.add(r);
 		
-		createDefaultResult(report, summInfo, caseReport, 
+		
+		r = createDefaultResult(report, summInfo, caseReport, 
 				PredefinedResultHeader.DISCRIMINATORY,
 				CustomStrings.RESULT_DISCRIMINATORY_TEST);
+		if (r != null)
+			results.add(r);
 		
-		createDefaultResult(report, summInfo, caseReport, 
+		r = createDefaultResult(report, summInfo, caseReport, 
 				PredefinedResultHeader.GENOTYPING_BASE_TERM,
 				CustomStrings.SUMMARIZED_INFO_MOLECULAR_TEST);
+		if (r != null)
+			results.add(r);
+		
+		return results;
 	}
 	
 	/**
@@ -171,7 +184,7 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 	 * @param testTypeCode
 	 * @throws IOException
 	 */
-	private static void createDefaultResult(Report report, 
+	private static AnalyticalResult createDefaultResult(Report report, 
 			SummarizedInfo summInfo, TableRow caseReport, 
 			PredefinedResultHeader test, 
 			String testTypeCode) throws IOException {
@@ -214,7 +227,11 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 			resultRow.updateFormulas();
 
 			resultRow.update();
+			
+			return resultRow;
 		}
+		
+		return null;
 	}
 	
 	

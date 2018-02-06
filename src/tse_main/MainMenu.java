@@ -26,7 +26,7 @@ import message_creator.OperationType;
 import report.ReportException;
 import report.ReportSendOperation;
 import report_downloader.TseReportDownloader;
-import soap.MySOAPException;
+import soap.DetailedSOAPException;
 import table_database.TableDao;
 import table_skeleton.TableRow;
 import table_skeleton.TableVersion;
@@ -254,7 +254,7 @@ public class MainMenu {
 				TseReportDownloader downloader = new TseReportDownloader(shell);
 				try {
 					downloader.download();
-				} catch (MySOAPException e) {
+				} catch (DetailedSOAPException e) {
 					e.printStackTrace();
 					LOGGER.error("Download report failed", e);
 					Warnings.showSOAPWarning(shell, e);
@@ -287,7 +287,7 @@ public class MainMenu {
 				ReportSendOperation opSendType = null;
 				try {
 					opSendType = report.getSendOperation();
-				} catch (MySOAPException | ReportException e1) {
+				} catch (DetailedSOAPException | ReportException e1) {
 					e1.printStackTrace();
 				}
 				

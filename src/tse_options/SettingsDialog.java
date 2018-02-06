@@ -27,7 +27,7 @@ import i18n_messages.TSEMessages;
 import message.SendMessageException;
 import message_creator.OperationType;
 import report.ReportException;
-import soap.MySOAPException;
+import soap.DetailedSOAPException;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
 import table_skeleton.TableCell;
@@ -182,7 +182,7 @@ public class SettingsDialog extends OptionsDialog {
 			
 			LOGGER.info("Test connection successfully completed");
 			
-		} catch (MySOAPException e) {
+		} catch (DetailedSOAPException e) {
 
 			e.printStackTrace();
 			
@@ -195,7 +195,7 @@ public class SettingsDialog extends OptionsDialog {
 			LOGGER.error("Test connection failed", e);
 			
 			msg = Warnings.createFatal(TSEMessages.get("test.connection.fail3", 
-					PropertiesReader.getSupportEmail()));
+					PropertiesReader.getSupportEmail()), report);
 			
 		} catch (SendMessageException e) {
 			
@@ -204,7 +204,7 @@ public class SettingsDialog extends OptionsDialog {
 			
 			LOGGER.error("Test connection failed", e);
 			
-			msg = TSEWarnings.getSendMessageWarning(e);
+			msg = TSEWarnings.getSendMessageWarning(e, report);
 			
 		} catch (ReportException e) {
 			// There an invalid operation was used
@@ -213,7 +213,7 @@ public class SettingsDialog extends OptionsDialog {
 			LOGGER.error("Test connection failed", e);
 			
 			msg = Warnings.createFatal(TSEMessages.get("test.connection.fail2",
-					PropertiesReader.getSupportEmail()));
+					PropertiesReader.getSupportEmail()), report);
 		}
 		finally {
 			

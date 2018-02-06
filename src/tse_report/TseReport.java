@@ -27,7 +27,7 @@ import report.EFSAReport;
 import report.Report;
 import report.ReportException;
 import report.ReportList;
-import soap.MySOAPException;
+import soap.DetailedSOAPException;
 import table_database.TableDao;
 import table_relations.Relation;
 import table_skeleton.TableRow;
@@ -140,7 +140,8 @@ public class TseReport extends Report implements TseTableRow {
 			
 			TableDao dao = new TableDao(schema);
 			
-			Collection<TableRow> children = dao.getByParentId(CustomStrings.REPORT_SHEET, this.getDatabaseId(), "desc");
+			Collection<TableRow> children = dao.getByParentId(CustomStrings.REPORT_SHEET, 
+					this.getDatabaseId(), true, "desc");
 			
 			records.addAll(children);
 		}
@@ -160,7 +161,7 @@ public class TseReport extends Report implements TseTableRow {
 		
 		TableDao dao = new TableDao(summInfoSchema);
 		Collection<TableRow> children = dao.getByParentId(CustomStrings.REPORT_SHEET, 
-				this.getDatabaseId(), "desc");
+				this.getDatabaseId(), true, "desc");
 		
 		// create it as summarized info array
 		for (TableRow child : children) {
@@ -406,7 +407,7 @@ public class TseReport extends Report implements TseTableRow {
 	 */
 	public void create() throws IOException, 
 		ParserConfigurationException, SAXException, SendMessageException, 
-		MySOAPException, ReportException {
+		DetailedSOAPException, ReportException {
 		
 		OperationType op = OperationType.INSERT;
 		this.exportAndSend(op);
@@ -423,7 +424,7 @@ public class TseReport extends Report implements TseTableRow {
 	 */
 	public void replace() throws IOException, 
 		ParserConfigurationException, SAXException, SendMessageException, 
-		MySOAPException, ReportException {
+		DetailedSOAPException, ReportException {
 		
 		OperationType op = OperationType.REPLACE;
 		this.exportAndSend(op);
@@ -440,7 +441,7 @@ public class TseReport extends Report implements TseTableRow {
 	 */
 	public void reject() throws IOException, 
 		ParserConfigurationException, SAXException, SendMessageException, 
-		MySOAPException, ReportException {
+		DetailedSOAPException, ReportException {
 		
 		OperationType op = OperationType.REJECT;
 		this.exportAndSend(op);
@@ -452,11 +453,11 @@ public class TseReport extends Report implements TseTableRow {
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws SendMessageException
-	 * @throws MySOAPException
+	 * @throws DetailedSOAPException
 	 */
 	public void submit() throws IOException, 
 		ParserConfigurationException, SAXException, SendMessageException, 
-		MySOAPException, ReportException {
+		DetailedSOAPException, ReportException {
 		
 		OperationType op = OperationType.SUBMIT;
 		this.exportAndSend(op);

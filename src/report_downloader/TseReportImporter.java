@@ -76,12 +76,12 @@ public class TseReportImporter extends ReportImporter {
 			// import it
 			if (isSummarizedInfo(row)) {
 
-				SummarizedInfo si = extractSummarizedInfo(report, row);
+				SummarizedInfo si = extractSummarizedInfo(report, row, false);
 
 				// save it in the database
 				si.save();
 				
-				LOGGER.info("Imported summ info; progId=" + si.getProgId());
+				LOGGER.info("Imported summ info; contextId=" + si.computeContextId());
 				
 				// save it in the cache
 				summInfos.add(si);
@@ -93,10 +93,17 @@ public class TseReportImporter extends ReportImporter {
 	 * Check if the row is random genotyping
 	 * @param row
 	 * @return
+	 * @throws ParseException 
 	 */
-	private boolean isRGT(TableRow row) {
+	private boolean isRGT(TableRow row) throws ParseException {
 		
-		boolean rgtSource = row.getCode(CustomStrings.SUMMARIZED_INFO_SOURCE)
+		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer(row);
+		String paramBaseTerm = decomposer.getBaseTerm(
+				row.getCode(CustomStrings.PARAM_CODE_COL));
+		
+		boolean rgtParamCode = paramBaseTerm.equals(CustomStrings.RGT_PARAM_CODE);
+		
+		/*boolean rgtSource = row.getCode(CustomStrings.SUMMARIZED_INFO_SOURCE)
 				.equals(CustomStrings.SOURCE_SHEEP_CODE);
 		
 		boolean rgtPart = row.getCode(CustomStrings.SUMMARIZED_INFO_PART)
@@ -105,7 +112,9 @@ public class TseReportImporter extends ReportImporter {
 		boolean rgtTest = row.getCode(CustomStrings.AN_METH_CODE)
 				.equals(CustomStrings.AN_METH_CODE_GENOTYPING);
 		
-		return rgtSource && rgtPart && rgtTest;
+		return rgtParamCode && rgtSource && rgtPart && rgtTest;*/
+		
+		return rgtParamCode;
 	}
 	
 	/**
@@ -123,13 +132,37 @@ public class TseReportImporter extends ReportImporter {
 
 			if (!isSummarizedInfo(row)) {
 				
-				// foreign key with the summarized information
-				String progId = row.getLabel(CustomStrings.RESULT_PROG_ID);
+				SummarizedInfo summInfo = null;
 				
-				// get the summarized info related to the case/result
-				SummarizedInfo summInfo = getSummInfoByProgId(progId);
-
-				if (summInfo == null) {
+				// if random genotyping, create the summarized information
+				if (isRGT(row)) {
+					
+					System.out.println("RGT ROW: " + row);
+					
+					summInfo = extractSummarizedInfo(report, row, true);
+					
+					summInfo.setType(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
+					
+					// create the summarized information
+					summInfo.save();
+					
+					// add in the cache in order to avoid to save the same summInfo
+					// for the different results
+					summInfos.add(summInfo);
+					
+					LOGGER.info("Imported RGT summarized information; contextId=" + summInfo.computeContextId());
+				}
+				else {
+					String contextId = getContextIdFrom(row);
+					
+					// foreign key with the summarized information
+					//String progId = row.getLabel(CustomStrings.RESULT_PROG_ID);
+					
+					// get the summarized info related to the case/result
+					summInfo = getSummInfoByContextId(contextId);
+				}
+				
+				/*if (summInfo == null) {
 					
 					// try to extract it from the result, since
 					// it could be a RGT
@@ -150,14 +183,14 @@ public class TseReportImporter extends ReportImporter {
 						// for the different results
 						summInfos.add(summInfo);
 						
-						LOGGER.info("Imported RGT summarized information; progId=" + summInfo.getProgId());
+						LOGGER.info("Imported RGT summarized information; contextId=" + summInfo.computeContextId());
 					}
 					else {
-						ParseException e = new ParseException("No summarized information found in dataset with progId=" + progId, -1);
+						ParseException e = new ParseException("No summarized information found in dataset with contextId=" + contextId, -1);
 						LOGGER.error("Cannot create cases and results without the related summarized information", e);
 						throw e;
 					}
-				}
+				}*/
 				
 				// import the case
 				TableRow caseInfo = importCase(report, summInfo, row);
@@ -234,7 +267,7 @@ public class TseReportImporter extends ReportImporter {
 	 * @throws FormulaException 
 	 * @throws ParseException 
 	 */
-	private SummarizedInfo extractSummarizedInfo(TseReport report, TableRow row) throws FormulaException, ParseException {
+	private SummarizedInfo extractSummarizedInfo(TseReport report, TableRow row, boolean isRGT) throws FormulaException, ParseException {
 
 		// set the summarized information schema
 		row.setSchema(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
@@ -243,7 +276,9 @@ public class TseReportImporter extends ReportImporter {
 
 		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer(row);
 		rowValues.putAll(decomposer.decompose(CustomStrings.SUMMARIZED_INFO_SAMP_MAT_CODE));
-		rowValues.putAll(decomposer.decompose(CustomStrings.SUMMARIZED_INFO_PROG_INFO));
+		
+		if (!isRGT)
+			rowValues.putAll(decomposer.decompose(CustomStrings.SUMMARIZED_INFO_PROG_INFO));
 		
 		// copy values into the summarized information
 		SummarizedInfo summInfo = new SummarizedInfo(row);
@@ -353,6 +388,38 @@ public class TseReportImporter extends ReportImporter {
 	}
 
 	/**
+	 * Get the context id of an analytical result
+	 * @param result
+	 * @return
+	 * @throws ParseException
+	 * @throws FormulaException
+	 */
+	private String getContextIdFrom(TableRow result) throws ParseException, FormulaException {
+		
+		// decompose param code
+		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer(result);
+		
+		HashMap<String, TableCell> context1 = 
+				decomposer.decompose(CustomStrings.SUMMARIZED_INFO_SAMP_MAT_CODE);
+		
+		HashMap<String, TableCell> context2 = 
+				decomposer.decompose(CustomStrings.SUMMARIZED_INFO_PROG_INFO);
+		
+		// use a summarized information to use the excel formula
+		// directly for computing the context id
+		SummarizedInfo summInfo = new SummarizedInfo();
+		summInfo.copyValues(result);
+		
+		for (String key : context1.keySet())
+			summInfo.put(key, context1.get(key));
+		
+		for (String key : context2.keySet())
+			summInfo.put(key, context2.get(key));
+		
+		return summInfo.computeContextId();
+	}
+	
+	/**
 	 * Extract the analytical result data from the current row
 	 * @param report
 	 * @param summInfo
@@ -407,12 +474,13 @@ public class TseReportImporter extends ReportImporter {
 	 * information which is related to it
 	 * @param progId
 	 * @return
+	 * @throws FormulaException 
 	 */
-	private SummarizedInfo getSummInfoByProgId(String progId) {
+	private SummarizedInfo getSummInfoByContextId(String resultContextId) throws FormulaException {
 
 		for (SummarizedInfo info : summInfos) {
-			String progId2 = info.getLabel(CustomStrings.SUMMARIZED_INFO_PROG_ID);
-			if (progId2.equals(progId)) {
+			String contextId = info.computeContextId();
+			if (contextId.equals(resultContextId)) {
 				return info;
 			}
 		}

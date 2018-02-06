@@ -23,6 +23,7 @@ import table_dialog.RowValidatorLabelProvider;
 import table_relations.Relation;
 import table_skeleton.TableColumn;
 import table_skeleton.TableRow;
+import table_skeleton.TableRowList;
 import tse_case_report.CaseReport;
 import tse_components.TableDialogWithMenu;
 import tse_config.CustomStrings;
@@ -74,7 +75,7 @@ public class ResultDialog extends TableDialogWithMenu {
 			
 			@Override
 			public void editEnded(TableRow row, TableColumn field, boolean changed) {
-
+				
 				// update the base term and the result value if
 				// the test aim was changed
 				if (changed && (field.getId().equals(CustomStrings.RESULT_TEST_AIM) 
@@ -95,27 +96,33 @@ public class ResultDialog extends TableDialogWithMenu {
 									+ CustomStrings.PARAM_CODE_BASE_TERM_COL + " using the predefined results", e);
 						}
 					}
-					else
+					else {
 						PredefinedResult.addParamAndResult(row, row.getCode(field.getId()));
+					}
 				}
 				
 				// reset the aim of the test if the test type is changed
 				if (changed && field.equals(CustomStrings.RESULT_TEST_TYPE)) {
+					
+					TableRow completeRow = getPanelBuilder().getTable().getCompleteRow(row.getDatabaseId());
+					
+					completeRow.remove(CustomStrings.RESULT_TEST_AIM);
+					completeRow.remove(CustomStrings.AN_METH_CODE);
 					row.remove(CustomStrings.RESULT_TEST_AIM);
 					row.remove(CustomStrings.AN_METH_CODE);
+
+					completeRow.update();
 				}
 			}
 		});
 		
 		updateUI();
-		
-		askForDefault();
 	}
 	
 	public void askForDefault() {
 			
 		// create default if no results are present
-		if (!caseInfo.hasResults() && isEditable()) {
+		if (!this.caseInfo.hasResults() && isEditable()) {
 
 			int val = Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"), 
 					TSEMessages.get("result.confirm.default"),
@@ -127,7 +134,8 @@ public class ResultDialog extends TableDialogWithMenu {
 				return;
 			
 			try {
-				PredefinedResult.createDefaultResults(report, summInfo, caseInfo);
+				TableRowList results = PredefinedResult.createDefaultResults(report, summInfo, caseInfo);
+				this.setRows(results);
 				
 				warnUser(TSEMessages.get("warning.title"), 
 						TSEMessages.get("result.check.default"),
@@ -156,6 +164,8 @@ public class ResultDialog extends TableDialogWithMenu {
 		boolean editableReport = datasetStatus.isEditable();
 		panel.setTableEditable(editableReport);
 		panel.setRowCreatorEnabled(editableReport);
+		
+		LOGGER.info("GUI updated");
 	}
 
 	/**

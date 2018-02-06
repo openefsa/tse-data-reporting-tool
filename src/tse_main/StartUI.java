@@ -171,17 +171,7 @@ public class StartUI {
 		shell.setText(PropertiesReader.getAppName() + " " + PropertiesReader.getAppVersion());
 
 		// open the main panel
-		try {
-			new MainPanel(shell);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			LOGGER.fatal("Generic error occurred", e);
-			
-			Warnings.createFatal(TSEMessages.get("generic.error", 
-					PropertiesReader.getSupportEmail())).open(shell);
-			
-		}
+		new MainPanel(shell);
 
 		// set the application icon into the shell
 		Image image = new Image(Display.getCurrent(), 
@@ -199,8 +189,18 @@ public class StartUI {
 	 * @throws IOException 
 	 */
 	public static void main(String args[]) throws IOException {
-		Database db = launch();
-		shutdown(db, display);
+		
+		try {
+			Database db = launch();
+			shutdown(db, display);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.fatal("Generic error occurred", e);
+			
+			Warnings.createFatal(TSEMessages.get("generic.error", 
+					PropertiesReader.getSupportEmail())).open(shell);
+		}
 	}
 
 	private static Database launch() {

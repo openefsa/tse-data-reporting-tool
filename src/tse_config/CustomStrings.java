@@ -52,6 +52,7 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_TEST_TYPE = "anMethType";
 	public static final String SUMMARIZED_INFO_PROG_INFO = "progInfo";
 	public static final String SUMMARIZED_INFO_PROG_ID = "progId";
+	public static final String CONTEXT_ID_COL = "contextId";
 	public static final String SUMMARIZED_INFO_SAMP_MAT_CODE = "sampMatCode";
 	
 	public static final String SUMMARIZED_INFO_BSE_TYPE = "BSE";
@@ -109,6 +110,7 @@ public class CustomStrings {
 	public static final String PARAM_CODE_COL = "paramCode";
 	public static final String SUMMARIZED_INFO_PARAM_TYPE = "P003A";
 	public static final String RESULT_PARAM_TYPE = "P001A";
+	public static final String RGT_PARAM_CODE = "RF-00004629-PAR";
 	
 	public static final String COUNTRY_REGEX = "[a-zA-Z][a-zA-Z]";  // two letters
 	public static final String YEAR_MONTH_REGEX = "\\d{4}";

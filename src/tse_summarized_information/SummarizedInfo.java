@@ -3,6 +3,8 @@ package tse_summarized_information;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import formula.Formula;
+import formula.FormulaException;
 import table_database.TableDao;
 import table_skeleton.TableCell;
 import table_skeleton.TableRow;
@@ -11,6 +13,7 @@ import tse_config.CatalogLists;
 import tse_config.CustomStrings;
 import tse_report.TseTableRow;
 import tse_validator.CaseReportValidator;
+import xlsx_reader.TableHeaders.XlsxHeader;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.XmlLoader;
@@ -19,6 +22,10 @@ public class SummarizedInfo extends TableRow implements TseTableRow {
 	
 	public SummarizedInfo(TableRow row) {
 		super(row);
+	}
+	
+	public SummarizedInfo() {
+		super(getSummarizedInfoSchema());
 	}
 	
 	public SummarizedInfo(String typeColumnId, TableCell type) {
@@ -55,6 +62,12 @@ public class SummarizedInfo extends TableRow implements TseTableRow {
 		return this.getLabel(CustomStrings.SUMMARIZED_INFO_PROG_ID);
 	}
 	
+	public String computeContextId() throws FormulaException {
+		Formula f = new Formula(this, this.getSchema().getById(CustomStrings.CONTEXT_ID_COL), 
+				XlsxHeader.CODE_FORMULA.getHeaderName());
+		return f.solve();
+	}
+	
 	public void setType(String type) {
 		this.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
 				getTableColumnValue(type, CatalogLists.TSE_LIST));
@@ -87,7 +100,7 @@ public class SummarizedInfo extends TableRow implements TseTableRow {
 		
 		TableDao dao = new TableDao(caseSchema);
 		Collection<TableRow> children = dao.getByParentId(CustomStrings.SUMMARIZED_INFO_SHEET, 
-				this.getDatabaseId(), "desc");
+				this.getDatabaseId(), true, "desc");
 		
 		// create it as case report
 		for (TableRow child : children) {

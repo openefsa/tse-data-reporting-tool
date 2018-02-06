@@ -7,7 +7,7 @@ import dataset.IDataset;
 import report.EFSAReport;
 import report.ReportException;
 import report.ThreadFinishedListener;
-import soap.MySOAPException;
+import soap.DetailedSOAPException;
 
 public class GetReportLatestDatasetThread extends Thread {
 
@@ -31,7 +31,7 @@ public class GetReportLatestDatasetThread extends Thread {
 			dataset = report.getLatestDataset();
 			if (listener != null)
 				listener.finished(this);
-		} catch (MySOAPException | ReportException e) {
+		} catch (DetailedSOAPException | ReportException e) {
 			e.printStackTrace();
 			LOGGER.error("Cannot retrieve latest dataset of report=" + report.getSenderId(), e);
 			if (listener != null)

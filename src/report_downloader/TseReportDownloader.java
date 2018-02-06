@@ -21,6 +21,7 @@ import data_collection.IDcfDataCollection;
 import data_collection.IDcfDataCollectionsList;
 import dataset.Dataset;
 import dataset.DatasetList;
+import dataset.IDataset;
 import dataset.NoAttachmentException;
 import formula.FormulaException;
 import global_utils.Message;
@@ -30,7 +31,7 @@ import report.DownloadReportDialog;
 import report.IDownloadReportDialog;
 import report.ReportDownloader;
 import session_manager.TSERestoreableWindowDao;
-import soap.MySOAPException;
+import soap.DetailedSOAPException;
 import tse_config.CustomStrings;
 import window_restorer.RestoreableWindow;
 import xml_catalog_reader.Selection;
@@ -156,31 +157,35 @@ public class TseReportDownloader extends ReportDownloader {
 
 		Message msg = null;
 
-		if (e instanceof MySOAPException) {
-			msg = Warnings.createSOAPWarning((MySOAPException) e);
+		IDataset[] list = new Dataset[getAllVersions().size()];
+		for (int i = 0; i < getAllVersions().size(); ++i)
+			list[i] = getAllVersions().get(i);
+		
+		if (e instanceof DetailedSOAPException) {
+			msg = Warnings.createSOAPWarning((DetailedSOAPException) e);
 		}
 		else if (e instanceof XMLStreamException
 				|| e instanceof IOException) {
 			
 			msg = Warnings.createFatal(TSEMessages.get("download.bad.format",
-					PropertiesReader.getSupportEmail()));
+					PropertiesReader.getSupportEmail()), list);
 		}
 		else if (e instanceof FormulaException) { 
 			msg = Warnings.createFatal(TSEMessages.get("download.bad.parsing",
-					PropertiesReader.getSupportEmail()));
+					PropertiesReader.getSupportEmail()), list);
 		}
 		else if (e instanceof NoAttachmentException) {
 			msg = Warnings.createFatal(TSEMessages.get("download.no.attachment",
-					PropertiesReader.getSupportEmail()));
+					PropertiesReader.getSupportEmail()), list);
 		}
 		else if (e instanceof ParseException) {
 			msg = Warnings.createFatal(TSEMessages.get("download.bad.parsing",
-					PropertiesReader.getSupportEmail()));
+					PropertiesReader.getSupportEmail()), list);
 		}
 		else {
 			
 			msg = Warnings.createFatal(TSEMessages.get("generic.error",
-					PropertiesReader.getSupportEmail()));
+					PropertiesReader.getSupportEmail()), list);
 		}
 		
 		msg.open(shell);

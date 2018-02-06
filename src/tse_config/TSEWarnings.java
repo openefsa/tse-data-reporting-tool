@@ -3,6 +3,7 @@ package tse_config;
 import org.eclipse.swt.SWT;
 
 import app_config.PropertiesReader;
+import dataset.IDataset;
 import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
@@ -14,7 +15,7 @@ import xlsx_reader.TableSchemaList;
 
 public class TSEWarnings {
 	
-	public static Message getSendMessageWarning(SendMessageException sendE) {
+	public static Message getSendMessageWarning(SendMessageException sendE, IDataset... reports) {
 		
 		Message msg = null;
 		String messageError = sendE.getMessage();
@@ -24,7 +25,7 @@ public class TSEWarnings {
 		switch(type) {
 		case NON_DP_USER:
 			msg = Warnings.createFatal(TSEMessages.get("account.incomplete",
-					PropertiesReader.getSupportEmail()));
+					PropertiesReader.getSupportEmail()), reports);
 			break;
 			
 		case USER_WRONG_ORG:
@@ -42,14 +43,14 @@ public class TSEWarnings {
 		case USER_WRONG_PROFILE:
 			
 			msg = Warnings.createFatal(TSEMessages.get("account.incorrect",
-					PropertiesReader.getSupportEmail()));
+					PropertiesReader.getSupportEmail()), reports);
 			
 			break;
 			
 		default:
 			
 			msg = Warnings.createFatal(TSEMessages.get("send.message.failed",
-					PropertiesReader.getSupportEmail()));
+					PropertiesReader.getSupportEmail()), reports);
 			break;
 		}
 		

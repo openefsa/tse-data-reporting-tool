@@ -56,13 +56,16 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	public CaseReportDialog(Shell parent, Report report, SummarizedInfo summInfo) {
 		
 		super(parent, TSEMessages.get("case.title"), true, false);
+		LOGGER.info("Opening case report dialog");
 		
 		this.report = report;
 		this.summInfo = summInfo;
 		
+		LOGGER.info("Creating dialog structure and contents");
 		// create the parent structure
 		super.create();
 		
+		LOGGER.info("Saving window preferences");
 		this.window = new RestoreableWindow(getDialog(), WINDOW_CODE);
 		boolean restored = window.restore(TSERestoreableWindowDao.class);
 		window.saveOnClosure(TSERestoreableWindowDao.class);
@@ -71,9 +74,11 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		if (!restored)
 			addHeight(300);
 		
+		LOGGER.info("Updating UI");
 		// update the ui
 		updateUI();
 		
+		LOGGER.info("Ask for default values");
 		// ask for default values
 		askForDefault();
 		
@@ -97,14 +102,22 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		boolean hasExpectedCases = !isRGT // cannot compute expected cases for RGT
 				&& getNumberOfExpectedCases(summInfo) > 0;
 
+		boolean canAsk = isEditable() && !summInfo.hasCases() 
+				&& (hasExpectedCases || isRGT);
+		
+		LOGGER.debug("Can ask=" + canAsk);
+				
 		// create default cases if no cases
 		// and cases were set in the aggregated data
-		if (isEditable() && !summInfo.hasCases() 
-				&& (hasExpectedCases || isRGT)) {
+		if (canAsk) {
+			
+			LOGGER.debug("Warn user");
 			
 			Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"), 
 					TSEMessages.get("case.check.default"), 
 					SWT.ICON_INFORMATION);
+			
+			LOGGER.debug("End warn user");
 			
 			if (hasExpectedCases) {
 				try {
@@ -288,10 +301,13 @@ public class CaseReportDialog extends TableDialogWithMenu {
 					return;
 				}
 
+				LOGGER.info("Opening result dialog");
+				
 				// initialize result passing also the 
 				// report data and the summarized information data
 				ResultDialog dialog = new ResultDialog(getParent(), report, summInfo, caseReport);
 				dialog.setParentFilter(caseReport); // set the case as filter (and parent)
+				dialog.askForDefault();
 				dialog.open();
 				
 				// update children errors
