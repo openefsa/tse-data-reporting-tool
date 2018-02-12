@@ -75,7 +75,6 @@ public class TseReportValidator extends ReportValidator {
 		
 		// check errors across different rows
 		errors.addAll(checkDuplicatedContext(reportRecords));
-		errors.addAll(checkNonWildButKilled(reportRecords));
 		errors.addAll(checkDuplicatedSampleId(reportRecords));
 		errors.addAll(checkDuplicatedResId(reportRecords));
 		errors.addAll(checkNationalCaseId(reportRecords));
@@ -170,35 +169,6 @@ public class TseReportValidator extends ReportValidator {
 			else {
 				// otherwise standard insert
 				summInfos.put(id, row);
-			}
-		}
-		
-		return errors;
-	}
-	
-	private Collection<ReportError> checkNonWildButKilled(Collection<TableRow> reportRecords) {
-		
-		Collection<ReportError> errors = new ArrayList<>();
-		
-		for (TableRow row: reportRecords) {
-			
-			if (getRowType(row) != RowType.SUMM)
-				continue;
-			
-			TableSchema schema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
-			
-			String targetLabel = schema.getById(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP).getLabel();
-			String prodLabel = schema.getById(CustomStrings.SUMMARIZED_INFO_PROD).getLabel();
-			
-			String id = getStackTrace(row);
-			TableCell targetGroup = row.get(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP);
-			TableCell prod = row.get(CustomStrings.SUMMARIZED_INFO_PROD);
-			
-			if (targetGroup.getCode().equals(CustomStrings.KILLED_TARGET_GROUP) 
-					&& !prod.getCode().equals(CustomStrings.WILD_PROD)) {
-				errors.add(new NonWildAndKilledError(id, 
-						targetLabel + ": " + targetGroup.getLabel(), 
-						prodLabel + ": " + prod.getLabel()));
 			}
 		}
 		
@@ -411,6 +381,9 @@ public class TseReportValidator extends ReportValidator {
 				break;
 			case CASE_ID_FOR_NEGATIVE:
 				errors.add(new CaseIdForNegativeError(getStackTrace(row)));
+				break;
+			case INDEX_CASE_FOR_NEGATIVE:
+				errors.add(new IndexCaseForNegativeError(getStackTrace(row)));
 				break;
 			default:
 				break;
