@@ -12,6 +12,7 @@ import app_config.AppPaths;
 import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 import report_validator.ReportValidator;
+import table_skeleton.TableCell;
 import table_skeleton.TableColumn;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
@@ -19,6 +20,7 @@ import tse_report.TseReport;
 import tse_validator.CaseReportValidator.Check;
 import tse_validator.ResultValidator.ErrorType;
 import tse_validator.SummarizedInfoValidator.SampleCheck;
+import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 
 /**
@@ -73,6 +75,7 @@ public class TseReportValidator extends ReportValidator {
 		
 		// check errors across different rows
 		errors.addAll(checkDuplicatedContext(reportRecords));
+		errors.addAll(checkNonWildButKilled(reportRecords));
 		errors.addAll(checkDuplicatedSampleId(reportRecords));
 		errors.addAll(checkDuplicatedResId(reportRecords));
 		errors.addAll(checkNationalCaseId(reportRecords));
@@ -167,6 +170,35 @@ public class TseReportValidator extends ReportValidator {
 			else {
 				// otherwise standard insert
 				summInfos.put(id, row);
+			}
+		}
+		
+		return errors;
+	}
+	
+	private Collection<ReportError> checkNonWildButKilled(Collection<TableRow> reportRecords) {
+		
+		Collection<ReportError> errors = new ArrayList<>();
+		
+		for (TableRow row: reportRecords) {
+			
+			if (getRowType(row) != RowType.SUMM)
+				continue;
+			
+			TableSchema schema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
+			
+			String targetLabel = schema.getById(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP).getLabel();
+			String prodLabel = schema.getById(CustomStrings.SUMMARIZED_INFO_PROD).getLabel();
+			
+			String id = getStackTrace(row);
+			TableCell targetGroup = row.get(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP);
+			TableCell prod = row.get(CustomStrings.SUMMARIZED_INFO_PROD);
+			
+			if (targetGroup.getCode().equals(CustomStrings.KILLED_TARGET_GROUP) 
+					&& !prod.getCode().equals(CustomStrings.WILD_PROD)) {
+				errors.add(new NonWildAndKilledError(id, 
+						targetLabel + ": " + targetGroup.getLabel(), 
+						prodLabel + ": " + prod.getLabel()));
 			}
 		}
 		
