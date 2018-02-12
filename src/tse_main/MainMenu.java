@@ -38,6 +38,7 @@ import tse_options.SettingsDialog;
 import tse_report.ReportCreatorDialog;
 import tse_report.ReportListDialog;
 import tse_report.TseReport;
+import user_interface.ProxySettingsDialog;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 
@@ -59,6 +60,7 @@ public class MainMenu {
 	private MenuItem file;
 	private MenuItem preferences;
 	private MenuItem settings;
+	private MenuItem proxyConfig;
 
 	private MenuItem newReport;
 	private MenuItem openReport;
@@ -119,6 +121,18 @@ public class MainMenu {
 
 		this.settings = new MenuItem(main, SWT.PUSH);
 		this.settings.setText(TSEMessages.get("settings.item"));
+		
+		this.proxyConfig = new MenuItem(main, SWT.PUSH);
+		this.proxyConfig.setText(TSEMessages.get("proxy.config.item"));
+		
+		this.proxyConfig.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				ProxySettingsDialog dialog = new ProxySettingsDialog(shell, 
+						SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+				dialog.open();
+			}
+		});
 
 		// add buttons to the file menu
 		this.newReport = new MenuItem(fileMenu, SWT.PUSH);

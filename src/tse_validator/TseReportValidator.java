@@ -72,6 +72,7 @@ public class TseReportValidator extends ReportValidator {
 		}
 		
 		// check errors across different rows
+		errors.addAll(checkDuplicatedContext(reportRecords));
 		errors.addAll(checkDuplicatedSampleId(reportRecords));
 		errors.addAll(checkDuplicatedResId(reportRecords));
 		errors.addAll(checkNationalCaseId(reportRecords));
@@ -141,6 +142,31 @@ public class TseReportValidator extends ReportValidator {
 			else {
 				// otherwise standard insert
 				results.put(currentId, row);
+			}
+		}
+		
+		return errors;
+	}
+	
+	private Collection<ReportError> checkDuplicatedContext(Collection<TableRow> reportRecords) {
+		
+		Collection<ReportError> errors = new ArrayList<>();
+		
+		HashMap<String, TableRow> summInfos = new HashMap<>();
+		for (TableRow row: reportRecords) {
+			
+			if (getRowType(row) != RowType.SUMM)
+				continue;
+			String id = row.getLabel(CustomStrings.CONTEXT_ID_COL);
+			if (summInfos.containsKey(id)) {
+				TableRow conflict = summInfos.get(id);
+				String rowId1 = getStackTrace(row);
+				String rowId2 = getStackTrace(conflict);
+				errors.add(new DuplicatedContextError(rowId1, rowId2));
+			}
+			else {
+				// otherwise standard insert
+				summInfos.put(id, row);
 			}
 		}
 		
