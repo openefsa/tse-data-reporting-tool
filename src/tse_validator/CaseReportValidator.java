@@ -24,10 +24,19 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		OK,
 		WRONG_RESULTS,
 		NO_TEST_SPECIFIED,
-		DUPLICATED_TEST
+		DUPLICATED_TEST,
+		CASE_ID_FOR_NEGATIVE
 	}
 
 	public Check isRecordCorrect(TableRow row) throws IOException {
+		
+		String caseId = row.getCode(CustomStrings.CASE_INFO_CASE_ID);
+		String sampAnAsses = row.getCode(CustomStrings.CASE_INFO_ASSESS);
+		
+		// index case on negative sample
+		if (!caseId.isEmpty() && sampAnAsses.equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE)) {
+			return Check.CASE_ID_FOR_NEGATIVE;
+		}
 		
 		TableSchema childSchema = TableSchemaList.getByName(CustomStrings.RESULT_SHEET);
 		Collection<TableRow> results = row.getChildren(childSchema, false);
@@ -108,6 +117,9 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			case DUPLICATED_TEST:
 				text = TSEMessages.get("cases.duplicated.test.type");
 				break;
+			case CASE_ID_FOR_NEGATIVE:
+				text = TSEMessages.get("cases.case.id.for.negative");
+				break;
 			default:
 				break;
 			}
@@ -140,6 +152,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			case NO_TEST_SPECIFIED:
 			case WRONG_RESULTS:
 			case DUPLICATED_TEST:
+			case CASE_ID_FOR_NEGATIVE:
 				color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);
 				break;
 			default:

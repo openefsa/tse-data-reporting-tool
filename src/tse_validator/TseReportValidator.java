@@ -344,6 +344,21 @@ public class TseReportValidator extends ReportValidator {
 		case MISSING_RGT_CASE:
 			errors.add(new MissingRGTCaseError(rowId));
 			break;
+		case NON_WILD_FOR_KILLED:
+			
+			TableSchema schema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
+			
+			String targetLabel = schema.getById(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP).getLabel();
+			String prodLabel = schema.getById(CustomStrings.SUMMARIZED_INFO_PROD).getLabel();
+			
+			String id = getStackTrace(row);
+			TableCell targetGroup = row.get(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP);
+			TableCell prod = row.get(CustomStrings.SUMMARIZED_INFO_PROD);
+			
+			errors.add(new NonWildAndKilledError(id, targetLabel + ": " + targetGroup.getLabel(), 
+					prodLabel + ": " + prod.getLabel()));
+			
+			break;
 		default:
 			break;
 		}
@@ -393,6 +408,9 @@ public class TseReportValidator extends ReportValidator {
 				break;
 			case DUPLICATED_TEST:
 				errors.add(new DuplicatedTestError(getStackTrace(row)));
+				break;
+			case CASE_ID_FOR_NEGATIVE:
+				errors.add(new CaseIdForNegativeError(getStackTrace(row)));
 				break;
 			default:
 				break;

@@ -26,6 +26,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		CHECK_INC_CASES,
 		TOOMANY_CASES,
 		WRONG_CASES,
+		NON_WILD_FOR_KILLED,
 		//MORE
 	}
 
@@ -54,6 +55,15 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 	 */
 	public SampleCheck isSampleCorrect(TableRow row) {
 
+		String targetGroup = row.getCode(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP);
+		String prod = row.getCode(CustomStrings.SUMMARIZED_INFO_PROD);
+		
+		// non wild for killed error
+		if (targetGroup.equals(CustomStrings.KILLED_TARGET_GROUP) 
+				&& !prod.equals(CustomStrings.WILD_PROD)) {
+			return SampleCheck.NON_WILD_FOR_KILLED;
+		}
+		
 		String rowType = row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
 		boolean isRGT = rowType.equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
 
@@ -140,6 +150,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		case MISSING_RGT_CASE:
 		case TOOMANY_CASES:
 		case CHECK_INC_CASES:
+		case NON_WILD_FOR_KILLED:
 			level = 1;
 			break;
 		case WRONG_CASES:
@@ -176,6 +187,9 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 			break;
 		case CHECK_INC_CASES:
 			text = TSEMessages.get("si.wrong.inc.cases");
+			break;
+		case NON_WILD_FOR_KILLED:
+			text = TSEMessages.get("si.non.wild.for.killed");
 			break;
 		case WRONG_CASES:
 			text = TSEMessages.get("si.wrong.cases");
