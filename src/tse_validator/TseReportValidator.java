@@ -317,6 +317,9 @@ public class TseReportValidator extends ReportValidator {
 		case TOO_MANY_SCREENING_NEGATIVES:
 			errors.add(new TooManyNegativeScreeningError(rowId));
 			break;
+		case TOO_MANY_POSITIVES:
+			errors.add(new TooManyPositivesError(rowId));
+			break;
 		case NON_WILD_FOR_KILLED:
 			
 			TableSchema schema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);

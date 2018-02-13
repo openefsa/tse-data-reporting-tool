@@ -26,6 +26,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		MISSING_RGT_CASE,
 		CHECK_INC_CASES,
 		TOO_MANY_SCREENING_NEGATIVES,
+		TOO_MANY_POSITIVES,
 		TOOMANY_CASES,
 		WRONG_CASES,
 		NON_WILD_FOR_KILLED,
@@ -48,6 +49,13 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		}
 
 		return hash.size();
+	}
+	
+	private int getPositiveCasesNumber(Collection<TableRow> cases) {
+		int neg = getDistinctCaseIndex(cases, CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, false);
+		int inc = getDistinctCaseIndex(cases, CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, false);
+		
+		return cases.size() - neg - inc;
 	}
 
 	private Collection<TableRow> getNegativeCases(Collection<TableRow> cases) {
@@ -140,6 +148,12 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 				// detaled inc and pos together
 				int detailedIncAndPos = getDistinctCaseIndex(cases, 
 						CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, true);
+				
+				int detailedPos = getPositiveCasesNumber(cases);
+				
+				if (detailedPos > posSamples) {
+					return SampleCheck.TOO_MANY_POSITIVES;
+				}
 
 				// if #detailed < #declared
 				if (detailedIncAndPos < totPosInc)
@@ -199,6 +213,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		case CHECK_INC_CASES:
 		case NON_WILD_FOR_KILLED:
 		case TOO_MANY_SCREENING_NEGATIVES:
+		case TOO_MANY_POSITIVES:
 			level = 1;
 			break;
 		case WRONG_CASES:
@@ -244,6 +259,9 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 			break;
 		case TOO_MANY_SCREENING_NEGATIVES:
 			text = TSEMessages.get("si.too.many.neg.screening");
+			break;
+		case TOO_MANY_POSITIVES:
+			text = TSEMessages.get("si.too.many.pos");
 			break;
 		default:
 			break;
