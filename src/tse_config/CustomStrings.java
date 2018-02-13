@@ -52,6 +52,7 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_AGE_UNKNOWN = "F31.A16PN";
 	public static final String SUMMARIZED_INFO_TARGET_GROUP = "tseTargetGroup";
 	public static final String KILLED_TARGET_GROUP = "TG009A";
+	public static final String EM_TARGET_GROUP = "TG003A";
 
 	public static final String SUMMARIZED_INFO_TEST_TYPE = "anMethType";
 	public static final String SUMMARIZED_INFO_PROG_INFO = "progInfo";
@@ -63,12 +64,14 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_SCRAPIE_TYPE = "SCRAPIE";
 	public static final String SUMMARIZED_INFO_CWD_TYPE = "CWD";
 	public static final String SUMMARIZED_INFO_RGT_TYPE = "RGT";
+	public static final String SUMMARIZED_INFO_BSEOS_TYPE = "BSEOS";
 	public static final String SUMMARIZED_INFO_SCREENING_TEST = "AT06A";
 	public static final String SUMMARIZED_INFO_CONFIRMATORY_TEST = "AT08A";
 	public static final String RESULT_DISCRIMINATORY_TEST = "AT12A";
 	public static final String SUMMARIZED_INFO_MOLECULAR_TEST = "AT13A";
 	
 	public static final String CASE_INFO_STATUS = "statusHerd";
+	public static final String CASE_INFO_STATUS_NOT_INFECTED = "F";
 	public static final String CASE_INFO_SAMPLE_ID = "sampId";
 	public static final String CASE_INFO_HERD_ID = "herdId";
 	public static final String CASE_INFO_ANIMAL_ID = "animalId";

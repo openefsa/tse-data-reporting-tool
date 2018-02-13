@@ -58,6 +58,10 @@ public class SummarizedInfo extends TableRow implements TseTableRow {
 		return this.getType().equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
 	}
 	
+	public boolean isBSEOS() {
+		return this.getType().equals(CustomStrings.SUMMARIZED_INFO_BSEOS_TYPE);
+	}
+	
 	public String getProgId() {
 		return this.getLabel(CustomStrings.SUMMARIZED_INFO_PROG_ID);
 	}

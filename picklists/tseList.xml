@@ -13,5 +13,8 @@
 		<selection code="RGT">
 			<description>random genotyping</description>
 		</selection>
+		<selection code="BSEOS">
+			<description>monitoring of BSE (other species)</description>
+		</selection>
 	</selectionList>
 </tseLists>

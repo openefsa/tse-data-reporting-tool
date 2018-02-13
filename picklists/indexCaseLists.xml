@@ -52,4 +52,35 @@
 			<description>No</description>
 		</selection>
 	</selectionList>
+	<selectionList id="BSE">
+		<selection code="Y">
+			<description>Yes</description>
+		</selection>
+	</selectionList>
+	<selectionList id="FBSE">
+		<selection code="Y">
+			<description>Yes</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSEOS">
+		<selection code="Y">
+			<description>Yes</description>
+		</selection>
+		<selection code="N">
+			<description>No</description>
+		</selection>
+	</selectionList>
+	<selectionList id="FBSEOS">
+		<selection code="Y">
+			<description>Yes</description>
+		</selection>
+		<selection code="N">
+			<description>No</description>
+		</selection>
+	</selectionList>
+	<selectionList id="NBSEOS">
+		<selection code="N">
+			<description>No</description>
+		</selection>
+	</selectionList>
 </indexCaseLists>

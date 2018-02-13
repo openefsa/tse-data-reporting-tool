@@ -69,9 +69,50 @@
 			<description>Wild forest reindeer (Rangifer tarandus fennicus)</description>
 		</selection>
 	</selectionList>
-		<selectionList id="RGT">
+	<selectionList id="RGT">
 		<selection code="F01.A057G">
 			<description>Sheep (Ovis aries L.)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSEOS">
+		<selection code="F01.A16EB">
+			<description>Sciuridae (family)</description>
+		</selection>
+		<selection code="F01.A0CNM">
+			<description>Felis catus</description>
+		</selection>
+		<selection code="F01.A16CM">
+			<description>Acinonyx jubatus</description>
+		</selection>
+		<selection code="F01.A16CY">
+			<description>Vulpes spp.</description>
+		</selection>
+		<selection code="F01.A16DH">
+			<description>Panthera pardus</description>
+		</selection>
+		<selection code="F01.A16DJ">
+			<description>Panthera leo</description>
+		</selection>
+		<selection code="F01.A16DK">
+			<description>Lynx spp.</description>
+		</selection>
+		<selection code="F01.A0CNN">
+			<description>Neovison vison</description>
+		</selection>
+		<selection code="F01.A16EC">
+			<description>Panthera tigris</description>
+		</selection>
+		<selection code="F01.A16DS">
+			<description>Procyon lotor</description>
+		</selection>
+		<selection code="F01.A16BX">
+			<description>Bovidae (only part)</description>
+		</selection>
+		<selection code="F01.A16BY">
+			<description>Oryx spp.</description>
+		</selection>
+		<selection code="F01.A0CTL">
+			<description>Taurotragus oryx</description>
 		</selection>
 	</selectionList>
 </animalSpeciesLists>

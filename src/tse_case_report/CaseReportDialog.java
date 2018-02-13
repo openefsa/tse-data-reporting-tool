@@ -102,7 +102,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		boolean hasExpectedCases = !isRGT // cannot compute expected cases for RGT
 				&& getNumberOfExpectedCases(summInfo) > 0;
 
-		boolean canAsk = isEditable() && !summInfo.hasCases() 
+		boolean canAsk = isEditable() && !summInfo.isBSEOS() && !summInfo.hasCases() 
 				&& (hasExpectedCases || isRGT);
 		
 		LOGGER.debug("Can ask=" + canAsk);
@@ -111,13 +111,15 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		// and cases were set in the aggregated data
 		if (canAsk) {
 			
-			LOGGER.debug("Warn user");
-			
-			Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"), 
-					TSEMessages.get("case.check.default"), 
-					SWT.ICON_INFORMATION);
-			
-			LOGGER.debug("End warn user");
+			if (!isRGT) {
+				LOGGER.debug("Warn user");
+				
+				Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"), 
+						TSEMessages.get("case.check.default"), 
+						SWT.ICON_INFORMATION);
+				
+				LOGGER.debug("End warn user");
+			}
 			
 			if (hasExpectedCases) {
 				try {

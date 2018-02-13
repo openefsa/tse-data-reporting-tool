@@ -281,9 +281,13 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		if (parentLevel > level)
 			return color;
 
-		if (isSampleCorrect(row) != SampleCheck.OK) {
+		switch(isSampleCorrect(row)) {
+		case OK:
+			break;
+		default:
 			Display display = Display.getDefault();
 			color = display.getSystemColor(SWT.COLOR_DARK_YELLOW);
+			break;
 		}
 
 		return color;

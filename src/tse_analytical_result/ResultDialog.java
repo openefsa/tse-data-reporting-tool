@@ -122,7 +122,7 @@ public class ResultDialog extends TableDialogWithMenu {
 	public void askForDefault() {
 			
 		// create default if no results are present
-		if (!this.caseInfo.hasResults() && isEditable()) {
+		if (!this.caseInfo.hasResults() && isEditable() && !this.summInfo.isBSEOS()) {
 
 			int val = Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"), 
 					TSEMessages.get("result.confirm.default"),

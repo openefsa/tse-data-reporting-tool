@@ -29,7 +29,7 @@ import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import report.DownloadReportDialog;
 import report.IDownloadReportDialog;
-import report.ReportDownloader;
+import report.ReportDownloaderDialog;
 import session_manager.TSERestoreableWindowDao;
 import soap.DetailedSOAPException;
 import tse_config.CustomStrings;
@@ -43,7 +43,7 @@ import xml_catalog_reader.XmlLoader;
  * @author avonva
  *
  */
-public class TseReportDownloader extends ReportDownloader {
+public class TseReportDownloader extends ReportDownloaderDialog {
 
 	private static final Logger LOGGER = LogManager.getLogger(TseReportDownloader.class);
 	

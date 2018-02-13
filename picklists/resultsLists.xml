@@ -102,4 +102,37 @@
 			<description>Other CWD (POSonclusive)</description>
 		</selection>
 	</selectionList>
+	<selectionList id="BSEOSAT06A">
+		<selection code="RF-00004884-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004884-PAR$POS">
+			<description>Positive</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSEOSAT08A">
+		<selection code="RF-00004628-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004628-PAR$POS">
+			<description>Positive</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSEOSAT12A">
+		<selection code="RF-00004628-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004885-PAR$POS">
+			<description>C-Type</description>
+		</selection>
+		<selection code="RF-00004886-PAR$POS">
+			<description>H-Type</description>
+		</selection>
+		<selection code="RF-00004887-PAR$POS">
+			<description>L-Type</description>
+		</selection>
+		<selection code="RF-00004888-PAR$POS">
+			<description>Other BSE (POSonclusive)</description>
+		</selection>
+	</selectionList>
 </resultsLists>

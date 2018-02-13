@@ -28,6 +28,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		CASE_ID_FOR_NEGATIVE,
 		INDEX_CASE_FOR_NEGATIVE,
 		INDEX_CASE_FOR_FARMED_CWD,
+		EM_FOR_NOT_INFECTED,
 	}
 
 	public Check isRecordCorrect(TableRow row) throws IOException {
@@ -47,17 +48,6 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			return Check.INDEX_CASE_FOR_NEGATIVE;
 		}
 		
-		TableRow summInfo = row.getParent(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
-		String type = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
-		String farmed = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_PROD);
-		
-		// Index case 'No' for farmed cwd is forbidden
-		if (indexCase.equals(CustomStrings.INDEX_CASE_NO) && type.equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE)) {
-			if (farmed.equals(CustomStrings.FARMED_PROD)) {
-				return Check.INDEX_CASE_FOR_FARMED_CWD;
-			}
-		}
-		
 		TableSchema childSchema = TableSchemaList.getByName(CustomStrings.RESULT_SHEET);
 		Collection<TableRow> results = row.getChildren(childSchema, false);
 
@@ -74,6 +64,28 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		// check children errors
 		if (row.hasChildrenError()) {
 			return Check.WRONG_RESULTS;
+		}
+		
+		TableRow summInfo = row.getParent(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+		String type = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
+		String farmed = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_PROD);
+		
+		// Index case 'No' for farmed cwd is forbidden
+		if (indexCase.equals(CustomStrings.INDEX_CASE_NO) && type.equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE)) {
+			if (farmed.equals(CustomStrings.FARMED_PROD)) {
+				return Check.INDEX_CASE_FOR_FARMED_CWD;
+			}
+		}
+		
+		// if eradication measure for status herd F in scrapie
+		if (type.equals(CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE)) {
+
+			if (row.getCode(CustomStrings.CASE_INFO_STATUS)
+					.equals(CustomStrings.CASE_INFO_STATUS_NOT_INFECTED) &&
+				summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP)
+					.equals(CustomStrings.EM_TARGET_GROUP)) {
+				return Check.EM_FOR_NOT_INFECTED;
+			}
 		}
 		
 		return Check.OK;
@@ -104,8 +116,16 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		try {
 			Check check = isRecordCorrect(row);
 
-			if (check != Check.OK)
+			switch(check) {
+			case OK:
+			case EM_FOR_NOT_INFECTED:
+			case INDEX_CASE_FOR_FARMED_CWD:
+				level = 0;
+				break;
+			default:
 				level = 1;
+				break;
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -143,8 +163,10 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			case INDEX_CASE_FOR_NEGATIVE:
 				text = TSEMessages.get("index.case.for.negative");
 				break;
-			case INDEX_CASE_FOR_FARMED_CWD:
-				text = TSEMessages.get("index.case.for.farmed.cwd");
+			case INDEX_CASE_FOR_FARMED_CWD:  // bypass
+			case EM_FOR_NOT_INFECTED:
+				text = super.getText(row);
+				//text = TSEMessages.get("index.case.for.farmed.cwd");
 				break;
 			default:
 				break;
@@ -180,7 +202,8 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			case DUPLICATED_TEST:
 			case CASE_ID_FOR_NEGATIVE:
 			case INDEX_CASE_FOR_NEGATIVE:
-			case INDEX_CASE_FOR_FARMED_CWD:
+			//case INDEX_CASE_FOR_FARMED_CWD:
+			// EM_FOR_NOT_INFECTED:
 				color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);
 				break;
 			default:

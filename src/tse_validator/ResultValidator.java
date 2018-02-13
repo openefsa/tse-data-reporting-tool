@@ -85,7 +85,7 @@ public class ResultValidator extends SimpleRowValidatorLabelProvider {
 		Color color;
 		switch(error) {
 		case ALLELE_ERROR:
-			color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED);
+			color = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
 			break;
 		case WRONG_ALLELE_PAIR:
 			color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);

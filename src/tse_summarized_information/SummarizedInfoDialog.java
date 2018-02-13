@@ -230,6 +230,24 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 
 		TableCell value = new TableCell(element);
 		
+		// if random genotyping
+		if (value.getCode().equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE)) {
+			// check if already inserted
+			for(TableRow row: this.getLoadedRows()) {
+				if (row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
+						.equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE)) {
+					// cannot add two RGT!
+					
+					Warnings.warnUser(getDialog(), 
+							TSEMessages.get("warning.title"), 
+							TSEMessages.get("cannot.have.two.rgt"), 
+							SWT.ICON_WARNING);
+					
+					return null;
+				}
+			}
+		}
+		
 		// create a new summarized information
 		SummarizedInfo si = new SummarizedInfo(CustomStrings.SUMMARIZED_INFO_TYPE, value);
 		

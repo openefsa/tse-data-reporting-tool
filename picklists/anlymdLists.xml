@@ -21,6 +21,12 @@
 		<selection code="F626A">
 			<description>Bio-Rad TeSeE Western Blot</description>
 		</selection>
+		<selection code="F656A">
+			<description>Demonstration of characteristic fibrils by electron microscopy</description>
+		</selection>
+		<selection code="F657A">
+			<description>Histopathological examination</description>
+		</selection>
 		<selection code="F155A">
 			<description>ImmunoHistoChemistry (IHC)</description>
 		</selection>
@@ -32,23 +38,29 @@
 		</selection>
 	</selectionList>
 	<selectionList id="BSE$AT12A">
-		<selection code="F626A">
-			<description>Bio-Rad TeSeE Western Blot</description>
+		<selection code="F658A">
+			<description>ANSES Discriminatory Blot: PrPres typing in BSE from cattle (internal reference:LYO/INS/0010)</description>
 		</selection>
-		<selection code="F623A">
-			<description>APHA Bio-Rad Hybrid Western Blot</description>
+		<selection code="F660A">
+			<description>APHA Bio-Rad Hybrid WB using additional antibodies (incl.SAF84,12B2)</description>
+		</selection>
+		<selection code="F661A">
+			<description>APHA Bio-Rad TeSeE-based Hybrid Western blotting Method</description>
+		</selection>
+		<selection code="F662A">
+			<description>APHA Prionics Hybrid WB using additional antibodies (incl.SAF84,12B2)</description>
 		</selection>
 		<selection code="F634A">
 			<description>Bio-Rad in-house modified WB</description>
 		</selection>
-		<selection code="F635A">
-			<description>French  Internal method </description>
+		<selection code="F663A">
+			<description>FLI BSE Discriminatory test</description>
+		</selection>
+		<selection code="F628A">
+			<description>FLI Discriminatory Western blot method</description>
 		</selection>
 		<selection code="F638A">
 			<description>ISS BSE DISCRIMINATORY WB</description>
-		</selection>
-		<selection code="F636A">
-			<description>Netherlands in-house Immunoblot with 4 primary antibodies</description>
 		</selection>
 		<selection code="F630A">
 			<description>Prionics Check Western</description>
@@ -58,6 +70,9 @@
 		</selection>
 		<selection code="F637A">
 			<description>PTA precipitation</description>
+		</selection>
+		<selection code="F664A">
+			<description>WBVR In-house immunoblot with 4 primary antibodies</description>
 		</selection>
 	</selectionList>
 	<selectionList id="SCRAPIE$AT06A">
@@ -78,25 +93,41 @@
 		<selection code="F626A">
 			<description>Bio-Rad TeSeE Western Blot</description>
 		</selection>
+		<selection code="F656A">
+			<description>Demonstration of characteristic fibrils by electron microscopy</description>
+		</selection>
+		<selection code="F657A">
+			<description>Histopathological examination</description>
+		</selection>
+		<selection code="F155A">
+			<description>ImmunoHistoChemistry (IHC)</description>
+		</selection>
+		<selection code="F621A">
+			<description>ImmunoHistoChemistry (IHC) using C-terminal Ab and P4/12B2</description>
+		</selection>
 		<selection code="F072A">
 			<description>Western Blot</description>
 		</selection>
 	</selectionList>
+	
 	<selectionList id="SCRAPIE$AT12A">
-		<selection code="F626A">
-			<description>Bio-Rad TeSeE Western Blot</description>
+		<selection code="F659A">
+			<description>ANSES Discriminatory Blot: PrPres typing in small ruminants (internal reference: LYO/INS/0007)</description>
 		</selection>
-		<selection code="F622A">
-			<description>ANSES Discriminatory Western blot method</description>
+		<selection code="F660A">
+			<description>APHA Bio-Rad Hybrid WB using additional antibodies (incl.SAF84,12B2)</description>
 		</selection>
-		<selection code="F623A">
-			<description>APHA Bio-Rad Hybrid Western Blot</description>
+		<selection code="F661A">
+			<description>APHA Bio-Rad TeSeE-based Hybrid Western blotting Method</description>
 		</selection>
-		<selection code="F633A">
-			<description>APHA Prionics - Hybrid Western blot</description>
+		<selection code="F662A">
+			<description>APHA Prionics Hybrid WB using additional antibodies (incl.SAF84,12B2)</description>
 		</selection>
 		<selection code="F625A">
 			<description>Bio-Rad Discriminatory Test (based on the CEA Discriminatory Western blot Method)</description>
+		</selection>
+		<selection code="F634A">
+			<description>Bio-Rad in-house modified WB</description>
 		</selection>
 		<selection code="F627A">
 			<description>CIDC-Lelystad Discriminatory Western blot method</description>
@@ -104,8 +135,8 @@
 		<selection code="F628A">
 			<description>FLI-Discriminatory Western blot method</description>
 		</selection>
-		<selection code="F621A">
-			<description>ImmunoHistoChemistry (IHC) using C-terminal Ab and P4/12B2</description>
+		<selection code="F638A">
+			<description>ISS BSE DISCRIMINATORY WB</description>
 		</selection>
 		<selection code="F629A">
 			<description>ISS-Discriminatory Western blot method</description>
@@ -113,8 +144,11 @@
 		<selection code="F108A">
 			<description>Mouse Bioassay</description>
 		</selection>
-		<selection code="F072A">
-			<description>Western Blot</description>
+		<selection code="F632A">
+			<description>Prionics in house two-blots assay</description>
+		</selection>
+		<selection code="F664A">
+			<description>WBVR In-house immunoblot with 4 primary antibodies</description>
 		</selection>
 	</selectionList>
 	<selectionList id="SCRAPIE$AT13A">
@@ -134,51 +168,187 @@
 		</selection>
 	</selectionList>
 	<selectionList id="CWD$AT08A">
-		<selection code="F622A">
-			<description>ANSES Discriminatory Western blot method</description>
+		<selection code="F626A">
+			<description>Bio-Rad TeSeE Western Blot</description>
 		</selection>
-		<selection code="F623A">
-			<description>APHA Bio-Rad Hybrid Western blot</description>
+		<selection code="F656A">
+			<description>Demonstration of characteristic fibrils by electron microscopy</description>
 		</selection>
-		<selection code="F624A">
-			<description>APHA Prionics -Hybrid Western blot</description>
+		<selection code="F657A">
+			<description>Histopathological examination</description>
+		</selection>
+		<selection code="F155A">
+			<description>ImmunoHistoChemistry (IHC)</description>
+		</selection>
+		<selection code="F621A">
+			<description>ImmunoHistoChemistry (IHC) using C-terminal Ab and P4/12B2</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD$AT12A">
+		<selection code="F659A">
+			<description>ANSES Discriminatory Blot: PrPres typing in small ruminants (internal reference: LYO/INS/0007)</description>
+		</selection>
+		<selection code="F660A">
+			<description>APHA Bio-Rad Hybrid WB using additional antibodies (incl.SAF84,12B2)</description>
+		</selection>
+		<selection code="F661A">
+			<description>APHA Bio-Rad TeSeE-based Hybrid Western blotting Method</description>
+		</selection>
+		<selection code="F662A">
+			<description>APHA Prionics Hybrid WB using additional antibodies (incl.SAF84,12B2)</description>
 		</selection>
 		<selection code="F625A">
 			<description>Bio-Rad Discriminatory Test (based on the CEA Discriminatory Western blot Method)</description>
 		</selection>
-		<selection code="F626A">
-			<description>Bio-Rad TeSeE Western Blot</description>
+		<selection code="F634A">
+			<description>Bio-Rad in-house modified WB</description>
 		</selection>
 		<selection code="F627A">
 			<description>CIDC-Lelystad Discriminatory Western blot method</description>
 		</selection>
+		<selection code="F663A">
+			<description>FLI BSE Discriminatory test</description>
+		</selection>		
 		<selection code="F628A">
 			<description>FLI-Discriminatory Western blot method</description>
 		</selection>
-		<selection code="F629A">
-			<description>ISS-Discriminatory Western blot method</description>
+		<selection code="F638A">
+			<description>ISS BSE DISCRIMINATORY WB</description>
+		</selection>
+		<selection code="F108A">
+			<description>Mouse Bioassay</description>
 		</selection>
 		<selection code="F630A">
 			<description>Prionics Check Western</description>
+		</selection>
+		<selection code="F632A">
+			<description>Prionics in house two-blots assay</description>
+		</selection>
+		<selection code="F637A">
+			<description>PTA precipitation</description>
+		</selection>
+		<selection code="F664A">
+			<description>WBVR In-house immunoblot with 4 primary antibodies</description>
+		</selection>
+	</selectionList>
+	
+	<selectionList id="RGT$AT13A">
+		<selection code="F089A">
+			<description>Genotyping</description>
+		</selection>
+	</selectionList>
+	
+	<selectionList id="BSEOS$AT06A">
+		<selection code="F639A">
+			<description>Bio-Rad TeSeE SAP rapid test</description>
+		</selection>
+		<selection code="F640A">
+			<description>Bio-Rad TeSeE Sheep/Goat rapid test</description>
+		</selection>
+		<selection code="F080A">
+			<description>ELISA</description>
+		</selection>
+		<selection code="F641A">
+			<description>HerdChek BSE-Scrapie Antigen (IDEXX Laboratories)</description>
+		</selection>
+		<selection code="F642A">
+			<description>IDEXX HerdChek BSE Antigen Test Kit, EIA &amp; HerdChek BSE-Scrapie Antigen (IDEXX Laboratories)</description>
+		</selection>
+		<selection code="F643A">
+			<description>Prionics Check PrioSTRIP</description>
+		</selection>		
+		<selection code="F645A">
+			<description>Roboscreen Beta Prion BSE EIA Test Kit</description>
+		</selection>
+		<selection code="F646A">
+			<description>The Bio-Rad TeSeE SAP rapid test, using the CWD addendum </description>
+		</selection>
+		<selection code="F647A">
+			<description>The IDEXX HerdChek Chronic Wasting Disease Antigen Test Kit, EIA </description>
+		</selection>
+	</selectionList>
+	
+	<selectionList id="BSEOS$AT08A">
+		<selection code="F626A">
+			<description>Bio-Rad TeSeE Western Blot</description>
+		</selection>
+		<selection code="F656A">
+			<description>Demonstration of characteristic fibrils by electron microscopy</description>
+		</selection>
+		<selection code="F657A">
+			<description>Histopathological examination</description>
+		</selection>
+		<selection code="F155A">
+			<description>ImmunoHistoChemistry (IHC)</description>
+		</selection>
+		<selection code="F621A">
+			<description>ImmunoHistoChemistry (IHC) using C-terminal Ab and P4/12B2</description>
+		</selection>
+		<selection code="F631A">
+			<description>SAF Western Blot</description>
 		</selection>
 		<selection code="F072A">
 			<description>Western Blot</description>
 		</selection>
 	</selectionList>
-	<selectionList id="CWD$AT12A">
-		<selection code="F626A">
-			<description>Bio-Rad TeSeE Western Blot</description>
+	
+	<selectionList id="BSEOS$AT12A">
+		<selection code="F658A">
+			<description>ANSES Discriminatory Blot: PrPres typing in BSE from cattle (internal reference:LYO/INS/0010)</description>
 		</selection>
-		<selection code="F621A">
-			<description>ImmunoHistoChemistry (IHC) using C-terminal Ab and P4/12B2</description>
+		<selection code="F659A">
+			<description>ANSES Discriminatory Blot: PrPres typing in small ruminants (internal reference: LYO/INS/0007)</description>
+		</selection>
+		<selection code="F660A">
+			<description>APHA Bio-Rad Hybrid WB using additional antibodies (incl.SAF84,12B2)</description>
+		</selection>
+		<selection code="F661A">
+			<description>APHA Bio-Rad TeSeE-based Hybrid Western blotting Method</description>
+		</selection>
+		<selection code="F662A">
+			<description>APHA Prionics Hybrid WB using additional antibodies (incl.SAF84,12B2)</description>
+		</selection>
+		<selection code="F625A">
+			<description>Bio-Rad Discriminatory Test (based on the CEA Discriminatory Western blot Method)</description>
+		</selection>
+		<selection code="F634A">
+			<description>Bio-Rad in-house modified WB</description>
+		</selection>
+		<selection code="F627A">
+			<description>CIDC-Lelystad Discriminatory Western blot method</description>
+		</selection>
+		<selection code="F663A">
+			<description>FLI BSE Discriminatory test</description>
+		</selection>
+		<selection code="F628A">
+			<description>FLI Discriminatory Western blot method</description>
+		</selection>
+		<selection code="F638A">
+			<description>ISS BSE DISCRIMINATORY WB</description>
+		</selection>
+		<selection code="F629A">
+			<description>ISS-Discriminatory Western blot method</description>
 		</selection>
 		<selection code="F108A">
 			<description>Mouse Bioassay</description>
 		</selection>
+		<selection code="F630A">
+			<description>Prionics Check Western</description>
+		</selection>
+		<selection code="F632A">
+			<description>Prionics in house two-blots assay</description>
+		</selection>
+		<selection code="F637A">
+			<description>PTA precipitation</description>
+		</selection>
+		<selection code="F664A">
+			<description>WBVR In-house immunoblot with 4 primary antibodies</description>
+		</selection>
 	</selectionList>
-	<selectionList id="RGT$AT13A">
+	
+	<selectionList id="BSEOS$AT13A">
 		<selection code="F089A">
 			<description>Genotyping</description>
-		</selection>	
+		</selection>
 	</selectionList>
 </anlymdLists>

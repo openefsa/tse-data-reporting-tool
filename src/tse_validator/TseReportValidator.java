@@ -395,6 +395,9 @@ public class TseReportValidator extends ReportValidator {
 			case INDEX_CASE_FOR_FARMED_CWD:
 				errors.add(new IndexCaseForFarmedCwd(getStackTrace(row)));
 				break;
+			case EM_FOR_NOT_INFECTED:
+				errors.add(new NotInfectedStatusForEradicationInSheepError(getStackTrace(row)));
+				break;
 			default:
 				break;
 			}
