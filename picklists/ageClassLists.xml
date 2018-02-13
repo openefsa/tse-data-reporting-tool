@@ -64,6 +64,9 @@
 			<description>&gt;=156 months</description>
 			<gte>156</gte>
 		</selection>
+		<selection code="F31.A16PN">
+			<description>Unknown</description>
+		</selection>
 	</selectionList>
 	<selectionList id="SCRAPIE">
 		<selection code="F31.A16ND">

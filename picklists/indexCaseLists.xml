@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <indexCaseLists>	
-	<selectionList id="">
+	<selectionList id="BSE">
+		<selection code="Y">
+			<description>Yes</description>
+		</selection>
+	</selectionList>
+	<selectionList id="FBSE">
+		<selection code="Y">
+			<description>Yes</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIE">
 		<selection code="Y">
 			<description>Yes</description>
 		</selection>
@@ -8,7 +18,7 @@
 			<description>No</description>
 		</selection>
 	</selectionList>
-	<selectionList id="F">
+	<selectionList id="FSCRAPIE">
 		<selection code="Y">
 			<description>Yes</description>
 		</selection>
@@ -16,7 +26,28 @@
 			<description>No</description>
 		</selection>
 	</selectionList>
-	<selectionList id="N">
+	<selectionList id="NSCRAPIE">
+		<selection code="N">
+			<description>No</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD">
+		<selection code="Y">
+			<description>Yes</description>
+		</selection>
+		<selection code="N">
+			<description>No</description>
+		</selection>
+	</selectionList>
+	<selectionList id="FCWD">
+		<selection code="Y">
+			<description>Yes</description>
+		</selection>
+		<selection code="N">
+			<description>No</description>
+		</selection>
+	</selectionList>
+	<selectionList id="NCWD">
 		<selection code="N">
 			<description>No</description>
 		</selection>
