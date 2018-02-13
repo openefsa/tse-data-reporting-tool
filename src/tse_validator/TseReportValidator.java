@@ -314,6 +314,9 @@ public class TseReportValidator extends ReportValidator {
 		case MISSING_RGT_CASE:
 			errors.add(new MissingRGTCaseError(rowId));
 			break;
+		case TOO_MANY_SCREENING_NEGATIVES:
+			errors.add(new TooManyNegativeScreeningError(rowId));
+			break;
 		case NON_WILD_FOR_KILLED:
 			
 			TableSchema schema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);

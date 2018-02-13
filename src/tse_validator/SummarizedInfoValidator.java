@@ -1,5 +1,6 @@
 package tse_validator;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -24,6 +25,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		MISSING_CASES,
 		MISSING_RGT_CASE,
 		CHECK_INC_CASES,
+		TOO_MANY_SCREENING_NEGATIVES,
 		TOOMANY_CASES,
 		WRONG_CASES,
 		NON_WILD_FOR_KILLED,
@@ -48,6 +50,48 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		return hash.size();
 	}
 
+	private Collection<TableRow> getNegativeCases(Collection<TableRow> cases) {
+		
+		Collection<TableRow> out = new ArrayList<>();
+		for (TableRow c : cases) {
+			if (c.getCode(CustomStrings.CASE_INFO_ASSESS)
+					.equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE))
+				out.add(c);
+		}
+		
+		return out;
+	}
+	
+	private Collection<TableRow> getScreeningResults(TableRow sample) {
+		
+		Collection<TableRow> out = new ArrayList<>();
+		
+		TableSchema childSchema = TableSchemaList.getByName(CustomStrings.RESULT_SHEET);
+		
+		if (childSchema == null)
+			return out;
+
+		Collection<TableRow> results = sample.getChildren(childSchema);
+		
+		for (TableRow c : results) {
+			if (c.getCode(CustomStrings.RESULT_TEST_TYPE)
+					.equals(CustomStrings.RESULT_SCREENING_TEST))
+				out.add(c);
+		}
+		
+		return out;
+	}
+	
+	private Collection<TableRow> getNegativeCaseScreeningResults(Collection<TableRow> cases) {
+		
+		Collection<TableRow> out = new ArrayList<>();
+		for(TableRow negative: getNegativeCases(cases)) {
+			out.addAll(getScreeningResults(negative));
+		}
+		
+		return out;
+	}
+	
 	/**
 	 * Check if the row is correct or not
 	 * @param row
@@ -82,8 +126,13 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 				// declared inc/pos
 				int incSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
 				int posSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
+				int negSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES);
 				int totPosInc = posSamples + incSamples;
 
+				if (getNegativeCaseScreeningResults(cases).size() > negSamples) {
+					return SampleCheck.TOO_MANY_SCREENING_NEGATIVES;
+				}
+				
 				// detailed inc
 				int detailedIncSamples = getDistinctCaseIndex(cases, 
 						CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, false);
@@ -114,8 +163,6 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 			e.printStackTrace();
 			LOGGER.error("Cannot check if the summarized information is correct", e);
 		}
-
-
 
 		// check children errors
 		if (row.hasChildrenError()) {
@@ -151,6 +198,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		case TOOMANY_CASES:
 		case CHECK_INC_CASES:
 		case NON_WILD_FOR_KILLED:
+		case TOO_MANY_SCREENING_NEGATIVES:
 			level = 1;
 			break;
 		case WRONG_CASES:
@@ -193,6 +241,9 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 			break;
 		case WRONG_CASES:
 			text = TSEMessages.get("si.wrong.cases");
+			break;
+		case TOO_MANY_SCREENING_NEGATIVES:
+			text = TSEMessages.get("si.too.many.neg.screening");
 			break;
 		default:
 			break;
