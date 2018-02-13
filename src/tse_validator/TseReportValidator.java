@@ -567,14 +567,31 @@ public class TseReportValidator extends ReportValidator {
 	
 	private Collection<ReportError> checkUnknownAgeClass(Collection<TableRow> rows) {
 		
+		int total = 0;
+		int unk = 0;
+		
 		Collection<ReportError> errors = new ArrayList<>();
-		/*for (TableRow row: rows) {
-			if (getRowType(row) == RowType.SUMM) {
+		for (TableRow row: rows) {
+			
+			// only for BSE summ info
+			if (getRowType(row) == RowType.SUMM && row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
+					.equals(CustomStrings.SUMMARIZED_INFO_BSE_TYPE)) {
+				
+				int totalSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES);
+				total += totalSamples;
+				
+				// if unknown age class
 				if (row.getCode(CustomStrings.SUMMARIZED_INFO_AGE)
-						.equals(anObject))
+						.equals(CustomStrings.SUMMARIZED_INFO_AGE_UNKNOWN)) {
+					unk += totalSamples;
+				}
 			}
 		}
-		TooManyUnknownAgeClassesError*/
+		
+		// if unknown is bigger than 5%
+		if (unk * 100.000 / total > 5) {
+			errors.add(new TooManyUnknownAgeClassesError());
+		}
 		
 		return errors;
 	}

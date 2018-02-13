@@ -49,7 +49,7 @@ public class CustomStrings {
 	public static final String WILD_PROD = "F21.A07RY";
 	public static final String FARMED_PROD = "F21.A07RV";
 	public static final String SUMMARIZED_INFO_AGE = "animage";
-	public static final String SUMMARIZED_INFO_AGE_UNKNOWN = ""; // TODO
+	public static final String SUMMARIZED_INFO_AGE_UNKNOWN = "F31.A16PN";
 	public static final String SUMMARIZED_INFO_TARGET_GROUP = "tseTargetGroup";
 	public static final String KILLED_TARGET_GROUP = "TG009A";
 
