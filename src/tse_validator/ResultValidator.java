@@ -9,23 +9,43 @@ import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 
 public class ResultValidator extends SimpleRowValidatorLabelProvider {
-
-	private ErrorType error;
 	
 	public enum ErrorType {
 		ALLELE_ERROR,
+		WRONG_ALLELE_PAIR,
 		NONE
 	}
 	
 	public ErrorType getError(TableRow row) {
-		getWarningLevel(row);
-		return error;
+		
+		String testType = row.getCode(CustomStrings.RESULT_TEST_TYPE);
+		
+		String allele1 = row.getCode(CustomStrings.RESULT_ALLELE_1);
+		String allele2 = row.getCode(CustomStrings.RESULT_ALLELE_2);
+		
+		// if it is not molecular test
+		if (!testType.equals(CustomStrings.SUMMARIZED_INFO_MOLECULAR_TEST)) {
+			
+			// check if alleles were set (it is an error!)
+			boolean notEmpty = !allele1.isEmpty() || !allele2.isEmpty();
+
+			if (notEmpty) {
+				return ErrorType.ALLELE_ERROR;
+			}
+		}
+		
+		boolean allele1Check = allele1.equals(CustomStrings.ALLELE_AFRR) || allele1.equals(CustomStrings.ALLELE_ALRR);
+		boolean allele2Check = allele2.equals(CustomStrings.ALLELE_AFRR) || allele2.equals(CustomStrings.ALLELE_ALRR);
+		
+		if (allele1Check && allele2Check) {
+			return ErrorType.WRONG_ALLELE_PAIR;
+		}
+		
+		return ErrorType.NONE;
 	}
 	
 	@Override
 	public int getWarningLevel(TableRow row) {
-		
-		error = ErrorType.NONE;
 		
 		int level = super.getWarningLevel(row);
 
@@ -33,47 +53,48 @@ public class ResultValidator extends SimpleRowValidatorLabelProvider {
 		// the parent one
 		if (level > 1)
 			return level;
-		
-		String testType = row.getCode(CustomStrings.RESULT_TEST_TYPE);
-		
-		// if it is not molecular test
-		if (!testType.equals("AT13A")) {
-			
-			// check if alleles were set (it is an error!)
-			String allele1 = row.getCode(CustomStrings.RESULT_ALLELE_1);
-			String allele2 = row.getCode(CustomStrings.RESULT_ALLELE_2);
-			
-			boolean notEmpty = !allele1.isEmpty() || !allele2.isEmpty();
 
-			if (notEmpty) {
-				level = 1;
-				error = ErrorType.ALLELE_ERROR;
-			}
-		}
-		
-		return level;
+		return getError(row) == ErrorType.NONE ? 0 : 1;
 	}
 	
 	@Override
 	public String getText(TableRow row) {
 
-		getWarningLevel(row);
-		
-		if (error == ErrorType.ALLELE_ERROR) {
-			return TSEMessages.get("results.alleles.not.reportable");
+		String message = null;
+		ErrorType error = getError(row);
+		switch(error) {
+		case ALLELE_ERROR:
+			message = TSEMessages.get("results.alleles.not.reportable");
+			break;
+		case WRONG_ALLELE_PAIR:
+			message = TSEMessages.get("results.wrong.alleles.pair");
+			break;
+		default:
+			message = super.getText(row);
+			break;
 		}
-		else return super.getText(row);
+		
+		return message;
 	}
 	
 	@Override
 	public Color getForeground(TableRow row) {
 
-		getWarningLevel(row);
+		ErrorType error = getError(row);
 		
-		if (error == ErrorType.ALLELE_ERROR) {
-			return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
+		Color color;
+		switch(error) {
+		case ALLELE_ERROR:
+			color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED);
+			break;
+		case WRONG_ALLELE_PAIR:
+			color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);
+			break;
+		default:
+			color = super.getForeground(row);
+			break;
 		}
-		else 
-			return super.getForeground(row);
+		
+		return color;
 	}
 }

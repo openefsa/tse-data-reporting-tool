@@ -91,6 +91,9 @@ public class CustomStrings {
 	
 	public static final String RESULT_ALLELE_1 = "allele1";
 	public static final String RESULT_ALLELE_2 = "allele2";
+	public static final String ALLELE_AFRR = "AFRR";
+	public static final String ALLELE_ALRR = "ALRR";
+	
 	public static final String RESULT_TEST_TYPE = "anMethType";
 	public static final String RESULT_EVAL_INFO = "evalInfo";
 	public static final String RESULT_SCREENING_TEST = "AT06A";

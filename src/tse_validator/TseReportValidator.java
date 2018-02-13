@@ -543,6 +543,11 @@ public class TseReportValidator extends ReportValidator {
 					row.getLabel(CustomStrings.RESULT_ALLELE_1), 
 					row.getLabel(CustomStrings.RESULT_ALLELE_2)));
 			break;
+		case WRONG_ALLELE_PAIR:
+			errors.add(new WrongAllelesPairError(rowId, 
+					row.getLabel(CustomStrings.RESULT_ALLELE_1), 
+					row.getLabel(CustomStrings.RESULT_ALLELE_2)));
+			break;
 		default:
 			break;
 		}
