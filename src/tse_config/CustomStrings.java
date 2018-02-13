@@ -47,7 +47,9 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_PART = "part";
 	public static final String SUMMARIZED_INFO_PROD = "prod";
 	public static final String WILD_PROD = "F21.A07RY";
+	public static final String FARMED_PROD = "F21.A07RV";
 	public static final String SUMMARIZED_INFO_AGE = "animage";
+	public static final String SUMMARIZED_INFO_AGE_UNKNOWN = ""; // TODO
 	public static final String SUMMARIZED_INFO_TARGET_GROUP = "tseTargetGroup";
 	public static final String KILLED_TARGET_GROUP = "TG009A";
 
@@ -74,6 +76,9 @@ public class CustomStrings {
 	public static final String CASE_INFO_HOLDING_ID = "sampHoldingId";
 	public static final String CASE_INFO_ASSESS = "sampAnAsses";
 	public static final String CASE_INDEX_CASE = "tseIndexCase";
+	
+	public static final String INDEX_CASE_NO = "N";
+	
 	public static final String CASE_BIRTH_COUNTRY = "birthCountry";
 	public static final String CASE_INFO_BORN_FLOCK = "birthInFlockHerd";
 	public static final String CASE_INFO_BREED = "breed";

@@ -26,7 +26,8 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		NO_TEST_SPECIFIED,
 		DUPLICATED_TEST,
 		CASE_ID_FOR_NEGATIVE,
-		INDEX_CASE_FOR_NEGATIVE
+		INDEX_CASE_FOR_NEGATIVE,
+		INDEX_CASE_FOR_FARMED_CWD,
 	}
 
 	public Check isRecordCorrect(TableRow row) throws IOException {
@@ -44,6 +45,17 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		// index case on negative sample
 		if (!indexCase.isEmpty() && sampAnAsses.equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE)) {
 			return Check.INDEX_CASE_FOR_NEGATIVE;
+		}
+		
+		TableRow summInfo = row.getParent(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+		String type = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
+		String farmed = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_PROD);
+		
+		// Index case 'No' for farmed cwd is forbidden
+		if (indexCase.equals(CustomStrings.INDEX_CASE_NO) && type.equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE)) {
+			if (farmed.equals(CustomStrings.FARMED_PROD)) {
+				return Check.INDEX_CASE_FOR_FARMED_CWD;
+			}
 		}
 		
 		TableSchema childSchema = TableSchemaList.getByName(CustomStrings.RESULT_SHEET);
@@ -129,7 +141,10 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 				text = TSEMessages.get("cases.case.id.for.negative");
 				break;
 			case INDEX_CASE_FOR_NEGATIVE:
-				text = TSEMessages.get("index.case.id.for.negative");
+				text = TSEMessages.get("index.case.for.negative");
+				break;
+			case INDEX_CASE_FOR_FARMED_CWD:
+				text = TSEMessages.get("index.case.for.farmed.cwd");
 				break;
 			default:
 				break;
@@ -165,6 +180,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			case DUPLICATED_TEST:
 			case CASE_ID_FOR_NEGATIVE:
 			case INDEX_CASE_FOR_NEGATIVE:
+			case INDEX_CASE_FOR_FARMED_CWD:
 				color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);
 				break;
 			default:

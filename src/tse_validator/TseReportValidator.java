@@ -79,6 +79,7 @@ public class TseReportValidator extends ReportValidator {
 		errors.addAll(checkDuplicatedResId(reportRecords));
 		errors.addAll(checkNationalCaseId(reportRecords));
 		errors.addAll(checkAnimalId(reportRecords));
+		errors.addAll(checkUnknownAgeClass(reportRecords));
 		
 		return errors;
 	}
@@ -391,6 +392,9 @@ public class TseReportValidator extends ReportValidator {
 			case INDEX_CASE_FOR_NEGATIVE:
 				errors.add(new IndexCaseForNegativeError(getStackTrace(row)));
 				break;
+			case INDEX_CASE_FOR_FARMED_CWD:
+				errors.add(new IndexCaseForFarmedCwd(getStackTrace(row)));
+				break;
 			default:
 				break;
 			}
@@ -557,6 +561,20 @@ public class TseReportValidator extends ReportValidator {
 		default:
 			break;
 		}
+		
+		return errors;
+	}
+	
+	private Collection<ReportError> checkUnknownAgeClass(Collection<TableRow> rows) {
+		
+		Collection<ReportError> errors = new ArrayList<>();
+		/*for (TableRow row: rows) {
+			if (getRowType(row) == RowType.SUMM) {
+				if (row.getCode(CustomStrings.SUMMARIZED_INFO_AGE)
+						.equals(anObject))
+			}
+		}
+		TooManyUnknownAgeClassesError*/
 		
 		return errors;
 	}
