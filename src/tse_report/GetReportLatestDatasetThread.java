@@ -3,29 +3,21 @@ package tse_report;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import config.Environment;
 import dataset.IDataset;
 import report.EFSAReport;
 import report.ReportException;
-import report.ReportService;
 import report.ThreadFinishedListener;
 import soap.DetailedSOAPException;
-import soap_interface.IGetDatasetsList;
 
 public class GetReportLatestDatasetThread extends Thread {
 
 	private static final Logger LOGGER = LogManager.getLogger(GetReportLatestDatasetThread.class);
-	
-	private Environment env;
-	private IGetDatasetsList<IDataset> getDatasetList;
 	private IDataset dataset;
 	private ThreadFinishedListener listener;
 	private EFSAReport report;
 	
-	public GetReportLatestDatasetThread(EFSAReport report, Environment env, IGetDatasetsList<IDataset> getDatasetList) {
+	public GetReportLatestDatasetThread(EFSAReport report) {
 		this.report = report;
-		this.env = env;
-		this.getDatasetList = getDatasetList;
 	}
 	
 	public void setListener(ThreadFinishedListener listener) {
@@ -36,8 +28,7 @@ public class GetReportLatestDatasetThread extends Thread {
 	public void run() {
 		try {
 			
-			ReportService reportService = new ReportService(env, getDatasetList);
-			dataset = reportService.getLatestDataset(report);
+			dataset = report.getLatestDataset();
 			if (listener != null)
 				listener.finished(this);
 		} catch (DetailedSOAPException | ReportException e) {

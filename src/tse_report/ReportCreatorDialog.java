@@ -216,7 +216,7 @@ public class ReportCreatorDialog extends TableDialog {
 		
 		Message msg = fatal ? Warnings.createFatal(message, report, oldReport) : Warnings.create(message);
 		
-		return msg != null ? msg : null;
+		return message != null ? msg : null;
 	}
 
 

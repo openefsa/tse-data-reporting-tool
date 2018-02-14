@@ -13,16 +13,11 @@ import org.eclipse.swt.widgets.Shell;
 
 import app_config.AppPaths;
 import app_config.PropertiesReader;
-import config.Config;
-import dataset.IDataset;
 import global_utils.EFSARCL;
 import global_utils.FileUtils;
 import global_utils.Warnings;
 import html_viewer.HtmlViewer;
 import i18n_messages.TSEMessages;
-import report.ReportService;
-import soap.GetDatasetsList;
-import soap_interface.IGetDatasetsList;
 import table_database.Database;
 import table_database.DatabaseVersionException;
 import table_database.TableDao;
@@ -174,14 +169,9 @@ public class StartUI {
 
 		// set the application name in the shell
 		shell.setText(PropertiesReader.getAppName() + " " + PropertiesReader.getAppVersion());
-		
-		IGetDatasetsList<IDataset> getDatasetList = new GetDatasetsList<>();
-		
-		Config config = new Config();
-		ReportService reportService = new ReportService(config.getEnvironment(), getDatasetList);
-		
+
 		// open the main panel
-		new MainPanel(shell, reportService);
+		new MainPanel(shell);
 
 		// set the application icon into the shell
 		Image image = new Image(Display.getCurrent(), 

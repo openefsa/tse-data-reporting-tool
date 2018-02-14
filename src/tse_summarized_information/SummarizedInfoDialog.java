@@ -31,7 +31,6 @@ import report.DisplayAckThread;
 import report.RefreshStatusThread;
 import report.Report;
 import report.ReportActions;
-import report.ReportService;
 import report.ThreadFinishedListener;
 import report_validator.ReportError;
 import session_manager.TSERestoreableWindowDao;
@@ -72,9 +71,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	
 	private TseReport report;
 	
-	private ReportService reportService;
-	
-	public SummarizedInfoDialog(Shell parent, ReportService reportService) {
+	public SummarizedInfoDialog(Shell parent) {
 		
 		super(parent, "", false, false);
 		
@@ -83,8 +80,6 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		// default disabled
 		setRowCreationEnabled(false);
-		
-		this.reportService = reportService;
 		
 		this.window = new RestoreableWindow(getDialog(), WINDOW_CODE);
 		boolean restored = window.restore(TSERestoreableWindowDao.class);
@@ -308,7 +303,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				
 				progressBar.open();
 				
-				RefreshStatusThread refreshStatus = new RefreshStatusThread(report, reportService);
+				RefreshStatusThread refreshStatus = new RefreshStatusThread(report);
 				
 				refreshStatus.setListener(new ThreadFinishedListener() {
 					

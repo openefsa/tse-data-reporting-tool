@@ -82,7 +82,9 @@ public class ResultDialog extends TableDialogWithMenu {
 						|| field.getId().equals(CustomStrings.AN_METH_CODE))) {
 
 					// if genotyping set base term
-					if (row.getCode(CustomStrings.AN_METH_CODE).equals(CustomStrings.AN_METH_CODE_GENOTYPING)) {
+					if (row.getCode(CustomStrings.AN_METH_CODE).equals(CustomStrings.AN_METH_CODE_GENOTYPING)
+							&& !summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
+								.equals(CustomStrings.SUMMARIZED_INFO_BSEOS_TYPE)) {
 
 						try {
 							PredefinedResult predRes = PredefinedResult.getPredefinedResult(report, summInfo, caseInfo);
@@ -97,7 +99,8 @@ public class ResultDialog extends TableDialogWithMenu {
 						}
 					}
 					else {
-						PredefinedResult.addParamAndResult(row, row.getCode(field.getId()));
+						if (!row.getCode(CustomStrings.RESULT_TEST_AIM).isEmpty())
+							PredefinedResult.addParamAndResult(row, row.getCode(field.getId()));
 					}
 				}
 				

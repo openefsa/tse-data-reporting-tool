@@ -345,10 +345,4 @@
 			<description>WBVR In-house immunoblot with 4 primary antibodies</description>
 		</selection>
 	</selectionList>
-	
-	<selectionList id="BSEOS$AT13A">
-		<selection code="F089A">
-			<description>Genotyping</description>
-		</selection>
-	</selectionList>
 </anlymdLists>

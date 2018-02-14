@@ -51,9 +51,6 @@
 		<selection code="AT12A">
 			<description>Discriminatory</description>
 		</selection>
-		<selection code="AT13A">
-			<description>Molecular characterisation/Genotyping</description>
-		</selection>
 	</selectionList>
 	<selectionList id="RAPID">
 		<selection code="AT06A">
