@@ -28,6 +28,7 @@ import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import progress_bar.IndeterminateProgressDialog;
 import report.DisplayAckThread;
+import report.IReportService;
 import report.RefreshStatusThread;
 import report.Report;
 import report.ReportActions;
@@ -65,15 +66,19 @@ import xml_catalog_reader.Selection;
 public class SummarizedInfoDialog extends TableDialogWithMenu {
 
 	private static final Logger LOGGER = LogManager.getLogger(SummarizedInfoDialog.class);
+
+	private IReportService reportService;
 	
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "SummarizedInformation";
 	
 	private TseReport report;
 	
-	public SummarizedInfoDialog(Shell parent) {
+	public SummarizedInfoDialog(Shell parent, IReportService reportService) {
 		
 		super(parent, "", false, false);
+		
+		this.reportService = reportService;
 		
 		// create the parent structure
 		super.create();
@@ -303,7 +308,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				
 				progressBar.open();
 				
-				RefreshStatusThread refreshStatus = new RefreshStatusThread(report);
+				RefreshStatusThread refreshStatus = new RefreshStatusThread(report, reportService);
 				
 				refreshStatus.setListener(new ThreadFinishedListener() {
 					
@@ -388,7 +393,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				}
 				
 				ReportActions actions = new TseReportActions(getDialog(), report);
-				actions.send(new Listener() {
+				actions.send(reportService, new Listener() {
 					
 					@Override
 					public void handleEvent(Event arg0) {
@@ -453,7 +458,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				
 				progressBar.open();
 				
-				DisplayAckThread displayAck = new DisplayAckThread(report);
+				DisplayAckThread displayAck = new DisplayAckThread(report, reportService);
 				
 				displayAck.setListener(new ThreadFinishedListener() {
 					

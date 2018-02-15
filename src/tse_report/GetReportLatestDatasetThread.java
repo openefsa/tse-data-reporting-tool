@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 
 import dataset.IDataset;
 import report.EFSAReport;
-import report.ReportException;
+import report.IReportService;
 import report.ThreadFinishedListener;
 import soap.DetailedSOAPException;
 
@@ -13,11 +13,13 @@ public class GetReportLatestDatasetThread extends Thread {
 
 	private static final Logger LOGGER = LogManager.getLogger(GetReportLatestDatasetThread.class);
 	private IDataset dataset;
+	private IReportService reportService;
 	private ThreadFinishedListener listener;
 	private EFSAReport report;
 	
-	public GetReportLatestDatasetThread(EFSAReport report) {
+	public GetReportLatestDatasetThread(EFSAReport report, IReportService reportService) {
 		this.report = report;
+		this.reportService = reportService;
 	}
 	
 	public void setListener(ThreadFinishedListener listener) {
@@ -27,11 +29,10 @@ public class GetReportLatestDatasetThread extends Thread {
 	@Override
 	public void run() {
 		try {
-			
-			dataset = report.getLatestDataset();
+			dataset = reportService.getLatestDataset(report);
 			if (listener != null)
 				listener.finished(this);
-		} catch (DetailedSOAPException | ReportException e) {
+		} catch (DetailedSOAPException e) {
 			e.printStackTrace();
 			LOGGER.error("Cannot retrieve latest dataset of report=" + report.getSenderId(), e);
 			if (listener != null)

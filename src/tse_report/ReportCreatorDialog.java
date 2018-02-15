@@ -17,7 +17,7 @@ import dataset.RCLDatasetStatus;
 import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
-import report.ReportException;
+import report.IReportService;
 import session_manager.TSERestoreableWindowDao;
 import soap.DetailedSOAPException;
 import table_dialog.DialogBuilder;
@@ -41,14 +41,17 @@ public class ReportCreatorDialog extends TableDialog {
 	
 	private static final Logger LOGGER = LogManager.getLogger(ReportCreatorDialog.class);
 	
+	private IReportService reportService;
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "ReportCreator";
 	
-	public ReportCreatorDialog(Shell parent) {
+	public ReportCreatorDialog(Shell parent, IReportService reportService) {
 		super(parent, TSEMessages.get("new.report.title"), true, true);
 		
 		// create the parent structure
 		super.create();
+		
+		this.reportService = reportService;
 		
 		this.window = new RestoreableWindow(getDialog(), WINDOW_CODE);
 		window.restore(TSERestoreableWindowDao.class);
@@ -110,7 +113,7 @@ public class ReportCreatorDialog extends TableDialog {
 		
 		try {
 			
-			oldReport = report.getLatestDataset();
+			oldReport = reportService.getLatestDataset(report);
 			
 		} catch (DetailedSOAPException e) {
 			
@@ -119,13 +122,13 @@ public class ReportCreatorDialog extends TableDialog {
 			LOGGER.error("Cannot create report", e);
 			msg = Warnings.createSOAPWarning(e);
 			
-		} catch (ReportException e) {
+		}/* catch (ReportException e) {
 			e.printStackTrace();
 			
 			LOGGER.error("Cannot create report", e);
 			msg = Warnings.createFatal(TSEMessages.get("new.report.failed.no.senderId", 
 					PropertiesReader.getSupportEmail()), report);
-		}
+		}*/
 		finally {
 			// change the cursor to old cursor
 			getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));

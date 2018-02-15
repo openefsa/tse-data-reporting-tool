@@ -23,6 +23,7 @@ import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import message.MessageConfigBuilder;
 import message_creator.OperationType;
+import report.IReportService;
 import report.ReportException;
 import report.ReportSendOperation;
 import report_downloader.TseReportDownloader;
@@ -51,6 +52,8 @@ public class MainMenu {
 
 	private static final Logger LOGGER = LogManager.getLogger(MainMenu.class);
 	
+	private IReportService reportService;
+	
 	private MainPanel mainPanel;
 	private Shell shell;
 
@@ -70,9 +73,10 @@ public class MainMenu {
 	private MenuItem exportReport;
 	private MenuItem exitApplication;
 
-	public MainMenu(MainPanel mainPanel, Shell shell) {
+	public MainMenu(MainPanel mainPanel, Shell shell, IReportService reportService) {
 		this.shell = shell;
 		this.mainPanel = mainPanel;
+		this.reportService = reportService;
 		create();
 	}
 
@@ -145,7 +149,7 @@ public class MainMenu {
 				
 				LOGGER.debug("Opening new report dialog");
 				
-				ReportCreatorDialog dialog = new ReportCreatorDialog(shell);
+				ReportCreatorDialog dialog = new ReportCreatorDialog(shell, reportService);
 				dialog.setButtonText(TSEMessages.get("new.report.button"));
 				dialog.open();
 			}
@@ -300,7 +304,7 @@ public class MainMenu {
 				
 				ReportSendOperation opSendType = null;
 				try {
-					opSendType = report.getSendOperation();
+					opSendType = reportService.getSendOperation(report);
 				} catch (DetailedSOAPException | ReportException e1) {
 					e1.printStackTrace();
 				}
