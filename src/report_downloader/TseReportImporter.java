@@ -137,8 +137,6 @@ public class TseReportImporter extends ReportImporter {
 				// if random genotyping, create the summarized information
 				if (isRGT(row)) {
 					
-					System.out.println("RGT ROW: " + row);
-					
 					summInfo = extractSummarizedInfo(report, row, true);
 					
 					summInfo.setType(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
@@ -150,53 +148,23 @@ public class TseReportImporter extends ReportImporter {
 					// for the different results
 					summInfos.add(summInfo);
 					
-					LOGGER.info("Imported RGT summarized information; contextId=" + summInfo.computeContextId());
+					LOGGER.info("Imported RGT summarized information; contextId=" 
+							+ summInfo.computeContextId());
 				}
 				else {
+					
 					String contextId = getContextIdFrom(row);
 					
-					// foreign key with the summarized information
-					//String progId = row.getLabel(CustomStrings.RESULT_PROG_ID);
+					LOGGER.info("Context id=" + contextId + " for " + row);
 					
 					// get the summarized info related to the case/result
 					summInfo = getSummInfoByContextId(contextId);
-				}
-				
-				/*if (summInfo == null) {
 					
-					// try to extract it from the result, since
-					// it could be a RGT
-					summInfo = extractSummarizedInfo(report, row);
-
-					if (isRGT(summInfo)) {
-						
-						// we have a RGT record (RGT does not have summarized information
-						// in DCF and has as type sheep or goat)
-
-						// set RGT type
-						summInfo.setType(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
-						
-						// create the summarized information
-						summInfo.save();
-						
-						// add in the cache in order to avoid to save the same summInfo
-						// for the different results
-						summInfos.add(summInfo);
-						
-						LOGGER.info("Imported RGT summarized information; contextId=" + summInfo.computeContextId());
-					}
-					else {
-						ParseException e = new ParseException("No summarized information found in dataset with contextId=" + contextId, -1);
-						LOGGER.error("Cannot create cases and results without the related summarized information", e);
-						throw e;
-					}
-				}*/
+					LOGGER.info("Related summarized info with same contextId= " + summInfo);
+				}
 				
 				// import the case
 				TableRow caseInfo = importCase(report, summInfo, row);
-				
-				LOGGER.info("Imported case/sample with database id=" + caseInfo.getDatabaseId() 
-					+ ", sampId=" + caseInfo.getCode(CustomStrings.CASE_INFO_SAMPLE_ID));
 				
 				// import the result
 				TableRow result = importResult(report, summInfo, caseInfo, row);
@@ -221,17 +189,20 @@ public class TseReportImporter extends ReportImporter {
 
 		// import the case info if not already imported
 		if (currentCaseInfo.getDatabaseId() == -1) {
-
+			
 			// import case in the db
 			currentCaseInfo.save();
 
 			String sampId = currentCaseInfo.getLabel(CustomStrings.CASE_INFO_SAMPLE_ID);
+
+			LOGGER.info("Imported case/sample with database id=" + currentCaseInfo.getDatabaseId() 
+				+ ", sampId=" + sampId);
 			
 			if (sampId == null) {
 				LOGGER.error("No sample id was found for " + currentCaseInfo);
 				return currentCaseInfo;
 			}
-			
+
 			// save the case in the cache by its sample id
 			cases.put(sampId, currentCaseInfo);
 		}
@@ -416,7 +387,9 @@ public class TseReportImporter extends ReportImporter {
 		for (String key : context2.keySet())
 			summInfo.put(key, context2.get(key));
 		
-		return summInfo.computeContextId();
+		String contextId = summInfo.computeContextId();
+		
+		return contextId;
 	}
 	
 	/**

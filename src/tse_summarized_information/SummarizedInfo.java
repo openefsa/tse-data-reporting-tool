@@ -19,7 +19,7 @@ import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.XmlLoader;
 
 public class SummarizedInfo extends TableRow implements TseTableRow {
-	
+
 	public SummarizedInfo(TableRow row) {
 		super(row);
 	}
@@ -68,7 +68,8 @@ public class SummarizedInfo extends TableRow implements TseTableRow {
 	
 	public String computeContextId() throws FormulaException {
 		Formula f = new Formula(this, this.getSchema().getById(CustomStrings.CONTEXT_ID_COL), 
-				XlsxHeader.CODE_FORMULA.getHeaderName());
+				XlsxHeader.LABEL_FORMULA.getHeaderName());
+		
 		return f.solve();
 	}
 	

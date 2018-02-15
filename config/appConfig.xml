@@ -9,7 +9,7 @@
 
 <entry key="TechnicalSupport.Email">zoonoses_support@efsa.europa.eu</entry> <!-- email which will be used for technical support -->
 <entry key="TechnicalSupport.Email.Subject">%appName issue</entry> <!-- subject of the email-->
-<entry key="TechnicalSupport.Email.Body">Dear Zoonoses Support,\nI encountered an issue while using the %appName. You can find below additional information.\n\nBest Regards,\n\n\nApplication version: %appVersion\n%report\nApplication log:\n%appLog</entry> <!-- body of the email -->
+<entry key="TechnicalSupport.Email.Body">Dear Zoonoses Support,\nI encountered an issue while using the %appName. You can find below additional information.\n\nBest Regards,\n\n\nApplication version: %appVersion\nDb version: %dbVersion\nMinimum required db version: %minDbVersion\n\n%report\nApplication log:\n\n%appLog</entry> <!-- body of the email -->
 
 <entry key="Application.DataCollectionTable">SSD2_CENTRAL_2017</entry> <!-- code that will be used to send report to the dcf -->
 <entry key="Application.DataCollectionPattern">TSE.yyyy</entry> <!-- data collection code, the yyyy pattern will be replaced by the report year -->

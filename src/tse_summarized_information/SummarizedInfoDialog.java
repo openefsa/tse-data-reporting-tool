@@ -640,6 +640,9 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			.addLabelToComposite("statusLabel", "labelsComp")
 			.addLabelToComposite("messageIdLabel", "labelsComp")
 			.addLabelToComposite("datasetIdLabel", "labelsComp");
+			
+			if(DebugConfig.debug)
+				viewer.addLabelToComposite("senderDatasetIdLabel", "labelsComp");
 
 			// if debug add change status button
 			if (DebugConfig.debug) {
@@ -743,6 +746,10 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		panel.setLabelText("datasetIdLabel", TSEMessages.get("si.dataset.id", 
 				TSEMessages.get("si.no.data")));
+		
+		if(DebugConfig.debug)
+			panel.setLabelText("senderDatasetIdLabel", TSEMessages.get("si.sender.dataset.id", 
+				TSEMessages.get("si.no.data")));
 	}
 	
 	/**
@@ -756,6 +763,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		String status = report.getRCLStatus().getLabel();
 		String messageId = report.getMessageId();
 		String datasetId = report.getId();
+		String senderId = report.getSenderId();
 		
 		String reportRow;
 		
@@ -778,11 +786,17 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		String datasetRow = TSEMessages.get("si.dataset.id", 
 				checkField(datasetId, TSEMessages.get("si.missing.data")));
 		
+		String senderDatasetId = TSEMessages.get("si.sender.dataset.id", 
+				checkField(senderId, TSEMessages.get("si.missing.data")));
+		
 		DialogBuilder panel = getPanelBuilder();
 		panel.setLabelText("reportLabel", reportRow);
 		panel.setLabelText("statusLabel", statusRow);
 		panel.setLabelText("messageIdLabel", messageRow);
 		panel.setLabelText("datasetIdLabel", datasetRow);
+		
+		if(DebugConfig.debug)
+			panel.setLabelText("senderDatasetIdLabel", senderDatasetId);
 		
 		// enable the table only if report status if correct
 		RCLDatasetStatus datasetStatus = RCLDatasetStatus.fromString(status);
