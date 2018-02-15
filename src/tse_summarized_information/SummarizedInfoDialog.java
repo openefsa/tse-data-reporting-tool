@@ -458,7 +458,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				
 				progressBar.open();
 				
-				DisplayAckThread displayAck = new DisplayAckThread(report, reportService);
+				DisplayAckThread displayAck = new DisplayAckThread(report.getMessageId(), reportService);
 				
 				displayAck.setListener(new ThreadFinishedListener() {
 					
