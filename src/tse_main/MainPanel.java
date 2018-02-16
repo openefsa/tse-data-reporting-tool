@@ -5,6 +5,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import app_config.GlobalManager;
 import providers.IReportService;
+import providers.ITableDaoService;
 import tse_report.TseReport;
 import tse_summarized_information.SummarizedInfoDialog;
 
@@ -12,6 +13,7 @@ public class MainPanel {
 
 	private Shell shell;
 	private IReportService reportService;
+	private ITableDaoService daoService;
 	
 	private MainMenu menu;
 	private SummarizedInfoDialog reportViewer;
@@ -19,9 +21,10 @@ public class MainPanel {
 	/**
 	 * Create the main user interface
 	 */
-	public MainPanel(Shell shell, IReportService reportService) {
+	public MainPanel(Shell shell, IReportService reportService, ITableDaoService daoService) {
 		this.shell = shell;
 		this.reportService = reportService;
+		this.daoService = daoService;
 		create();
 	}
 	
@@ -72,7 +75,7 @@ public class MainPanel {
 
 		shell.setLayout(new GridLayout());
 		
-		this.menu = new MainMenu(this, shell, reportService);
-		this.reportViewer = new SummarizedInfoDialog(shell, reportService);
+		this.menu = new MainMenu(this, shell, reportService, daoService);
+		this.reportViewer = new SummarizedInfoDialog(shell, reportService, daoService);
 	}
 }

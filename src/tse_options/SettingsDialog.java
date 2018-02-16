@@ -26,6 +26,8 @@ import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import message.SendMessageException;
 import message_creator.OperationType;
+import providers.IReportService;
+import providers.ITableDaoService;
 import report.ReportException;
 import soap.DetailedSOAPException;
 import table_dialog.DialogBuilder;
@@ -51,8 +53,13 @@ public class SettingsDialog extends OptionsDialog {
 	
 	public static final String WINDOW_CODE = "Settings";
 	
-	public SettingsDialog(Shell parent) {
+	private IReportService reportService;
+	private ITableDaoService daoService;
+	
+	public SettingsDialog(Shell parent, IReportService reportService, ITableDaoService daoService) {
 		super(parent, TSEMessages.get("settings.title"), WINDOW_CODE);
+		this.reportService = reportService;
+		this.daoService = daoService;
 	}
 
 	@Override
@@ -169,9 +176,8 @@ public class SettingsDialog extends OptionsDialog {
 			report = TseReport.createDefault();
 			
 			// save report in db in order to perform send
-			report.save();
-			
-			report.exportAndSend(OperationType.TEST);
+			daoService.add(report);
+			reportService.exportAndSend(report, OperationType.TEST);
 
 			// here is success
 			String title = TSEMessages.get("success.title");

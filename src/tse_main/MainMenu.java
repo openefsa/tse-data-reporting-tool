@@ -24,6 +24,7 @@ import i18n_messages.TSEMessages;
 import message.MessageConfigBuilder;
 import message_creator.OperationType;
 import providers.IReportService;
+import providers.ITableDaoService;
 import report.ReportException;
 import report.ReportSendOperation;
 import report_downloader.TseReportDownloader;
@@ -53,6 +54,7 @@ public class MainMenu {
 	private static final Logger LOGGER = LogManager.getLogger(MainMenu.class);
 	
 	private IReportService reportService;
+	private ITableDaoService daoService;
 	
 	private MainPanel mainPanel;
 	private Shell shell;
@@ -73,10 +75,11 @@ public class MainMenu {
 	private MenuItem exportReport;
 	private MenuItem exitApplication;
 
-	public MainMenu(MainPanel mainPanel, Shell shell, IReportService reportService) {
+	public MainMenu(MainPanel mainPanel, Shell shell, IReportService reportService, ITableDaoService daoService) {
 		this.shell = shell;
 		this.mainPanel = mainPanel;
 		this.reportService = reportService;
+		this.daoService = daoService;
 		create();
 	}
 
@@ -269,7 +272,7 @@ public class MainMenu {
 				
 				LOGGER.debug("Opening download report dialog");
 				
-				TseReportDownloader downloader = new TseReportDownloader(shell);
+				TseReportDownloader downloader = new TseReportDownloader(shell, reportService);
 				try {
 					downloader.download();
 				} catch (DetailedSOAPException e) {
@@ -319,9 +322,9 @@ public class MainMenu {
 
 				LOGGER.info("Exporting report=" + report.getSenderId());
 				
-				MessageConfigBuilder config = report.getDefaultExportConfiguration(opType, exportFile);
+				MessageConfigBuilder messageConfig = report.getDefaultExportConfiguration(opType, exportFile);
 				try {
-					report.export(config);
+					reportService.export(report, messageConfig);
 				} catch (IOException | ParserConfigurationException | SAXException | ReportException e) {
 					e.printStackTrace();
 					LOGGER.error("Export report failed", e);
@@ -369,7 +372,7 @@ public class MainMenu {
 				
 				LOGGER.debug("Opening settings dialog");
 				
-				SettingsDialog dialog = new SettingsDialog(shell);
+				SettingsDialog dialog = new SettingsDialog(shell, reportService, daoService);
 				dialog.open();
 			}
 
@@ -431,9 +434,9 @@ public class MainMenu {
 				
 				LOGGER.debug("Exporting report " + report.getSenderId());
 				
-				MessageConfigBuilder config = report.getDefaultExportConfiguration(opType);
+				MessageConfigBuilder messageConfig = report.getDefaultExportConfiguration(opType);
 				try {
-					report.export(config);
+					reportService.export(report, messageConfig);
 				} catch (IOException | ParserConfigurationException | SAXException | ReportException e) {
 					e.printStackTrace();
 					LOGGER.error("Export report failed", e);

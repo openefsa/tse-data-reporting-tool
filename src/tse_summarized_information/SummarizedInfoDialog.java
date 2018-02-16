@@ -28,6 +28,7 @@ import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import progress_bar.IndeterminateProgressDialog;
 import providers.IReportService;
+import providers.ITableDaoService;
 import report.DisplayAckThread;
 import report.RefreshStatusThread;
 import report.Report;
@@ -68,17 +69,19 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	private static final Logger LOGGER = LogManager.getLogger(SummarizedInfoDialog.class);
 
 	private IReportService reportService;
+	private ITableDaoService daoService;
 	
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "SummarizedInformation";
 	
 	private TseReport report;
 	
-	public SummarizedInfoDialog(Shell parent, IReportService reportService) {
+	public SummarizedInfoDialog(Shell parent, IReportService reportService, ITableDaoService daoService) {
 		
 		super(parent, "", false, false);
 		
 		this.reportService = reportService;
+		this.daoService = daoService;
 		
 		// create the parent structure
 		super.create();
@@ -392,8 +395,8 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 					return;
 				}
 				
-				ReportActions actions = new TseReportActions(getDialog(), report);
-				actions.send(reportService, new Listener() {
+				ReportActions actions = new TseReportActions(getDialog(), report, reportService, daoService);
+				actions.send(new Listener() {
 					
 					@Override
 					public void handleEvent(Event arg0) {
@@ -412,7 +415,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				ReportActions actions = new TseReportActions(getDialog(), report);
+				ReportActions actions = new TseReportActions(getDialog(), report, reportService, daoService);
 				
 				// reject the report and update the ui
 				actions.reject(new Listener() {
@@ -432,7 +435,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				ReportActions actions = new TseReportActions(getDialog(), report);
+				ReportActions actions = new TseReportActions(getDialog(), report, reportService, daoService);
 				
 				// reject the report and update the ui
 				actions.submit(new Listener() {
@@ -512,7 +515,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				ReportActions actions = new TseReportActions(getDialog(), report);
+				ReportActions actions = new TseReportActions(getDialog(), report, reportService, daoService);
 				
 				Report newVersion = actions.amend();
 				

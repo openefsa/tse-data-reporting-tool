@@ -14,6 +14,8 @@ import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import message.SendMessageException;
+import providers.IReportService;
+import providers.ITableDaoService;
 import report.Report;
 import report.ReportActions;
 import report.ReportException;
@@ -26,8 +28,9 @@ public class TseReportActions extends ReportActions {
 
 	private Shell shell;
 	
-	public TseReportActions(Shell shell, Report report) {
-		super(shell, report);
+	public TseReportActions(Shell shell, Report report, 
+			IReportService reportService, ITableDaoService daoService) {
+		super(shell, report, reportService, daoService);
 		this.shell = shell;
 	}
 

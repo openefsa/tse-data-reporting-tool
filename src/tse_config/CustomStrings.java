@@ -7,6 +7,10 @@ public class CustomStrings {
 	public static final String PREDEFINED_RESULTS_FILE = AppPaths.CONFIG_FOLDER + "predefinedResults.xlsx";
 	public static final String PREFERENCE_FOLDER = "preferences" + System.getProperty("file.separator");
 
+	public static final String REPORT_ID_COL = "ReportId";
+	public static final String SETTINGS_ID_COL = "SettingsId";
+	public static final String PREFERENCES_ID_COL = "PreferencesId";
+	
 	// sheets names
 	public static final String RESULT_SHEET = "AnalyticalResults";
 	public static final String CASE_INFO_SHEET = "CasesInformation";
@@ -21,6 +25,8 @@ public class CustomStrings {
 	public static final String SETTINGS_ORG_CODE = "orgCode";
 	
 	public static final String REPORT_COUNTRY = "country";
+	
+	public static final String PREFERENCES_COUNTRY = "country";
 	
 	public static final String PREFERENCES_SCREENING_BSE = "defScreeningBSE";
 	public static final String PREFERENCES_SCREENING_SCRAPIE = "defScreeningSCRAPIE";

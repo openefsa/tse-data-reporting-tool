@@ -1,14 +1,21 @@
 package report_service_test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import ack.DcfAck;
 import ack.FileState;
 import ack.OkCode;
+import app_config.AppPaths;
 import dataset.Dataset;
 import dataset.DatasetList;
 import dataset.DcfDatasetStatus;
@@ -18,29 +25,46 @@ import dataset.Operation;
 import dataset.RCLDatasetStatus;
 import dcf_log.DcfAckLogMock;
 import global_utils.Message;
+import message.MessageResponse;
+import message.SendMessageException;
+import message.TrxCode;
 import message_creator.OperationType;
+import mocks.RowCreatorMock;
+import mocks.TableDaoMock;
+import providers.ITableDaoService;
+import providers.RCLError;
+import providers.ReportService;
+import providers.TableDaoService;
 import report.Report;
 import report.ReportException;
 import report.ReportSendOperation;
-import report.ReportService;
 import soap.DetailedSOAPException;
 import soap_test.GetAckMock;
 import soap_test.GetDatasetsListMock;
+import soap_test.SendMessageMock;
+import table_skeleton.TableRow;
 import table_skeleton.TableVersion;
+import tse_config.CustomStrings;
 import tse_report.TseReport;
+import tse_summarized_information.SummarizedInfo;
+import xlsx_reader.TableSchemaList;
 
 public class ReportServiceTest {
 
 	private ReportService reportService;
 	private GetAckMock getAck;
 	private GetDatasetsListMock<IDataset> getDatasetsList;
+	private SendMessageMock sendMessage;
+	private ITableDaoService daoService;
 	private Report report;
 	
 	@Before
 	public void init() {
 		this.getAck = new GetAckMock();
 		this.getDatasetsList = new GetDatasetsListMock<>();
-		this.reportService = new ReportService(getAck, getDatasetsList);
+		this.sendMessage = new SendMessageMock();
+		this.daoService = new TableDaoService(new TableDaoMock());
+		this.reportService = new ReportService(getAck, getDatasetsList, sendMessage, daoService);
 		
 		report = new TseReport();
 		report.setId("11234");
@@ -720,4 +744,374 @@ public class ReportServiceTest {
 		Message m = reportService.displayAck("31322");
 		assertNull(m);
 	}
+	
+	@Test
+	public void createNotExistingReportNotExistingInDcf() throws DetailedSOAPException {
+		
+		TseReport report = new TseReport();
+		report.setSenderId("AT0404");
+		report.setVersion(TableVersion.getFirstVersion());
+		report.setYear("2004");
+		report.setMonth("04");
+		report.setCountry("AT");
+		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report.setStatus(RCLDatasetStatus.DRAFT);
+		RCLError error = reportService.create(report);
+		
+		assertNull(error);
+		assertEquals(1, daoService.getAll(report.getSchema()).size());
+	}
+	
+	@Test
+	public void createExistingReportNotExistingInDcf() throws DetailedSOAPException {
+		
+		TseReport report = new TseReport();
+		report.setSenderId("AT0404");
+		report.setVersion(TableVersion.getFirstVersion());
+		report.setYear("2004");
+		report.setMonth("04");
+		report.setCountry("AT");
+		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report.setStatus(RCLDatasetStatus.DRAFT);
+		
+		// add it
+		daoService.add(report);
+		
+		RCLError error = reportService.create(report);
+		
+		assertNotNull(error);
+		assertEquals("WARN304", error.getCode());
+		assertEquals(1, daoService.getAll(report.getSchema()).size());
+	}
+	
+	@Test
+	public void createExistingReportExistingAlsoInDcf() throws DetailedSOAPException {
+		
+		TseReport report = new TseReport();
+		report.setSenderId("AT0404");
+		report.setVersion(TableVersion.getFirstVersion());
+		report.setYear("2004");
+		report.setMonth("04");
+		report.setCountry("AT");
+		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report.setStatus(RCLDatasetStatus.DRAFT);
+		
+		// add it
+		daoService.add(report);
+		
+		Dataset d = new Dataset();
+		d.setId("42842");
+		d.setSenderId("AT0404.00");
+		d.setStatus(DcfDatasetStatus.VALID);
+		
+		DatasetList list = new DatasetList();
+		list.add(d);
+		
+		getDatasetsList.setList(list);
+		
+		RCLError error = reportService.create(report);
+		
+		assertNotNull(error);
+		assertEquals("WARN304", error.getCode());
+		assertEquals(1, daoService.getAll(report.getSchema()).size());
+	}
+	
+	@Test
+	public void createNotExistingReportExistingInDcfAsValid() throws DetailedSOAPException {
+		
+		TseReport report = new TseReport();
+		report.setSenderId("AT0404");
+		report.setVersion(TableVersion.getFirstVersion());
+		report.setYear("2004");
+		report.setMonth("04");
+		report.setCountry("AT");
+		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report.setStatus(RCLDatasetStatus.DRAFT);
+		
+		Dataset d = new Dataset();
+		d.setId("42842");
+		d.setSenderId("AT0404.00");
+		d.setStatus(DcfDatasetStatus.VALID);
+		
+		DatasetList list = new DatasetList();
+		list.add(d);
+		
+		getDatasetsList.setList(list);
+		
+		RCLError error = reportService.create(report);
+		
+		assertNotNull(error);
+		assertEquals("WARN303", error.getCode());
+		assertEquals(0, daoService.getAll(report.getSchema()).size());
+	}
+	
+	@Test
+	public void createNotExistingReportExistingInDcfAsRejectedEditable() throws DetailedSOAPException {
+		
+		TseReport report = new TseReport();
+		report.setSenderId("AT0404");
+		report.setVersion(TableVersion.getFirstVersion());
+		report.setYear("2004");
+		report.setMonth("04");
+		report.setCountry("AT");
+		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report.setStatus(RCLDatasetStatus.DRAFT);
+		
+		Dataset d = new Dataset();
+		d.setId("42842");
+		d.setSenderId("AT0404.00");
+		d.setStatus(DcfDatasetStatus.REJECTED_EDITABLE);
+		
+		DatasetList list = new DatasetList();
+		list.add(d);
+		
+		getDatasetsList.setList(list);
+		
+		RCLError error = reportService.create(report);
+		
+		assertNotNull(error);
+		assertEquals("WARN303", error.getCode());
+		assertEquals(0, daoService.getAll(report.getSchema()).size());
+	}
+	
+	@Test
+	public void createNotExistingReportExistingInDcfAsValidWithWarnings() throws DetailedSOAPException {
+		
+		TseReport report = new TseReport();
+		report.setSenderId("AT0404");
+		report.setVersion(TableVersion.getFirstVersion());
+		report.setYear("2004");
+		report.setMonth("04");
+		report.setCountry("AT");
+		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report.setStatus(RCLDatasetStatus.DRAFT);
+		
+		Dataset d = new Dataset();
+		d.setId("42842");
+		d.setSenderId("AT0404.00");
+		d.setStatus(DcfDatasetStatus.VALID_WITH_WARNINGS);
+		
+		DatasetList list = new DatasetList();
+		list.add(d);
+		
+		getDatasetsList.setList(list);
+		
+		RCLError error = reportService.create(report);
+		
+		assertNotNull(error);
+		assertEquals("WARN303", error.getCode());
+		assertEquals(0, daoService.getAll(report.getSchema()).size());
+	}
+	
+	@Test
+	public void createNotExistingReportExistingInDcfAsDeleted() throws DetailedSOAPException {
+		
+		TseReport report = new TseReport();
+		report.setSenderId("AT0404");
+		report.setVersion(TableVersion.getFirstVersion());
+		report.setYear("2004");
+		report.setMonth("04");
+		report.setCountry("AT");
+		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report.setStatus(RCLDatasetStatus.DRAFT);
+		
+		Dataset d = new Dataset();
+		d.setId("42842");
+		d.setSenderId("AT0404.00");
+		d.setStatus(DcfDatasetStatus.DELETED);
+		
+		DatasetList list = new DatasetList();
+		list.add(d);
+		
+		getDatasetsList.setList(list);
+		
+		RCLError error = reportService.create(report);
+		
+		assertNull(error);
+		assertEquals(1, daoService.getAll(report.getSchema()).size());
+		
+		TableRow r = daoService.getAll(report.getSchema()).iterator().next();
+		assertNotNull(r);
+		
+		// the id should NOT be saved
+		assertNull(r.get(AppPaths.REPORT_DATASET_ID));
+	}
+	
+	@Test
+	public void createNotExistingReportExistingInDcfAsRejected() throws DetailedSOAPException {
+		
+		TseReport report = new TseReport();
+		report.setSenderId("AT0404");
+		report.setVersion(TableVersion.getFirstVersion());
+		report.setYear("2004");
+		report.setMonth("04");
+		report.setCountry("AT");
+		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report.setStatus(RCLDatasetStatus.DRAFT);
+		
+		Dataset d = new Dataset();
+		d.setId("42842");
+		d.setSenderId("AT0404.00");
+		d.setStatus(DcfDatasetStatus.REJECTED);
+		
+		DatasetList list = new DatasetList();
+		list.add(d);
+		
+		getDatasetsList.setList(list);
+		
+		RCLError error = reportService.create(report);
+		
+		assertNull(error);
+		assertEquals(1, daoService.getAll(report.getSchema()).size());
+		
+		TableRow r = daoService.getAll(report.getSchema()).iterator().next();
+		assertNotNull(r);
+		
+		// the id should be saved
+		assertEquals(d.getId(), r.getCode(AppPaths.REPORT_DATASET_ID));
+	}
+	
+	@Test
+	public void createNotExistingReportExistingInDcfAsSubmitted() throws DetailedSOAPException {
+		
+		TseReport report = new TseReport();
+		report.setSenderId("AT0404");
+		report.setVersion(TableVersion.getFirstVersion());
+		report.setYear("2004");
+		report.setMonth("04");
+		report.setCountry("AT");
+		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report.setStatus(RCLDatasetStatus.DRAFT);
+		
+		Dataset d = new Dataset();
+		d.setId("42842");
+		d.setSenderId("AT0404.00");
+		d.setStatus(DcfDatasetStatus.SUBMITTED);
+		
+		DatasetList list = new DatasetList();
+		list.add(d);
+		
+		getDatasetsList.setList(list);
+		
+		RCLError error = reportService.create(report);
+		
+		assertNotNull(error);
+		assertEquals("WARN302", error.getCode());
+		assertEquals(0, daoService.getAll(report.getSchema()).size());
+	}
+	
+	@Test
+	public void createNotExistingReportExistingInDcfAsAcceptedDwh() throws DetailedSOAPException {
+		
+		TseReport report = new TseReport();
+		report.setSenderId("AT0404");
+		report.setVersion(TableVersion.getFirstVersion());
+		report.setYear("2004");
+		report.setMonth("04");
+		report.setCountry("AT");
+		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report.setStatus(RCLDatasetStatus.DRAFT);
+		
+		Dataset d = new Dataset();
+		d.setId("42842");
+		d.setSenderId("AT0404.00");
+		d.setStatus(DcfDatasetStatus.ACCEPTED_DWH);
+		
+		DatasetList list = new DatasetList();
+		list.add(d);
+		
+		getDatasetsList.setList(list);
+		
+		RCLError error = reportService.create(report);
+		
+		assertNotNull(error);
+		assertEquals("WARN301", error.getCode());
+		assertEquals(0, daoService.getAll(report.getSchema()).size());
+	}
+	
+	@Test
+	public void createNotExistingReportExistingInDcfAsProcessing() throws DetailedSOAPException {
+		
+		TseReport report = new TseReport();
+		report.setSenderId("AT0404");
+		report.setVersion(TableVersion.getFirstVersion());
+		report.setYear("2004");
+		report.setMonth("04");
+		report.setCountry("AT");
+		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report.setStatus(RCLDatasetStatus.DRAFT);
+		
+		Dataset d = new Dataset();
+		d.setId("42842");
+		d.setSenderId("AT0404.00");
+		d.setStatus(DcfDatasetStatus.PROCESSING);
+		
+		DatasetList list = new DatasetList();
+		list.add(d);
+		
+		getDatasetsList.setList(list);
+		
+		RCLError error = reportService.create(report);
+		
+		assertNotNull(error);
+		assertEquals("WARN300", error.getCode());
+		assertEquals(0, daoService.getAll(report.getSchema()).size());
+	}
+	
+	@Test
+	public void createNotExistingReportExistingInDcfAsOther() throws DetailedSOAPException {
+		
+		TseReport report = new TseReport();
+		report.setSenderId("AT0404");
+		report.setVersion(TableVersion.getFirstVersion());
+		report.setYear("2004");
+		report.setMonth("04");
+		report.setCountry("AT");
+		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report.setStatus(RCLDatasetStatus.DRAFT);
+		
+		Dataset d = new Dataset();
+		d.setId("42842");
+		d.setSenderId("AT0404.00");
+		d.setStatus(DcfDatasetStatus.OTHER);
+		
+		DatasetList list = new DatasetList();
+		list.add(d);
+		
+		getDatasetsList.setList(list);
+		
+		RCLError error = reportService.create(report);
+		
+		assertNotNull(error);
+		assertEquals("ERR300", error.getCode());
+		assertEquals(0, daoService.getAll(report.getSchema()).size());
+	}
+	
+	private TseReport genRandReportWithChildrenInDatabase() {
+		
+		TableRow prefs = RowCreatorMock.genRandPreferences();
+		int prefId = daoService.add(prefs);
+		
+		TseReport report = RowCreatorMock.genRandReport(prefId);
+		int reportId = daoService.add(report);
+		
+		TableRow settings = RowCreatorMock.genRandSettings();
+		int settingsId = daoService.add(settings);
+		
+		SummarizedInfo summInfo = RowCreatorMock.genRandSummInfo(reportId, settingsId, prefId);
+		int summId = daoService.add(summInfo);
+		
+		return report;
+	}
+	
+	/*@Test
+	public void sendReportNotExistingInDcf() throws DetailedSOAPException, ReportException, 
+		IOException, ParserConfigurationException, 
+		SAXException, SendMessageException {
+		
+		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
+		
+		TseReport report = genRandReportWithChildrenInDatabase();
+		reportService.exportAndSend(report, OperationType.INSERT);
+	}*/
 }

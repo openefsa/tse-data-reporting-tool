@@ -25,8 +25,10 @@ import providers.ReportService;
 import providers.TableDaoService;
 import soap.GetAck;
 import soap.GetDatasetsList;
+import soap.SendMessage;
 import soap_interface.IGetAck;
 import soap_interface.IGetDatasetsList;
+import soap_interface.ISendMessage;
 import table_database.Database;
 import table_database.DatabaseVersionException;
 import table_database.ITableDao;
@@ -167,40 +169,6 @@ public class StartUI {
 		return val;
 	}
 
-
-	/**
-	 * Create the main panel for the user interface
-	 * @return
-	 */
-	private static Shell createUi() {
-
-		display = new Display();
-		shell = new Shell(display);
-
-		// set the application name in the shell
-		shell.setText(PropertiesReader.getAppName() + " " + PropertiesReader.getAppVersion());
-
-		// init services
-		ITableDao dao = new TableDao();
-		ITableDaoService daoService = new TableDaoService(dao);
-		
-		IGetAck getAck = new GetAck();
-		IGetDatasetsList<IDataset> getDatasetsList = new GetDatasetsList<>();
-		IReportService reportService = new ReportService(getAck, getDatasetsList, daoService);
-		
-		// open the main panel
-		new MainPanel(shell, reportService);
-
-		// set the application icon into the shell
-		Image image = new Image(Display.getCurrent(), 
-				ClassLoader.getSystemResourceAsStream(PropertiesReader.getAppIcon()));
-
-		if (image != null)
-			shell.setImage(image);
-
-		return shell;
-	}
-
 	/**
 	 * Start the TSE data reporting tool interface & database
 	 * @param args
@@ -212,7 +180,7 @@ public class StartUI {
 			Database db = launch();
 			shutdown(db, display);
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			e.printStackTrace();
 			LOGGER.fatal("Generic error occurred", e);
 			
@@ -283,7 +251,43 @@ public class StartUI {
 		}
 
 		// create the main panel
-		createUi();
+		display = new Display();
+		shell = new Shell(display);
+
+		// set the application name in the shell
+		shell.setText(PropertiesReader.getAppName() + " " + PropertiesReader.getAppVersion());
+
+		// init services
+		ITableDao dao = new TableDao();
+		ITableDaoService daoService = new TableDaoService(dao);
+		
+		IGetAck getAck = new GetAck();
+		IGetDatasetsList<IDataset> getDatasetsList = new GetDatasetsList<>();
+		ISendMessage sendMessage = new SendMessage();
+		
+		IReportService reportService = new ReportService(getAck, getDatasetsList, sendMessage, daoService);
+		
+		// open the main panel
+		
+		try {
+			new MainPanel(shell, reportService, daoService);
+		}
+		catch (Throwable e) {
+			e.printStackTrace();
+			LOGGER.fatal("Generic error occurred", e);
+			
+			Warnings.createFatal(TSEMessages.get("generic.error", 
+					PropertiesReader.getSupportEmail())).open(shell);
+			
+			return null;
+		}
+
+		// set the application icon into the shell
+		Image image = new Image(Display.getCurrent(), 
+				ClassLoader.getSystemResourceAsStream(PropertiesReader.getAppIcon()));
+
+		if (image != null)
+			shell.setImage(image);
 
 		// open also an help view for showing general help
 		if (!DebugConfig.debug) {
@@ -307,7 +311,7 @@ public class StartUI {
 
 		// check settings
 		if (!checkSettings()) {
-			SettingsDialog settings = new SettingsDialog(shell);
+			SettingsDialog settings = new SettingsDialog(shell, reportService, daoService);
 			settings.open();
 
 			// if the settings were not set

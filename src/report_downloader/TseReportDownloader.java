@@ -27,6 +27,7 @@ import formula.FormulaException;
 import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
+import providers.IReportService;
 import report.DownloadReportDialog;
 import report.IDownloadReportDialog;
 import report.ReportDownloaderDialog;
@@ -51,8 +52,8 @@ public class TseReportDownloader extends ReportDownloaderDialog {
 	private static final String WINDOW_CODE = "TSEReportDownloader";
 	private Shell shell;
 	
-	public TseReportDownloader(Shell shell) {
-		super(shell);
+	public TseReportDownloader(Shell shell, IReportService reportService) {
+		super(shell, reportService);
 		this.shell = shell;
 	}
 

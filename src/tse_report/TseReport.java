@@ -9,25 +9,18 @@ import java.util.Stack;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.soap.SOAPException;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.xml.sax.SAXException;
 
 import app_config.AppPaths;
 import dataset.Dataset;
 import dataset.DcfDatasetStatus;
 import dataset.RCLDatasetStatus;
 import message.MessageConfigBuilder;
-import message.SendMessageException;
 import message_creator.OperationType;
 import report.EFSAReport;
 import report.Report;
-import report.ReportException;
 import report.ReportList;
-import soap.DetailedSOAPException;
 import table_database.TableDao;
 import table_relations.Relation;
 import table_skeleton.TableRow;
@@ -288,46 +281,6 @@ public class TseReport extends Report implements TseTableRow {
 		
 		return previousVersion;
 	}
-
-
-	/**
-	 * Check if the current report is already present in the database
-	 * by using the senderDatasetId field
-	 * @param schema
-	 * @param currentReport
-	 * @return
-	 */
-	public boolean isLocallyPresent() {
-		return isLocallyPresent(this.getSenderId());
-	}
-	
-	/**
-	 * Check if the a report with the chosen senderDatasetId 
-	 * is already present in the database
-	 * @param senderDatasetId
-	 * @return
-	 */
-	public static boolean isLocallyPresent(String senderDatasetId) {
-		
-		if (senderDatasetId == null)
-			return false;
-		
-		// check if the report is already in the db
-		TableDao dao = new TableDao();
-		
-		for (TableRow row : dao.getAll(TableSchemaList.getByName(CustomStrings.REPORT_SHEET))) {
-
-			TseReport report = new TseReport(row);
-			String otherSenderDatasetId = report.getSenderId();
-			
-			// if same sender dataset id then return true
-			if (otherSenderDatasetId != null 
-					&& otherSenderDatasetId.equals(senderDatasetId))
-				return true;
-		}
-		
-		return false;
-	}
 	
 	/**
 	 * Check if the entire report is valid
@@ -394,73 +347,6 @@ public class TseReport extends Report implements TseTableRow {
 		}
 		
 		return builder;
-	}
-	
-	/**
-	 * Create the dataset (in DCF) as insert
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws SendMessageException
-	 * @throws ReportException 
-	 * @throws SOAPException
-	 */
-	public void create() throws IOException, 
-		ParserConfigurationException, SAXException, SendMessageException, 
-		DetailedSOAPException, ReportException {
-		
-		OperationType op = OperationType.INSERT;
-		this.exportAndSend(op);
-	}
-	
-	/**
-	 * Replace the dataset (in DCF)
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws SendMessageException
-	 * @throws ReportException 
-	 * @throws SOAPException
-	 */
-	public void replace() throws IOException, 
-		ParserConfigurationException, SAXException, SendMessageException, 
-		DetailedSOAPException, ReportException {
-		
-		OperationType op = OperationType.REPLACE;
-		this.exportAndSend(op);
-	}
-	
-	/**
-	 * Reject the dataset (in DCF)
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws SendMessageException
-	 * @throws ReportException 
-	 * @throws SOAPException
-	 */
-	public void reject() throws IOException, 
-		ParserConfigurationException, SAXException, SendMessageException, 
-		DetailedSOAPException, ReportException {
-		
-		OperationType op = OperationType.REJECT;
-		this.exportAndSend(op);
-	}
-	
-	/**
-	 * Submit the dataset
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws SendMessageException
-	 * @throws DetailedSOAPException
-	 */
-	public void submit() throws IOException, 
-		ParserConfigurationException, SAXException, SendMessageException, 
-		DetailedSOAPException, ReportException {
-		
-		OperationType op = OperationType.SUBMIT;
-		this.exportAndSend(op);
 	}
 	
 	/**
