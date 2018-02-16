@@ -146,7 +146,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		Relation.injectParent(summInfo, resultRow);
 
 		// add two default rows
-		TableDao dao = new TableDao(caseSchema);
+		TableDao dao = new TableDao();
 		
 		resultRow.initialize();
 		
@@ -183,7 +183,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		Relation.injectParent(summInfo, resultRow);
 
 		// add two default rows
-		TableDao dao = new TableDao(resultSchema);
+		TableDao dao = new TableDao();
 		
 		resultRow.initialize();
 		

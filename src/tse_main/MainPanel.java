@@ -4,7 +4,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.GlobalManager;
-import report.IReportService;
+import providers.IReportService;
 import tse_report.TseReport;
 import tse_summarized_information.SummarizedInfoDialog;
 

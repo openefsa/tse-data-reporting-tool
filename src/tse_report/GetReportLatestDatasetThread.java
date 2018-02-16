@@ -4,8 +4,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import dataset.IDataset;
+import providers.IReportService;
 import report.EFSAReport;
-import report.IReportService;
 import report.ThreadFinishedListener;
 import soap.DetailedSOAPException;
 

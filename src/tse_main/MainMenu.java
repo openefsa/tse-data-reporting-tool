@@ -23,7 +23,7 @@ import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import message.MessageConfigBuilder;
 import message_creator.OperationType;
-import report.IReportService;
+import providers.IReportService;
 import report.ReportException;
 import report.ReportSendOperation;
 import report_downloader.TseReportDownloader;
@@ -102,9 +102,9 @@ public class MainMenu {
 				if (schema == null)
 					return;
 				
-				TableDao dao = new TableDao(schema);
+				TableDao dao = new TableDao();
 
-				boolean hasReport = !dao.getAll().isEmpty();
+				boolean hasReport = !dao.getAll(schema).isEmpty();
 				boolean isReportOpened = mainPanel.getOpenedReport() != null;
 				boolean editable = isReportOpened && mainPanel.getOpenedReport().isEditable();
 

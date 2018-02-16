@@ -45,8 +45,8 @@ public class ReportListDialog extends TableDialog {
 	@Override
 	public Collection<TableRow> loadInitialRows(TableSchema schema, TableRow parentTable) {
 		
-		TableDao dao = new TableDao(schema);
-		Collection<TableRow> reports = dao.getAll();
+		TableDao dao = new TableDao();
+		Collection<TableRow> reports = dao.getAll(schema);
 		
 		// convert to dataset list
 		DatasetList tseReports = new DatasetList();

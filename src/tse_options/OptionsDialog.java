@@ -53,8 +53,8 @@ public abstract class OptionsDialog extends TableDialog {
 	@Override
 	public Collection<TableRow> loadInitialRows(TableSchema schema, TableRow parentTable) {
 		
-		TableDao dao = new TableDao(schema);
-		Collection<TableRow> objs = dao.getAll();
+		TableDao dao = new TableDao();
+		Collection<TableRow> objs = dao.getAll(schema);
 		
 		// if no option was set, add an empty row
 		// to the db

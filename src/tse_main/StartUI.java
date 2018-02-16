@@ -19,14 +19,17 @@ import global_utils.FileUtils;
 import global_utils.Warnings;
 import html_viewer.HtmlViewer;
 import i18n_messages.TSEMessages;
-import report.IReportService;
-import report.ReportService;
+import providers.IReportService;
+import providers.ITableDaoService;
+import providers.ReportService;
+import providers.TableDaoService;
 import soap.GetAck;
 import soap.GetDatasetsList;
 import soap_interface.IGetAck;
 import soap_interface.IGetDatasetsList;
 import table_database.Database;
 import table_database.DatabaseVersionException;
+import table_database.ITableDao;
 import table_database.TableDao;
 import table_skeleton.TableCell;
 import table_skeleton.TableRow;
@@ -54,9 +57,9 @@ public class StartUI {
 	 */
 	private static boolean checkSettings(String tableName) {
 
-		TableDao dao = new TableDao(TableSchemaList.getByName(tableName));
+		TableDao dao = new TableDao();
 
-		Collection<TableRow> data = dao.getAll();
+		Collection<TableRow> data = dao.getAll(TableSchemaList.getByName(tableName));
 
 		if(data.isEmpty())
 			return false;
@@ -94,10 +97,10 @@ public class StartUI {
 		// get the settings schema table
 		TableSchema settingsSchema = TableSchemaList.getByName(CustomStrings.SETTINGS_SHEET);
 
-		TableDao dao = new TableDao(settingsSchema);
+		TableDao dao = new TableDao();
 
 		// get the settings
-		TableRow settings = dao.getAll().iterator().next();
+		TableRow settings = dao.getAll(settingsSchema).iterator().next();
 
 		if (settings == null)
 			return;
@@ -178,9 +181,12 @@ public class StartUI {
 		shell.setText(PropertiesReader.getAppName() + " " + PropertiesReader.getAppVersion());
 
 		// init services
+		ITableDao dao = new TableDao();
+		ITableDaoService daoService = new TableDaoService(dao);
+		
 		IGetAck getAck = new GetAck();
 		IGetDatasetsList<IDataset> getDatasetsList = new GetDatasetsList<>();
-		IReportService reportService = new ReportService(getAck, getDatasetsList);
+		IReportService reportService = new ReportService(getAck, getDatasetsList, daoService);
 		
 		// open the main panel
 		new MainPanel(shell, reportService);

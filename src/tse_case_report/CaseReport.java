@@ -33,8 +33,8 @@ public class CaseReport extends TableRow implements TseTableRow {
 		
 		TableSchema caseSchema = TableSchemaList.getByName(CustomStrings.RESULT_SHEET);
 		
-		TableDao dao = new TableDao(caseSchema);
-		Collection<TableRow> children = dao.getByParentId(CustomStrings.CASE_INFO_SHEET, 
+		TableDao dao = new TableDao();
+		Collection<TableRow> children = dao.getByParentId(caseSchema, CustomStrings.CASE_INFO_SHEET, 
 				this.getDatabaseId(), true, "desc");
 		
 		// create it as result

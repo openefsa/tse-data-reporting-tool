@@ -29,10 +29,10 @@ public class TSEWarnings {
 			break;
 			
 		case USER_WRONG_ORG:
-			TableDao dao = new TableDao(TableSchemaList.getByName(CustomStrings.SETTINGS_SHEET));
+			TableDao dao = new TableDao();
 
 			String orgCode = "";
-			TableRowList settingsList = dao.getAll();
+			TableRowList settingsList = dao.getAll(TableSchemaList.getByName(CustomStrings.SETTINGS_SHEET));
 			if (!settingsList.isEmpty()) {
 				orgCode = settingsList.get(0).getLabel(CustomStrings.SETTINGS_ORG_CODE);
 			}

@@ -11,13 +11,13 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.PropertiesReader;
-import dataset.Dataset;
 import dataset.IDataset;
 import dataset.RCLDatasetStatus;
 import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
-import report.IReportService;
+import providers.IReportService;
+import providers.RCLError;
 import session_manager.TSERestoreableWindowDao;
 import soap.DetailedSOAPException;
 import table_dialog.DialogBuilder;
@@ -97,121 +97,65 @@ public class ReportCreatorDialog extends TableDialog {
 	public boolean apply(TableSchema schema, Collection<TableRow> rows, TableRow selectedRow) {
 		
 		TseReport report = (TseReport) rows.iterator().next();
-		
-		// if the report is already present
-		// show error message
-		if (report.isLocallyPresent()) {
-			warnUser(TSEMessages.get("error.title"), TSEMessages.get("new.report.fail"));
-			return false;
-		}
 
-		// change the cursor to wait
+		Message msg = null;
+		
 		getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 		
-		Message msg = null;
-		Dataset oldReport = null;
-		
 		try {
+			RCLError error = reportService.create(report);
 			
-			oldReport = reportService.getLatestDataset(report);
+			if (error != null)
+				msg = getErrorMessage(error, report);
 			
 		} catch (DetailedSOAPException e) {
-			
 			e.printStackTrace();
 			
 			LOGGER.error("Cannot create report", e);
 			msg = Warnings.createSOAPWarning(e);
-			
-		}/* catch (ReportException e) {
-			e.printStackTrace();
-			
-			LOGGER.error("Cannot create report", e);
-			msg = Warnings.createFatal(TSEMessages.get("new.report.failed.no.senderId", 
-					PropertiesReader.getSupportEmail()), report);
-		}*/
+		}
 		finally {
-			// change the cursor to old cursor
 			getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
 		}
 		
-		// if we had an exception warn user and return
-		if (msg != null) {
-			msg.open(getDialog());
-			return false;
+		boolean errorOccurred = msg != null;
+		
+		if (msg == null) {
+			msg = Warnings.create(TSEMessages.get("success.title"), 
+					TSEMessages.get("new.report.success"), 
+					SWT.ICON_INFORMATION);
 		}
 		
-		// if the report already exists
-		// with the selected sender dataset id
-		if (oldReport != null) {
-			
-			// check if there are errors
-			Message errMsg = getErrorMessage(report, oldReport);
-
-			// if there are errors
-			if (errMsg != null) {
-				errMsg.open(getDialog());
-				return false;
-			}
-
-			// if no errors, then we are able to create the report
-			
-			switch (oldReport.getRCLStatus()) {
-			case DELETED:
-				// we ignore deleted datasets
-				report.save();
-				break;
-			case REJECTED:
-				// we mantain the same dataset id
-				// of the rejected dataset, but actually
-				// we create a new report with that
-				report.setId(oldReport.getId());
-				report.save();
-				break;
-				
-			default:
-				break;
-			}
-		}
-
-		// if no conflicts create the new report
-		report.save();
+		msg.open(getDialog());
 		
-		warnUser(TSEMessages.get("success.title"), TSEMessages.get("new.report.success"), SWT.ICON_INFORMATION);
-		
-		return true;
+		return !errorOccurred;
 	}
 	
-	/**
-	 * get the error message that needs to be displayed if
-	 * an old report already exists
-	 * @param oldReport
-	 * @return
-	 */
-	private Message getErrorMessage(IDataset report, IDataset oldReport) {
+	private Message getErrorMessage(RCLError error, TseReport report) {
 		
+		IDataset oldReport = (IDataset) error.getData();
+
 		String message = null;
 		boolean fatal = false;
 		
-		switch(oldReport.getRCLStatus()) {
-		case ACCEPTED_DWH:
+		switch(error.getCode()) {
+		case "WARN304":
+			message = TSEMessages.get("new.report.already.present.locally");
+			break;
+		case "WARN301":
 			message = TSEMessages.get("new.report.acc.dwh", oldReport.getId());
 			break;
-		case SUBMITTED:
+		case "WARN302":
 			message = TSEMessages.get("new.report.submitted", oldReport.getId());
 			break;
-		case VALID:
-		case VALID_WITH_WARNINGS:
-		case REJECTED_EDITABLE:
+		case "WARN303":
 			message = TSEMessages.get("new.report.other", oldReport.getId(), 
 					oldReport.getRCLStatus().getLabel());
 			break;
-		case PROCESSING:
+		case "WARN300":
 			message = TSEMessages.get("new.report.processing", oldReport.getId());
 			break;
-		case DELETED:
-		case REJECTED:
-			break;
-		default:
+		case "ERR300":
 			fatal = true;
 			message = TSEMessages.get("new.report.failed", PropertiesReader.getSupportEmail());
 			break;
@@ -221,7 +165,6 @@ public class ReportCreatorDialog extends TableDialog {
 		
 		return message != null ? msg : null;
 	}
-
 
 	@Override
 	public Menu createMenu() {

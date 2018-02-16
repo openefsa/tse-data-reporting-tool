@@ -138,9 +138,9 @@ public class TseReport extends Report implements TseTableRow {
 		// for each child schema get the rows related to the report
 		for (TableSchema schema : schemas) {
 			
-			TableDao dao = new TableDao(schema);
+			TableDao dao = new TableDao();
 			
-			Collection<TableRow> children = dao.getByParentId(CustomStrings.REPORT_SHEET, 
+			Collection<TableRow> children = dao.getByParentId(schema, CustomStrings.REPORT_SHEET, 
 					this.getDatabaseId(), true, "desc");
 			
 			records.addAll(children);
@@ -159,8 +159,8 @@ public class TseReport extends Report implements TseTableRow {
 		
 		TableSchema summInfoSchema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
 		
-		TableDao dao = new TableDao(summInfoSchema);
-		Collection<TableRow> children = dao.getByParentId(CustomStrings.REPORT_SHEET, 
+		TableDao dao = new TableDao();
+		Collection<TableRow> children = dao.getByParentId(summInfoSchema, CustomStrings.REPORT_SHEET, 
 				this.getDatabaseId(), true, "desc");
 		
 		// create it as summarized info array
@@ -248,10 +248,10 @@ public class TseReport extends Report implements TseTableRow {
 
 		ReportList allVersions = new ReportList();
 		
-		TableDao dao = new TableDao(this.getSchema());
+		TableDao dao = new TableDao();
 		
 		// get all the versions of the report by the dataset sender id
-		Collection<TableRow> reports = dao.getByStringField(AppPaths.REPORT_SENDER_ID, 
+		Collection<TableRow> reports = dao.getByStringField(this.getSchema(), AppPaths.REPORT_SENDER_ID, 
 				this.getSenderId());
 		
 		for (TableRow report : reports) {
@@ -313,9 +313,9 @@ public class TseReport extends Report implements TseTableRow {
 			return false;
 		
 		// check if the report is already in the db
-		TableDao dao = new TableDao(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		TableDao dao = new TableDao();
 		
-		for (TableRow row : dao.getAll()) {
+		for (TableRow row : dao.getAll(TableSchemaList.getByName(CustomStrings.REPORT_SHEET))) {
 
 			TseReport report = new TseReport(row);
 			String otherSenderDatasetId = report.getSenderId();
