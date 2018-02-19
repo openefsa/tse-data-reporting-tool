@@ -5,10 +5,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Stack;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import dataset.Dataset;
 import dataset.IDataset;
 import dataset.RCLDatasetStatus;
 import message.MessageConfigBuilder;
 import soap_interface.IGetAck;
+import soap_interface.IGetDataset;
 import soap_interface.IGetDatasetsList;
 import soap_interface.ISendMessage;
 import table_relations.Relation;
@@ -24,11 +29,13 @@ import xlsx_reader.TableSchemaList;
 
 public class TseReportService extends ReportService {
 
+	private static final Logger LOGGER = LogManager.getLogger(TseReportService.class);
+	
 	private IFormulaService formulaService;
 	
 	public TseReportService(IGetAck getAck, IGetDatasetsList<IDataset> getDatasetsList, 
-			ISendMessage sendMessage, ITableDaoService daoService, IFormulaService formulaService) {
-		super(getAck, getDatasetsList, sendMessage, daoService);
+			ISendMessage sendMessage, IGetDataset getDataset, ITableDaoService daoService, IFormulaService formulaService) {
+		super(getAck, getDatasetsList, sendMessage, getDataset, daoService);
 		
 		this.formulaService = formulaService;
 	}
@@ -146,5 +153,73 @@ public class TseReportService extends ReportService {
 		}
 		
 		return amendedReport;
+	}
+	
+	/**
+	 * Create a report from a dataset
+	 * @param dataset
+	 * @return
+	 */
+	public TseReport reportFromDataset(Dataset dataset) {
+		
+		TseReport report = new TseReport();
+		
+		String senderDatasetId = dataset.getOperation().getSenderDatasetId();
+		
+		report.setId(dataset.getId());
+		
+		String[] split = Dataset.splitSenderId(senderDatasetId);
+		
+		String senderId = senderDatasetId;
+		String version = null;
+		if (split != null && split.length > 1) {
+			senderId = split[0];
+			version = split[1];
+			report.setVersion(version);
+		}
+		else {
+			report.setVersion(TableVersion.getFirstVersion());
+		}
+		
+		report.setSenderId(senderId);
+		
+		if (dataset.getRCLStatus() != null)
+			report.setStatus(dataset.getRCLStatus());
+		else
+			report.setStatus(RCLDatasetStatus.DRAFT);
+		
+		// split FR1705... into country year and month
+		if (senderId.length() < 6) {
+			LOGGER.error("Report#fromDataset Cannot parse sender dataset id, expected at least 6 characters, found " 
+					+ senderId);
+			report.setCountry("");
+			report.setYear("");
+			report.setMonth("");
+		}
+		else {
+			
+			String countryCode = senderDatasetId.substring(0, 2);
+			String year = "20" + senderDatasetId.substring(2, 4);
+			String month = senderDatasetId.substring(4, 6);
+			
+			// remove the padding
+			if (month.substring(0, 1).equals("0"))
+				month = month.substring(1, 2);
+			
+			report.setCountry(countryCode);
+			report.setYear(year);
+			report.setMonth(month);
+		}
+
+		report.setMessageId("");
+		
+		// add the preferences
+		try {
+			Relation.injectGlobalParent(report, CustomStrings.PREFERENCES_SHEET, getDaoService());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return report;
 	}
 }

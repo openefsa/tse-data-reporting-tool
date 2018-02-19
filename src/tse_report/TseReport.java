@@ -8,11 +8,7 @@ import java.util.Stack;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import app_config.AppPaths;
-import dataset.Dataset;
 import dataset.DcfDatasetStatus;
 import dataset.RCLDatasetStatus;
 import report.EFSAReport;
@@ -37,8 +33,6 @@ import xlsx_reader.TableSchemaList;
  *
  */
 public class TseReport extends Report implements TseTableRow {
-
-	private static final Logger LOGGER = LogManager.getLogger(TseReport.class);
 	
 	public TseReport() {
 		super(getReportSchema());
@@ -302,74 +296,6 @@ public class TseReport extends Report implements TseTableRow {
 		}
 		
 		return true;
-	}
-	
-	/**
-	 * Create a report from a dataset
-	 * @param dataset
-	 * @return
-	 */
-	public static TseReport fromDataset(Dataset dataset) {
-		
-		TseReport report = new TseReport();
-		
-		String senderDatasetId = dataset.getOperation().getSenderDatasetId();
-		
-		report.setId(dataset.getId());
-		
-		String[] split = Dataset.splitSenderId(senderDatasetId);
-		
-		String senderId = senderDatasetId;
-		String version = null;
-		if (split != null && split.length > 1) {
-			senderId = split[0];
-			version = split[1];
-			report.setVersion(version);
-		}
-		else {
-			report.setVersion(TableVersion.getFirstVersion());
-		}
-		
-		report.setSenderId(senderId);
-		
-		if (dataset.getRCLStatus() != null)
-			report.setStatus(dataset.getRCLStatus());
-		else
-			report.setStatus(RCLDatasetStatus.DRAFT);
-		
-		// split FR1705... into country year and month
-		if (senderId.length() < 6) {
-			LOGGER.error("Report#fromDataset Cannot parse sender dataset id, expected at least 6 characters, found " 
-					+ senderId);
-			report.setCountry("");
-			report.setYear("");
-			report.setMonth("");
-		}
-		else {
-			
-			String countryCode = senderDatasetId.substring(0, 2);
-			String year = "20" + senderDatasetId.substring(2, 4);
-			String month = senderDatasetId.substring(4, 6);
-			
-			// remove the padding
-			if (month.substring(0, 1).equals("0"))
-				month = month.substring(1, 2);
-			
-			report.setCountry(countryCode);
-			report.setYear(year);
-			report.setMonth(month);
-		}
-
-		report.setMessageId("");
-		
-		// add the preferences
-		try {
-			Relation.injectGlobalParent(report, CustomStrings.PREFERENCES_SHEET);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return report;
 	}
 	
 	public void setCountry(String country) {

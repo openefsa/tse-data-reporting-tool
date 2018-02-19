@@ -273,7 +273,7 @@ public class MainMenu {
 				
 				LOGGER.debug("Opening download report dialog");
 				
-				TseReportDownloader downloader = new TseReportDownloader(shell, reportService);
+				TseReportDownloader downloader = new TseReportDownloader(shell, reportService, daoService);
 				try {
 					downloader.download();
 				} catch (DetailedSOAPException e) {

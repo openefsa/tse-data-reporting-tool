@@ -25,9 +25,11 @@ import providers.ITableDaoService;
 import providers.TableDaoService;
 import providers.TseReportService;
 import soap.GetAck;
+import soap.GetDataset;
 import soap.GetDatasetsList;
 import soap.SendMessage;
 import soap_interface.IGetAck;
+import soap_interface.IGetDataset;
 import soap_interface.IGetDatasetsList;
 import soap_interface.ISendMessage;
 import table_database.Database;
@@ -266,9 +268,10 @@ public class StartUI {
 		IGetAck getAck = new GetAck();
 		IGetDatasetsList<IDataset> getDatasetsList = new GetDatasetsList<>();
 		ISendMessage sendMessage = new SendMessage();
+		IGetDataset getDataset = new GetDataset();
 		
 		TseReportService reportService = new TseReportService(getAck, getDatasetsList, 
-				sendMessage, daoService, formulaService);
+				sendMessage, getDataset, daoService, formulaService);
 		
 		// open the main panel
 		

@@ -14,6 +14,8 @@ import amend_manager.ReportImporter;
 import dataset.Dataset;
 import dataset.DatasetList;
 import formula.FormulaException;
+import providers.ITableDaoService;
+import providers.TseReportService;
 import table_relations.Relation;
 import table_skeleton.TableCell;
 import table_skeleton.TableRow;
@@ -31,6 +33,9 @@ public class TseReportImporter extends ReportImporter {
 
 	private static final Logger LOGGER = LogManager.getLogger(TseReportImporter.class);
 	
+	private TseReportService reportService;
+	private ITableDaoService daoService;
+	
 	// temporary variables
 	private TseReport report;
 	private Collection<SummarizedInfo> summInfos;
@@ -41,12 +46,14 @@ public class TseReportImporter extends ReportImporter {
 	 * @param datasetVersions a list with all the dataset versions. 
 	 * This is needed to manage amendments.
 	 */
-	public TseReportImporter(DatasetList datasetVersions) {
-		super(datasetVersions, CustomStrings.RES_ID_COLUMN, 
-				CustomStrings.SENDER_DATASET_ID_COLUMN);
+	public TseReportImporter(DatasetList datasetVersions, TseReportService reportService, ITableDaoService daoService) {
+		super(datasetVersions, CustomStrings.RES_ID_COLUMN, CustomStrings.SENDER_DATASET_ID_COLUMN, 
+				reportService, daoService);
 		
+		this.reportService = reportService;
+		this.daoService = daoService;
 		this.summInfos = new ArrayList<>();
-		this.cases = new HashMap<>(); 
+		this.cases = new HashMap<>();
 	}
 
 	/**
@@ -79,7 +86,7 @@ public class TseReportImporter extends ReportImporter {
 				SummarizedInfo si = extractSummarizedInfo(report, row, false);
 
 				// save it in the database
-				si.save();
+				daoService.add(si);
 				
 				LOGGER.info("Imported summ info; contextId=" + si.computeContextId());
 				
@@ -102,17 +109,6 @@ public class TseReportImporter extends ReportImporter {
 				row.getCode(CustomStrings.PARAM_CODE_COL));
 		
 		boolean rgtParamCode = paramBaseTerm.equals(CustomStrings.RGT_PARAM_CODE);
-		
-		/*boolean rgtSource = row.getCode(CustomStrings.SUMMARIZED_INFO_SOURCE)
-				.equals(CustomStrings.SOURCE_SHEEP_CODE);
-		
-		boolean rgtPart = row.getCode(CustomStrings.SUMMARIZED_INFO_PART)
-				.equals(CustomStrings.BLOOD_CODE);
-		
-		boolean rgtTest = row.getCode(CustomStrings.AN_METH_CODE)
-				.equals(CustomStrings.AN_METH_CODE_GENOTYPING);
-		
-		return rgtParamCode && rgtSource && rgtPart && rgtTest;*/
 		
 		return rgtParamCode;
 	}
@@ -142,7 +138,7 @@ public class TseReportImporter extends ReportImporter {
 					summInfo.setType(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
 					
 					// create the summarized information
-					summInfo.save();
+					daoService.add(summInfo);
 					
 					// add in the cache in order to avoid to save the same summInfo
 					// for the different results
@@ -191,8 +187,8 @@ public class TseReportImporter extends ReportImporter {
 		if (currentCaseInfo.getDatabaseId() == -1) {
 			
 			// import case in the db
-			currentCaseInfo.save();
-
+			daoService.add(currentCaseInfo);
+			
 			String sampId = currentCaseInfo.getLabel(CustomStrings.CASE_INFO_SAMPLE_ID);
 
 			LOGGER.info("Imported case/sample with database id=" + currentCaseInfo.getDatabaseId() 
@@ -225,7 +221,7 @@ public class TseReportImporter extends ReportImporter {
 		TableRow result = extractAnalyticalResult(report, summInfo, caseInfo, row);
 
 		// save the result into the db
-		result.save();
+		daoService.add(result);
 		
 		return result;
 	}
@@ -263,14 +259,14 @@ public class TseReportImporter extends ReportImporter {
 		
 		// add pref and settings as information
 		try {
-			Relation.injectGlobalParent(summInfo, CustomStrings.PREFERENCES_SHEET);
+			Relation.injectGlobalParent(summInfo, CustomStrings.PREFERENCES_SHEET, daoService);
 		} catch (IOException e) {
 			e.printStackTrace();
 			LOGGER.error("Cannot inject global parent=" + CustomStrings.PREFERENCES_SHEET, e);
 		}
 
 		try {
-			Relation.injectGlobalParent(summInfo, CustomStrings.SETTINGS_SHEET);
+			Relation.injectGlobalParent(summInfo, CustomStrings.SETTINGS_SHEET, daoService);
 		} catch (IOException e) {
 			e.printStackTrace();
 			LOGGER.error("Cannot inject global parent=" + CustomStrings.SETTINGS_SHEET, e);
@@ -466,9 +462,8 @@ public class TseReportImporter extends ReportImporter {
 		
 		// extract the information from the dataset
 		// and insert the report into the database
-		this.report = TseReport.fromDataset(dataset);
-		
-		report.save();
+		this.report = reportService.reportFromDataset(dataset);
+		daoService.add(report);
 		
 		return this.report;
 	}

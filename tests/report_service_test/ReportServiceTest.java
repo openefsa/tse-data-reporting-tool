@@ -45,13 +45,12 @@ import report.ReportException;
 import report.ReportSendOperation;
 import soap.DetailedSOAPException;
 import soap_test.GetAckMock;
+import soap_test.GetDatasetMock;
 import soap_test.GetDatasetsListMock;
 import soap_test.SendMessageMock;
 import table_skeleton.TableRow;
 import table_skeleton.TableRowList;
 import table_skeleton.TableVersion;
-import tse_analytical_result.AnalyticalResult;
-import tse_case_report.CaseReport;
 import tse_config.CustomStrings;
 import tse_report.TseReport;
 import tse_summarized_information.SummarizedInfo;
@@ -63,6 +62,7 @@ public class ReportServiceTest {
 	private GetAckMock getAck;
 	private GetDatasetsListMock<IDataset> getDatasetsList;
 	private SendMessageMock sendMessage;
+	private GetDatasetMock getDataset;
 	private ITableDaoService daoService;
 	private IFormulaService formulaService;
 	private Report report;
@@ -72,11 +72,12 @@ public class ReportServiceTest {
 		this.getAck = new GetAckMock();
 		this.getDatasetsList = new GetDatasetsListMock<>();
 		this.sendMessage = new SendMessageMock();
+		this.getDataset = new GetDatasetMock();
 		this.daoService = new TableDaoService(new TableDaoMock());
 		
 		this.formulaService = new FormulaService(daoService);
 		
-		this.reportService = new TseReportService(getAck, getDatasetsList, sendMessage, 
+		this.reportService = new TseReportService(getAck, getDatasetsList, sendMessage, getDataset,
 				daoService, formulaService);
 		
 		report = new TseReport();

@@ -27,7 +27,8 @@ import formula.FormulaException;
 import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
-import providers.IReportService;
+import providers.ITableDaoService;
+import providers.TseReportService;
 import report.DownloadReportDialog;
 import report.IDownloadReportDialog;
 import report.ReportDownloaderDialog;
@@ -48,18 +49,23 @@ public class TseReportDownloader extends ReportDownloaderDialog {
 
 	private static final Logger LOGGER = LogManager.getLogger(TseReportDownloader.class);
 	
+	private TseReportService reportService;
+	private ITableDaoService daoService;
+	
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "TSEReportDownloader";
 	private Shell shell;
 	
-	public TseReportDownloader(Shell shell, IReportService reportService) {
+	public TseReportDownloader(Shell shell, TseReportService reportService, ITableDaoService daoService) {
 		super(shell, reportService);
 		this.shell = shell;
+		this.reportService = reportService;
+		this.daoService = daoService;
 	}
 
 	@Override
 	public ReportImporter getImporter(DatasetList allVersions) {
-		return new TseReportImporter(allVersions);
+		return new TseReportImporter(allVersions, reportService, daoService);
 	}
 	
 	@Override
