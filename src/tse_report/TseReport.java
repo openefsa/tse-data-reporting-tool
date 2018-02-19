@@ -1,6 +1,5 @@
 package tse_report;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,8 +15,6 @@ import app_config.AppPaths;
 import dataset.Dataset;
 import dataset.DcfDatasetStatus;
 import dataset.RCLDatasetStatus;
-import message.MessageConfigBuilder;
-import message_creator.OperationType;
 import report.EFSAReport;
 import report.Report;
 import report.ReportList;
@@ -305,48 +302,6 @@ public class TseReport extends Report implements TseTableRow {
 		}
 		
 		return true;
-	}
-	
-	/**
-	 * Get the message configuration for the current report
-	 * the report will be exported in a temporary file
-	 * @param opType
-	 * @return
-	 */
-	public MessageConfigBuilder getDefaultExportConfiguration(OperationType opType) {
-		return this.getDefaultExportConfiguration(opType, null);
-	}
-	
-	/**
-	 * get the message configuration for the current report
-	 * the report will be exported in the specified {@code out} file
-	 * @param opType
-	 * @param out
-	 * @return
-	 */
-	public MessageConfigBuilder getDefaultExportConfiguration(OperationType opType, File out) {
-		
-		Collection<TableRow> messageParents = new ArrayList<>();
-
-		// add the report data
-		messageParents.add(this);
-
-		// add the settings data
-		try {
-			messageParents.add(Relation.getGlobalParent(CustomStrings.SETTINGS_SHEET));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		MessageConfigBuilder builder;
-		if (out == null) {
-			builder = new MessageConfigBuilder(messageParents, opType);
-		}
-		else {
-			builder = new MessageConfigBuilder(messageParents, opType, out);
-		}
-		
-		return builder;
 	}
 	
 	/**

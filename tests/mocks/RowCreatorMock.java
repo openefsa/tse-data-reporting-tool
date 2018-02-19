@@ -3,6 +3,8 @@ package mocks;
 import dataset.RCLDatasetStatus;
 import table_skeleton.TableRow;
 import table_skeleton.TableVersion;
+import tse_analytical_result.AnalyticalResult;
+import tse_case_report.CaseReport;
 import tse_config.CustomStrings;
 import tse_report.TseReport;
 import tse_summarized_information.SummarizedInfo;
@@ -46,6 +48,7 @@ public class RowCreatorMock {
 		report.setYear("2004");
 		report.setMonth("04");
 		report.setCountry("AT");
+		report.setId("12342");
 		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
 		report.setStatus(RCLDatasetStatus.DRAFT);
 		
@@ -73,5 +76,40 @@ public class RowCreatorMock {
 		summInfo.put(CustomStrings.SUMMARIZED_INFO_UNS_SAMPLES, "0");
 		
 		return summInfo;
+	}
+	
+	public static CaseReport genRandCase(int reportId, int summInfoId, int settingsId, int prefId) {
+		
+		CaseReport caseReport = new CaseReport();
+		
+		caseReport.put(CustomStrings.REPORT_ID_COL, String.valueOf(reportId));
+		caseReport.put(CustomStrings.SI_ID_COL, String.valueOf(summInfoId));
+		caseReport.put(CustomStrings.SETTINGS_ID_COL, String.valueOf(settingsId));
+		caseReport.put(CustomStrings.PREFERENCES_ID_COL, String.valueOf(prefId));
+
+		caseReport.put(CustomStrings.CASE_INFO_SAMPLE_ID, "kjed9okj3e");
+		caseReport.put(CustomStrings.CASE_INFO_ASSESS, CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE);
+		caseReport.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.BRAIN_CODE);
+		
+		return caseReport;
+	}
+	
+	public static AnalyticalResult genRandResult(int reportId, int summInfoId, int caseId, int settingsId, int prefId) {
+		
+		AnalyticalResult caseReport = new AnalyticalResult();
+		
+		caseReport.put(CustomStrings.REPORT_ID_COL, String.valueOf(reportId));
+		caseReport.put(CustomStrings.SI_ID_COL, String.valueOf(summInfoId));
+		caseReport.put(CustomStrings.CASE_ID_COL, String.valueOf(caseId));
+		caseReport.put(CustomStrings.SETTINGS_ID_COL, String.valueOf(settingsId));
+		caseReport.put(CustomStrings.PREFERENCES_ID_COL, String.valueOf(prefId));
+
+		caseReport.put(CustomStrings.PARAM_TYPE_COL, "P001A");
+		caseReport.put(CustomStrings.CASE_INFO_SAMPLE_ID, "kjed9okj3e");
+		caseReport.put("sampAnId", "jhgjhgjhgjhg");
+		caseReport.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.BRAIN_CODE);
+		caseReport.put("progLegalRef", "N123A");
+		
+		return caseReport;
 	}
 }

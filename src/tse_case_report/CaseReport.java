@@ -23,6 +23,14 @@ public class CaseReport extends TableRow implements TseTableRow {
 		super(row);
 	}
 	
+	public CaseReport() {
+		super(getCaseSchema());
+	}
+	
+	public static TableSchema getCaseSchema() {
+		return TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
+	}
+	
 	/**
 	 * Get all the results
 	 * @return

@@ -19,10 +19,11 @@ import global_utils.FileUtils;
 import global_utils.Warnings;
 import html_viewer.HtmlViewer;
 import i18n_messages.TSEMessages;
-import providers.IReportService;
+import providers.FormulaService;
+import providers.IFormulaService;
 import providers.ITableDaoService;
-import providers.ReportService;
 import providers.TableDaoService;
+import providers.TseReportService;
 import soap.GetAck;
 import soap.GetDatasetsList;
 import soap.SendMessage;
@@ -260,12 +261,14 @@ public class StartUI {
 		// init services
 		ITableDao dao = new TableDao();
 		ITableDaoService daoService = new TableDaoService(dao);
+		IFormulaService formulaService = new FormulaService(daoService);
 		
 		IGetAck getAck = new GetAck();
 		IGetDatasetsList<IDataset> getDatasetsList = new GetDatasetsList<>();
 		ISendMessage sendMessage = new SendMessage();
 		
-		IReportService reportService = new ReportService(getAck, getDatasetsList, sendMessage, daoService);
+		TseReportService reportService = new TseReportService(getAck, getDatasetsList, 
+				sendMessage, daoService, formulaService);
 		
 		// open the main panel
 		

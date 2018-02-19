@@ -10,28 +10,57 @@ import org.xml.sax.SAXException;
 
 import app_config.AppPaths;
 import app_config.PropertiesReader;
+import dataset.Dataset;
 import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import message.SendMessageException;
-import providers.IReportService;
-import providers.ITableDaoService;
-import report.Report;
+import providers.TseReportService;
+import report.NotOverwritableDcfDatasetException;
 import report.ReportActions;
 import report.ReportException;
 import report.ReportSendOperation;
-import report.UnsupportedReportActionException;
 import soap.DetailedSOAPException;
 import tse_config.TSEWarnings;
+import tse_report.TseReport;
 
 public class TseReportActions extends ReportActions {
 
+	private TseReportService reportService;
+	private TseReport report;
 	private Shell shell;
 	
-	public TseReportActions(Shell shell, Report report, 
-			IReportService reportService, ITableDaoService daoService) {
-		super(shell, report, reportService, daoService);
+	public TseReportActions(Shell shell, TseReport report, 
+			TseReportService reportService) {
+		super(shell, report, reportService);
 		this.shell = shell;
+		this.report = report;
+		this.reportService = reportService;
+	}
+	
+	/**
+	 * Amend a report
+	 * @param shell
+	 * @param report
+	 * @param listener
+	 */
+	public TseReport amend() {
+		
+		boolean confirm = askConfirmation(ReportAction.AMEND);
+		
+		if (!confirm)
+			return null;
+		
+		shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+		
+		// create a new version of the report in the db
+		// it affects directly the current object
+		TseReport amendedReport = reportService.amend(report);
+		
+		shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+		
+		// we can returned the modified object
+		return amendedReport;
 	}
 
 	@Override
@@ -120,8 +149,8 @@ public class TseReportActions extends ReportActions {
 		else if (e instanceof ReportException) {
 			msg = Warnings.createFatal(TSEMessages.get("send.failed.no.senderId", PropertiesReader.getSupportEmail()), getReport());
 		}
-		else if (e instanceof UnsupportedReportActionException) {
-			msg = getUnsupportedOpWarning(((UnsupportedReportActionException) e).getOperation());
+		else if (e instanceof NotOverwritableDcfDatasetException) {
+			msg = getUnsupportedOpWarning(((NotOverwritableDcfDatasetException) e).getDataset());
 		}
 		else {
 			msg = Warnings.createFatal(TSEMessages.get("generic.error", PropertiesReader.getSupportEmail()), getReport());
@@ -161,15 +190,15 @@ public class TseReportActions extends ReportActions {
 		Warnings.warnUser(shell, title, message, style);
 	}
 	
-	private Message getUnsupportedOpWarning(ReportSendOperation operation) {
+	private Message getUnsupportedOpWarning(Dataset dataset) {
 		
-		String datasetId = operation.getDataset().getId();
+		String datasetId = dataset.getId();
 
 		String title = TSEMessages.get("error.title");
 		String message;
 		boolean fatal = false;
 		
-		switch(operation.getStatus()) {
+		switch(dataset.getRCLStatus()) {
 		case ACCEPTED_DWH:
 			message = TSEMessages.get("send.warning.acc.dwh", datasetId);
 			break;
@@ -270,10 +299,10 @@ public class TseReportActions extends ReportActions {
 	}
 
 	@Override
-	public boolean askReplaceConfirmation(ReportSendOperation sendOp) {
+	public boolean askReplaceConfirmation(Dataset dataset) {
 		
-		String datasetId = sendOp.getDataset().getId();
-		String status = sendOp.getDataset().getRCLStatus().getLabel();
+		String datasetId = dataset.getId();
+		String status = dataset.getRCLStatus().getLabel();
 		
 		String title = TSEMessages.get("warning.title");
 		String message = TSEMessages.get("send.warning.replace", datasetId, status);
@@ -311,17 +340,6 @@ public class TseReportActions extends ReportActions {
 		
 		int val = Warnings.warnUser(shell, title, 
 				message,
-				SWT.ICON_WARNING | SWT.YES | SWT.NO);
-		
-		return val == SWT.YES;
-	}
-
-	@Override
-	public boolean askDataCollectionConfirmation(Report report) {
-		
-		String dc = PropertiesReader.getDataCollectionCode(report.getYear());
-		int val = Warnings.warnUser(shell, TSEMessages.get("warning.title"), 
-				TSEMessages.get("send.confirm.dc", dc),
 				SWT.ICON_WARNING | SWT.YES | SWT.NO);
 		
 		return val == SWT.YES;

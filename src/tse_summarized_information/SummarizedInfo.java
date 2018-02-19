@@ -3,8 +3,8 @@ package tse_summarized_information;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import formula.Formula;
 import formula.FormulaException;
+import formula.FormulaSolver;
 import table_database.TableDao;
 import table_skeleton.TableCell;
 import table_skeleton.TableRow;
@@ -67,10 +67,9 @@ public class SummarizedInfo extends TableRow implements TseTableRow {
 	}
 	
 	public String computeContextId() throws FormulaException {
-		Formula f = new Formula(this, this.getSchema().getById(CustomStrings.CONTEXT_ID_COL), 
-				XlsxHeader.LABEL_FORMULA.getHeaderName());
-		
-		return f.solve();
+		FormulaSolver solver = new FormulaSolver(this);
+		return solver.solve(this.getSchema().getById(CustomStrings.CONTEXT_ID_COL), 
+				XlsxHeader.LABEL_FORMULA.getHeaderName()).getSolvedFormula();
 	}
 	
 	public void setType(String type) {

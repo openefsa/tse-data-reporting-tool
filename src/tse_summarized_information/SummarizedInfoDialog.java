@@ -26,13 +26,15 @@ import dataset.RCLDatasetStatus;
 import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
+import message.MessageConfigBuilder;
+import message_creator.OperationType;
 import progress_bar.IndeterminateProgressDialog;
-import providers.IReportService;
-import providers.ITableDaoService;
+import providers.TseReportService;
 import report.DisplayAckThread;
 import report.RefreshStatusThread;
 import report.Report;
 import report.ReportActions;
+import report.ReportActions.ReportAction;
 import report.ThreadFinishedListener;
 import report_validator.ReportError;
 import session_manager.TSERestoreableWindowDao;
@@ -68,20 +70,18 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 
 	private static final Logger LOGGER = LogManager.getLogger(SummarizedInfoDialog.class);
 
-	private IReportService reportService;
-	private ITableDaoService daoService;
+	private TseReportService reportService;
 	
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "SummarizedInformation";
 	
 	private TseReport report;
 	
-	public SummarizedInfoDialog(Shell parent, IReportService reportService, ITableDaoService daoService) {
+	public SummarizedInfoDialog(Shell parent, TseReportService reportService) {
 		
 		super(parent, "", false, false);
 		
 		this.reportService = reportService;
-		this.daoService = daoService;
 		
 		// create the parent structure
 		super.create();
@@ -395,8 +395,21 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 					return;
 				}
 				
-				ReportActions actions = new TseReportActions(getDialog(), report, reportService, daoService);
-				actions.send(new Listener() {
+				boolean ok = askConfirmation(ReportAction.SEND);
+				
+				if (!ok)
+					return;
+				
+				String dc = PropertiesReader.getDataCollectionCode(report.getYear());
+				int val = Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"), 
+						TSEMessages.get("send.confirm.dc", dc),
+						SWT.ICON_WARNING | SWT.YES | SWT.NO);
+				
+				if (val != SWT.YES)
+					return;
+				
+				ReportActions actions = new TseReportActions(getDialog(), report, reportService);
+				actions.send(reportService.getSendMessageConfiguration(report), new Listener() {
 					
 					@Override
 					public void handleEvent(Event arg0) {
@@ -415,10 +428,14 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				ReportActions actions = new TseReportActions(getDialog(), report, reportService, daoService);
+				ReportActions actions = new TseReportActions(getDialog(), report, reportService);
+				
+				MessageConfigBuilder config = reportService.getSendMessageConfiguration(report);
+				config.setOpType(OperationType.REJECT);
 				
 				// reject the report and update the ui
-				actions.reject(new Listener() {
+				actions.perform(config, 
+						new Listener() {
 					
 					@Override
 					public void handleEvent(Event arg0) {
@@ -435,10 +452,14 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				ReportActions actions = new TseReportActions(getDialog(), report, reportService, daoService);
+				ReportActions actions = new TseReportActions(getDialog(), report, reportService);
+				
+				MessageConfigBuilder config = reportService.getSendMessageConfiguration(report);
+				config.setOpType(OperationType.SUBMIT);
 				
 				// reject the report and update the ui
-				actions.submit(new Listener() {
+				actions.perform(config, 
+						new Listener() {
 					
 					@Override
 					public void handleEvent(Event arg0) {
@@ -515,7 +536,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				if (report == null)
 					return;
 				
-				ReportActions actions = new TseReportActions(getDialog(), report, reportService, daoService);
+				TseReportActions actions = new TseReportActions(getDialog(), report, reportService);
 				
 				Report newVersion = actions.amend();
 				
@@ -823,6 +844,37 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setEnabled("changeStatusBtn", true);
 		panel.setEnabled("changeMessageIdBtn", true);
 		panel.setEnabled("changeDatasetIdBtn", true);
+	}
+	
+	private boolean askConfirmation(ReportAction action) {
+		
+		String title = TSEMessages.get("warning.title");
+		String message = null;
+		switch(action) {
+		case SUBMIT:
+			message = TSEMessages.get("submit.confirm");
+			break;
+		case REJECT:
+			message = TSEMessages.get("reject.confirm");
+			break;
+		case SEND:
+			message = TSEMessages.get("send.confirm");
+			break;
+		case AMEND:
+			message = TSEMessages.get("amend.confirm");
+			break;
+		default:
+			break;
+		}
+		
+		if (message == null)
+			return false;
+		
+		int val = Warnings.warnUser(getDialog(), title, 
+				message,
+				SWT.ICON_WARNING | SWT.YES | SWT.NO);
+		
+		return val == SWT.YES;
 	}
 	
 	/**

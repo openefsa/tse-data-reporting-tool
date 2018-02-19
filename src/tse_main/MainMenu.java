@@ -19,12 +19,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.xml.sax.SAXException;
 
 import app_config.PropertiesReader;
+import dataset.Dataset;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import message.MessageConfigBuilder;
 import message_creator.OperationType;
-import providers.IReportService;
 import providers.ITableDaoService;
+import providers.TseReportService;
 import report.ReportException;
 import report.ReportSendOperation;
 import report_downloader.TseReportDownloader;
@@ -53,7 +54,7 @@ public class MainMenu {
 
 	private static final Logger LOGGER = LogManager.getLogger(MainMenu.class);
 	
-	private IReportService reportService;
+	private TseReportService reportService;
 	private ITableDaoService daoService;
 	
 	private MainPanel mainPanel;
@@ -75,7 +76,7 @@ public class MainMenu {
 	private MenuItem exportReport;
 	private MenuItem exitApplication;
 
-	public MainMenu(MainPanel mainPanel, Shell shell, IReportService reportService, ITableDaoService daoService) {
+	public MainMenu(MainPanel mainPanel, Shell shell, TseReportService reportService, ITableDaoService daoService) {
 		this.shell = shell;
 		this.mainPanel = mainPanel;
 		this.reportService = reportService;
@@ -307,7 +308,8 @@ public class MainMenu {
 				
 				ReportSendOperation opSendType = null;
 				try {
-					opSendType = reportService.getSendOperation(report);
+					Dataset dataset = reportService.getLatestDataset(report);
+					opSendType = reportService.getSendOperation(report, dataset);
 				} catch (DetailedSOAPException | ReportException e1) {
 					e1.printStackTrace();
 				}
@@ -322,7 +324,10 @@ public class MainMenu {
 
 				LOGGER.info("Exporting report=" + report.getSenderId());
 				
-				MessageConfigBuilder messageConfig = report.getDefaultExportConfiguration(opType, exportFile);
+				MessageConfigBuilder messageConfig = reportService.getSendMessageConfiguration(report);
+				messageConfig.setOpType(opType);
+				messageConfig.setOut(exportFile);
+				
 				try {
 					reportService.export(report, messageConfig);
 				} catch (IOException | ParserConfigurationException | SAXException | ReportException e) {
@@ -433,8 +438,8 @@ public class MainMenu {
 					return;
 				
 				LOGGER.debug("Exporting report " + report.getSenderId());
-				
-				MessageConfigBuilder messageConfig = report.getDefaultExportConfiguration(opType);
+				MessageConfigBuilder messageConfig = reportService.getSendMessageConfiguration(report);
+				messageConfig.setOpType(opType);
 				try {
 					reportService.export(report, messageConfig);
 				} catch (IOException | ParserConfigurationException | SAXException | ReportException e) {

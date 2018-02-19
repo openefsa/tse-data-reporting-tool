@@ -8,6 +8,8 @@ public class CustomStrings {
 	public static final String PREFERENCE_FOLDER = "preferences" + System.getProperty("file.separator");
 
 	public static final String REPORT_ID_COL = "ReportId";
+	public static final String SI_ID_COL = "SummarizedInformationId";
+	public static final String CASE_ID_COL = "CasesInformationId";
 	public static final String SETTINGS_ID_COL = "SettingsId";
 	public static final String PREFERENCES_ID_COL = "PreferencesId";
 	
