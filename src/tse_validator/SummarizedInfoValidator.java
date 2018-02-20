@@ -11,6 +11,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
 import i18n_messages.TSEMessages;
+import providers.ITableDaoService;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 import xlsx_reader.TableSchema;
@@ -19,6 +20,12 @@ import xlsx_reader.TableSchemaList;
 public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 	private static final Logger LOGGER = LogManager.getLogger(SummarizedInfoValidator.class);
+	
+	private ITableDaoService daoService;
+	
+	public SummarizedInfoValidator(ITableDaoService daoService) {
+		this.daoService = daoService;
+	}
 	
 	public enum SampleCheck {
 		OK,
@@ -79,11 +86,12 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		if (childSchema == null)
 			return out;
 
-		Collection<TableRow> results = sample.getChildren(childSchema);
+		Collection<TableRow> results = daoService.getByParentId(childSchema, 
+				sample.getSchema().getSheetName(), sample.getDatabaseId(), true);
 		
 		for (TableRow c : results) {
 			if (c.getCode(CustomStrings.RESULT_TEST_TYPE)
-					.equals(CustomStrings.RESULT_SCREENING_TEST))
+					.equals(CustomStrings.SCREENING_TEST_CODE))
 				out.add(c);
 		}
 		
@@ -105,15 +113,17 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 	 * @param row
 	 * @return
 	 */
-	public SampleCheck isSampleCorrect(TableRow row) {
+	public Collection<SampleCheck> isSampleCorrect(TableRow row) {
 
+		Collection<SampleCheck> checks = new ArrayList<>();
+		
 		String targetGroup = row.getCode(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP);
 		String prod = row.getCode(CustomStrings.SUMMARIZED_INFO_PROD);
 		
 		// non wild for killed error
 		if (targetGroup.equals(CustomStrings.KILLED_TARGET_GROUP) 
 				&& !prod.equals(CustomStrings.WILD_PROD)) {
-			return SampleCheck.NON_WILD_FOR_KILLED;
+			checks.add(SampleCheck.NON_WILD_FOR_KILLED);
 		}
 		
 		String rowType = row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
@@ -124,10 +134,8 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 			TableSchema childSchema = TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
 
-			if (childSchema == null)
-				return null;
-
-			Collection<TableRow> cases = row.getChildren(childSchema);
+			Collection<TableRow> cases = daoService.getByParentId(childSchema, 
+					row.getSchema().getSheetName(), row.getDatabaseId(), true);
 
 			if (!isRGT) {
 
@@ -138,7 +146,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 				int totPosInc = posSamples + incSamples;
 
 				if (getNegativeCaseScreeningResults(cases).size() > negSamples) {
-					return SampleCheck.TOO_MANY_SCREENING_NEGATIVES;
+					checks.add(SampleCheck.TOO_MANY_SCREENING_NEGATIVES);
 				}
 				
 				// detailed inc
@@ -152,24 +160,24 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 				int detailedPos = getPositiveCasesNumber(cases);
 				
 				if (detailedPos > posSamples) {
-					return SampleCheck.TOO_MANY_POSITIVES;
+					checks.add(SampleCheck.TOO_MANY_POSITIVES);
 				}
 
 				// if #detailed < #declared
 				if (detailedIncAndPos < totPosInc)
-					return SampleCheck.MISSING_CASES;
+					checks.add(SampleCheck.MISSING_CASES);
 				// if #declared < #detailed
 				else if (detailedIncAndPos > totPosInc)
-					return SampleCheck.TOOMANY_CASES;
+					checks.add(SampleCheck.TOOMANY_CASES);
 
 				// if #detailed != #declared
 				if (detailedIncSamples != incSamples)
-					return SampleCheck.CHECK_INC_CASES;
+					checks.add(SampleCheck.CHECK_INC_CASES);
 			}
 			else {
 
 				if (cases.size() == 0) {
-					return SampleCheck.MISSING_RGT_CASE;
+					checks.add(SampleCheck.MISSING_RGT_CASE);
 				}
 			}
 		}
@@ -180,10 +188,10 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 		// check children errors
 		if (row.hasChildrenError()) {
-			return SampleCheck.WRONG_CASES;
+			checks.add(SampleCheck.WRONG_CASES);
 		}
 
-		return SampleCheck.OK;
+		return checks;
 	}
 
 	/**
@@ -206,7 +214,12 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 		int level = 0;
 
-		switch (isSampleCorrect(row)) {
+		Collection<SampleCheck> checks = isSampleCorrect(row);
+		
+		if (checks.isEmpty())
+			return level;
+		
+		switch (checks.iterator().next()) {
 		case MISSING_CASES:
 		case MISSING_RGT_CASE:
 		case TOOMANY_CASES:
@@ -240,7 +253,12 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 		String text = parentText;
 
-		switch (isSampleCorrect(row)) {
+		Collection<SampleCheck> checks = isSampleCorrect(row);
+		
+		if (checks.isEmpty())
+			return text;
+		
+		switch (checks.iterator().next()) {
 		case MISSING_CASES:
 		case MISSING_RGT_CASE:
 			text = TSEMessages.get("si.missing.cases");
@@ -281,7 +299,12 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		if (parentLevel > level)
 			return color;
 
-		switch(isSampleCorrect(row)) {
+		Collection<SampleCheck> checks = isSampleCorrect(row);
+		
+		if (checks.isEmpty())
+			return color;
+		
+		switch(checks.iterator().next()) {
 		case OK:
 			break;
 		default:

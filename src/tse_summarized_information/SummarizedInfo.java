@@ -1,24 +1,17 @@
 package tse_summarized_information;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import formula.FormulaException;
 import formula.FormulaSolver;
-import table_database.TableDao;
 import table_skeleton.TableCell;
 import table_skeleton.TableRow;
-import tse_case_report.CaseReport;
 import tse_config.CatalogLists;
 import tse_config.CustomStrings;
-import tse_report.TseTableRow;
-import tse_validator.CaseReportValidator;
 import xlsx_reader.TableHeaders.XlsxHeader;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.XmlLoader;
 
-public class SummarizedInfo extends TableRow implements TseTableRow {
+public class SummarizedInfo extends TableRow {
 
 	public SummarizedInfo(TableRow row) {
 		super(row);
@@ -90,54 +83,5 @@ public class SummarizedInfo extends TableRow implements TseTableRow {
 				.getElementByCode(species).getListId();
 		
 		return listId;
-	}
-	
-	/**
-	 * Get all the cases
-	 * @return
-	 */
-	public Collection<TseTableRow> getChildren() {
-		
-		Collection<TseTableRow> output = new ArrayList<>();
-		
-		TableSchema caseSchema = TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
-		
-		TableDao dao = new TableDao();
-		Collection<TableRow> children = dao.getByParentId(caseSchema, CustomStrings.SUMMARIZED_INFO_SHEET, 
-				this.getDatabaseId(), true, "desc");
-		
-		// create it as case report
-		for (TableRow child : children) {
-			output.add(new CaseReport(child));
-		}
-		
-		return output;
-	}
-	
-	public boolean hasCases() {
-		return !getChildren().isEmpty();
-	}
-	
-	public void updateChildrenErrors() {
-		
-		// check children errors
-		boolean errors = false;
-		CaseReportValidator validator = new CaseReportValidator();
-		for (TseTableRow row : this.getChildren()) {
-			
-			CaseReport caseInfo = (CaseReport) row;
-			
-			if (validator.getOverallWarningLevel(caseInfo) > 0) {
-				this.setChildrenError();
-				errors = true;
-				break;
-			}
-		}
-		
-		if (!errors) {
-			this.removeChildrenError();
-		}
-		
-		this.update();
 	}
 }

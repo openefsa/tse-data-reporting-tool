@@ -57,7 +57,7 @@ public class CustomStrings {
 	public static final String WILD_PROD = "F21.A07RY";
 	public static final String FARMED_PROD = "F21.A07RV";
 	public static final String SUMMARIZED_INFO_AGE = "animage";
-	public static final String SUMMARIZED_INFO_AGE_UNKNOWN = "F31.A16PN";
+	public static final String UNKNOWN_AGE_CLASS_CODE = "F31.A16PN";
 	public static final String SUMMARIZED_INFO_TARGET_GROUP = "tseTargetGroup";
 	public static final String KILLED_TARGET_GROUP = "TG009A";
 	public static final String EM_TARGET_GROUP = "TG003A";
@@ -74,11 +74,12 @@ public class CustomStrings {
 	public static final String SUMMARIZED_INFO_RGT_TYPE = "RGT";
 	public static final String SUMMARIZED_INFO_BSEOS_TYPE = "BSEOS";
 	public static final String SUMMARIZED_INFO_SCREENING_TEST = "AT06A";
-	public static final String SUMMARIZED_INFO_CONFIRMATORY_TEST = "AT08A";
-	public static final String RESULT_DISCRIMINATORY_TEST = "AT12A";
-	public static final String SUMMARIZED_INFO_MOLECULAR_TEST = "AT13A";
+	public static final String CONFIRMATORY_TEST_CODE = "AT08A";
+	public static final String DISCRIMINATORY_TEST_CODE = "AT12A";
+	public static final String MOLECULAR_TEST_CODE = "AT13A";
 	
 	public static final String CASE_INFO_STATUS = "statusHerd";
+	public static final String CASE_INFO_STATUS_INFECTED = "N";
 	public static final String CASE_INFO_STATUS_NOT_INFECTED = "F";
 	public static final String CASE_INFO_SAMPLE_ID = "sampId";
 	public static final String CASE_INFO_HERD_ID = "herdId";
@@ -98,12 +99,14 @@ public class CustomStrings {
 	public static final String OBEX_CODE = "F02.A16YL";
 	public static final String LYMPH_CODE = "F02.A0CJN";
 	public static final String BLOOD_CODE = "F02.A06AL";
+	
+	public static final String DEFAULT_ASSESS_CBSE_CASE_CODE = "J046A";
 	public static final String DEFAULT_ASSESS_NEG_CASE_CODE = "J051A";
 	public static final String DEFAULT_ASSESS_INC_CASE_CODE = "J050A";
 	public static final String DEFAULT_ASSESS_INC_CASE_LABEL = "Inconclusive";
 	
 	public static final String CASE_INFO_BIRTH_YEAR = "birthYear";
-	public static final String CASE_INDEX_BIRTH_MONTH = "birthMonth";
+	public static final String CASE_INFO_BIRTH_MONTH = "birthMonth";
 	
 	public static final String RESULT_ALLELE_1 = "allele1";
 	public static final String RESULT_ALLELE_2 = "allele2";
@@ -112,7 +115,7 @@ public class CustomStrings {
 	
 	public static final String RESULT_TEST_TYPE = "anMethType";
 	public static final String RESULT_EVAL_INFO = "evalInfo";
-	public static final String RESULT_SCREENING_TEST = "AT06A";
+	public static final String SCREENING_TEST_CODE = "AT06A";
 	public static final String RESULT_PROG_ID = "progId";
 	public static final String RESULT_SAMP_UNIT_IDS = "sampUnitIds";
 	public static final String RESULT_SAMP_EVENT_INFO = "sampEventInfo";

@@ -34,26 +34,26 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 		
 		AnalyticalResult r = createDefaultResult(report, summInfo, caseReport, 
 				PredefinedResultHeader.SCREENING,
-				CustomStrings.RESULT_SCREENING_TEST);
+				CustomStrings.SCREENING_TEST_CODE);
 		if (r != null)
 			results.add(r);
 		
 		r = createDefaultResult(report, summInfo, caseReport, 
 				PredefinedResultHeader.CONFIRMATORY, 
-				CustomStrings.SUMMARIZED_INFO_CONFIRMATORY_TEST);
+				CustomStrings.CONFIRMATORY_TEST_CODE);
 		if (r != null)
 			results.add(r);
 		
 		
 		r = createDefaultResult(report, summInfo, caseReport, 
 				PredefinedResultHeader.DISCRIMINATORY,
-				CustomStrings.RESULT_DISCRIMINATORY_TEST);
+				CustomStrings.DISCRIMINATORY_TEST_CODE);
 		if (r != null)
 			results.add(r);
 		
 		r = createDefaultResult(report, summInfo, caseReport, 
 				PredefinedResultHeader.GENOTYPING_BASE_TERM,
-				CustomStrings.SUMMARIZED_INFO_MOLECULAR_TEST);
+				CustomStrings.MOLECULAR_TEST_CODE);
 		if (r != null)
 			results.add(r);
 		
@@ -101,7 +101,7 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 		String preferredTestType = null;
 		
 		switch(testType) {
-		case CustomStrings.RESULT_SCREENING_TEST:
+		case CustomStrings.SCREENING_TEST_CODE:
 			switch(recordType) {
 			case CustomStrings.SUMMARIZED_INFO_BSE_TYPE:
 				preferredTestType = getPreferredTestType(recordType, 
@@ -117,7 +117,7 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 				break;
 			}
 			break;
-		case CustomStrings.SUMMARIZED_INFO_CONFIRMATORY_TEST:
+		case CustomStrings.CONFIRMATORY_TEST_CODE:
 			switch(recordType) {
 			case CustomStrings.SUMMARIZED_INFO_BSE_TYPE:
 				preferredTestType = getPreferredTestType(recordType, 
@@ -133,7 +133,7 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 				break;
 			}
 			break;
-		case CustomStrings.RESULT_DISCRIMINATORY_TEST:
+		case CustomStrings.DISCRIMINATORY_TEST_CODE:
 			switch(recordType) {
 			case CustomStrings.SUMMARIZED_INFO_BSE_TYPE:
 				preferredTestType = getPreferredTestType(recordType, 
@@ -149,7 +149,7 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 				break;
 			}
 			break;
-		case CustomStrings.SUMMARIZED_INFO_MOLECULAR_TEST:
+		case CustomStrings.MOLECULAR_TEST_CODE:
 			preferredTestType = CustomStrings.AN_METH_CODE_GENOTYPING;
 			break;
 		}

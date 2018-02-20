@@ -76,6 +76,6 @@ public class MainPanel {
 		shell.setLayout(new GridLayout());
 		
 		this.menu = new MainMenu(this, shell, reportService, daoService);
-		this.reportViewer = new SummarizedInfoDialog(shell, reportService);
+		this.reportViewer = new SummarizedInfoDialog(shell, reportService, daoService);
 	}
 }

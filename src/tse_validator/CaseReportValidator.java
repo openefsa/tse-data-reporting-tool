@@ -1,6 +1,7 @@
 package tse_validator;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -11,6 +12,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
 import i18n_messages.TSEMessages;
+import providers.ITableDaoService;
+import table_relations.Relation;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
 import xlsx_reader.TableSchema;
@@ -30,65 +33,77 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		INDEX_CASE_FOR_FARMED_CWD,
 		EM_FOR_NOT_INFECTED,
 	}
+	
+	private ITableDaoService daoService;
+	
+	public CaseReportValidator(ITableDaoService daoService) {
+		this.daoService = daoService;
+	}
 
-	public Check isRecordCorrect(TableRow row) throws IOException {
+	public Collection<Check> isRecordCorrect(TableRow row) throws IOException {
+		
+		Collection<Check> checks = new ArrayList<>();
 		
 		String caseId = row.getCode(CustomStrings.CASE_INFO_CASE_ID);
 		String sampAnAsses = row.getCode(CustomStrings.CASE_INFO_ASSESS);
 		
 		// case id cannot be specified
 		if (!caseId.isEmpty() && sampAnAsses.equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE)) {
-			return Check.CASE_ID_FOR_NEGATIVE;
+			checks.add(Check.CASE_ID_FOR_NEGATIVE);
 		}
 		
 		String indexCase = row.getCode(CustomStrings.CASE_INDEX_CASE);
 		
 		// index case on negative sample
 		if (!indexCase.isEmpty() && sampAnAsses.equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE)) {
-			return Check.INDEX_CASE_FOR_NEGATIVE;
+			checks.add(Check.INDEX_CASE_FOR_NEGATIVE);
 		}
 		
 		TableSchema childSchema = TableSchemaList.getByName(CustomStrings.RESULT_SHEET);
-		Collection<TableRow> results = row.getChildren(childSchema, false);
-
+		
+		Collection<TableRow> results = daoService.getByParentId(childSchema, 
+				row.getSchema().getSheetName(), row.getDatabaseId(), false);
+		
 		// if in summinfo screening was set, but no screening
 		// was found in the cases
 		if (results.isEmpty()) {
-			return Check.NO_TEST_SPECIFIED;
+			checks.add(Check.NO_TEST_SPECIFIED);
 		}
-		
+
 		if (isTestDuplicated(results)) {
-			return Check.DUPLICATED_TEST;
+			checks.add(Check.DUPLICATED_TEST);
 		}
 		
 		// check children errors
 		if (row.hasChildrenError()) {
-			return Check.WRONG_RESULTS;
+			checks.add(Check.WRONG_RESULTS);
 		}
 		
-		TableRow summInfo = row.getParent(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+		TableRow summInfo = daoService.getById(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET), 
+				row.getNumCode(Relation.foreignKeyFromParent(CustomStrings.SUMMARIZED_INFO_SHEET)));
+
 		String type = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
 		String farmed = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_PROD);
-		
+
 		// Index case 'No' for farmed cwd is forbidden
 		if (indexCase.equals(CustomStrings.INDEX_CASE_NO) && type.equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE)) {
 			if (farmed.equals(CustomStrings.FARMED_PROD)) {
-				return Check.INDEX_CASE_FOR_FARMED_CWD;
+				checks.add(Check.INDEX_CASE_FOR_FARMED_CWD);
 			}
 		}
 		
 		// if eradication measure for status herd F in scrapie
-		if (type.equals(CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE)) {
+		//if (type.equals(CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE)) {
 
 			if (row.getCode(CustomStrings.CASE_INFO_STATUS)
 					.equals(CustomStrings.CASE_INFO_STATUS_NOT_INFECTED) &&
 				summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP)
 					.equals(CustomStrings.EM_TARGET_GROUP)) {
-				return Check.EM_FOR_NOT_INFECTED;
+				checks.add(Check.EM_FOR_NOT_INFECTED);
 			}
-		}
+		//}
 		
-		return Check.OK;
+		return checks;
 	}
 	
 	public boolean isTestDuplicated(Collection<TableRow> results) {
@@ -107,15 +122,20 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		
 		return Math.max(level, parentLevel);
 	}
-	
+
 	@Override
 	public int getWarningLevel(TableRow row) {
 
 		int level = 0;
 
 		try {
-			Check check = isRecordCorrect(row);
+			Collection<Check> checks = isRecordCorrect(row);
 
+			if (checks.isEmpty())
+				return level;
+			
+			Check check = checks.iterator().next();
+			
 			switch(check) {
 			case OK:
 			case EM_FOR_NOT_INFECTED:
@@ -146,7 +166,13 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		
 		try {
 			
-			Check check = isRecordCorrect(row);
+			Collection<Check> checks = isRecordCorrect(row);
+
+			if (checks.isEmpty())
+				return super.getText(row);
+			
+			Check check = checks.iterator().next();
+			
 			switch (check) {
 			case NO_TEST_SPECIFIED:
 				text = TSEMessages.get("cases.missing.results");
@@ -195,7 +221,14 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		Color color = null;
 		
 		try {
-			Check check = isRecordCorrect(row);
+			
+			Collection<Check> checks = isRecordCorrect(row);
+
+			if (checks.isEmpty())
+				return super.getForeground(row);
+			
+			Check check = checks.iterator().next();
+
 			switch (check) {
 			case NO_TEST_SPECIFIED:
 			case WRONG_RESULTS:

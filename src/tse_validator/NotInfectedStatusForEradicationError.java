@@ -6,11 +6,11 @@ import java.util.Collection;
 import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 
-public class NotInfectedStatusForEradicationInSheepError implements ReportError {
+public class NotInfectedStatusForEradicationError implements ReportError {
 
 	private String rowId;
 	
-	public NotInfectedStatusForEradicationInSheepError(String rowId) {
+	public NotInfectedStatusForEradicationError(String rowId) {
 		this.rowId = rowId;
 	}
 	

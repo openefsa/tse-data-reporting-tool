@@ -9,9 +9,13 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import app_config.AppPaths;
+import formula.FormulaException;
 import i18n_messages.TSEMessages;
+import providers.ITableDaoService;
+import providers.TseReportService;
 import report_validator.ReportError;
 import report_validator.ReportValidator;
+import table_relations.Relation;
 import table_skeleton.TableCell;
 import table_skeleton.TableColumn;
 import table_skeleton.TableRow;
@@ -34,14 +38,19 @@ public class TseReportValidator extends ReportValidator {
 	
 	private TseReport report;
 	
+	private TseReportService reportService;
+	private ITableDaoService daoService;
+	
 	/**	
 	 * Validate an entire tse report and returns the errors
 	 * in a list. It is also possible to show the list of
 	 * errors by using the {@link #show(Collection)}
 	 * method.
 	 */
-	public TseReportValidator(TseReport report) {
+	public TseReportValidator(TseReport report, TseReportService reportService, ITableDaoService daoService) {
 		this.report = report;
+		this.daoService = daoService;
+		this.reportService = reportService;
 	}
 	
 	@Override
@@ -49,8 +58,8 @@ public class TseReportValidator extends ReportValidator {
 		
 		Collection<ReportError> errors = new ArrayList<>();
 		
-		Collection<TableRow> reportRecords = this.report.getAllRecords();
-		
+		Collection<TableRow> reportRecords = this.reportService.getAllRecords(report);
+
 		if (reportRecords.isEmpty()) {
 			errors.add(new EmptyReportError());
 		}
@@ -58,7 +67,11 @@ public class TseReportValidator extends ReportValidator {
 		// check errors on single row (no interdependency is evaluated)
 		for (TableRow row : reportRecords) {
 			
-			errors.addAll(checkMandatoryFields(row));
+			try {
+				errors.addAll(checkMandatoryFields(row));
+			} catch (FormulaException e) {
+				e.printStackTrace();
+			}
 			
 			RowType type = getRowType(row);
 
@@ -90,7 +103,7 @@ public class TseReportValidator extends ReportValidator {
 	 * @param reportRecords
 	 * @return
 	 */
-	private Collection<ReportError> checkDuplicatedSampleId(Collection<TableRow> reportRecords) {
+	public Collection<ReportError> checkDuplicatedSampleId(Collection<TableRow> reportRecords) {
 
 		Collection<ReportError> errors = new ArrayList<>();
 		
@@ -123,7 +136,7 @@ public class TseReportValidator extends ReportValidator {
 	 * @param reportRecords
 	 * @return
 	 */
-	private Collection<ReportError> checkDuplicatedResId(Collection<TableRow> reportRecords) {
+	public Collection<ReportError> checkDuplicatedResId(Collection<TableRow> reportRecords) {
 
 		Collection<ReportError> errors = new ArrayList<>();
 		
@@ -151,7 +164,7 @@ public class TseReportValidator extends ReportValidator {
 		return errors;
 	}
 	
-	private Collection<ReportError> checkDuplicatedContext(Collection<TableRow> reportRecords) {
+	public Collection<ReportError> checkDuplicatedContext(Collection<TableRow> reportRecords) {
 		
 		Collection<ReportError> errors = new ArrayList<>();
 		
@@ -176,7 +189,7 @@ public class TseReportValidator extends ReportValidator {
 		return errors;
 	}
 	
-	private enum RowType {
+	public enum RowType {
 		SUMM,
 		CASE,
 		RESULT
@@ -187,10 +200,10 @@ public class TseReportValidator extends ReportValidator {
 	 * @param row
 	 * @return
 	 */
-	private RowType getRowType(TableRow row) {
+	public RowType getRowType(TableRow row) {
 		
 		RowType type = null;
-		
+
 		switch(row.getSchema().getSheetName()) {
 		case CustomStrings.SUMMARIZED_INFO_SHEET:
 			type = RowType.SUMM;
@@ -211,7 +224,7 @@ public class TseReportValidator extends ReportValidator {
 	 * @param row
 	 * @return
 	 */
-	private String getRowId(TableRow row) {
+	public String getRowId(TableRow row) {
 		
 		String id = null;
 		
@@ -238,7 +251,7 @@ public class TseReportValidator extends ReportValidator {
 		return id;
 	}
 	
-	private String getStackTrace(TableRow row) {
+	public String getStackTrace(TableRow row) {
 		
 		RowType type = getRowType(row);
 		
@@ -251,13 +264,23 @@ public class TseReportValidator extends ReportValidator {
 			trace = getRowId(row);
 			break;
 		case CASE:
-			TableRow summInfo = row.getParent(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+			
+			int parentId = Integer.valueOf(row.getCode(Relation.foreignKeyFromParent(CustomStrings.SUMMARIZED_INFO_SHEET)));
+			
+			TableRow summInfo = daoService.getById(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET), parentId);
+
 			trace = getRowId(summInfo);
 			trace = trace + arrowCharacter + getRowId(row);
 			break;
 		case RESULT:
-			TableRow caseReport = row.getParent(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET));
-			TableRow summ = caseReport.getParent(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+			
+			
+			int summParentId = Integer.valueOf(row.getCode(Relation.foreignKeyFromParent(CustomStrings.SUMMARIZED_INFO_SHEET)));
+			int caseParentId = Integer.valueOf(row.getCode(Relation.foreignKeyFromParent(CustomStrings.CASE_INFO_SHEET)));
+			
+			TableRow summ = daoService.getById(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET), summParentId);
+			TableRow caseReport = daoService.getById(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET), caseParentId);
+
 			trace = getRowId(summ);
 			trace = trace + arrowCharacter + getRowId(caseReport);
 			trace = trace + arrowCharacter + getRowId(row);
@@ -274,15 +297,16 @@ public class TseReportValidator extends ReportValidator {
 	 * Check if the mandatory fields were filled
 	 * @param row
 	 * @return
+	 * @throws FormulaException 
 	 */
-	private Collection<ReportError> checkMandatoryFields(TableRow row) {
+	public Collection<ReportError> checkMandatoryFields(TableRow row) throws FormulaException {
 		
 		Collection<ReportError> errors = new ArrayList<>();
 		
 		String rowId = getStackTrace(row);
 		
 		// check mandatory fields
-		for(TableColumn field : row.getMandatoryFieldNotFilled()) {
+		for(TableColumn field : reportService.getMandatoryFieldNotFilled(row)) {
 			errors.add(new MissingMandatoryFieldError(field.getLabel(), rowId));
 		}
 		
@@ -294,50 +318,52 @@ public class TseReportValidator extends ReportValidator {
 	 * @param row
 	 * @return
 	 */
-	private Collection<ReportError> checkSummarizedInfo(TableRow row) {
+	public Collection<ReportError> checkSummarizedInfo(TableRow row) {
 		
 		Collection<ReportError> errors = new ArrayList<>();
 		
-		SummarizedInfoValidator validator = new SummarizedInfoValidator();
-		SampleCheck check = validator.isSampleCorrect(row);
+		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
+		Collection<SampleCheck> checks = validator.isSampleCorrect(row);
 		String rowId = getStackTrace(row);
 		
-		switch(check) {
-		case CHECK_INC_CASES:
-			errors.add(new CheckIncCasesError(rowId));
-			break;
-		case MISSING_CASES:
-			errors.add(new MissingCasesError(rowId));
-			break;
-		case TOOMANY_CASES:
-			errors.add(new TooManyCasesError(rowId));
-			break;
-		case MISSING_RGT_CASE:
-			errors.add(new MissingRGTCaseError(rowId));
-			break;
-		case TOO_MANY_SCREENING_NEGATIVES:
-			errors.add(new TooManyNegativeScreeningError(rowId));
-			break;
-		case TOO_MANY_POSITIVES:
-			errors.add(new TooManyPositivesError(rowId));
-			break;
-		case NON_WILD_FOR_KILLED:
-			
-			TableSchema schema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
-			
-			String targetLabel = schema.getById(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP).getLabel();
-			String prodLabel = schema.getById(CustomStrings.SUMMARIZED_INFO_PROD).getLabel();
-			
-			String id = getStackTrace(row);
-			TableCell targetGroup = row.get(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP);
-			TableCell prod = row.get(CustomStrings.SUMMARIZED_INFO_PROD);
-			
-			errors.add(new NonWildAndKilledError(id, targetLabel + ": " + targetGroup.getLabel(), 
-					prodLabel + ": " + prod.getLabel()));
-			
-			break;
-		default:
-			break;
+		for (SampleCheck check: checks) {
+			switch(check) {
+			case CHECK_INC_CASES:
+				errors.add(new CheckIncCasesError(rowId));
+				break;
+			case MISSING_CASES:
+				errors.add(new MissingCasesError(rowId));
+				break;
+			case TOOMANY_CASES:
+				errors.add(new TooManyCasesError(rowId));
+				break;
+			case MISSING_RGT_CASE:
+				errors.add(new MissingRGTCaseError(rowId));
+				break;
+			case TOO_MANY_SCREENING_NEGATIVES:
+				errors.add(new TooManyNegativeScreeningError(rowId));
+				break;
+			case TOO_MANY_POSITIVES:
+				errors.add(new TooManyPositivesError(rowId));
+				break;
+			case NON_WILD_FOR_KILLED:
+				
+				TableSchema schema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
+				
+				String targetLabel = schema.getById(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP).getLabel();
+				String prodLabel = schema.getById(CustomStrings.SUMMARIZED_INFO_PROD).getLabel();
+				
+				String id = getStackTrace(row);
+				TableCell targetGroup = row.get(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP);
+				TableCell prod = row.get(CustomStrings.SUMMARIZED_INFO_PROD);
+				
+				errors.add(new NonWildAndKilledError(id, targetLabel + ": " + targetGroup.getLabel(), 
+						prodLabel + ": " + prod.getLabel()));
+				
+				break;
+			default:
+				break;
+			}
 		}
 		
 		// check declared cases
@@ -355,7 +381,6 @@ public class TseReportValidator extends ReportValidator {
 			}
 		}
 		
-		
 		return errors;
 	}
 	
@@ -364,21 +389,21 @@ public class TseReportValidator extends ReportValidator {
 	 * @param row
 	 * @return
 	 */
-	private Collection<ReportError> checkCaseInfo(TableRow row) {
+	public Collection<ReportError> checkCaseInfo(TableRow row) {
 		
 		Collection<ReportError> errors = new ArrayList<>();
 
-		CaseReportValidator validator = new CaseReportValidator();
+		CaseReportValidator validator = new CaseReportValidator(daoService);
 
-		Check check = null;
+		Collection<Check> checks = new ArrayList<>();
 		try {
-			check = validator.isRecordCorrect(row);
+			checks = validator.isRecordCorrect(row);
 		} catch (IOException e) {
 			e.printStackTrace();
 			LOGGER.error("Cannot check if case is correct", e);
 		}
 
-		if (check != null) {
+		for (Check check: checks) {
 			switch(check) {
 			case NO_TEST_SPECIFIED:
 				errors.add(new NoTestSpecifiedError(getStackTrace(row)));
@@ -396,7 +421,7 @@ public class TseReportValidator extends ReportValidator {
 				errors.add(new IndexCaseForFarmedCwd(getStackTrace(row)));
 				break;
 			case EM_FOR_NOT_INFECTED:
-				errors.add(new NotInfectedStatusForEradicationInSheepError(getStackTrace(row)));
+				errors.add(new NotInfectedStatusForEradicationError(getStackTrace(row)));
 				break;
 			default:
 				break;
@@ -409,7 +434,7 @@ public class TseReportValidator extends ReportValidator {
 	}
 	
 
-	private Collection<ReportError> checkNationalCaseId(Collection<TableRow> reportRecords) {
+	public Collection<ReportError> checkNationalCaseId(Collection<TableRow> reportRecords) {
 
 		String[] fieldsToCheck = {
 				CustomStrings.CASE_INFO_ANIMAL_ID
@@ -419,7 +444,7 @@ public class TseReportValidator extends ReportValidator {
 				TSEMessages.get("inconsistent.national.case.id"), fieldsToCheck);
 	}
 	
-	private Collection<ReportError> checkAnimalId(Collection<TableRow> reportRecords) {
+	public Collection<ReportError> checkAnimalId(Collection<TableRow> reportRecords) {
 
 		String[] fieldsToCheck = {
 				CustomStrings.CASE_INFO_CASE_ID,
@@ -431,7 +456,7 @@ public class TseReportValidator extends ReportValidator {
 				CustomStrings.CASE_INDEX_CASE,
 				CustomStrings.CASE_BIRTH_COUNTRY,
 				CustomStrings.CASE_INFO_BIRTH_YEAR,
-				CustomStrings.CASE_INDEX_BIRTH_MONTH,
+				CustomStrings.CASE_INFO_BIRTH_MONTH,
 				CustomStrings.CASE_INFO_BORN_FLOCK,
 				CustomStrings.CASE_INFO_BREED,
 				CustomStrings.CASE_INFO_COMMENT
@@ -450,7 +475,7 @@ public class TseReportValidator extends ReportValidator {
 	 * @param fieldsToCheck
 	 * @return
 	 */
-	private Collection<ReportError> checkIdField(Collection<TableRow> reportRecords, 
+	public Collection<ReportError> checkIdField(Collection<TableRow> reportRecords, 
 			String idField, String idFieldLabel, String[] fieldsToCheck) {
 		
 		Collection<ReportError> errors = new ArrayList<>();
@@ -493,20 +518,24 @@ public class TseReportValidator extends ReportValidator {
 		return errors;
 	}
 	
-	private Collection<ReportError> checkAgeClass(TableRow row) {
+	public Collection<ReportError> checkAgeClass(TableRow row) {
 		
 		Collection<ReportError> errors = new ArrayList<>();
 		
-		TableRow report = row.getParent(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-		TableRow summInfo = row.getParent(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+		int reportId = row.getNumCode(Relation.foreignKeyFromParent(CustomStrings.REPORT_SHEET));
+		TableRow report = daoService.getById(TableSchemaList.getByName(CustomStrings.REPORT_SHEET), reportId);
+
+		int summId = row.getNumCode(Relation.foreignKeyFromParent(CustomStrings.SUMMARIZED_INFO_SHEET));
+		TableRow summInfo = daoService.getById(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET), summId);
+
 		String reportYear = report.getCode(AppPaths.REPORT_YEAR);
 		String reportMonth = report.getCode(AppPaths.REPORT_MONTH);
 		String reportMonthLabel = report.getLabel(AppPaths.REPORT_MONTH);
 		String ageClass = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_AGE);
 		String ageClassLabel = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_AGE);
 		String birthYear = row.getCode(CustomStrings.CASE_INFO_BIRTH_YEAR);
-		String birthMonth = row.getCode(CustomStrings.CASE_INDEX_BIRTH_MONTH);
-		String birthMonthLabel = row.getLabel(CustomStrings.CASE_INDEX_BIRTH_MONTH);
+		String birthMonth = row.getCode(CustomStrings.CASE_INFO_BIRTH_MONTH);
+		String birthMonthLabel = row.getLabel(CustomStrings.CASE_INFO_BIRTH_MONTH);
 		
 		if (birthYear.isEmpty() || birthMonth.isEmpty() || ageClass.isEmpty())
 			return errors;
@@ -542,7 +571,7 @@ public class TseReportValidator extends ReportValidator {
 	 * @param row
 	 * @return
 	 */
-	private Collection<ReportError> checkResult(TableRow row) {
+	public Collection<ReportError> checkResult(TableRow row) {
 		
 		Collection<ReportError> errors = new ArrayList<>();
 		
@@ -568,7 +597,7 @@ public class TseReportValidator extends ReportValidator {
 		return errors;
 	}
 	
-	private Collection<ReportError> checkUnknownAgeClass(Collection<TableRow> rows) {
+	public Collection<ReportError> checkUnknownAgeClass(Collection<TableRow> rows) {
 		
 		int total = 0;
 		int unk = 0;
@@ -585,7 +614,7 @@ public class TseReportValidator extends ReportValidator {
 				
 				// if unknown age class
 				if (row.getCode(CustomStrings.SUMMARIZED_INFO_AGE)
-						.equals(CustomStrings.SUMMARIZED_INFO_AGE_UNKNOWN)) {
+						.equals(CustomStrings.UNKNOWN_AGE_CLASS_CODE)) {
 					unk += totalSamples;
 				}
 			}

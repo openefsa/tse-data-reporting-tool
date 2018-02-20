@@ -24,7 +24,7 @@ public class ResultValidator extends SimpleRowValidatorLabelProvider {
 		String allele2 = row.getCode(CustomStrings.RESULT_ALLELE_2);
 		
 		// if it is not molecular test
-		if (!testType.equals(CustomStrings.SUMMARIZED_INFO_MOLECULAR_TEST)) {
+		if (!testType.equals(CustomStrings.MOLECULAR_TEST_CODE)) {
 			
 			// check if alleles were set (it is an error!)
 			boolean notEmpty = !allele1.isEmpty() || !allele2.isEmpty();

@@ -24,6 +24,8 @@ import tse_case_report.CaseReport;
 import tse_config.CustomStrings;
 import tse_report.TseReport;
 import tse_summarized_information.SummarizedInfo;
+import tse_validator.CaseReportValidator;
+import tse_validator.ResultValidator;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 
@@ -35,11 +37,107 @@ public class TseReportService extends ReportService {
 	
 	public TseReportService(IGetAck getAck, IGetDatasetsList<IDataset> getDatasetsList, 
 			ISendMessage sendMessage, IGetDataset getDataset, ITableDaoService daoService, IFormulaService formulaService) {
-		super(getAck, getDatasetsList, sendMessage, getDataset, daoService);
+		super(getAck, getDatasetsList, sendMessage, getDataset, daoService, formulaService);
 		
 		this.formulaService = formulaService;
 	}
 
+	/**
+	 * Get all the elements of the report (summ info, case, analytical results)
+	 * @return
+	 */
+	public Collection<TableRow> getAllRecords(TseReport report) {
+
+		// children schemas
+		TableSchema[] schemas = new TableSchema[] {
+				TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET),
+				TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET),
+				TableSchemaList.getByName(CustomStrings.RESULT_SHEET)
+		};
+
+		return getRecords(report, schemas);
+	}
+	
+	public Collection<TableRow> getRecords(TseReport report, TableSchema[] schemas) {
+		
+		Collection<TableRow> records = new ArrayList<>();
+		
+		// for each child schema get the rows related to the report
+		for (TableSchema schema : schemas) {
+			
+			Collection<TableRow> children = getDaoService().getByParentId(schema, CustomStrings.REPORT_SHEET, 
+					report.getDatabaseId(), true, "desc");
+			
+			if (children != null)
+				records.addAll(children);
+		}
+
+		return records;
+	}
+	
+	/**
+	 * Check if a row has children or not
+	 * @param parent
+	 * @param childSchema
+	 * @return
+	 */
+	public boolean hasChildren(TableRow parent, TableSchema childSchema) {
+		return !getDaoService().getByParentId(childSchema, 
+				parent.getSchema().getSheetName(), 
+				parent.getDatabaseId(), false).isEmpty();
+	}
+	
+	public void updateChildrenErrors(SummarizedInfo summInfo) {
+		
+		// check children errors
+		boolean errors = false;
+		CaseReportValidator validator = new CaseReportValidator(getDaoService());
+		
+		for (TableRow row : getDaoService()
+				.getByParentId(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET), 
+						summInfo.getSchema().getSheetName(), summInfo.getDatabaseId(), true)) {
+			
+			CaseReport caseInfo = (CaseReport) row;
+			
+			if (validator.getOverallWarningLevel(caseInfo) > 0) {
+				summInfo.setChildrenError();
+				errors = true;
+				break;
+			}
+		}
+		
+		if (!errors) {
+			summInfo.removeChildrenError();
+		}
+		
+		getDaoService().update(summInfo);
+	}
+	
+	public void updateChildrenErrors(CaseReport caseReport) {
+		
+		// check children errors
+		boolean error = false;
+		ResultValidator resultValidator = new ResultValidator();
+		for (TableRow r : getDaoService()
+				.getByParentId(TableSchemaList.getByName(CustomStrings.RESULT_SHEET), 
+						caseReport.getSchema().getSheetName(), caseReport.getDatabaseId(), true)) {
+			
+			AnalyticalResult result = (AnalyticalResult) r;
+			
+			if (resultValidator.getWarningLevel(result) > 0) {
+				caseReport.setChildrenError();
+				error = true;
+				break;
+			}
+		}
+		
+		if (!error) {
+			caseReport.removeChildrenError();
+		}
+		
+		getDaoService().update(caseReport);
+	}
+	
 	public MessageConfigBuilder getSendMessageConfiguration(TseReport report) {
 		
 		Collection<TableRow> messageParents = new ArrayList<>();

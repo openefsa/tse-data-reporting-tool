@@ -1,6 +1,7 @@
 package mocks;
 
 import dataset.RCLDatasetStatus;
+import table_skeleton.TableCell;
 import table_skeleton.TableRow;
 import table_skeleton.TableVersion;
 import tse_analytical_result.AnalyticalResult;
@@ -46,7 +47,7 @@ public class RowCreatorMock {
 		report.setSenderId("AT0404");
 		report.setVersion(TableVersion.getFirstVersion());
 		report.setYear("2004");
-		report.setMonth("04");
+		report.setMonth("4");
 		report.setCountry("AT");
 		report.setId("12342");
 		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
@@ -74,6 +75,7 @@ public class RowCreatorMock {
 		summInfo.put(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES, "0");
 		summInfo.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "0");
 		summInfo.put(CustomStrings.SUMMARIZED_INFO_UNS_SAMPLES, "0");
+		summInfo.put(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES, "1");
 		
 		return summInfo;
 	}
@@ -88,8 +90,8 @@ public class RowCreatorMock {
 		caseReport.put(CustomStrings.PREFERENCES_ID_COL, String.valueOf(prefId));
 
 		caseReport.put(CustomStrings.CASE_INFO_SAMPLE_ID, "kjed9okj3e");
-		caseReport.put(CustomStrings.CASE_INFO_ASSESS, CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE);
-		caseReport.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.BRAIN_CODE);
+		caseReport.put(CustomStrings.CASE_INFO_ASSESS, new TableCell(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, ""));
+		caseReport.put(CustomStrings.SUMMARIZED_INFO_PART, new TableCell(CustomStrings.BRAIN_CODE, ""));
 		
 		return caseReport;
 	}
@@ -107,8 +109,8 @@ public class RowCreatorMock {
 		caseReport.put(CustomStrings.PARAM_TYPE_COL, "P001A");
 		caseReport.put(CustomStrings.CASE_INFO_SAMPLE_ID, "kjed9okj3e");
 		caseReport.put("sampAnId", "jhgjhgjhgjhg");
-		caseReport.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.BRAIN_CODE);
-		caseReport.put("progLegalRef", "N123A");
+		caseReport.put(CustomStrings.SUMMARIZED_INFO_PART, new TableCell(CustomStrings.BRAIN_CODE, ""));
+		caseReport.put("progLegalRef", new TableCell("N123A", ""));
 		
 		return caseReport;
 	}

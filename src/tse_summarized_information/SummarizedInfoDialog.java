@@ -29,6 +29,7 @@ import i18n_messages.TSEMessages;
 import message.MessageConfigBuilder;
 import message_creator.OperationType;
 import progress_bar.IndeterminateProgressDialog;
+import providers.ITableDaoService;
 import providers.TseReportService;
 import report.DisplayAckThread;
 import report.RefreshStatusThread;
@@ -71,17 +72,19 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	private static final Logger LOGGER = LogManager.getLogger(SummarizedInfoDialog.class);
 
 	private TseReportService reportService;
+	private ITableDaoService daoService;
 	
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "SummarizedInformation";
 	
 	private TseReport report;
 	
-	public SummarizedInfoDialog(Shell parent, TseReportService reportService) {
+	public SummarizedInfoDialog(Shell parent, TseReportService reportService, ITableDaoService daoService) {
 		
 		super(parent, "", false, false);
 		
 		this.reportService = reportService;
+		this.daoService = daoService;
 		
 		// create the parent structure
 		super.create();
@@ -188,7 +191,8 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		Relation.emptyCache();
 		
 		// create a case passing also the report information
-		CaseReportDialog dialog = new CaseReportDialog(getDialog(), this.report, summInfo);
+		CaseReportDialog dialog = new CaseReportDialog(getDialog(), this.report, summInfo, 
+				reportService, daoService);
 		
 		// filter the records by the clicked summarized information
 		dialog.setParentFilter(summInfo);
@@ -196,7 +200,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		dialog.open();
 		
 		// set case errors if present
-		summInfo.updateChildrenErrors();
+		reportService.updateChildrenErrors(summInfo);
 		
 		replace(summInfo);
 	}
@@ -291,7 +295,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	
 	@Override
 	public RowValidatorLabelProvider getValidator() {
-		return new SummarizedInfoValidator();
+		return new SummarizedInfoValidator(daoService);
 	}
 
 	@Override
@@ -388,12 +392,6 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				
 				if (report == null)
 					return;
-				
-				if (report.isEmpty()) {
-					Warnings.warnUser(getDialog(), TSEMessages.get("error.title"), 
-							TSEMessages.get("send.empty.report"));
-					return;
-				}
 				
 				boolean ok = askConfirmation(ReportAction.SEND);
 				
@@ -556,7 +554,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 					return;
 
 				// validate and show the errors in the browser
-				TseReportValidator validator = new TseReportValidator(report);
+				TseReportValidator validator = new TseReportValidator(report, reportService, daoService);
 				try {
 					
 					getDialog().setCursor(getDialog().getDisplay()

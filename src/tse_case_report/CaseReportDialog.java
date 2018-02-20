@@ -18,6 +18,8 @@ import app_config.AppPaths;
 import dataset.RCLDatasetStatus;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
+import providers.ITableDaoService;
+import providers.TseReportService;
 import report.Report;
 import session_manager.TSERestoreableWindowDao;
 import table_database.TableDao;
@@ -53,13 +55,19 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	private Report report;
 	private SummarizedInfo summInfo;
 	
-	public CaseReportDialog(Shell parent, Report report, SummarizedInfo summInfo) {
+	private TseReportService reportService;
+	private ITableDaoService daoService;
+	
+	public CaseReportDialog(Shell parent, Report report, SummarizedInfo summInfo, 
+			TseReportService reportService, ITableDaoService daoService) {
 		
 		super(parent, TSEMessages.get("case.title"), true, false);
 		LOGGER.info("Opening case report dialog");
 		
 		this.report = report;
 		this.summInfo = summInfo;
+		this.reportService = reportService;
+		this.daoService = daoService;
 		
 		LOGGER.info("Creating dialog structure and contents");
 		// create the parent structure
@@ -102,7 +110,8 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		boolean hasExpectedCases = !isRGT // cannot compute expected cases for RGT
 				&& getNumberOfExpectedCases(summInfo) > 0;
 
-		boolean canAsk = isEditable() && !summInfo.isBSEOS() && !summInfo.hasCases() 
+		boolean canAsk = isEditable() && !summInfo.isBSEOS() 
+				&& !reportService.hasChildren(summInfo, TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET))
 				&& (hasExpectedCases || isRGT);
 		
 		LOGGER.debug("Can ask=" + canAsk);
@@ -307,13 +316,13 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				
 				// initialize result passing also the 
 				// report data and the summarized information data
-				ResultDialog dialog = new ResultDialog(getParent(), report, summInfo, caseReport);
+				ResultDialog dialog = new ResultDialog(getParent(), report, summInfo, caseReport, reportService);
 				dialog.setParentFilter(caseReport); // set the case as filter (and parent)
 				dialog.askForDefault();
 				dialog.open();
 				
 				// update children errors
-				caseReport.updateChildrenErrors();
+				reportService.updateChildrenErrors(caseReport);
 				replace(caseReport);
 			}
 		});
@@ -377,7 +386,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 
 	@Override
 	public RowValidatorLabelProvider getValidator() {
-		return new CaseReportValidator();
+		return new CaseReportValidator(daoService);
 	}
 
 	@Override

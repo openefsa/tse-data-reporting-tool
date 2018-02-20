@@ -15,6 +15,7 @@ import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import predefined_results_reader.PredefinedResult;
 import predefined_results_reader.PredefinedResultHeader;
+import providers.TseReportService;
 import report.Report;
 import session_manager.TSERestoreableWindowDao;
 import table_dialog.DialogBuilder;
@@ -31,6 +32,7 @@ import tse_summarized_information.SummarizedInfo;
 import tse_validator.ResultValidator;
 import window_restorer.RestoreableWindow;
 import xlsx_reader.TableSchema;
+import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.Selection;
 
 /**
@@ -45,17 +47,20 @@ public class ResultDialog extends TableDialogWithMenu {
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "AnalyticalResult";
 	
+	private TseReportService reportService;
+	
 	private Report report;
 	private SummarizedInfo summInfo;
 	private CaseReport caseInfo;
 	
-	public ResultDialog(Shell parent, Report report, SummarizedInfo summInfo, CaseReport caseInfo) {
+	public ResultDialog(Shell parent, Report report, SummarizedInfo summInfo, CaseReport caseInfo, TseReportService reportService) {
 		
 		super(parent, TSEMessages.get("result.title"), true, false);
 		
 		this.report = report;
 		this.summInfo = summInfo;
 		this.caseInfo = caseInfo;
+		this.reportService = reportService;
 		
 		// create the dialog
 		super.create();
@@ -125,7 +130,8 @@ public class ResultDialog extends TableDialogWithMenu {
 	public void askForDefault() {
 			
 		// create default if no results are present
-		if (!this.caseInfo.hasResults() && isEditable() && !this.summInfo.isBSEOS()) {
+		if (!reportService.hasChildren(caseInfo, TableSchemaList.getByName(CustomStrings.RESULT_SHEET)) 
+				&& isEditable() && !this.summInfo.isBSEOS()) {
 
 			int val = Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"), 
 					TSEMessages.get("result.confirm.default"),
