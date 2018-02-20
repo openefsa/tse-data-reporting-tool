@@ -58,11 +58,18 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		return hash.size();
 	}
 	
-	private int getPositiveCasesNumber(Collection<TableRow> cases) {
+	private double getPositiveCasesNumber(TableRow summInfo, Collection<TableRow> cases) {
 		int neg = getDistinctCaseIndex(cases, CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, false);
 		int inc = getDistinctCaseIndex(cases, CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, false);
 		
-		return cases.size() - neg - inc;
+		double posNum = (cases.size() - neg - inc);
+		
+		// for CWD we have the positive number doubled
+		if (summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
+				.equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE))
+			posNum /= 2;
+		
+		return posNum;
 	}
 
 	private Collection<TableRow> getNegativeCases(Collection<TableRow> cases) {
@@ -157,8 +164,8 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 				int detailedIncAndPos = getDistinctCaseIndex(cases, 
 						CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, true);
 				
-				int detailedPos = getPositiveCasesNumber(cases);
-				
+				double detailedPos = getPositiveCasesNumber(row, cases);
+
 				if (detailedPos > posSamples) {
 					checks.add(SampleCheck.TOO_MANY_POSITIVES);
 				}
