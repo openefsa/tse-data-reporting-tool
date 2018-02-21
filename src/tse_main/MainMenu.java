@@ -24,6 +24,7 @@ import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import message.MessageConfigBuilder;
 import message_creator.OperationType;
+import providers.IFormulaService;
 import providers.ITableDaoService;
 import providers.TseReportService;
 import report.ReportException;
@@ -56,6 +57,7 @@ public class MainMenu {
 	
 	private TseReportService reportService;
 	private ITableDaoService daoService;
+	private IFormulaService formulaService;
 	
 	private MainPanel mainPanel;
 	private Shell shell;
@@ -76,11 +78,13 @@ public class MainMenu {
 	private MenuItem exportReport;
 	private MenuItem exitApplication;
 
-	public MainMenu(MainPanel mainPanel, Shell shell, TseReportService reportService, ITableDaoService daoService) {
+	public MainMenu(MainPanel mainPanel, Shell shell, TseReportService reportService, ITableDaoService daoService,
+			IFormulaService formulaService) {
 		this.shell = shell;
 		this.mainPanel = mainPanel;
 		this.reportService = reportService;
 		this.daoService = daoService;
+		this.formulaService = formulaService;
 		create();
 	}
 
@@ -251,7 +255,7 @@ public class MainMenu {
 				
 				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
 
-				TseSummarizedInfoImporter importer = new TseSummarizedInfoImporter();
+				TseSummarizedInfoImporter importer = new TseSummarizedInfoImporter(daoService, formulaService);
 
 				// copy the data into the selected report
 				importer.copyByParent(childSchema, report, mainPanel.getOpenedReport());

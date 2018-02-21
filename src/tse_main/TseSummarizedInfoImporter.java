@@ -1,5 +1,7 @@
 package tse_main;
 
+import providers.IFormulaService;
+import providers.ITableDaoService;
 import table_importer.TableImporter;
 import table_skeleton.TableRow;
 import tse_config.CustomStrings;
@@ -12,6 +14,13 @@ import tse_config.CustomStrings;
  */
 public class TseSummarizedInfoImporter extends TableImporter {
 
+	private IFormulaService formulaService;
+	
+	public TseSummarizedInfoImporter(ITableDaoService daoService, IFormulaService formulaService) {
+		super(daoService);
+		this.formulaService = formulaService;
+	}
+	
 	@Override
 	public void filterRowData(TableRow row) {
 		
@@ -21,7 +30,8 @@ public class TseSummarizedInfoImporter extends TableImporter {
 		row.put(CustomStrings.SUMMARIZED_INFO_UNS_SAMPLES, "0");
 		row.put(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES, "0");
 		row.put(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES, "0");
-		row.initialize(CustomStrings.RESULT_PROG_ID);
-		row.initialize(CustomStrings.RES_ID_COLUMN);
+
+		this.formulaService.initialize(row, CustomStrings.RESULT_PROG_ID);
+		this.formulaService.initialize(row, CustomStrings.RES_ID_COLUMN);
 	}
 }
