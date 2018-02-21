@@ -4,6 +4,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Shell;
 
 import app_config.GlobalManager;
+import providers.IFormulaService;
 import providers.ITableDaoService;
 import providers.TseReportService;
 import tse_report.TseReport;
@@ -14,6 +15,7 @@ public class MainPanel {
 	private Shell shell;
 	private TseReportService reportService;
 	private ITableDaoService daoService;
+	private IFormulaService formulaService;
 	
 	private MainMenu menu;
 	private SummarizedInfoDialog reportViewer;
@@ -21,10 +23,12 @@ public class MainPanel {
 	/**
 	 * Create the main user interface
 	 */
-	public MainPanel(Shell shell, TseReportService reportService, ITableDaoService daoService) {
+	public MainPanel(Shell shell, TseReportService reportService, ITableDaoService daoService, 
+			IFormulaService formulaService) {
 		this.shell = shell;
 		this.reportService = reportService;
 		this.daoService = daoService;
+		this.formulaService = formulaService;
 		create();
 	}
 	
@@ -76,6 +80,6 @@ public class MainPanel {
 		shell.setLayout(new GridLayout());
 		
 		this.menu = new MainMenu(this, shell, reportService, daoService);
-		this.reportViewer = new SummarizedInfoDialog(shell, reportService, daoService);
+		this.reportViewer = new SummarizedInfoDialog(shell, reportService, daoService, formulaService);
 	}
 }

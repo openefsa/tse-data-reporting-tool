@@ -1,4 +1,4 @@
-package predefined_results_reader;
+package predefined_results;
 
 public enum PredefinedResultHeader {
 	

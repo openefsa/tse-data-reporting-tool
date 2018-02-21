@@ -410,7 +410,7 @@ public class MainMenu {
 				if (report == null)
 					return;
 				
-				LOGGER.debug("Report versions=" + report.getAllVersions());
+				LOGGER.debug("Report versions=" + report.getAllVersions(daoService));
 			}
 			
 			@Override

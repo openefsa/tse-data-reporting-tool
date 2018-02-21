@@ -12,12 +12,15 @@ import dataset.Dataset;
 import dataset.IDataset;
 import dataset.RCLDatasetStatus;
 import message.MessageConfigBuilder;
+import report.Report;
 import soap_interface.IGetAck;
 import soap_interface.IGetDataset;
 import soap_interface.IGetDatasetsList;
 import soap_interface.ISendMessage;
 import table_relations.Relation;
+import table_skeleton.TableCell;
 import table_skeleton.TableRow;
+import table_skeleton.TableRowList;
 import table_skeleton.TableVersion;
 import tse_analytical_result.AnalyticalResult;
 import tse_case_report.CaseReport;
@@ -97,9 +100,7 @@ public class TseReportService extends ReportService {
 				.getByParentId(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET), 
 						summInfo.getSchema().getSheetName(), summInfo.getDatabaseId(), true)) {
 			
-			CaseReport caseInfo = (CaseReport) row;
-			
-			if (validator.getOverallWarningLevel(caseInfo) > 0) {
+			if (validator.getOverallWarningLevel(row) > 0) {
 				summInfo.setChildrenError();
 				errors = true;
 				break;
@@ -122,9 +123,7 @@ public class TseReportService extends ReportService {
 				.getByParentId(TableSchemaList.getByName(CustomStrings.RESULT_SHEET), 
 						caseReport.getSchema().getSheetName(), caseReport.getDatabaseId(), true)) {
 			
-			AnalyticalResult result = (AnalyticalResult) r;
-			
-			if (resultValidator.getWarningLevel(result) > 0) {
+			if (resultValidator.getWarningLevel(r) > 0) {
 				caseReport.setChildrenError();
 				error = true;
 				break;
@@ -320,4 +319,128 @@ public class TseReportService extends ReportService {
 		
 		return report;
 	}
+	
+	public void createDefaultRGTCase(Report report, TableRow summInfo) {
+		
+		TableSchema caseSchema = TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
+		TableRow resultRow = new TableRow(caseSchema);
+		
+		// inject the case parent to the result
+		Relation.injectParent(report, resultRow);
+		Relation.injectParent(summInfo, resultRow);
+		
+		formulaService.initialize(resultRow);
+		
+		// add get the id and update the fields
+		daoService.add(resultRow);
+
+		formulaService.initialize(resultRow);
+
+		resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.BLOOD_CODE);
+		
+		daoService.update(resultRow);
+	}
+	
+	/**
+	 * Once a summ info is clicked, create the default cases according to 
+	 * number of positive/inconclusive cases
+	 * @param summInfo
+	 * @param positive
+	 * @param inconclusive
+	 * @throws IOException
+	 */
+	public void createDefaultCases(Report report, TableRow summInfo) throws IOException {
+		
+		// check cases number
+		int positive = summInfo.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
+		int inconclusive = summInfo.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
+		
+		TableSchema resultSchema = TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
+		
+		boolean isCervid = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
+			.equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE);
+		
+		// for cervids we need double rows
+		int repeats = isCervid ? 2 : 1;
+
+		// for each inconclusive
+		for (int i = 0; i < inconclusive; ++i) {
+
+			for (int j = 0; j < repeats; ++j) {
+
+				TableRow resultRow = new TableRow(resultSchema);
+				
+				// inject the case parent to the result
+				Relation.injectParent(report, resultRow);
+				Relation.injectParent(summInfo, resultRow);
+				formulaService.initialize(resultRow);
+				
+				// add result
+				daoService.add(resultRow);
+
+				formulaService.initialize(resultRow);
+
+				// set assessment as inconclusive
+				TableCell value = new TableCell();
+				value.setCode(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE);
+				value.setLabel(CustomStrings.DEFAULT_ASSESS_INC_CASE_LABEL);
+				resultRow.put(CustomStrings.CASE_INFO_ASSESS, value);
+				
+				// default always obex
+				resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
+				
+				if (isCervid) {
+					if (j==0) {
+						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
+					}
+					else if (j==1) {
+						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.LYMPH_CODE);
+					}
+				}
+
+				daoService.update(resultRow);
+			}
+		}
+
+		// for each positive
+		for (int i = 0; i < positive; ++i) {
+
+			for (int j = 0; j < repeats; ++j) {
+				
+				TableRow resultRow = new TableRow(resultSchema);
+				
+				// inject the case parent to the result
+				Relation.injectParent(report, resultRow);
+				Relation.injectParent(summInfo, resultRow);
+				formulaService.initialize(resultRow);
+				
+				// add get the id and update the fields
+				daoService.add(resultRow);
+
+				// default always obex
+				resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
+				
+				if (isCervid) {
+					if (j==0) {
+						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
+					}
+					else if (j==1) {
+						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.LYMPH_CODE);
+					}
+				}
+
+				daoService.update(resultRow);
+			}
+		}
+	}
+	
+	public TableRowList createDefaultResults(Report report, SummarizedInfo summInfo, CaseReport caseInfo) throws IOException {
+		
+		PredefinedResultService r = new PredefinedResultService(daoService, formulaService);
+		
+		TableRowList results = r.createDefaultResults(report, summInfo, caseInfo);
+		
+		return results;
+	}
+	
 }

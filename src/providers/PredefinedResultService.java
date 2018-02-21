@@ -1,11 +1,15 @@
-package predefined_results_reader;
+package providers;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import predefined_results.PredefinedResult;
+import predefined_results.PredefinedResultHeader;
+import predefined_results.PredefinedResultList;
+import providers.IFormulaService;
+import providers.ITableDaoService;
 import report.Report;
 import table_relations.Relation;
 import table_skeleton.TableRow;
@@ -15,10 +19,17 @@ import tse_case_report.CaseReport;
 import tse_config.CustomStrings;
 import tse_summarized_information.SummarizedInfo;
 
-public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
+public class PredefinedResultService {
+
+	private static final Logger LOGGER = LogManager.getLogger(PredefinedResultService.class);
 	
-	private static final Logger LOGGER = LogManager.getLogger(PredefinedResult.class);
-	private static final long serialVersionUID = 1L;
+	private ITableDaoService daoService;
+	private IFormulaService formulaService;
+	
+	public PredefinedResultService(ITableDaoService daoService, IFormulaService formulaService) {
+		this.daoService = daoService;
+		this.formulaService = formulaService;
+	}
 	
 	/**
 	 * Create the default results for a case
@@ -27,7 +38,7 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 	 * @param caseReport
 	 * @throws IOException
 	 */
-	public static TableRowList createDefaultResults(Report report, 
+	public TableRowList createDefaultResults(Report report, 
 			SummarizedInfo summInfo, CaseReport caseReport) throws IOException {
 
 		TableRowList results = new TableRowList();
@@ -67,21 +78,21 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 	 * @return
 	 * @throws IOException
 	 */
-	public static boolean isConfirmatoryTested(String type) throws IOException {
+	public boolean isConfirmatoryTested(String type) throws IOException {
 
 		String confirmatory = "";
 		
 		switch(type) {
 		case CustomStrings.SUMMARIZED_INFO_BSE_TYPE:
-			confirmatory = Relation.getGlobalParent(CustomStrings.PREFERENCES_SHEET)
+			confirmatory = Relation.getGlobalParent(CustomStrings.PREFERENCES_SHEET, daoService)
 					.getCode(CustomStrings.PREFERENCES_CONFIRMATORY_BSE);
 			break;
 		case CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE:
-			confirmatory = Relation.getGlobalParent(CustomStrings.PREFERENCES_SHEET)
+			confirmatory = Relation.getGlobalParent(CustomStrings.PREFERENCES_SHEET, daoService)
 			.getCode(CustomStrings.PREFERENCES_CONFIRMATORY_SCRAPIE);
 			break;
 		case CustomStrings.SUMMARIZED_INFO_CWD_TYPE:
-			confirmatory = Relation.getGlobalParent(CustomStrings.PREFERENCES_SHEET)
+			confirmatory = Relation.getGlobalParent(CustomStrings.PREFERENCES_SHEET, daoService)
 			.getCode(CustomStrings.PREFERENCES_CONFIRMATORY_CWD);
 			break;
 		}
@@ -89,13 +100,13 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 		return !confirmatory.isEmpty();
 	}
 	
-	public static String getPreferredTestType(String type, String testType) throws IOException {
+	public String getPreferredTestType(String type, String testType) throws IOException {
 		
 		return Relation.getGlobalParent(CustomStrings.PREFERENCES_SHEET)
 				.getCode(testType);
 	}
 
-	public static String getPreferredTestType(AnalyticalResult row, String recordType, String testType) 
+	public String getPreferredTestType(AnalyticalResult row, String recordType, String testType) 
 			throws IOException {
 		
 		String preferredTestType = null;
@@ -157,7 +168,7 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 		return preferredTestType;
 	}
 	
-	public static PredefinedResult getPredefinedResult(Report report, 
+	public PredefinedResult getPredefinedResult(Report report, 
 			SummarizedInfo summInfo, TableRow caseReport) throws IOException {
 		
 		// put the predefined value for the param code and the result
@@ -184,7 +195,7 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 	 * @param testTypeCode
 	 * @throws IOException
 	 */
-	private static AnalyticalResult createDefaultResult(Report report, 
+	private AnalyticalResult createDefaultResult(Report report, 
 			SummarizedInfo summInfo, TableRow caseReport, 
 			PredefinedResultHeader test, 
 			String testTypeCode) throws IOException {
@@ -203,11 +214,11 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 		boolean added = addParamAndResult(resultRow, defaultResult, test);
 		
 		if (added) {
+			
 			// code crack to save the row id for the resId field
 			// otherwise its default value will be corrupted
-			resultRow.save();
-			
-			resultRow.initialize();
+			daoService.add(resultRow);
+			formulaService.initialize(resultRow);
 			
 			resultRow.put(CustomStrings.RESULT_TEST_TYPE, testTypeCode);
 			
@@ -224,9 +235,8 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 			
 			addParamAndResult(resultRow, defaultResult, test);
 			
-			resultRow.updateFormulas();
-
-			resultRow.update();
+			formulaService.updateFormulas(resultRow);
+			daoService.update(resultRow);
 			
 			return resultRow;
 		}
@@ -242,7 +252,7 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 	 * @param codeCol
 	 * @return
 	 */
-	public static boolean addParamAndResult(TableRow result, 
+	public boolean addParamAndResult(TableRow result, 
 			PredefinedResult defValues, 
 			PredefinedResultHeader codeCol) {
 		
@@ -256,6 +266,8 @@ public class PredefinedResult extends HashMap<PredefinedResultHeader, String> {
 		// and add them to the row
 		return addParamAndResult(result, code);
 	}
+	
+
 	
 	/**
 	 * Add param and result. These values are taken from the test code

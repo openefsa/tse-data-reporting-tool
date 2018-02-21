@@ -1,4 +1,4 @@
-package report_service_test;
+package providers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -34,12 +35,6 @@ import message.TrxCode;
 import message_creator.OperationType;
 import mocks.RowCreatorMock;
 import mocks.TableDaoMock;
-import providers.FormulaService;
-import providers.IFormulaService;
-import providers.ITableDaoService;
-import providers.RCLError;
-import providers.TableDaoService;
-import providers.TseReportService;
 import report.Report;
 import report.ReportException;
 import report.ReportSendOperation;
@@ -48,6 +43,7 @@ import soap_test.GetAckMock;
 import soap_test.GetDatasetMock;
 import soap_test.GetDatasetsListMock;
 import soap_test.SendMessageMock;
+import table_skeleton.TableCell;
 import table_skeleton.TableRow;
 import table_skeleton.TableRowList;
 import table_skeleton.TableVersion;
@@ -1423,7 +1419,7 @@ public class ReportServiceTest {
 	}
 	
 	@Test
-	public void amendReport() {
+	public void amendReportCheckIfSummarizedInformationAreCopied() {
 		
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 		
@@ -1442,5 +1438,105 @@ public class ReportServiceTest {
 		assertEquals(TableVersion.createNewVersion(oldVersion), newVersion.getVersion());
 		assertEquals(RCLDatasetStatus.DRAFT, newVersion.getRCLStatus());
 		assertEquals(children1.size(), children2.size());
+	}
+	
+	@Test
+	public void checkRGTDefaultCase() {
+		
+		TableRow pref = RowCreatorMock.genRandPreferences();
+		int prefId = daoService.add(pref);
+		
+		TableRow opt = RowCreatorMock.genRandSettings();
+		int optId = daoService.add(opt);
+		
+		SummarizedInfo si = RowCreatorMock.genRandSummInfo(report.getDatabaseId(), optId, prefId);
+		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, new TableCell(CustomStrings.SUMMARIZED_INFO_RGT_TYPE, ""));
+		
+		reportService.createDefaultRGTCase(report, si);
+		
+		TableRowList list = daoService.getAll(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET));
+		
+		assertEquals(1, list.size());
+		
+		TableRow rgt = list.iterator().next();
+		
+		// blood as part for rgt
+		assertEquals(CustomStrings.BLOOD_CODE, rgt.getCode(CustomStrings.SUMMARIZED_INFO_PART));
+	}
+	
+	@Test
+	public void checkDefaultCasesForNonCWD() throws IOException {
+		
+		TableRow pref = RowCreatorMock.genRandPreferences();
+		int prefId = daoService.add(pref);
+		
+		TableRow opt = RowCreatorMock.genRandSettings();
+		int optId = daoService.add(opt);
+		
+		SummarizedInfo si = RowCreatorMock.genRandSummInfo(report.getDatabaseId(), optId, prefId);
+		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
+		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "1");
+		si.put(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES, "0");
+		si.put(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES, "0");
+		
+		reportService.createDefaultCases(report, si);
+		
+		TableRowList list = daoService.getAll(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET));
+		
+		// two cases for cwd
+		assertEquals(1, list.size());
+		
+		Iterator<TableRow> iterator = list.iterator();
+		
+		TableRow case1 = iterator.next();
+		
+		assertEquals(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, case1.getCode(CustomStrings.CASE_INFO_ASSESS));
+		
+		// obex and lymph for cases part
+		boolean hasObex1 = CustomStrings.OBEX_CODE.equals(case1.getCode(CustomStrings.SUMMARIZED_INFO_PART));
+		
+		assertTrue(hasObex1);
+	}
+	
+	@Test
+	public void checkDefaultCasesForCWD() throws IOException {
+		
+		TableRow pref = RowCreatorMock.genRandPreferences();
+		int prefId = daoService.add(pref);
+		
+		TableRow opt = RowCreatorMock.genRandSettings();
+		int optId = daoService.add(opt);
+		
+		SummarizedInfo si = RowCreatorMock.genRandSummInfo(report.getDatabaseId(), optId, prefId);
+		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, new TableCell(CustomStrings.SUMMARIZED_INFO_CWD_TYPE, ""));
+		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "1");
+		si.put(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES, "0");
+		si.put(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES, "0");
+		
+		reportService.createDefaultCases(report, si);
+		
+		TableRowList list = daoService.getAll(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET));
+		
+		// two cases for cwd
+		assertEquals(2, list.size());
+		
+		Iterator<TableRow> iterator = list.iterator();
+		
+		TableRow case1 = iterator.next();
+		TableRow case2 = iterator.next();
+		
+		assertEquals(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, case1.getCode(CustomStrings.CASE_INFO_ASSESS));
+		assertEquals(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, case2.getCode(CustomStrings.CASE_INFO_ASSESS));
+		
+		// obex and lymph for cases part
+		boolean hasObex1 = CustomStrings.OBEX_CODE.equals(case1.getCode(CustomStrings.SUMMARIZED_INFO_PART));
+		boolean hasObex2 = CustomStrings.OBEX_CODE.equals(case2.getCode(CustomStrings.SUMMARIZED_INFO_PART));
+		
+		assertTrue(hasObex1 || hasObex2);
+		
+		boolean hasLymph1 = CustomStrings.LYMPH_CODE.equals(case1.getCode(CustomStrings.SUMMARIZED_INFO_PART));
+		boolean hasLymph2 = CustomStrings.LYMPH_CODE.equals(case2.getCode(CustomStrings.SUMMARIZED_INFO_PART));
+		
+		assertTrue(hasLymph1 || hasLymph2);
 	}
 }

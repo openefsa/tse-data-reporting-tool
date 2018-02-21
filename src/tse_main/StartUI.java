@@ -276,7 +276,7 @@ public class StartUI {
 		// open the main panel
 		
 		try {
-			new MainPanel(shell, reportService, daoService);
+			new MainPanel(shell, reportService, daoService, formulaService);
 		}
 		catch (Throwable e) {
 			e.printStackTrace();

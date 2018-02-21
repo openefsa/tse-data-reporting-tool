@@ -29,6 +29,7 @@ import i18n_messages.TSEMessages;
 import message.MessageConfigBuilder;
 import message_creator.OperationType;
 import progress_bar.IndeterminateProgressDialog;
+import providers.IFormulaService;
 import providers.ITableDaoService;
 import providers.TseReportService;
 import report.DisplayAckThread;
@@ -73,18 +74,21 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 
 	private TseReportService reportService;
 	private ITableDaoService daoService;
+	private IFormulaService formulaService;
 	
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "SummarizedInformation";
 	
 	private TseReport report;
 	
-	public SummarizedInfoDialog(Shell parent, TseReportService reportService, ITableDaoService daoService) {
+	public SummarizedInfoDialog(Shell parent, TseReportService reportService, ITableDaoService daoService,
+			IFormulaService formulaService) {
 		
 		super(parent, "", false, false);
 		
 		this.reportService = reportService;
 		this.daoService = daoService;
+		this.formulaService = formulaService;
 		
 		// create the parent structure
 		super.create();
@@ -192,7 +196,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		
 		// create a case passing also the report information
 		CaseReportDialog dialog = new CaseReportDialog(getDialog(), this.report, summInfo, 
-				reportService, daoService);
+				reportService, daoService, formulaService);
 		
 		// filter the records by the clicked summarized information
 		dialog.setParentFilter(summInfo);

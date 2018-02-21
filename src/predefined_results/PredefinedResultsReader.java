@@ -1,4 +1,4 @@
-package predefined_results_reader;
+package predefined_results;
 
 import java.io.IOException;
 

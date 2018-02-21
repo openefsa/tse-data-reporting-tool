@@ -13,8 +13,11 @@ import app_config.AppPaths;
 import dataset.RCLDatasetStatus;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
-import predefined_results_reader.PredefinedResult;
-import predefined_results_reader.PredefinedResultHeader;
+import predefined_results.PredefinedResult;
+import predefined_results.PredefinedResultHeader;
+import providers.IFormulaService;
+import providers.ITableDaoService;
+import providers.PredefinedResultService;
 import providers.TseReportService;
 import report.Report;
 import session_manager.TSERestoreableWindowDao;
@@ -48,12 +51,16 @@ public class ResultDialog extends TableDialogWithMenu {
 	private static final String WINDOW_CODE = "AnalyticalResult";
 	
 	private TseReportService reportService;
+	private ITableDaoService daoService;
+	private IFormulaService formulaService;
 	
 	private Report report;
 	private SummarizedInfo summInfo;
 	private CaseReport caseInfo;
 	
-	public ResultDialog(Shell parent, Report report, SummarizedInfo summInfo, CaseReport caseInfo, TseReportService reportService) {
+	public ResultDialog(Shell parent, Report report, SummarizedInfo summInfo, 
+			CaseReport caseInfo, TseReportService reportService, ITableDaoService daoService,
+			IFormulaService formulaService) {
 		
 		super(parent, TSEMessages.get("result.title"), true, false);
 		
@@ -61,6 +68,8 @@ public class ResultDialog extends TableDialogWithMenu {
 		this.summInfo = summInfo;
 		this.caseInfo = caseInfo;
 		this.reportService = reportService;
+		this.daoService = daoService;
+		this.formulaService = formulaService;
 		
 		// create the dialog
 		super.create();
@@ -92,7 +101,10 @@ public class ResultDialog extends TableDialogWithMenu {
 								.equals(CustomStrings.SUMMARIZED_INFO_BSEOS_TYPE)) {
 
 						try {
-							PredefinedResult predRes = PredefinedResult.getPredefinedResult(report, summInfo, caseInfo);
+							
+							PredefinedResultService r = new PredefinedResultService(daoService, formulaService);
+							
+							PredefinedResult predRes = r.getPredefinedResult(report, summInfo, caseInfo);
 
 							row.put(CustomStrings.PARAM_CODE_BASE_TERM_COL, 
 									predRes.get(PredefinedResultHeader.GENOTYPING_BASE_TERM));
@@ -105,7 +117,7 @@ public class ResultDialog extends TableDialogWithMenu {
 					}
 					else {
 						if (!row.getCode(CustomStrings.RESULT_TEST_AIM).isEmpty())
-							PredefinedResult.addParamAndResult(row, row.getCode(field.getId()));
+							PredefinedResultService.addParamAndResult(row, row.getCode(field.getId()));
 					}
 				}
 				
@@ -143,7 +155,8 @@ public class ResultDialog extends TableDialogWithMenu {
 				return;
 			
 			try {
-				TableRowList results = PredefinedResult.createDefaultResults(report, summInfo, caseInfo);
+				
+				TableRowList results = reportService.createDefaultResults(report, summInfo, caseInfo);
 				this.setRows(results);
 				
 				warnUser(TSEMessages.get("warning.title"), 

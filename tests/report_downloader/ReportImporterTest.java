@@ -115,7 +115,7 @@ public class ReportImporterTest {
 	
 	@Test
 	public void importNonFirstVersionInValidState() {
-		
+		// TODO it depends on the changes we will implement, for now the process is wrong
 	}
 	
 	@Test

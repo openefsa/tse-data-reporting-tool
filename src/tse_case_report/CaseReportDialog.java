@@ -18,16 +18,15 @@ import app_config.AppPaths;
 import dataset.RCLDatasetStatus;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
+import providers.IFormulaService;
 import providers.ITableDaoService;
 import providers.TseReportService;
 import report.Report;
 import session_manager.TSERestoreableWindowDao;
-import table_database.TableDao;
 import table_dialog.DialogBuilder;
 import table_dialog.EditorListener;
 import table_dialog.RowValidatorLabelProvider;
 import table_relations.Relation;
-import table_skeleton.TableCell;
 import table_skeleton.TableColumn;
 import table_skeleton.TableRow;
 import tse_analytical_result.ResultDialog;
@@ -57,9 +56,10 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	
 	private TseReportService reportService;
 	private ITableDaoService daoService;
+	private IFormulaService formulaService;
 	
 	public CaseReportDialog(Shell parent, Report report, SummarizedInfo summInfo, 
-			TseReportService reportService, ITableDaoService daoService) {
+			TseReportService reportService, ITableDaoService daoService, IFormulaService formulaService) {
 		
 		super(parent, TSEMessages.get("case.title"), true, false);
 		LOGGER.info("Opening case report dialog");
@@ -68,6 +68,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		this.summInfo = summInfo;
 		this.reportService = reportService;
 		this.daoService = daoService;
+		this.formulaService = formulaService;
 		
 		LOGGER.info("Creating dialog structure and contents");
 		// create the parent structure
@@ -132,7 +133,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 			
 			if (hasExpectedCases) {
 				try {
-					createDefaultCases(summInfo);
+					reportService.createDefaultCases(report, summInfo);
 				} catch (IOException e) {
 					e.printStackTrace();
 					LOGGER.error("Cannot create default cases in summarized info with progId=" 
@@ -140,124 +141,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				}
 			}
 			else if (isRGT) {
-				createDefaultRGTCase(summInfo);
-			}
-		}
-	}
-	
-	private void createDefaultRGTCase(TableRow summInfo) {
-		
-		TableSchema caseSchema = TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
-		TableRow resultRow = new TableRow(caseSchema);
-		
-		// inject the case parent to the result
-		Relation.injectParent(report, resultRow);
-		Relation.injectParent(summInfo, resultRow);
-
-		// add two default rows
-		TableDao dao = new TableDao();
-		
-		resultRow.initialize();
-		
-		// add get the id and update the fields
-		int id = dao.add(resultRow);
-		resultRow.setId(id);
-		resultRow.initialize();
-		
-		resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.BLOOD_CODE);
-		
-		resultRow.update();
-	}
-	
-	/**
-	 * Once a summ info is clicked, create the default cases according to 
-	 * number of positive/inconclusive cases
-	 * @param summInfo
-	 * @param positive
-	 * @param inconclusive
-	 * @throws IOException
-	 */
-	private void createDefaultCases(TableRow summInfo) throws IOException {
-		
-		// check cases number
-		int positive = summInfo.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
-		int inconclusive = summInfo.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
-		
-		TableSchema resultSchema = TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
-		
-		TableRow resultRow = new TableRow(resultSchema);
-		
-		// inject the case parent to the result
-		Relation.injectParent(report, resultRow);
-		Relation.injectParent(summInfo, resultRow);
-
-		// add two default rows
-		TableDao dao = new TableDao();
-		
-		resultRow.initialize();
-		
-		boolean isCervid = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
-			.equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE);
-		
-		// for cervids we need double rows
-		int repeats = isCervid ? 2 : 1;
-
-		// for each inconclusive
-		for (int i = 0; i < inconclusive; ++i) {
-
-			for (int j = 0; j < repeats; ++j) {
-
-				// add get the id and update the fields
-				int id = dao.add(resultRow);
-				resultRow.setId(id);
-
-				resultRow.initialize();
-
-				// set assessment as inconclusive
-				TableCell value = new TableCell();
-				value.setCode(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE);
-				value.setLabel(CustomStrings.DEFAULT_ASSESS_INC_CASE_LABEL);
-				resultRow.put(CustomStrings.CASE_INFO_ASSESS, value);
-				
-				// default always obex
-				resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
-				
-				if (isCervid) {
-					if (j==0) {
-						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
-					}
-					else if (j==1) {
-						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.LYMPH_CODE);
-					}
-				}
-
-				dao.update(resultRow);
-			}
-		}
-
-		// for each positive
-		for (int i = 0; i < positive; ++i) {
-
-			for (int j = 0; j < repeats; ++j) {
-				
-				// add get the id and update the fields
-				int id = dao.add(resultRow);
-				resultRow.setId(id);
-				resultRow.initialize();
-
-				// default always obex
-				resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
-				
-				if (isCervid) {
-					if (j==0) {
-						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
-					}
-					else if (j==1) {
-						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.LYMPH_CODE);
-					}
-				}
-
-				dao.update(resultRow);
+				reportService.createDefaultRGTCase(report, summInfo);
 			}
 		}
 	}
@@ -316,7 +200,8 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				
 				// initialize result passing also the 
 				// report data and the summarized information data
-				ResultDialog dialog = new ResultDialog(getParent(), report, summInfo, caseReport, reportService);
+				ResultDialog dialog = new ResultDialog(getParent(), report, summInfo, 
+						caseReport, reportService, daoService, formulaService);
 				dialog.setParentFilter(caseReport); // set the case as filter (and parent)
 				dialog.askForDefault();
 				dialog.open();

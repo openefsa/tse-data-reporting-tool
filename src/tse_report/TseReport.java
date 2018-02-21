@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 import app_config.AppPaths;
 import dataset.DcfDatasetStatus;
 import dataset.RCLDatasetStatus;
+import providers.ITableDaoService;
 import report.EFSAReport;
 import report.Report;
 import report.ReportList;
-import table_database.TableDao;
 import table_relations.Relation;
 import table_skeleton.TableRow;
 import table_skeleton.TableVersion;
@@ -60,7 +60,7 @@ public class TseReport extends Report {
 	}
 	
 	@Override
-	public Collection<TableRow> getRecords() {
+	public Collection<TableRow> getRecords(ITableDaoService daoService) {
 
 		// children schemas
 		TableSchema[] schemas = new TableSchema[] {
@@ -68,7 +68,7 @@ public class TseReport extends Report {
 				TableSchemaList.getByName(CustomStrings.RESULT_SHEET)
 		};
 
-		Collection<TableRow> records = getRecords(schemas);
+		Collection<TableRow> records = getRecords(daoService, schemas);
 		
 		// remove random genotyping from the summarized information
 		List<TableRow> filteredRecords = records.stream().filter(new Predicate<TableRow>() {
@@ -94,7 +94,7 @@ public class TseReport extends Report {
 	 * Get all the elements of the report (summ info, case, analytical results)
 	 * @return
 	 */
-	public Collection<TableRow> getAllRecords() {
+	public Collection<TableRow> getAllRecords(ITableDaoService daoService) {
 
 		// children schemas
 		TableSchema[] schemas = new TableSchema[] {
@@ -103,24 +103,22 @@ public class TseReport extends Report {
 				TableSchemaList.getByName(CustomStrings.RESULT_SHEET)
 		};
 
-		return getRecords(schemas);
+		return getRecords(daoService, schemas);
 	}
 	
-	public Collection<TableRow> getRecords(TableSchema schema) {
+	public Collection<TableRow> getRecords(ITableDaoService daoService, TableSchema schema) {
 		TableSchema[] schemas = new TableSchema[] {schema};
-		return getRecords(schemas);
+		return getRecords(daoService, schemas);
 	}
 	
-	public Collection<TableRow> getRecords(TableSchema[] schemas) {
+	public Collection<TableRow> getRecords(ITableDaoService daoService, TableSchema[] schemas) {
 		
 		Collection<TableRow> records = new ArrayList<>();
 		
 		// for each child schema get the rows related to the report
 		for (TableSchema schema : schemas) {
-			
-			TableDao dao = new TableDao();
-			
-			Collection<TableRow> children = dao.getByParentId(schema, CustomStrings.REPORT_SHEET, 
+
+			Collection<TableRow> children = daoService.getByParentId(schema, CustomStrings.REPORT_SHEET, 
 					this.getDatabaseId(), true, "desc");
 			
 			records.addAll(children);
@@ -132,14 +130,12 @@ public class TseReport extends Report {
 	/**
 	 * Get all the report versions that are stored locally
 	 */
-	public ReportList getAllVersions() {
+	public ReportList getAllVersions(ITableDaoService daoService) {
 
 		ReportList allVersions = new ReportList();
 		
-		TableDao dao = new TableDao();
-		
 		// get all the versions of the report by the dataset sender id
-		Collection<TableRow> reports = dao.getByStringField(this.getSchema(), AppPaths.REPORT_SENDER_ID, 
+		Collection<TableRow> reports = daoService.getByStringField(this.getSchema(), AppPaths.REPORT_SENDER_ID, 
 				this.getSenderId());
 		
 		for (TableRow report : reports) {
@@ -150,11 +146,11 @@ public class TseReport extends Report {
 	}
 
 	@Override
-	public EFSAReport getPreviousVersion() {
+	public EFSAReport getPreviousVersion(ITableDaoService daoService) {
 		
 		String currentVersion = this.getVersion();
 		
-		ReportList allVersions = getAllVersions();
+		ReportList allVersions = getAllVersions(daoService);
 
 		// sort starting from the newest
 		allVersions.sort();
