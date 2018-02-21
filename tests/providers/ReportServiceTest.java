@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,6 +19,7 @@ import org.xml.sax.SAXException;
 import ack.DcfAck;
 import ack.FileState;
 import ack.OkCode;
+import ack.OpResError;
 import app_config.AppPaths;
 import dataset.Dataset;
 import dataset.DatasetList;
@@ -467,7 +469,7 @@ public class ReportServiceTest {
 	}
 	
 	@Test
-	public void refreshStatusWithKOAck() {
+	public void refreshStatusOfUploadedReportWithKOAck() {
 		
 		DcfAck ack = new DcfAck(FileState.READY, new DcfAckLogMock(OkCode.KO, null));
 		getAck.setAck(ack);
@@ -478,7 +480,39 @@ public class ReportServiceTest {
 
 		Message m = reportService.refreshStatus(report);
 		
-		assertEquals(localStatus, report.getRCLStatus()); // not changed
+		assertEquals(RCLDatasetStatus.UPLOAD_FAILED, report.getRCLStatus());
+		assertEquals("ERR806", m.getCode());
+	}
+	
+	@Test
+	public void refreshStatusOfRejectionSentReportWithKOAck() {
+		
+		DcfAck ack = new DcfAck(FileState.READY, new DcfAckLogMock(OkCode.KO, null));
+		getAck.setAck(ack);
+		
+		RCLDatasetStatus localStatus = RCLDatasetStatus.REJECTION_SENT; // status which uses the ack
+		
+		report.setStatus(localStatus);
+
+		Message m = reportService.refreshStatus(report);
+		
+		assertEquals(RCLDatasetStatus.REJECTION_FAILED, report.getRCLStatus());
+		assertEquals("ERR806", m.getCode());
+	}
+	
+	@Test
+	public void refreshStatusOfSubmissionSentReportWithKOAck() {
+		
+		DcfAck ack = new DcfAck(FileState.READY, new DcfAckLogMock(OkCode.KO, null));
+		getAck.setAck(ack);
+		
+		RCLDatasetStatus localStatus = RCLDatasetStatus.SUBMISSION_SENT; // status which uses the ack
+		
+		report.setStatus(localStatus);
+
+		Message m = reportService.refreshStatus(report);
+		
+		assertEquals(RCLDatasetStatus.SUBMISSION_FAILED, report.getRCLStatus());
 		assertEquals("ERR806", m.getCode());
 	}
 	
@@ -711,7 +745,6 @@ public class ReportServiceTest {
 		assertEquals("ERR501", m.getCode());
 	}
 	
-	
 	@Test
 	public void refreshStatusNullAck() {
 		DcfAck ack = new DcfAck(FileState.WAIT, null);
@@ -722,6 +755,68 @@ public class ReportServiceTest {
 		
 		// processing message
 		assertEquals("WARN500", m.getCode());
+	}
+	
+	@Test
+	public void refreshStatusAckNotFound() {
+		getAck.setAck(null);
+		
+		report.setStatus(RCLDatasetStatus.UPLOADED);  // allow to get ack
+		Message m = reportService.refreshStatus(report);
+		
+		// processing message
+		assertEquals("ERR803", m.getCode());
+	}
+	
+	@Test
+	public void refreshStatusNotExistingDataCollectionError() {
+		
+		DcfAckLogMock log = new DcfAckLogMock(OkCode.KO, null);
+		log.setOpResError(OpResError.NOT_EXISTING_DC);
+		log.setOpResLog(Arrays.asList("error"));
+		
+		DcfAck ack = new DcfAck(FileState.READY, log);
+		getAck.setAck(ack);
+		
+		report.setStatus(RCLDatasetStatus.UPLOADED);
+		Message m = reportService.refreshStatus(report);
+		
+		// processing message
+		assertEquals("ERR407", m.getCode());
+	}
+	
+	@Test
+	public void refreshStatusUserNotAuthorizedForDataCollectionError() {
+		
+		DcfAckLogMock log = new DcfAckLogMock(OkCode.KO, null);
+		log.setOpResError(OpResError.USER_NOT_AUTHORIZED);
+		log.setOpResLog(Arrays.asList("error"));
+		
+		DcfAck ack = new DcfAck(FileState.READY, log);
+		getAck.setAck(ack);
+		
+		report.setStatus(RCLDatasetStatus.UPLOADED);
+		Message m = reportService.refreshStatus(report);
+		
+		// processing message
+		assertEquals("ERR101", m.getCode());
+	}
+	
+	@Test
+	public void refreshStatusGeneralAckError() {
+		
+		DcfAckLogMock log = new DcfAckLogMock(OkCode.KO, null);
+		log.setOpResError(OpResError.OTHER);
+		log.setOpResLog(Arrays.asList("error"));
+		
+		DcfAck ack = new DcfAck(FileState.READY, log);
+		getAck.setAck(ack);
+		
+		report.setStatus(RCLDatasetStatus.UPLOADED);
+		Message m = reportService.refreshStatus(report);
+		
+		// processing message
+		assertEquals("ERR502", m.getCode());
 	}
 	
 	@Test
