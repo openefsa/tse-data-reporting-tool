@@ -285,13 +285,16 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		String target = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP);
 		String progId = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_PROG_ID);
 		
+		String sex = summInfo.getLabel(CustomStrings.SEX_COL_ID);
+		
 		String yearRow = TSEMessages.get("case.samp.year", reportYear);
 		String monthRow = TSEMessages.get("case.samp.month", reportMonth);
 		String sourceRow = TSEMessages.get("case.animal.species", source);
 		String prodRow = TSEMessages.get("case.production.type", prod);
 		String ageRow = TSEMessages.get("case.age.class", age);
 		String targetRow = TSEMessages.get("case.target.group", target);
-		String progIdRow = TSEMessages.get("case.context.id", progId);
+		String progIdRow = TSEMessages.get("case.prog.id", progId);
+		String sexRow = TSEMessages.get("case.sex.id", sex);
 		
 		viewer.addHelp(TSEMessages.get("case.help.title"))
 			.addLabel("yearLabel", yearRow)
@@ -300,8 +303,13 @@ public class CaseReportDialog extends TableDialogWithMenu {
 			.addLabel("prodLabel", prodRow)
 			.addLabel("ageLabel", ageRow)
 			.addLabel("targetLabel", targetRow)
-			.addLabel("progIdLabel", progIdRow)
-			.addRowCreator(TSEMessages.get("case.add.record"))
+			.addLabel("progIdLabel", progIdRow);
+			
+		if (summInfo.getType().equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE)) {
+			viewer.addLabel("sexLabel", sexRow);
+		}
+			
+		viewer.addRowCreator(TSEMessages.get("case.add.record"))
 			.addTable(CustomStrings.CASE_INFO_SHEET, true, report, summInfo);
 	}
 }

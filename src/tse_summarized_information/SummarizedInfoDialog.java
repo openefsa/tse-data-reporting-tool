@@ -418,8 +418,6 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 						updateUI();
 					}
 				});
-				
-				getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
 			}
 		};
 		

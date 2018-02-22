@@ -307,7 +307,8 @@ public class TseReportValidator extends ReportValidator {
 		
 		// check mandatory fields
 		for(TableColumn field : reportService.getMandatoryFieldNotFilled(row)) {
-			errors.add(new MissingMandatoryFieldError(field.getLabel(), rowId));
+			String label = field.getLabel().isEmpty() ? field.getCode() : field.getLabel();
+			errors.add(new MissingMandatoryFieldError(label, rowId));
 		}
 		
 		return errors;

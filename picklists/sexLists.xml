@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sexLists xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<selectionList id="FM">
+		<selection code="F32.A0C8Z">
+			<description>Female</description>
+		</selection>
+		<selection code="F32.A0C9A">
+			<description>Male</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSE">
+		<selection code="F32.A0C9B">
+			<description>Mixed females and males</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIE">
+		<selection code="F32.A0C9B">
+			<description>Mixed females and males</description>
+		</selection>
+	</selectionList>
+	<selectionList id="RGT">
+		<selection code="F32.A0C9B">
+			<description>Mixed females and males</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD">
+		<selection code="F32.A0C8Z">
+			<description>Female</description>
+		</selection>
+		<selection code="F32.A0C9A">
+			<description>Male</description>
+		</selection>
+	</selectionList>
+</sexLists>

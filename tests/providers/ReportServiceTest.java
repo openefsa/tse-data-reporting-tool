@@ -681,7 +681,7 @@ public class ReportServiceTest {
 		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.UPLOADED, 
 				DcfDatasetStatus.REJECTED_EDITABLE, DcfDatasetStatus.VALID);
 		
-		assertEquals(RCLDatasetStatus.UPLOADED, report.getRCLStatus());
+		assertEquals(RCLDatasetStatus.VALID, report.getRCLStatus());
 		assertEquals("ERR501", m.getCode());
 	}
 	
@@ -690,7 +690,7 @@ public class ReportServiceTest {
 		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.UPLOADED, 
 				DcfDatasetStatus.OTHER, DcfDatasetStatus.SUBMITTED);
 		
-		assertEquals(RCLDatasetStatus.UPLOADED, report.getRCLStatus());
+		assertEquals(RCLDatasetStatus.SUBMITTED, report.getRCLStatus());
 		assertEquals("ERR501", m.getCode());
 	}
 	
@@ -1774,5 +1774,23 @@ public class ReportServiceTest {
 		assertEquals(1, doc.getElementsByTagName("result").getLength());
 		assertEquals(1, doc.getElementsByTagName("amType").getLength());
 		assertEquals("D", doc.getElementsByTagName("amType").item(0).getTextContent());
+	}
+	
+	@Test
+	public void exportReportWithoutAmendmentsWithInsertOperation() 
+			throws IOException, ParserConfigurationException, SAXException, ReportException {
+		
+		// create two versions of the report
+		TseReport report = genRandReportWithChildrenInDatabase();
+		
+		MessageConfigBuilder builder = reportService.getSendMessageConfiguration(report);
+		builder.setOpType(OperationType.INSERT);
+		File exportedFile = reportService.export(report, builder);
+		
+		assertNotNull(exportedFile);
+		
+		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(exportedFile);
+
+		assertEquals(1, doc.getElementsByTagName("result").getLength());
 	}
 }
