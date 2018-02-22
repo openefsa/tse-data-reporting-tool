@@ -6,14 +6,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import ack.DcfAck;
@@ -1633,5 +1636,143 @@ public class ReportServiceTest {
 		boolean hasLymph2 = CustomStrings.LYMPH_CODE.equals(case2.getCode(CustomStrings.SUMMARIZED_INFO_PART));
 		
 		assertTrue(hasLymph1 || hasLymph2);
+	}
+	
+	@Test
+	public void exportReportWithAmendmentsButNoDifferences() throws IOException, ParserConfigurationException, SAXException, ReportException {
+		
+		// create two versions of the report
+		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport amendedReport = reportService.amend(report);
+		
+		MessageConfigBuilder builder = reportService.getSendMessageConfiguration(amendedReport);
+		builder.setOpType(OperationType.INSERT);
+		File exportedFile = reportService.export(amendedReport, builder);
+		
+		assertNotNull(exportedFile);
+		
+		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(exportedFile);
+		
+		// no amendment should have been applied
+		assertEquals(0, doc.getElementsByTagName("result").getLength());
+		assertEquals(0, doc.getElementsByTagName("amType").getLength());
+		System.err.println("exportReportWithAmendments# The exported dataset is correct, but it is empty. DCF will probably give an error for that!");
+	}
+	
+	@Test
+	public void exportReportWithAmendmentsWithNewRecord() 
+			throws IOException, ParserConfigurationException, SAXException, ReportException {
+		
+		// create two versions of the report
+		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport amendedReport = reportService.amend(report);
+		
+		// new summarized information for the second report
+		SummarizedInfo si = RowCreatorMock.genRandSummInfo(amendedReport.getDatabaseId(), 1, // settId not required
+				amendedReport.getNumCode(CustomStrings.PREFERENCES_ID_COL));
+		
+		si.put(CustomStrings.RES_ID_COLUMN, "jdbadabdjsabdjsb");  // needed to say that it is different from the other summ info
+		daoService.add(si);
+		
+		MessageConfigBuilder builder = reportService.getSendMessageConfiguration(amendedReport);
+		builder.setOpType(OperationType.INSERT);
+		File exportedFile = reportService.export(amendedReport, builder);
+		
+		assertNotNull(exportedFile);
+		
+		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(exportedFile);
+
+		assertEquals(1, doc.getElementsByTagName("result").getLength());  // 1 record
+		assertEquals(0, doc.getElementsByTagName("amType").getLength());	
+	}
+	
+	@Test
+	public void exportReportWithAmendmentsWithUpdatedRecord() throws IOException, ParserConfigurationException, SAXException, ReportException {
+		
+		// create two versions of the report
+		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport amendedReport = reportService.amend(report);
+		
+		TableRowList list = daoService.getByParentId(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET), 
+				amendedReport.getSchema().getSheetName(), amendedReport.getDatabaseId(), false);
+		
+		TableRow si = list.iterator().next();
+		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "20");  // update
+		daoService.update(si);
+		
+		MessageConfigBuilder builder = reportService.getSendMessageConfiguration(amendedReport);
+		builder.setOpType(OperationType.INSERT);
+		File exportedFile = reportService.export(amendedReport, builder);
+		
+		assertNotNull(exportedFile);
+		
+		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(exportedFile);
+
+		assertEquals(1, doc.getElementsByTagName("result").getLength());
+		assertEquals(1, doc.getElementsByTagName("amType").getLength());
+		assertEquals("U", doc.getElementsByTagName("amType").item(0).getTextContent());
+	}
+	
+	@Test
+	public void exportReportWithAmendmentsWithDeletedRecordCreatingAnEmptyDatasetInDcf() 
+			throws IOException, ParserConfigurationException, SAXException, ReportException {
+		
+		// create two versions of the report
+		TseReport report = genRandReportWithChildrenInDatabase();
+		
+		TseReport amendedReport = reportService.amend(report);
+
+		TableRowList list = daoService.getByParentId(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET), 
+				amendedReport.getSchema().getSheetName(), amendedReport.getDatabaseId(), false);
+
+		// delete one row from the amended report => it will create an empty dataset
+		TableRow si = list.iterator().next();
+		daoService.delete(si.getSchema(), si.getDatabaseId());
+		
+		MessageConfigBuilder builder = reportService.getSendMessageConfiguration(amendedReport);
+		builder.setOpType(OperationType.INSERT);
+		File exportedFile = reportService.export(amendedReport, builder);
+		
+		assertNotNull(exportedFile);
+		
+		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(exportedFile);
+
+		assertEquals(1, doc.getElementsByTagName("result").getLength());
+		assertEquals(1, doc.getElementsByTagName("amType").getLength());
+		assertEquals("D", doc.getElementsByTagName("amType").item(0).getTextContent());
+	}
+	
+	@Test
+	public void exportReportWithAmendmentsWithDeletedRecordCreatingANonEmptyDatasetInDcf() 
+			throws IOException, ParserConfigurationException, SAXException, ReportException {
+		
+		// create two versions of the report
+		TseReport report = genRandReportWithChildrenInDatabase();
+		
+		// add an additional summ info
+		SummarizedInfo summInfo = RowCreatorMock.genRandSummInfo(report.getDatabaseId(), 1, 
+				report.getNumCode(CustomStrings.PREFERENCES_ID_COL));
+		daoService.add(summInfo);
+		
+		TseReport amendedReport = reportService.amend(report);
+
+		TableRowList list = daoService.getByParentId(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET), 
+				amendedReport.getSchema().getSheetName(), amendedReport.getDatabaseId(), false);
+
+		// delete one row from the amended report
+		TableRow si = list.iterator().next();
+		daoService.delete(si.getSchema(), si.getDatabaseId());
+		
+		MessageConfigBuilder builder = reportService.getSendMessageConfiguration(amendedReport);
+		builder.setOpType(OperationType.INSERT);
+		File exportedFile = reportService.export(amendedReport, builder);
+		
+		assertNotNull(exportedFile);
+		
+		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(exportedFile);
+
+		assertEquals(1, doc.getElementsByTagName("result").getLength());
+		assertEquals(1, doc.getElementsByTagName("amType").getLength());
+		assertEquals("D", doc.getElementsByTagName("amType").item(0).getTextContent());
 	}
 }
