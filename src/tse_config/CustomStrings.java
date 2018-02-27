@@ -68,6 +68,7 @@ public class CustomStrings {
 	public static final String CONTEXT_ID_COL = "contextId";
 	public static final String SUMMARIZED_INFO_SAMP_MAT_CODE = "sampMatCode";
 	public static final String SEX_COL_ID = "sex";
+	public static final String SEX_MALE = "F32.A0C9A";
 	
 	public static final String SUMMARIZED_INFO_BSE_TYPE = "BSE";
 	public static final String SUMMARIZED_INFO_SCRAPIE_TYPE = "SCRAPIE";

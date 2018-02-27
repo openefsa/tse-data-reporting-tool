@@ -106,7 +106,7 @@ public class ReportValidatorTest {
 	@Test
 	public void checkMandatoryFieldsForCaseInfo() throws FormulaException {
 		
-		cr.remove(CustomStrings.CASE_INFO_CASE_ID);
+		cr.remove(CustomStrings.CASE_INFO_SAMPLE_ID);
 
 		assertFalse(reportService.getMandatoryFieldNotFilled(cr).isEmpty());
 	}
@@ -120,7 +120,7 @@ public class ReportValidatorTest {
 	}
 	
 	@Test
-	public void tooManyDetailedPositiveCasesCheckForNonCwd() {
+	public void correctPositiveNumberWithSameCaseId() {
 		
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
 				new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
@@ -142,257 +142,75 @@ public class ReportValidatorTest {
 		
 		assertTrue(checks.contains(SampleCheck.TOO_MANY_POSITIVES));
 	}
-	
-	@Test
-	public void tooManyDetailedPositiveCasesCheckForCwd() {
-		
-		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
-				new TableCell(CustomStrings.SUMMARIZED_INFO_CWD_TYPE, ""));
-		
-		// one declared, two detailed
-		si.put(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES, "1");
-		
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
-				new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
-		
-		// create a second positive case
-		CaseReport cr2 = new CaseReport();
-		cr2.copyValues(cr);
-		
-		CaseReport cr3 = new CaseReport();
-		cr3.copyValues(cr);
-		
-		daoService.add(cr2);
-		daoService.add(cr3);
-		
-		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
-		Collection<SampleCheck> checks = validator.isSampleCorrect(si);
-		
-		assertTrue(checks.contains(SampleCheck.TOO_MANY_POSITIVES));
-	}
-	
-	@Test
-	public void correctNumberOfPositiveCasesForCwd() {
-		
-		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
-				new TableCell(CustomStrings.SUMMARIZED_INFO_CWD_TYPE, ""));
-		
-		// one declared, two detailed
-		si.put(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES, "1");
-		
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
-				new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
-		
-		cr.put(CustomStrings.CASE_INFO_CASE_ID, "caseX");
-		
-		// create a second positive case
-		CaseReport cr2 = new CaseReport();
-		cr2.copyValues(cr);
-		
-		daoService.add(cr2);
-		
-		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
-		Collection<SampleCheck> checks = validator.isSampleCorrect(si);
-		
-		assertFalse(checks.contains(SampleCheck.TOO_MANY_POSITIVES));
-	}
-	
-	@Test
-	public void tooManyNegativesWithScreeningForNonCwdCheck() {
-		
-		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
-				new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
-		
-		// no negative declared, one detailed with screening
-		si.put(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES, "0");
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
-				new TableCell(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, ""));
-		
-		result.put(CustomStrings.RESULT_TEST_TYPE, 
-				new TableCell(CustomStrings.SCREENING_TEST_CODE, ""));
-		
-		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
-		Collection<SampleCheck> checks = validator.isSampleCorrect(si);
-		
-		assertTrue(checks.contains(SampleCheck.TOO_MANY_SCREENING_NEGATIVES));
-	}
-	
-	@Test
-	public void tooManyNegativesWithScreeningForCwdCheck() {
-		
-		// one declared, three detailed instead of 2
-		
-		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
-				new TableCell(CustomStrings.SUMMARIZED_INFO_CWD_TYPE, ""));
-		
-		// no negative declared, one detailed with screening
-		si.put(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES, "1");
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
-				new TableCell(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, ""));
-		
-		CaseReport cr2 = new CaseReport();
-		CaseReport cr3 = new CaseReport();
-		cr2.copyValues(cr);
-		cr3.copyValues(cr);
-		
-		daoService.add(cr2);
-		daoService.add(cr3);
-		
-		result.put(CustomStrings.RESULT_TEST_TYPE, 
-				new TableCell(CustomStrings.SCREENING_TEST_CODE, ""));
-		
-		AnalyticalResult r2 = RowCreatorMock.genRandResult(report.getDatabaseId(), si.getDatabaseId(), 
-				cr2.getDatabaseId(), opt.getDatabaseId(), pref.getDatabaseId());
-		
-		AnalyticalResult r3 = RowCreatorMock.genRandResult(report.getDatabaseId(), si.getDatabaseId(), 
-				cr3.getDatabaseId(), opt.getDatabaseId(), pref.getDatabaseId());
-		
-		daoService.add(r2);
-		daoService.add(r3);
-		
-		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
-		Collection<SampleCheck> checks = validator.isSampleCorrect(si);
-		
-		assertTrue(checks.contains(SampleCheck.TOO_MANY_SCREENING_NEGATIVES));
-	}
-	
-	@Test
-	public void tooManyNegativesWithScreeningCheck2() {
-		
-		// no negative declared, one detailed with screening
-		si.put(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES, "1");
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
-				new TableCell(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, ""));
-		
-		result.put(CustomStrings.RESULT_TEST_TYPE, 
-				new TableCell(CustomStrings.SCREENING_TEST_CODE, ""));
-		
-		AnalyticalResult r2 = new AnalyticalResult();
-		r2.copyValues(result);
-		
-		daoService.add(r2);
-		
-		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
-		Collection<SampleCheck> checks = validator.isSampleCorrect(si);
-		
-		assertTrue(checks.contains(SampleCheck.TOO_MANY_SCREENING_NEGATIVES));
-	}
-	
-	@Test
-	public void declaredInconclusiveLessThanDetailedForCwdCheck() {
 
-		// NOTE: the case id unifies the records
-		// 1 declared, 3 detailed instead of 2
+	@Test
+	public void declaredPositiveLessThanDetailedCheck() {
 		
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
 				new TableCell(CustomStrings.SUMMARIZED_INFO_CWD_TYPE, ""));
+		
+		// one declared, two detailed
+		si.put(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES, "1");
+		
+		cr.put(CustomStrings.CASE_INFO_ASSESS, 
+				new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
+		
+		cr.put(CustomStrings.CASE_INFO_CASE_ID, "caseXdofndofj");
+		
+		// create a second positive case
+		CaseReport cr2 = new CaseReport();
+		cr2.copyValues(cr);
+		cr2.put(CustomStrings.CASE_INFO_CASE_ID, "dsadsadijaidjsoiajdoisjadsa");
+		
+		daoService.add(cr2);
+		
+		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
+		Collection<SampleCheck> checks = validator.isSampleCorrect(si);
+		
+		assertTrue(checks.contains(SampleCheck.TOO_MANY_POSITIVES));
+	}
+	
+	@Test
+	public void declaredInconclusiveLessThanDetailedCheck() {
+
+		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
+				new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
 		
 		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "1");
 		cr.put(CustomStrings.CASE_INFO_ASSESS, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
 		
+		// another inc report
 		CaseReport cr2 = new CaseReport();
-		CaseReport cr3 = new CaseReport();
 		cr2.copyValues(cr);
-		cr3.copyValues(cr);
-		
+		cr2.put(CustomStrings.CASE_INFO_CASE_ID, "fkdsajkdjsakdjskajd");
 		daoService.add(cr2);
-		daoService.add(cr3);
 		
 		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
 		Collection<SampleCheck> checks = validator.isSampleCorrect(si);
 		
-		assertTrue(checks.contains(SampleCheck.CHECK_INC_CASES));
+		assertTrue(checks.contains(SampleCheck.TOO_MANY_INCONCLUSIVES));
 	}
 	
 	@Test
-	public void declaredInconclusiveLessThanDetailedForNonCwdCheck() {
+	public void correctInconclusiveNumberWithSameCaseId() {
 
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
 				new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
 		
-		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "0");
+		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "1");
 		cr.put(CustomStrings.CASE_INFO_ASSESS, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
+		
+		// another inc report
+		CaseReport cr2 = new CaseReport();
+		cr2.copyValues(cr);
+		daoService.add(cr2);
 		
 		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
 		Collection<SampleCheck> checks = validator.isSampleCorrect(si);
 		
-		assertTrue(checks.contains(SampleCheck.CHECK_INC_CASES));
-	}
-	
-	@Test
-	public void declaredInconclusiveCorrectForCwdCheck() {
-
-		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
-				new TableCell(CustomStrings.SUMMARIZED_INFO_CWD_TYPE, ""));
-		
-		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "2");
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
-				new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
-		
-		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
-		Collection<SampleCheck> checks = validator.isSampleCorrect(si);
-		
-		assertFalse(checks.contains(SampleCheck.CHECK_INC_CASES));
-	}
-	
-	@Test
-	public void declaredInconclusiveMoreThanDetailedForCwdCheck() {
-
-		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
-				new TableCell(CustomStrings.SUMMARIZED_INFO_CWD_TYPE, ""));
-		
-		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "3");
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
-				new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
-		
-		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
-		Collection<SampleCheck> checks = validator.isSampleCorrect(si);
-		
-		assertTrue(checks.contains(SampleCheck.CHECK_INC_CASES));
-	}
-	
-	@Test
-	public void declaredInconclusiveMoreThanDetailedForNonCwdCheck() {
-
-		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
-				new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
-		
-		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "2");
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
-				new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
-		
-		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
-		Collection<SampleCheck> checks = validator.isSampleCorrect(si);
-		
-		assertTrue(checks.contains(SampleCheck.CHECK_INC_CASES));
-	}
-	
-	@Test
-	public void declaredIncPlusPosCasesLessThanDetailed() {
-
-		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "0");
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
-				new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
-		
-		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
-		Collection<SampleCheck> checks = validator.isSampleCorrect(si);
-		
-		assertTrue(checks.contains(SampleCheck.TOOMANY_CASES));
-	}
-	
-	@Test
-	public void declaredIncPlusPosCasesMoreThanDetailed() {
-
-		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "2");
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
-				new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
-		
-		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
-		Collection<SampleCheck> checks = validator.isSampleCorrect(si);
-		
-		assertTrue(checks.contains(SampleCheck.MISSING_CASES));
+		assertFalse(checks.contains(SampleCheck.TOO_MANY_INCONCLUSIVES));
 	}
 	
 	@Test

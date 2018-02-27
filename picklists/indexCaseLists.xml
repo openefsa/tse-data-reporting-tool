@@ -5,11 +5,6 @@
 			<description>Yes</description>
 		</selection>
 	</selectionList>
-	<selectionList id="FBSE">
-		<selection code="Y">
-			<description>Yes</description>
-		</selection>
-	</selectionList>
 	<selectionList id="SCRAPIE">
 		<selection code="Y">
 			<description>Yes</description>
@@ -18,46 +13,7 @@
 			<description>No</description>
 		</selection>
 	</selectionList>
-	<selectionList id="FSCRAPIE">
-		<selection code="Y">
-			<description>Yes</description>
-		</selection>
-		<selection code="N">
-			<description>No</description>
-		</selection>
-	</selectionList>
-	<selectionList id="NSCRAPIE">
-		<selection code="N">
-			<description>No</description>
-		</selection>
-	</selectionList>
 	<selectionList id="CWD">
-		<selection code="Y">
-			<description>Yes</description>
-		</selection>
-		<selection code="N">
-			<description>No</description>
-		</selection>
-	</selectionList>
-	<selectionList id="FCWD">
-		<selection code="Y">
-			<description>Yes</description>
-		</selection>
-		<selection code="N">
-			<description>No</description>
-		</selection>
-	</selectionList>
-	<selectionList id="NCWD">
-		<selection code="N">
-			<description>No</description>
-		</selection>
-	</selectionList>
-	<selectionList id="BSE">
-		<selection code="Y">
-			<description>Yes</description>
-		</selection>
-	</selectionList>
-	<selectionList id="FBSE">
 		<selection code="Y">
 			<description>Yes</description>
 		</selection>
@@ -66,19 +22,6 @@
 		<selection code="Y">
 			<description>Yes</description>
 		</selection>
-		<selection code="N">
-			<description>No</description>
-		</selection>
-	</selectionList>
-	<selectionList id="FBSEOS">
-		<selection code="Y">
-			<description>Yes</description>
-		</selection>
-		<selection code="N">
-			<description>No</description>
-		</selection>
-	</selectionList>
-	<selectionList id="NBSEOS">
 		<selection code="N">
 			<description>No</description>
 		</selection>

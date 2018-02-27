@@ -40,4 +40,8 @@ public class TseFileDialog {
 	public File saveXml(String filename) {
 		return select(SWT.SAVE, "*.xml", filename);
 	}
+	
+	public File loadXml() {
+		return select(SWT.NONE, "*.xml", "");
+	}
 }

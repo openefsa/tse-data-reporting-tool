@@ -307,8 +307,12 @@ public class TseReportValidator extends ReportValidator {
 		
 		// check mandatory fields
 		for(TableColumn field : reportService.getMandatoryFieldNotFilled(row)) {
-			String label = field.getLabel().isEmpty() ? field.getCode() : field.getLabel();
-			errors.add(new MissingMandatoryFieldError(label, rowId));
+
+			String label = field.getLabel();
+			
+			String fieldName = label == null || label.isEmpty() ? field.getId() : label;
+
+			errors.add(new MissingMandatoryFieldError(fieldName, rowId));
 		}
 		
 		return errors;
@@ -329,20 +333,11 @@ public class TseReportValidator extends ReportValidator {
 		
 		for (SampleCheck check: checks) {
 			switch(check) {
-			case CHECK_INC_CASES:
-				errors.add(new CheckIncCasesError(rowId));
-				break;
-			case MISSING_CASES:
-				errors.add(new MissingCasesError(rowId));
-				break;
-			case TOOMANY_CASES:
-				errors.add(new TooManyCasesError(rowId));
+			case TOO_MANY_INCONCLUSIVES:
+				errors.add(new TooManyIncCasesError(rowId));
 				break;
 			case MISSING_RGT_CASE:
 				errors.add(new MissingRGTCaseError(rowId));
-				break;
-			case TOO_MANY_SCREENING_NEGATIVES:
-				errors.add(new TooManyNegativeScreeningError(rowId));
 				break;
 			case TOO_MANY_POSITIVES:
 				errors.add(new TooManyPositivesError(rowId));

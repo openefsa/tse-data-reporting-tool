@@ -65,7 +65,9 @@ public class TseReportDownloader extends ReportDownloaderDialog {
 
 	@Override
 	public ReportImporter getImporter(DatasetList allVersions) {
-		return new TseReportImporter(allVersions, reportService, daoService);
+		ReportImporter imp = new TseReportImporter(reportService, daoService);
+		imp.setDatasetVersions(allVersions);
+		return imp;
 	}
 	
 	@Override

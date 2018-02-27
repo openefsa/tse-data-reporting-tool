@@ -81,7 +81,8 @@ public class ReportImporterTest {
 		datasetVersions.add(d);
 		
 		// import the file
-		TseReportImporter imp = new TseReportImporter(datasetVersions, reportService, daoService);
+		TseReportImporter imp = new TseReportImporter(reportService, daoService);
+		imp.setDatasetVersions(datasetVersions);
 		imp.importReport();
 		
 		// check contents of the file with what was imported
@@ -150,7 +151,8 @@ public class ReportImporterTest {
 		datasetVersions.add(d2);
 		
 		// import the file
-		TseReportImporter imp = new TseReportImporter(datasetVersions, reportService, daoService);
+		TseReportImporter imp = new TseReportImporter(reportService, daoService);
+		imp.setDatasetVersions(datasetVersions);
 		imp.importReport();
 
 		// check contents of the file with what was imported

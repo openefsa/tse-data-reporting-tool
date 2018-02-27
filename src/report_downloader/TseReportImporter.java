@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 
 import amend_manager.ReportImporter;
 import dataset.Dataset;
-import dataset.DatasetList;
 import formula.FormulaException;
 import providers.ITableDaoService;
 import providers.TseReportService;
@@ -46,9 +45,8 @@ public class TseReportImporter extends ReportImporter {
 	 * @param datasetVersions a list with all the dataset versions. 
 	 * This is needed to manage amendments.
 	 */
-	public TseReportImporter(DatasetList datasetVersions, TseReportService reportService, ITableDaoService daoService) {
-		super(datasetVersions, CustomStrings.RES_ID_COLUMN, CustomStrings.SENDER_DATASET_ID_COLUMN, 
-				reportService, daoService);
+	public TseReportImporter(TseReportService reportService, ITableDaoService daoService) {
+		super(CustomStrings.RES_ID_COLUMN, CustomStrings.SENDER_DATASET_ID_COLUMN, reportService, daoService);
 		
 		this.reportService = reportService;
 		this.daoService = daoService;
@@ -87,8 +85,8 @@ public class TseReportImporter extends ReportImporter {
 
 				// save it in the database
 				daoService.add(si);
-				
-				LOGGER.info("Imported summ info; contextId=" + si.computeContextId());
+
+				LOGGER.info("Imported summ info; contextId=" + reportService.getContextId(si));
 				
 				// save it in the cache
 				summInfos.add(si);
@@ -145,7 +143,7 @@ public class TseReportImporter extends ReportImporter {
 					summInfos.add(summInfo);
 					
 					LOGGER.info("Imported RGT summarized information; contextId=" 
-							+ summInfo.computeContextId());
+							+ reportService.getContextId(summInfo));
 				}
 				else {
 					
@@ -383,7 +381,7 @@ public class TseReportImporter extends ReportImporter {
 		for (String key : context2.keySet())
 			summInfo.put(key, context2.get(key));
 		
-		String contextId = summInfo.computeContextId();
+		String contextId = reportService.getContextId(summInfo);
 		
 		return contextId;
 	}
@@ -448,7 +446,7 @@ public class TseReportImporter extends ReportImporter {
 	private SummarizedInfo getSummInfoByContextId(String resultContextId) throws FormulaException {
 
 		for (SummarizedInfo info : summInfos) {
-			String contextId = info.computeContextId();
+			String contextId = reportService.getContextId(info);
 			if (contextId.equals(resultContextId)) {
 				return info;
 			}

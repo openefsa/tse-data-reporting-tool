@@ -21,6 +21,7 @@ import org.xml.sax.SAXException;
 
 import ack.DcfAck;
 import ack.FileState;
+import ack.MessageValResCode;
 import ack.OkCode;
 import ack.OpResError;
 import app_config.AppPaths;
@@ -32,6 +33,7 @@ import dataset.IDataset;
 import dataset.Operation;
 import dataset.RCLDatasetStatus;
 import dcf_log.DcfAckLogMock;
+import formula.FormulaException;
 import global_utils.Message;
 import message.MessageConfigBuilder;
 import message.MessageResponse;
@@ -90,6 +92,31 @@ public class ReportServiceTest {
 		report.setStatus(RCLDatasetStatus.DRAFT);
 	}
 	
+	
+	@Test
+	public void getContextId() throws FormulaException {
+		TableRow settings = RowCreatorMock.genRandSettings();
+		TableRow pref = RowCreatorMock.genRandPreferences();
+		
+		daoService.add(settings);
+		daoService.add(pref);
+		
+		TableRow report = RowCreatorMock.genRandReport(pref.getDatabaseId());
+		
+		daoService.add(report);
+		
+		SummarizedInfo info = RowCreatorMock.genRandSummInfo(report.getDatabaseId(), 
+				settings.getDatabaseId(), pref.getDatabaseId());
+		info.put(CustomStrings.SUMMARIZED_INFO_TYPE, CustomStrings.SUMMARIZED_INFO_CWD_TYPE);
+		info.put(CustomStrings.SEX_COL_ID, CustomStrings.SEX_MALE);
+		
+		daoService.add(info);
+		
+		String contextId = reportService.getContextId(info);
+		
+		assertFalse(contextId.isEmpty());
+	}
+	
 	/**
 	 * Perform a refresh status
 	 * @param localStatus status of the local report
@@ -121,7 +148,6 @@ public class ReportServiceTest {
 		
 		return m;
 	}
-	
 	
 	@Test
 	public void getDatasets() throws DetailedSOAPException {
@@ -469,6 +495,24 @@ public class ReportServiceTest {
 		Dataset dataset = reportService.getLatestDataset(report);
 		ReportSendOperation op = reportService.getSendOperation(report, dataset);
 		assertEquals(OperationType.REPLACE, op.getOpType());
+	}
+	
+	@Test
+	public void refreshStatusDiscardedMessage() {
+		
+		DcfAckLogMock log = new DcfAckLogMock(OkCode.KO, null);
+		log.setMessageValResCode(MessageValResCode.DISCARDED);
+		DcfAck ack = new DcfAck(FileState.READY, log);
+		getAck.setAck(ack);
+		
+		RCLDatasetStatus localStatus = RCLDatasetStatus.UPLOADED; // status which uses the ack
+		
+		report.setStatus(localStatus);
+
+		Message m = reportService.refreshStatus(report);
+		
+		assertEquals(RCLDatasetStatus.UPLOAD_FAILED, report.getRCLStatus());
+		assertEquals("ERR807", m.getCode());
 	}
 	
 	@Test
@@ -854,7 +898,8 @@ public class ReportServiceTest {
 	
 	@Test
 	public void displayAckReadyLog() {
-		DcfAck ack = new DcfAck(FileState.READY, new DcfAckLogMock(OkCode.OK, DcfDatasetStatus.REJECTED));
+		DcfAck ack = new DcfAck(FileState.READY, 
+				new DcfAckLogMock(OkCode.OK, DcfDatasetStatus.REJECTED));
 		getAck.setAck(ack);
 		
 		Message m = reportService.displayAck("31322");

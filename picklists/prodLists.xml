@@ -28,9 +28,6 @@
 	</selectionList>
 	<selectionList id="BSEOS">
 		<selection code="F21.A07RV">
-			<description>Farmed</description>
-		</selection>
-		<selection code="F21.A07RV">
 			<description>Farmed/Captive</description>
 		</selection>
 		<selection code="F21.A07RX">

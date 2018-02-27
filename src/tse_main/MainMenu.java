@@ -2,8 +2,10 @@ package tse_main;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -20,6 +22,7 @@ import org.xml.sax.SAXException;
 
 import app_config.PropertiesReader;
 import dataset.Dataset;
+import formula.FormulaException;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import message.MessageConfigBuilder;
@@ -30,6 +33,7 @@ import providers.TseReportService;
 import report.ReportException;
 import report.ReportSendOperation;
 import report_downloader.TseReportDownloader;
+import report_downloader.TseReportImporter;
 import soap.DetailedSOAPException;
 import table_database.TableDao;
 import table_skeleton.TableRow;
@@ -498,6 +502,28 @@ public class MainMenu {
 			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
+		
+		MenuItem importReport = new MenuItem(fileMenu, SWT.PUSH);
+		importReport.setText("[DEBUG] Import first version .xml report");
+		importReport.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				TseFileDialog fileDialog = new TseFileDialog(shell);
+				File file = fileDialog.loadXml();
+				
+				if (file == null)
+					return;
+				
+				try {
+					TseReportImporter imp = new TseReportImporter(reportService, daoService);
+					imp.importFirstDatasetVersion(file);
+					
+				} catch (XMLStreamException | IOException | 
+						FormulaException | ParseException e) {
+					e.printStackTrace();
+				}
+			}
 		});
 	}
 	

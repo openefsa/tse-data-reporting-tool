@@ -29,15 +29,11 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 	
 	public enum SampleCheck {
 		OK,
-		MISSING_CASES,
 		MISSING_RGT_CASE,
-		CHECK_INC_CASES,
-		TOO_MANY_SCREENING_NEGATIVES,
+		TOO_MANY_INCONCLUSIVES,
 		TOO_MANY_POSITIVES,
-		TOOMANY_CASES,
-		WRONG_CASES,
 		NON_WILD_FOR_KILLED,
-		//MORE
+		WRONG_CASES
 	}
 
 	private int getDistinctCaseIndex(Collection<TableRow> cases, 
@@ -64,57 +60,9 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		
 		double posNum = (cases.size() - neg - inc);
 		
-		// for CWD we have the positive number doubled
-		if (summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
-				.equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE))
-			posNum /= 2;
-		
 		return posNum;
 	}
 
-	private Collection<TableRow> getNegativeCases(Collection<TableRow> cases) {
-		
-		Collection<TableRow> out = new ArrayList<>();
-		for (TableRow c : cases) {
-			if (c.getCode(CustomStrings.CASE_INFO_ASSESS)
-					.equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE))
-				out.add(c);
-		}
-		
-		return out;
-	}
-	
-	private Collection<TableRow> getScreeningResults(TableRow sample) {
-		
-		Collection<TableRow> out = new ArrayList<>();
-		
-		TableSchema childSchema = TableSchemaList.getByName(CustomStrings.RESULT_SHEET);
-		
-		if (childSchema == null)
-			return out;
-
-		Collection<TableRow> results = daoService.getByParentId(childSchema, 
-				sample.getSchema().getSheetName(), sample.getDatabaseId(), true);
-		
-		for (TableRow c : results) {
-			if (c.getCode(CustomStrings.RESULT_TEST_TYPE)
-					.equals(CustomStrings.SCREENING_TEST_CODE))
-				out.add(c);
-		}
-		
-		return out;
-	}
-	
-	private Collection<TableRow> getNegativeCaseScreeningResults(Collection<TableRow> cases) {
-		
-		Collection<TableRow> out = new ArrayList<>();
-		for(TableRow negative: getNegativeCases(cases)) {
-			out.addAll(getScreeningResults(negative));
-		}
-		
-		return out;
-	}
-	
 	/**
 	 * Check if the row is correct or not
 	 * @param row
@@ -149,37 +97,18 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 				// declared inc/pos
 				int incSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
 				int posSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
-				int negSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES);
-				int totPosInc = posSamples + incSamples;
-
-				if (getNegativeCaseScreeningResults(cases).size() > negSamples) {
-					checks.add(SampleCheck.TOO_MANY_SCREENING_NEGATIVES);
-				}
 				
 				// detailed inc
 				int detailedIncSamples = getDistinctCaseIndex(cases, 
 						CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, false);
-
-				// detaled inc and pos together
-				int detailedIncAndPos = getDistinctCaseIndex(cases, 
-						CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, true);
 				
-				double detailedPos = getPositiveCasesNumber(row, cases);
+				double detailedPosSamples = getPositiveCasesNumber(row, cases);
 
-				if (detailedPos > posSamples) {
+				if (detailedPosSamples > posSamples)
 					checks.add(SampleCheck.TOO_MANY_POSITIVES);
-				}
 
-				// if #detailed < #declared
-				if (detailedIncAndPos < totPosInc)
-					checks.add(SampleCheck.MISSING_CASES);
-				// if #declared < #detailed
-				else if (detailedIncAndPos > totPosInc)
-					checks.add(SampleCheck.TOOMANY_CASES);
-
-				// if #detailed != #declared
-				if (detailedIncSamples != incSamples)
-					checks.add(SampleCheck.CHECK_INC_CASES);
+				if (detailedIncSamples > incSamples)
+					checks.add(SampleCheck.TOO_MANY_INCONCLUSIVES);
 			}
 			else {
 
@@ -227,12 +156,9 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 			return level;
 		
 		switch (checks.iterator().next()) {
-		case MISSING_CASES:
 		case MISSING_RGT_CASE:
-		case TOOMANY_CASES:
-		case CHECK_INC_CASES:
+		case TOO_MANY_INCONCLUSIVES:
 		case NON_WILD_FOR_KILLED:
-		case TOO_MANY_SCREENING_NEGATIVES:
 		case TOO_MANY_POSITIVES:
 			level = 1;
 			break;
@@ -266,24 +192,17 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 			return text;
 		
 		switch (checks.iterator().next()) {
-		case MISSING_CASES:
 		case MISSING_RGT_CASE:
-			text = TSEMessages.get("si.missing.cases");
+			text = TSEMessages.get("si.missing.rgt.case");
 			break;
-		case TOOMANY_CASES:
-			text = TSEMessages.get("si.too.many.cases");
-			break;
-		case CHECK_INC_CASES:
-			text = TSEMessages.get("si.wrong.inc.cases");
+		case TOO_MANY_INCONCLUSIVES:
+			text = TSEMessages.get("si.too.many.inc");
 			break;
 		case NON_WILD_FOR_KILLED:
 			text = TSEMessages.get("si.non.wild.for.killed");
 			break;
 		case WRONG_CASES:
 			text = TSEMessages.get("si.wrong.cases");
-			break;
-		case TOO_MANY_SCREENING_NEGATIVES:
-			text = TSEMessages.get("si.too.many.neg.screening");
 			break;
 		case TOO_MANY_POSITIVES:
 			text = TSEMessages.get("si.too.many.pos");

@@ -11,6 +11,9 @@ import org.apache.log4j.Logger;
 import dataset.Dataset;
 import dataset.IDataset;
 import dataset.RCLDatasetStatus;
+import formula.Formula;
+import formula.FormulaException;
+import formula.FormulaSolver;
 import message.MessageConfigBuilder;
 import report.Report;
 import soap_interface.IGetAck;
@@ -31,6 +34,7 @@ import tse_validator.CaseReportValidator;
 import tse_validator.ResultValidator;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
+import xlsx_reader.TableHeaders.XlsxHeader;
 
 public class TseReportService extends ReportService {
 
@@ -45,6 +49,21 @@ public class TseReportService extends ReportService {
 		this.formulaService = formulaService;
 	}
 
+	public String getContextId(SummarizedInfo summInfo) throws FormulaException {
+		
+		// we need all the fields to compute the context id, in order to
+		// solve formula dependencies
+		FormulaSolver solver = new FormulaSolver(summInfo, daoService);
+		ArrayList<Formula> formulas = solver.solveAll(XlsxHeader.LABEL_FORMULA.getHeaderName());
+		
+		for (Formula f: formulas) {
+			if (f.getColumn().equals(CustomStrings.CONTEXT_ID_COL))
+				return f.getSolvedFormula();
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * Get all the elements of the report (summ info, case, analytical results)
 	 * @return
