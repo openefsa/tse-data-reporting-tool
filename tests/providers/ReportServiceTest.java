@@ -125,10 +125,9 @@ public class ReportServiceTest {
 	 * @param ackStatus status of the retrieved ack
 	 * @return
 	 */
-	private Message refreshStatusWithReadyAck(RCLDatasetStatus localStatus, 
-			DcfDatasetStatus dcfStatus, DcfDatasetStatus ackStatus) {
+	private Message refreshStatusWithReadyAck(DcfDatasetStatus dcfStatus, boolean sameModyfingMessageId) {
 		
-		DcfAck ack = new DcfAck(FileState.READY, new DcfAckLogMock(OkCode.OK, ackStatus));
+		DcfAck ack = new DcfAck(FileState.READY, new DcfAckLogMock(OkCode.OK, DcfDatasetStatus.VALID));
 		getAck.setAck(ack);
 
 		Dataset dcfReport = new Dataset();
@@ -138,10 +137,19 @@ public class ReportServiceTest {
 		dcfReport.setSenderId("AT0404");
 		dcfReport.setStatus(dcfStatus);
 		
+		if (sameModyfingMessageId) {
+			String msgId = "12345";
+			dcfReport.setLastModifyingMessageId(msgId);
+			report.setLastModifyingMessageId(msgId);
+		}
+		else {
+			dcfReport.setLastModifyingMessageId("12345y128");
+			report.setLastModifyingMessageId("01923meism");
+		}
+		
+		
 		DatasetList list = new DatasetList();
 		list.add(dcfReport);
-		
-		report.setStatus(localStatus);
 		
 		getDatasetsList.setList(list);
 		
@@ -566,7 +574,7 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusLocalIsUploadedAckFail() {
-		DcfAck ack = new DcfAck(FileState.FAIL, null);
+		DcfAck ack = new DcfAck(FileState.FAIL, null); // in processing
 		getAck.setAck(ack);
 		
 		report.setStatus(RCLDatasetStatus.UPLOADED);
@@ -613,184 +621,141 @@ public class ReportServiceTest {
 	}
 	
 	@Test
-	public void refreshStatusLocalIsUploadedAckValidListValid() {
+	public void refreshStatusWithValidSameModifyingMessageId() {
 		
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.UPLOADED, 
-				DcfDatasetStatus.VALID, DcfDatasetStatus.VALID);
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.VALID, true);
 	
 		assertEquals(RCLDatasetStatus.VALID, report.getRCLStatus());
 		assertEquals("OK500", m.getCode());
 	}
 	
 	@Test
-	public void refreshStatusLocalIsUploadedAckValidWithWarningsListValidWithWarnings() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.UPLOADED, 
-				DcfDatasetStatus.VALID_WITH_WARNINGS, DcfDatasetStatus.VALID_WITH_WARNINGS);
+	public void refreshStatusWithValidWithWarningsSameModifyingMessageId() {
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.VALID_WITH_WARNINGS, true);
 
 		assertEquals(RCLDatasetStatus.VALID_WITH_WARNINGS, report.getRCLStatus());
 		assertEquals("OK500", m.getCode());
 	}
 	
 	@Test
-	public void refreshStatusLocalIsUploadedAckRejEdListRejEd() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.UPLOADED, 
-				DcfDatasetStatus.REJECTED_EDITABLE, DcfDatasetStatus.REJECTED_EDITABLE);
+	public void refreshStatusWithRejectedEditableSameModifyingMessageId() {
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.REJECTED_EDITABLE, true);
 
 		assertEquals(RCLDatasetStatus.REJECTED_EDITABLE, report.getRCLStatus());
 		assertEquals("OK500", m.getCode());
 	}
 	
 	@Test
-	public void refreshStatusLocalIsUploadedAckRejListRej() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.UPLOADED, 
-				DcfDatasetStatus.REJECTED, DcfDatasetStatus.REJECTED);
+	public void refreshStatusWithRejectedSameModifyingMessageId() {
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.REJECTED, true);
 
 		assertEquals(RCLDatasetStatus.REJECTED, report.getRCLStatus());
-		assertEquals("ERR804", m.getCode());
+		assertEquals("OK500", m.getCode());
 	}
 	
 	@Test
-	public void refreshStatusLocalIsUploadedAckDelListDel() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.UPLOADED, 
-				DcfDatasetStatus.DELETED, DcfDatasetStatus.DELETED);
+	public void refreshStatusWithSubmittedSameModifyingMessageId() {
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.SUBMITTED, true);
 
-		assertEquals(RCLDatasetStatus.DELETED, report.getRCLStatus());
-		assertEquals("ERR804", m.getCode());
-	}
-	
-	@Test
-	public void refreshStatusLocalIsUploadedAckRejListDel() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.UPLOADED, 
-				DcfDatasetStatus.DELETED, DcfDatasetStatus.REJECTED);
-		
-		assertEquals(RCLDatasetStatus.REJECTED, report.getRCLStatus());
-		assertEquals("ERR804", m.getCode());
-	}
-	
-	@Test
-	public void refreshStatusLocalIsUploadedAckSubmittedListRejEd() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.UPLOADED, 
-				DcfDatasetStatus.REJECTED_EDITABLE, DcfDatasetStatus.SUBMITTED);
-		
-		assertEquals(RCLDatasetStatus.REJECTED_EDITABLE, report.getRCLStatus());
-		assertEquals("OK500", m.getCode());
-	}
-	
-	@Test
-	public void refreshStatusLocalIsSubmissionSentAckSubmittedListRejEd() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.SUBMISSION_SENT, 
-				DcfDatasetStatus.REJECTED_EDITABLE, DcfDatasetStatus.SUBMITTED);
-
-		assertEquals(RCLDatasetStatus.REJECTED_EDITABLE, report.getRCLStatus());
-		assertEquals("OK500", m.getCode());
-	}
-	
-	@Test
-	public void refreshStatusLocalIsRejectionSentAckSubmittedListRejEd() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.REJECTION_SENT, 
-				DcfDatasetStatus.REJECTED_EDITABLE, DcfDatasetStatus.SUBMITTED);
-		
-		assertEquals(RCLDatasetStatus.REJECTED_EDITABLE, report.getRCLStatus());
-		assertEquals("OK500", m.getCode());
-	}
-	
-	@Test
-	public void refreshStatusLocalIsUploadedAckSubmittedListAccDwh() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.UPLOADED, 
-				DcfDatasetStatus.ACCEPTED_DWH, DcfDatasetStatus.SUBMITTED);
-
-		assertEquals(RCLDatasetStatus.ACCEPTED_DWH, report.getRCLStatus());
-		assertEquals("OK500", m.getCode());
-	}
-	
-	@Test
-	public void refreshStatusLocalIsSubmissionSentAckSubmittedListAccDwh() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.SUBMISSION_SENT, 
-				DcfDatasetStatus.ACCEPTED_DWH, DcfDatasetStatus.SUBMITTED);
-		
-		assertEquals(RCLDatasetStatus.ACCEPTED_DWH, report.getRCLStatus());
-		assertEquals("OK500", m.getCode());
-	}
-	
-	@Test
-	public void refreshStatusLocalIsRejectionSentAckSubmittedListAccDwh() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.REJECTION_SENT, 
-				DcfDatasetStatus.ACCEPTED_DWH, DcfDatasetStatus.SUBMITTED);
-		
-		assertEquals(RCLDatasetStatus.ACCEPTED_DWH, report.getRCLStatus());
-		assertEquals("OK500", m.getCode());
-	}
-	
-	@Test
-	public void refreshStatusLocalIsUploadedAckValidListRejEd() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.UPLOADED, 
-				DcfDatasetStatus.REJECTED_EDITABLE, DcfDatasetStatus.VALID);
-		
-		assertEquals(RCLDatasetStatus.VALID, report.getRCLStatus());
-		assertEquals("ERR501", m.getCode());
-	}
-	
-	@Test
-	public void refreshStatusLocalIsUploadedAckValidListSubmitted() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.UPLOADED, 
-				DcfDatasetStatus.OTHER, DcfDatasetStatus.SUBMITTED);
-		
 		assertEquals(RCLDatasetStatus.SUBMITTED, report.getRCLStatus());
-		assertEquals("ERR501", m.getCode());
-	}
-	
-	@Test
-	public void refreshStatusLocalIsValidListValid() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.VALID, 
-				DcfDatasetStatus.VALID, DcfDatasetStatus.ACCEPTED_DWH);  // ack is ignored
-		
-		assertEquals(RCLDatasetStatus.VALID, report.getRCLStatus());
 		assertEquals("OK500", m.getCode());
 	}
 	
 	@Test
-	public void refreshStatusLocalIsValidListDeleted() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.VALID, 
-				DcfDatasetStatus.DELETED, DcfDatasetStatus.ACCEPTED_DWH);  // ack is ignored
-		
+	public void refreshStatusWithAcceptedDwhSameModifyingMessageId() {
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.ACCEPTED_DWH, true);
+
+		assertEquals(RCLDatasetStatus.ACCEPTED_DWH, report.getRCLStatus());
+		assertEquals("OK500", m.getCode());
+	}
+	
+	@Test
+	public void refreshStatusWithAcceptedDcfSameModifyingMessageId() {
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.OTHER, true);
+
+		assertEquals(RCLDatasetStatus.OTHER, report.getRCLStatus());
+		assertEquals("OK500", m.getCode());
+	}
+	
+	@Test
+	public void refreshStatusWithDeletedSameModifyingMessageId() {
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.DELETED, true);
+
 		assertEquals(RCLDatasetStatus.DRAFT, report.getRCLStatus());
-		assertEquals("WARN501", m.getCode());
+		assertEquals("WARN501", m.getCode());  // automatic draft
 	}
 	
 	@Test
-	public void refreshStatusLocalIsSubmittedListRejEdt() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.SUBMITTED, 
-				DcfDatasetStatus.REJECTED_EDITABLE, DcfDatasetStatus.ACCEPTED_DWH);  // ack is ignored
-		
-		assertEquals(RCLDatasetStatus.REJECTED_EDITABLE, report.getRCLStatus());
-		assertEquals("OK500", m.getCode());
+	public void refreshStatusWithDeletedDifferentModifyingMessageId() {
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.DELETED, false);
+
+		assertEquals(RCLDatasetStatus.DRAFT, report.getRCLStatus());
+		assertEquals("WARN501", m.getCode());  // automatic draft
 	}
 	
 	@Test
-	public void refreshStatusLocalIsSubmittedListAccDwh() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.SUBMITTED, 
-				DcfDatasetStatus.ACCEPTED_DWH, DcfDatasetStatus.ACCEPTED_DWH);  // ack is ignored
-		
-		assertEquals(RCLDatasetStatus.ACCEPTED_DWH, report.getRCLStatus());
-		assertEquals("OK500", m.getCode());
+	public void refreshStatusWithRejectedDifferentModifyingMessageId() {
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.REJECTED, false);
+
+		assertEquals(RCLDatasetStatus.DRAFT, report.getRCLStatus());
+		assertEquals("ERR504", m.getCode());
 	}
 	
 	@Test
-	public void refreshStatusLocalIsValidListRejEd() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.VALID, 
-				DcfDatasetStatus.REJECTED_EDITABLE, DcfDatasetStatus.ACCEPTED_DWH);  // ack is ignored
-		
-		assertEquals(RCLDatasetStatus.VALID, report.getRCLStatus());
-		assertEquals("ERR501", m.getCode());
+	public void refreshStatusWithRejectedEditableDifferentModifyingMessageId() {
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.REJECTED_EDITABLE, false);
+
+		assertEquals(RCLDatasetStatus.DRAFT, report.getRCLStatus());
+		assertEquals("ERR504", m.getCode());
 	}
 	
 	@Test
-	public void refreshStatusLocalIsSubmittedListValid() {
-		Message m = refreshStatusWithReadyAck(RCLDatasetStatus.SUBMITTED, 
-				DcfDatasetStatus.VALID, DcfDatasetStatus.ACCEPTED_DWH);  // ack is ignored
+	public void refreshStatusWithValidDifferentModifyingMessageId() {
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.VALID, false);
+
+		assertEquals(RCLDatasetStatus.DRAFT, report.getRCLStatus());
+		assertEquals("ERR504", m.getCode());
+	}
+	
+	@Test
+	public void refreshStatusWithValidWithWarningsDifferentModifyingMessageId() {
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.VALID_WITH_WARNINGS, false);
+
+		assertEquals(RCLDatasetStatus.DRAFT, report.getRCLStatus());
+		assertEquals("ERR504", m.getCode());
+	}
+	
+	@Test
+	public void refreshStatusWithAcceptedDwhDifferentModifyingMessageId() {
 		
-		assertEquals(RCLDatasetStatus.SUBMITTED, report.getRCLStatus());
-		assertEquals("ERR501", m.getCode());
+		RCLDatasetStatus prevStat = report.getRCLStatus();
+		
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.ACCEPTED_DWH, false);
+
+		assertEquals(prevStat, report.getRCLStatus());
+		assertEquals("ERR505", m.getCode());
+	}
+	
+	@Test
+	public void refreshStatusWithAcceptedDcfDifferentModifyingMessageId() {
+		
+		RCLDatasetStatus prevStat = report.getRCLStatus();
+		
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.OTHER, false);
+
+		assertEquals(prevStat, report.getRCLStatus());
+		assertEquals("ERR505", m.getCode());
+	}
+	
+	@Test
+	public void refreshStatusWithSubmittedDifferentModifyingMessageId() {
+		
+		RCLDatasetStatus prevStat = report.getRCLStatus();
+		
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.SUBMITTED, false);
+
+		assertEquals(prevStat, report.getRCLStatus());
+		assertEquals("ERR505", m.getCode());
 	}
 	
 	@Test
