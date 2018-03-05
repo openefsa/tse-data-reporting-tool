@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.xml.sax.SAXException;
 
+import amend_manager.AmendException;
 import app_config.PropertiesReader;
 import global_utils.Message;
 import global_utils.Warnings;
@@ -225,6 +226,9 @@ public class SettingsDialog extends OptionsDialog {
 			
 			msg = Warnings.createFatal(TSEMessages.get("test.connection.fail2",
 					PropertiesReader.getSupportEmail()), report);
+		} catch (AmendException e) {
+			e.printStackTrace();
+			LOGGER.error("This should never happen (amendments are not processed in the test connection)", e);
 		}
 		finally {
 			

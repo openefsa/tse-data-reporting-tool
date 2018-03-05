@@ -24,6 +24,7 @@ import ack.FileState;
 import ack.MessageValResCode;
 import ack.OkCode;
 import ack.OpResError;
+import amend_manager.AmendException;
 import app_config.AppPaths;
 import dataset.Dataset;
 import dataset.DatasetList;
@@ -1308,7 +1309,7 @@ public class ReportServiceTest {
 	@Test
 	public void sendReportNotExistingInDcf() throws DetailedSOAPException, ReportException, 
 		IOException, ParserConfigurationException, 
-		SAXException, SendMessageException {
+		SAXException, SendMessageException, AmendException {
 		
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 		
@@ -1337,7 +1338,7 @@ public class ReportServiceTest {
 	@Test
 	public void sendReportExistingInDcfDeleted() throws DetailedSOAPException, ReportException, 
 		IOException, ParserConfigurationException, 
-		SAXException, SendMessageException {
+		SAXException, SendMessageException, AmendException {
 		
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 		
@@ -1357,7 +1358,7 @@ public class ReportServiceTest {
 	@Test
 	public void sendReportExistingInDcfRejected() throws DetailedSOAPException, ReportException, 
 		IOException, ParserConfigurationException, 
-		SAXException, SendMessageException {
+		SAXException, SendMessageException, AmendException {
 		
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 		
@@ -1377,7 +1378,7 @@ public class ReportServiceTest {
 	@Test
 	public void sendReportExistingInDcfRejectedEditable() throws DetailedSOAPException, ReportException, 
 		IOException, ParserConfigurationException, 
-		SAXException, SendMessageException {
+		SAXException, SendMessageException, AmendException {
 		
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 		
@@ -1397,7 +1398,7 @@ public class ReportServiceTest {
 	@Test
 	public void sendReportExistingInDcfValid() throws DetailedSOAPException, ReportException, 
 		IOException, ParserConfigurationException, 
-		SAXException, SendMessageException {
+		SAXException, SendMessageException, AmendException {
 		
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 		
@@ -1417,7 +1418,7 @@ public class ReportServiceTest {
 	@Test
 	public void sendReportExistingInDcfValidWithWarnings() throws DetailedSOAPException, ReportException, 
 		IOException, ParserConfigurationException, 
-		SAXException, SendMessageException {
+		SAXException, SendMessageException, AmendException {
 		
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 		
@@ -1437,7 +1438,7 @@ public class ReportServiceTest {
 	@Test
 	public void sendReportExistingInDcfAcceptedDwh() throws DetailedSOAPException, ReportException, 
 		IOException, ParserConfigurationException, 
-		SAXException, SendMessageException {
+		SAXException, SendMessageException, AmendException {
 		
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 		
@@ -1458,7 +1459,7 @@ public class ReportServiceTest {
 	@Test
 	public void sendReportExistingInDcfSubmitted() throws DetailedSOAPException, ReportException, 
 		IOException, ParserConfigurationException, 
-		SAXException, SendMessageException {
+		SAXException, SendMessageException, AmendException {
 		
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 		
@@ -1478,7 +1479,7 @@ public class ReportServiceTest {
 	@Test
 	public void sendReportExistingInDcfAcceptedDcf() throws DetailedSOAPException, ReportException, 
 		IOException, ParserConfigurationException, 
-		SAXException, SendMessageException {
+		SAXException, SendMessageException, AmendException {
 		
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 		
@@ -1498,7 +1499,7 @@ public class ReportServiceTest {
 	@Test
 	public void sendReportExistingInDcfProcessing() throws DetailedSOAPException, ReportException, 
 		IOException, ParserConfigurationException, 
-		SAXException, SendMessageException {
+		SAXException, SendMessageException, AmendException {
 		
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 		
@@ -1518,7 +1519,7 @@ public class ReportServiceTest {
 	@Test
 	public void rejectReport() throws DetailedSOAPException, ReportException, 
 		IOException, ParserConfigurationException, 
-		SAXException, SendMessageException {
+		SAXException, SendMessageException, AmendException {
 		
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 		
@@ -1534,7 +1535,7 @@ public class ReportServiceTest {
 	@Test
 	public void submitReport() throws DetailedSOAPException, ReportException, 
 		IOException, ParserConfigurationException, 
-		SAXException, SendMessageException {
+		SAXException, SendMessageException, AmendException {
 		
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 		
@@ -1550,7 +1551,7 @@ public class ReportServiceTest {
 	@Test(expected = SendMessageException.class)
 	public void sendReportWrongResponse() throws DetailedSOAPException, ReportException, 
 		IOException, ParserConfigurationException, 
-		SAXException, SendMessageException {
+		SAXException, SendMessageException, AmendException {
 		
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXKO, null));
 		
@@ -1683,8 +1684,9 @@ public class ReportServiceTest {
 		assertTrue(hasLymph1 || hasLymph2);
 	}
 	
-	@Test
-	public void exportReportWithAmendmentsButNoDifferences() throws IOException, ParserConfigurationException, SAXException, ReportException {
+	@Test(expected = AmendException.class)
+	public void exportReportWithAmendmentsButNoDifferences() throws IOException, ParserConfigurationException, 
+		SAXException, ReportException, AmendException {
 		
 		// create two versions of the report
 		TseReport report = genRandReportWithChildrenInDatabase();
@@ -1706,7 +1708,7 @@ public class ReportServiceTest {
 	
 	@Test
 	public void exportReportWithAmendmentsWithNewRecord() 
-			throws IOException, ParserConfigurationException, SAXException, ReportException {
+			throws IOException, ParserConfigurationException, SAXException, ReportException, AmendException {
 		
 		// create two versions of the report
 		TseReport report = genRandReportWithChildrenInDatabase();
@@ -1717,6 +1719,7 @@ public class ReportServiceTest {
 				amendedReport.getNumCode(CustomStrings.PREFERENCES_ID_COL));
 		
 		si.put(CustomStrings.RES_ID_COLUMN, "jdbadabdjsabdjsb");  // needed to say that it is different from the other summ info
+		si.put(CustomStrings.SUMMARIZED_INFO_PROG_ID, "proggoid");
 		daoService.add(si);
 		
 		MessageConfigBuilder builder = reportService.getSendMessageConfiguration(amendedReport);
@@ -1732,7 +1735,8 @@ public class ReportServiceTest {
 	}
 	
 	@Test
-	public void exportReportWithAmendmentsWithUpdatedRecord() throws IOException, ParserConfigurationException, SAXException, ReportException {
+	public void exportReportWithAmendmentsWithUpdatedRecord() throws IOException, 
+		ParserConfigurationException, SAXException, ReportException, AmendException {
 		
 		// create two versions of the report
 		TseReport report = genRandReportWithChildrenInDatabase();
@@ -1760,7 +1764,7 @@ public class ReportServiceTest {
 	
 	@Test
 	public void exportReportWithAmendmentsWithDeletedRecordCreatingAnEmptyDatasetInDcf() 
-			throws IOException, ParserConfigurationException, SAXException, ReportException {
+			throws IOException, ParserConfigurationException, SAXException, ReportException, AmendException {
 		
 		// create two versions of the report
 		TseReport report = genRandReportWithChildrenInDatabase();
@@ -1789,7 +1793,7 @@ public class ReportServiceTest {
 	
 	@Test
 	public void exportReportWithAmendmentsWithDeletedRecordCreatingANonEmptyDatasetInDcf() 
-			throws IOException, ParserConfigurationException, SAXException, ReportException {
+			throws IOException, ParserConfigurationException, SAXException, ReportException, AmendException {
 		
 		// create two versions of the report
 		TseReport report = genRandReportWithChildrenInDatabase();
@@ -1823,7 +1827,7 @@ public class ReportServiceTest {
 	
 	@Test
 	public void exportReportWithoutAmendmentsWithInsertOperation() 
-			throws IOException, ParserConfigurationException, SAXException, ReportException {
+			throws IOException, ParserConfigurationException, SAXException, ReportException, AmendException {
 		
 		// create two versions of the report
 		TseReport report = genRandReportWithChildrenInDatabase();

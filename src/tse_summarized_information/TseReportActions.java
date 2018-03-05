@@ -8,6 +8,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.xml.sax.SAXException;
 
+import amend_manager.AmendException;
 import app_config.AppPaths;
 import app_config.PropertiesReader;
 import dataset.Dataset;
@@ -151,6 +152,9 @@ public class TseReportActions extends ReportActions {
 		}
 		else if (e instanceof NotOverwritableDcfDatasetException) {
 			msg = getUnsupportedOpWarning(((NotOverwritableDcfDatasetException) e).getDataset());
+		}
+		else if (e instanceof AmendException) {
+			msg = Warnings.create(TSEMessages.get("report.send.empty.error"));
 		}
 		else {
 			msg = Warnings.createFatal(TSEMessages.get("generic.error", PropertiesReader.getSupportEmail()), getReport());

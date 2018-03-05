@@ -76,6 +76,7 @@ public class RowCreatorMock {
 		summInfo.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "0");
 		summInfo.put(CustomStrings.SUMMARIZED_INFO_UNS_SAMPLES, "0");
 		summInfo.put(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES, "1");
+		summInfo.put(CustomStrings.SUMMARIZED_INFO_PROG_ID, Long.toHexString(Double.doubleToLongBits(Math.random())));
 		
 		// random res id
 		summInfo.put(CustomStrings.RES_ID_COLUMN, Long.toHexString(Double.doubleToLongBits(Math.random())));

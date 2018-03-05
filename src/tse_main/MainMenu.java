@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.xml.sax.SAXException;
 
+import amend_manager.AmendException;
 import app_config.PropertiesReader;
 import dataset.Dataset;
 import formula.FormulaException;
@@ -341,6 +342,11 @@ public class MainMenu {
 				} catch (IOException | ParserConfigurationException | SAXException | ReportException e) {
 					e.printStackTrace();
 					LOGGER.error("Export report failed", e);
+				} catch (AmendException e) {
+					LOGGER.error("Export report failed", e);
+					e.printStackTrace();
+					Warnings.warnUser(shell, TSEMessages.get("error.title"), 
+							TSEMessages.get("report.empty.error"));
 				}
 				
 				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
@@ -450,7 +456,7 @@ public class MainMenu {
 				messageConfig.setOpType(opType);
 				try {
 					reportService.export(report, messageConfig);
-				} catch (IOException | ParserConfigurationException | SAXException | ReportException e) {
+				} catch (IOException | ParserConfigurationException | SAXException | ReportException | AmendException e) {
 					e.printStackTrace();
 					LOGGER.error("Export report failed", e);
 				}
