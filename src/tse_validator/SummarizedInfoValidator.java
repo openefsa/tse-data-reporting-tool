@@ -54,11 +54,25 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		return hash.size();
 	}
 	
+	private int getDistinctCasesNumber(Collection<TableRow> cases) {
+
+		HashSet<String> hash = new HashSet<>();
+
+		for (TableRow caseReport : cases) {
+
+			String caseId = caseReport.getCode(CustomStrings.CASE_INFO_CASE_ID);
+
+			hash.add(caseId);
+		}
+
+		return hash.size();
+	}
+	
 	private double getPositiveCasesNumber(TableRow summInfo, Collection<TableRow> cases) {
 		int neg = getDistinctCaseIndex(cases, CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, false);
 		int inc = getDistinctCaseIndex(cases, CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, false);
-		
-		double posNum = (cases.size() - neg - inc);
+
+		double posNum = (getDistinctCasesNumber(cases) - neg - inc);
 		
 		return posNum;
 	}
