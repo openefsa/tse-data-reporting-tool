@@ -98,7 +98,7 @@ public class ReportValidatorTest {
 	@Test
 	public void checkMandatoryFieldsForSummarizedInformation() throws FormulaException {
 		
-		si.remove(CustomStrings.EM_TARGET_GROUP);
+		si.remove(CustomStrings.SUMMARIZED_INFO_SOURCE);
 
 		assertFalse(reportService.getMandatoryFieldNotFilled(si).isEmpty());
 	}

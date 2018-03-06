@@ -1,6 +1,7 @@
 package report_downloader;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +30,7 @@ import soap_test.GetAckMock;
 import soap_test.GetDatasetMock;
 import soap_test.GetDatasetsListMock;
 import soap_test.SendMessageMock;
+import table_relations.Relation;
 import table_skeleton.TableRow;
 import table_skeleton.TableRowList;
 import tse_config.CustomStrings;
@@ -97,6 +99,7 @@ public class ReportImporterTest {
 		TableRowList cases = daoService.getAll(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET));
 		TableRowList results = daoService.getAll(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
 		
+		int siIdForCheckingCase = -1;
 		for(TableRow si: summInfos) {
 			
 			// under the same report
@@ -104,6 +107,7 @@ public class ReportImporterTest {
 			
 			// check contents
 			if (si.getLabel(CustomStrings.RES_ID_COLUMN).equals("0404_000069.0")) {
+				siIdForCheckingCase = si.getDatabaseId();
 				assertEquals("0404_000069", si.getLabel(CustomStrings.RESULT_PROG_ID));
 			}
 			if (si.getLabel(CustomStrings.RES_ID_COLUMN).equals("0404_000068.0")) {
@@ -111,6 +115,15 @@ public class ReportImporterTest {
 			}
 		}
 		
+		for(TableRow c: cases) {
+			
+			assertNotNull(c.getCode(CustomStrings.SUMMARIZED_INFO_PART));
+			if (c.getLabel(Relation.foreignKeyFromParent(CustomStrings.SUMMARIZED_INFO_SHEET))
+					.equals(String.valueOf(siIdForCheckingCase))) {
+				
+				assertEquals("F02.A06AM", c.getCode(CustomStrings.SUMMARIZED_INFO_PART));
+			}
+		}
 		//TODO check other contents
 	}
 	

@@ -125,7 +125,7 @@ public class TseReportImporter extends ReportImporter {
 		for (TableRow row : datasetRows) {
 
 			if (!isSummarizedInfo(row)) {
-				
+
 				SummarizedInfo summInfo = null;
 				
 				// if random genotyping, create the summarized information
@@ -141,22 +141,22 @@ public class TseReportImporter extends ReportImporter {
 					// add in the cache in order to avoid to save the same summInfo
 					// for the different results
 					summInfos.add(summInfo);
-					
+
 					LOGGER.info("Imported RGT summarized information; contextId=" 
 							+ reportService.getContextId(summInfo));
 				}
 				else {
-					
+
 					String contextId = getContextIdFrom(row);
-					
+
 					LOGGER.info("Context id=" + contextId + " for " + row);
-					
+
 					// get the summarized info related to the case/result
 					summInfo = getSummInfoByContextId(contextId);
-					
+
 					LOGGER.info("Related summarized info with same contextId= " + summInfo);
 				}
-				
+
 				// import the case
 				TableRow caseInfo = importCase(report, summInfo, row);
 				
@@ -363,10 +363,10 @@ public class TseReportImporter extends ReportImporter {
 		
 		// decompose param code
 		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer(result);
-		
+
 		HashMap<String, TableCell> context1 = 
 				decomposer.decompose(CustomStrings.SUMMARIZED_INFO_SAMP_MAT_CODE);
-		
+
 		HashMap<String, TableCell> context2 = 
 				decomposer.decompose(CustomStrings.SUMMARIZED_INFO_PROG_INFO);
 		
@@ -375,12 +375,23 @@ public class TseReportImporter extends ReportImporter {
 		SummarizedInfo summInfo = new SummarizedInfo();
 		summInfo.copyValues(result);
 		
-		for (String key : context1.keySet())
-			summInfo.put(key, context1.get(key));
+		for (String key: context1.keySet()) {
+			
+			TableCell cell = context1.get(key);
+			if (cell != null) {
+				TableCell copy = new TableCell(cell.getCode(), cell.getLabel());
+				summInfo.put(key, copy);
+			}
+		}
 		
-		for (String key : context2.keySet())
-			summInfo.put(key, context2.get(key));
-		
+		for (String key: context2.keySet()) {
+			TableCell cell = context2.get(key);
+			if (cell != null) {
+				TableCell copy = new TableCell(cell.getCode(), cell.getLabel());
+				summInfo.put(key, copy);
+			}
+		}
+
 		String contextId = reportService.getContextId(summInfo);
 		
 		return contextId;
@@ -446,7 +457,9 @@ public class TseReportImporter extends ReportImporter {
 	private SummarizedInfo getSummInfoByContextId(String resultContextId) throws FormulaException {
 
 		for (SummarizedInfo info : summInfos) {
+
 			String contextId = reportService.getContextId(info);
+
 			if (contextId.equals(resultContextId)) {
 				return info;
 			}
@@ -468,7 +481,7 @@ public class TseReportImporter extends ReportImporter {
 	
 	@Override
 	public void importDatasetRows(List<TableRow> rows) throws FormulaException, ParseException {
-		
+
 		// first import the summarized information
 		importSummarizedInformation(report, rows);
 
