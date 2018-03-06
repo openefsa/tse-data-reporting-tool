@@ -89,6 +89,7 @@ public class SettingsDialog extends OptionsDialog {
 		// get credentials
 		TableCell usernameVal = settings.get(CustomStrings.SETTINGS_USERNAME);
 		TableCell passwordVal = settings.get(CustomStrings.SETTINGS_PASSWORD);
+		TableCell orgVal = settings.get(CustomStrings.SETTINGS_ORG_CODE);
 
 		if (usernameVal == null || passwordVal == null)
 			return false;
@@ -98,6 +99,9 @@ public class SettingsDialog extends OptionsDialog {
 		String password = passwordVal.getLabel();
 
 		User.getInstance().login(username, password);
+		
+		if (orgVal != null)
+			User.getInstance().addData(CustomStrings.SETTINGS_ORG_CODE, orgVal.getLabel());
 		
 		return true;
 	}

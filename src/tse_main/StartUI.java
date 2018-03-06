@@ -42,7 +42,6 @@ import tse_config.CustomStrings;
 import tse_config.DebugConfig;
 import tse_options.PreferencesDialog;
 import tse_options.SettingsDialog;
-import user.DcfUser;
 import user.User;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
@@ -113,6 +112,7 @@ public class StartUI {
 		// get credentials
 		TableCell usernameVal = settings.get(CustomStrings.SETTINGS_USERNAME);
 		TableCell passwordVal = settings.get(CustomStrings.SETTINGS_PASSWORD);
+		TableCell orgVal = settings.get(CustomStrings.SETTINGS_ORG_CODE);
 
 		if (usernameVal == null || passwordVal == null)
 			return;
@@ -121,8 +121,11 @@ public class StartUI {
 		String username = usernameVal.getLabel();
 		String password = passwordVal.getLabel();
 
-		DcfUser user = User.getInstance();
+		User user = User.getInstance();
 		user.login(username, password);
+		
+		if (orgVal != null)
+			user.addData(CustomStrings.SETTINGS_ORG_CODE, orgVal.getLabel());
 	}
 
 	/**

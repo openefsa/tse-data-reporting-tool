@@ -24,6 +24,7 @@ import amend_manager.AmendException;
 import app_config.PropertiesReader;
 import dataset.Dataset;
 import formula.FormulaException;
+import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
 import message.MessageConfigBuilder;
@@ -319,14 +320,34 @@ public class MainMenu {
 				try {
 					Dataset dataset = reportService.getLatestDataset(report);
 					opSendType = reportService.getSendOperation(report, dataset);
-				} catch (DetailedSOAPException | ReportException e1) {
+				} catch (DetailedSOAPException e1) {
+					
+					shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
 					e1.printStackTrace();
+					
+					Warnings.showSOAPWarning(shell, e1);
+					
+					Message m = Warnings.create(TSEMessages.get("export.report.no.connection"));
+					m.open(shell);
+				}
+				finally {
+					shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
 				}
 				
-				if (opSendType == null)
-					return;
+				OperationType opType = null;
 				
-				OperationType opType = opSendType.getOpType();
+				// if no connection open the dialog
+				if (opSendType == null) {
+					EnumPicker<OperationType> dialog = new EnumPicker<>(shell, OperationType.class);
+					dialog.setTitle(TSEMessages.get("export.report.op.title"));
+					dialog.setConfirmText(TSEMessages.get("export.report.op.confirm"));
+					dialog.open();
+					
+					opType = (OperationType) dialog.getSelection();
+				}
+				else {
+					opType = opSendType.getOpType();
+				}
 				
 				if (opType == null)
 					return;

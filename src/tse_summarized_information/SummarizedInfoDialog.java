@@ -25,6 +25,7 @@ import app_config.PropertiesReader;
 import dataset.RCLDatasetStatus;
 import global_utils.Message;
 import global_utils.Warnings;
+import html_viewer.HtmlViewer;
 import i18n_messages.TSEMessages;
 import message.MessageConfigBuilder;
 import message_creator.OperationType;
@@ -32,6 +33,7 @@ import progress_bar.IndeterminateProgressDialog;
 import providers.IFormulaService;
 import providers.ITableDaoService;
 import providers.TseReportService;
+import report.DisplayAckResult;
 import report.DisplayAckThread;
 import report.RefreshStatusThread;
 import report.Report;
@@ -482,7 +484,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				
 				progressBar.open();
 				
-				DisplayAckThread displayAck = new DisplayAckThread(report.getMessageId(), reportService);
+				DisplayAckThread displayAck = new DisplayAckThread(report, reportService);
 				
 				displayAck.setListener(new ThreadFinishedListener() {
 					
@@ -497,10 +499,19 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 								
 								progressBar.close();
 								
-								Message log = displayAck.getLog();
+								DisplayAckResult log = displayAck.getDisplayAckResult();
 								
-								if (log != null)
-									log.open(getDialog());
+								if (log != null) {
+									
+									for (Message m: log.getMessages())
+										m.open(getDialog());
+									
+									// open the ack in the browser to see it formatted
+									if (log.getDownloadedAck() != null) {
+										HtmlViewer viewer = new HtmlViewer();
+										viewer.open(log.getDownloadedAck());
+									}
+								}								
 							}
 						});
 					}

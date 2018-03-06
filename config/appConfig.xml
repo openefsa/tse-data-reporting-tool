@@ -3,13 +3,13 @@
 <properties>
 <comment>Application configuration</comment>
 <entry key="Application.Name">EFSA TSE data submission tool</entry> <!-- main title of the application -->
-<entry key="Application.Version">1.1.6</entry> <!-- version of the application that will displayed after the application name -->
-<entry key="Db.MinRequiredVersion">1.1.5</entry> <!-- version of the database needed -->
+<entry key="Application.Version">1.2.0</entry> <!-- version of the application that will displayed after the application name -->
+<entry key="Db.MinRequiredVersion">1.2.0</entry> <!-- version of the database needed -->
 <entry key="Application.Icon">app-icon.png</entry> <!-- application icon (in the icon folder) -->
 
 <entry key="TechnicalSupport.Email">zoonoses_support@efsa.europa.eu</entry> <!-- email which will be used for technical support -->
 <entry key="TechnicalSupport.Email.Subject">%appName issue</entry> <!-- subject of the email-->
-<entry key="TechnicalSupport.Email.Body">Dear Zoonoses Support,\nI encountered an issue while using the %appName. You can find below additional information.\n\nBest Regards,\n\n\nApplication version: %appVersion\nDb version: %dbVersion\nMinimum required db version: %minDbVersion\n\n%report\nApplication log:\n\n%appLog</entry> <!-- body of the email -->
+<entry key="TechnicalSupport.Email.Body">Dear Zoonoses Support,\nI encountered an issue while using the %appName. You can find below additional information.\n\nBest Regards,\n\n\nUsername: %username\nOther user data: %userdata\nApplication version: %appVersion\nDb version: %dbVersion\nMinimum required db version: %minDbVersion\n\n%report\nApplication log:\n\n%appLog</entry> <!-- body of the email -->
 
 <entry key="Application.DataCollectionTable">SSD2_CENTRAL_2017</entry> <!-- code that will be used to send report to the dcf -->
 <entry key="Application.DataCollectionPattern">TSE.yyyy</entry> <!-- data collection code, the yyyy pattern will be replaced by the report year -->

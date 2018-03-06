@@ -43,6 +43,7 @@ import message.TrxCode;
 import message_creator.OperationType;
 import mocks.RowCreatorMock;
 import mocks.TableDaoMock;
+import report.DisplayAckResult;
 import report.Report;
 import report.ReportException;
 import report.ReportSendOperation;
@@ -87,6 +88,9 @@ public class ReportServiceTest {
 		report = new TseReport();
 		report.setId("11234");
 		report.setMessageId("25232");
+		report.setLastMessageId("25232");
+		report.setLastModifyingMessageId("25232");
+		report.setLastValidationMessageId("25232");
 		report.setSenderId("AT0404");
 		report.setVersion(TableVersion.getFirstVersion());
 		report.setYear("2017");
@@ -833,43 +837,307 @@ public class ReportServiceTest {
 	}
 	
 	@Test
-	public void displayAckNoMessageId() {
-		Message m = reportService.displayAck(null);
-		assertEquals("ERR800", m.getCode());
+	public void displayAckNoMessageIdNoDatasetId() {
+		
+		report.remove(AppPaths.REPORT_DATASET_ID);
+		report.remove(AppPaths.REPORT_MESSAGE_ID);
+		DisplayAckResult m = reportService.displayAck(report);
+		assertNull(m.getDownloadedAck());
+		assertEquals(1, m.getMessages().size());
+		assertEquals("ERR800", m.getMessages().get(0).getCode());
+	}
+	
+	@Test
+	public void displayAckNoDatasetId() {
+		
+		getAck.setAck(new DcfAck(FileState.READY, new DcfAckLogMock(OkCode.OK, DcfDatasetStatus.VALID)));
+		
+		report.setMessageId("12342");
+		report.remove(AppPaths.REPORT_DATASET_ID);
+		DisplayAckResult m = reportService.displayAck(report);
+		assertEquals(report.getMessageId(), m.getDcfMessageId());  // local message id should be used
+		assertTrue(m.getMessages().isEmpty());
+		assertNotNull(m.getDownloadedAck());
+	}
+	
+	@Test
+	public void displayAckModificationOutOfDateAckReady() {
+		
+		// ready ack
+		getAck.setAck(new DcfAck(FileState.READY, new DcfAckLogMock(OkCode.OK, DcfDatasetStatus.VALID)));
+		
+		DatasetList list = new DatasetList();
+		Dataset d = new Dataset();
+		d.setId(report.getId());
+		d.setStatus(DcfDatasetStatus.VALID);
+		d.setSenderId(report.getSenderId());
+		d.setLastModifyingMessageId("15402");
+		d.setLastValidationMessageId("15402");
+		d.setLastMessageId("15402");
+		list.add(d);
+		getDatasetsList.setList(list);
+		
+		report.setMessageId("15000");
+		report.setLastModifyingMessageId("15000");  // less than the one in dcf
+		report.setLastValidationMessageId("15000");
+		
+		DisplayAckResult m = reportService.displayAck(report);
+		
+		assertEquals(report.getMessageId(), m.getDcfMessageId()); // local message id should be used
+		assertEquals(1, m.getMessages().size());
+		assertEquals("WARN800", m.getMessages().get(0).getCode());
+		assertNotNull(m.getDownloadedAck());
+		assertTrue(m.getDownloadedAck().exists());
+	}
+	
+	@Test
+	public void displayAckModificationUpToDateButLocalMessageIdBiggerThanLocalModificationAckReady() {
+		
+		getAck.setAck(new DcfAck(FileState.READY, new DcfAckLogMock(OkCode.OK, DcfDatasetStatus.VALID)));
+		
+		DatasetList list = new DatasetList();
+		Dataset d = new Dataset();
+		d.setId(report.getId());
+		d.setStatus(DcfDatasetStatus.VALID);
+		d.setSenderId(report.getSenderId());
+		d.setLastModifyingMessageId("15402");
+		d.setLastValidationMessageId("15402");
+		d.setLastMessageId("15402");
+		list.add(d);
+		getDatasetsList.setList(list);
+		
+		report.setMessageId("15403");  // not equal to local last modifying
+		report.setLastModifyingMessageId("15402");  // equal to the one in dcf
+		
+		DisplayAckResult m = reportService.displayAck(report);
+		
+		assertEquals(report.getMessageId(), m.getDcfMessageId()); // local message id should be used
+		assertTrue(m.getMessages().isEmpty());
+		assertNotNull(m.getDownloadedAck());
+	}
+	
+	@Test
+	public void displayAckModificationAndValidationUpToDateAckReady() {
+		
+		// ready ack
+		getAck.setAck(new DcfAck(FileState.READY, new DcfAckLogMock(OkCode.OK, DcfDatasetStatus.VALID)));
+		
+		DatasetList list = new DatasetList();
+		Dataset d = new Dataset();
+		d.setId(report.getId());
+		d.setStatus(DcfDatasetStatus.VALID);
+		d.setSenderId(report.getSenderId());
+		d.setLastModifyingMessageId("15402");
+		d.setLastValidationMessageId("15402");
+		d.setLastMessageId("15402");
+		list.add(d);
+		getDatasetsList.setList(list);
+		
+		report.setMessageId("15402");
+		report.setLastModifyingMessageId("15402");  // equal to the one in dcf
+		
+		DisplayAckResult m = reportService.displayAck(report);
+		
+		assertEquals(d.getLastValidationMessageId(), m.getDcfMessageId()); // dcf validation message id should be used
+		assertTrue(m.getMessages().isEmpty());
+		assertNotNull(m.getDownloadedAck());
+		assertTrue(m.getDownloadedAck().exists());
+	}
+	
+	@Test
+	public void displayAckModificationUpToDateValidationOutOfDateAckReady() {
+		
+		// ready ack
+		getAck.setAck(new DcfAck(FileState.READY, new DcfAckLogMock(OkCode.OK, DcfDatasetStatus.VALID)));
+		
+		DatasetList list = new DatasetList();
+		Dataset d = new Dataset();
+		d.setId(report.getId());
+		d.setStatus(DcfDatasetStatus.VALID);
+		d.setSenderId(report.getSenderId());
+		d.setLastModifyingMessageId("15402");
+		d.setLastValidationMessageId("15403");  // bigger than local modifying
+		d.setLastMessageId("15403");
+		list.add(d);
+		getDatasetsList.setList(list);
+		
+		report.setMessageId("15402");
+		report.setLastModifyingMessageId("15402");  // equal to the one in dcf
+		
+		DisplayAckResult m = reportService.displayAck(report);
+
+		assertEquals(d.getLastValidationMessageId(), m.getDcfMessageId()); // dcf validation message id should be used
+		assertEquals(1, m.getMessages().size());
+		assertEquals("WARN801", m.getMessages().get(0).getCode());
+		assertNotNull(m.getDownloadedAck());
+		assertTrue(m.getDownloadedAck().exists());
+	}
+	
+	@Test
+	public void displayAckModificationOutOfDateAckNotReady() {
+		
+		// ready ack
+		getAck.setAck(new DcfAck(FileState.WAIT, null));
+		
+		DatasetList list = new DatasetList();
+		Dataset d = new Dataset();
+		d.setId(report.getId());
+		d.setStatus(DcfDatasetStatus.VALID);
+		d.setSenderId(report.getSenderId());
+		d.setLastModifyingMessageId("15402");
+		d.setLastValidationMessageId("15402");
+		d.setLastMessageId("15402");
+		list.add(d);
+		getDatasetsList.setList(list);
+		
+		report.setMessageId("15000");
+		report.setLastModifyingMessageId("15000");  // less than the one in dcf
+		
+		DisplayAckResult m = reportService.displayAck(report);
+		
+		assertEquals(report.getMessageId(), m.getDcfMessageId()); // local message id should be used
+		assertEquals(2, m.getMessages().size());
+		
+		Message first = m.getMessages().get(0);
+		Message second = m.getMessages().get(1);
+		
+		assertEquals("WARN800", first.getCode());  // inconsistent modification code
+		assertEquals("WARN500", second.getCode());  // still in processing
+		
+		assertNull(m.getDownloadedAck());
+	}
+	
+	@Test
+	public void displayAckModificationAndValidationUpToDateAckNotReady() {
+		
+		// ready ack
+		getAck.setAck(new DcfAck(FileState.WAIT, null));
+		
+		DatasetList list = new DatasetList();
+		Dataset d = new Dataset();
+		d.setId(report.getId());
+		d.setStatus(DcfDatasetStatus.VALID);
+		d.setSenderId(report.getSenderId());
+		d.setLastModifyingMessageId("15402");
+		d.setLastValidationMessageId("15402");
+		d.setLastMessageId("15402");
+		list.add(d);
+		getDatasetsList.setList(list);
+		
+		report.setMessageId("15402");
+		report.setLastModifyingMessageId("15402");  // equal to the one in dcf
+		
+		DisplayAckResult m = reportService.displayAck(report);
+		
+		assertEquals(d.getLastValidationMessageId(), m.getDcfMessageId()); // dcf validation message id should be used
+		assertEquals(1, m.getMessages().size());
+		assertEquals("WARN500", m.getMessages().get(0).getCode());  // still in processing
+		assertNull(m.getDownloadedAck());
+	}
+	
+	@Test
+	public void displayAckModificationUpToDateButLocalMessageIdBiggerThanLocalModificationAckNotReady() {
+		
+		getAck.setAck(new DcfAck(FileState.WAIT, null));
+		
+		DatasetList list = new DatasetList();
+		Dataset d = new Dataset();
+		d.setId(report.getId());
+		d.setStatus(DcfDatasetStatus.VALID);
+		d.setSenderId(report.getSenderId());
+		d.setLastModifyingMessageId("15402");
+		d.setLastValidationMessageId("15402");
+		d.setLastMessageId("15402");
+		list.add(d);
+		getDatasetsList.setList(list);
+		
+		report.setMessageId("15403");  // not equal to local last modifying
+		report.setLastModifyingMessageId("15402");  // equal to the one in dcf
+		
+		DisplayAckResult m = reportService.displayAck(report);
+		
+		assertEquals(1, m.getMessages().size());
+		assertEquals("WARN500", m.getMessages().get(0).getCode());  // still in processing
+		assertNull(m.getDownloadedAck());
+	}
+	
+	@Test
+	public void displayAckModificationUpToDateValidationOutOfDateAckNotReady() {
+		
+		// ready ack
+		getAck.setAck(new DcfAck(FileState.WAIT, null));
+		
+		DatasetList list = new DatasetList();
+		Dataset d = new Dataset();
+		d.setId(report.getId());
+		d.setStatus(DcfDatasetStatus.VALID);
+		d.setSenderId(report.getSenderId());
+		d.setLastModifyingMessageId("15402");
+		d.setLastValidationMessageId("15403");  // bigger than local modifying
+		d.setLastMessageId("15403");
+		list.add(d);
+		getDatasetsList.setList(list);
+		
+		report.setMessageId("15402");
+		report.setLastModifyingMessageId("15402");  // equal to the one in dcf
+		
+		DisplayAckResult m = reportService.displayAck(report);
+		
+		assertEquals(d.getLastValidationMessageId(), m.getDcfMessageId()); // dcf validation message id should be used
+		assertEquals(2, m.getMessages().size());
+		
+		Message first = m.getMessages().get(0);
+		Message second = m.getMessages().get(1);
+		
+		assertEquals("WARN801", first.getCode());  // validation out of date
+		assertEquals("WARN500", second.getCode());  // still in processing
+		assertNull(m.getDownloadedAck());
 	}
 	
 	@Test
 	public void displayAckNoAck() {
-		Message m = reportService.displayAck("31322");
-		assertEquals("ERR803", m.getCode());
-	}
-	
-	@Test
-	public void displayAckNotReady() {
-		DcfAck ack = new DcfAck(FileState.WAIT, null);
-		getAck.setAck(ack);
 		
-		Message m = reportService.displayAck("31322");
-		assertEquals("ERR803", m.getCode());
+		// get datasets list mock
+		DatasetList list = new DatasetList();
+		Dataset d = new Dataset();
+		d.setId(report.getId());
+		d.setStatus(DcfDatasetStatus.VALID);
+		d.setSenderId(report.getSenderId());
+		d.setLastModifyingMessageId(report.getLastModifyingMessageId());
+		d.setLastValidationMessageId("19402");
+		list.add(d);
+		getDatasetsList.setList(list);
+		
+		DisplayAckResult m = reportService.displayAck(report);
+		assertNull(m.getDownloadedAck());
+		assertEquals(1, m.getMessages().size());
+		assertEquals("ERR803", m.getMessages().get(0).getCode());
 	}
 	
 	@Test
-	public void displayAckReadyNoLog() {
+	public void displayAckNoDatasetIdAckReadyWithoutLog() {
+		
 		DcfAck ack = new DcfAck(FileState.READY, null);
 		getAck.setAck(ack);
 		
-		Message m = reportService.displayAck("31322");
-		assertEquals("ERR803", m.getCode());
+		report.remove(AppPaths.REPORT_DATASET_ID);
+		
+		DisplayAckResult m = reportService.displayAck(report);
+		assertNull(m.getDownloadedAck());
+		assertEquals(1, m.getMessages().size());
+		assertEquals("ERR803", m.getMessages().get(0).getCode());
 	}
 	
 	@Test
-	public void displayAckReadyLog() {
-		DcfAck ack = new DcfAck(FileState.READY, 
-				new DcfAckLogMock(OkCode.OK, DcfDatasetStatus.REJECTED));
-		getAck.setAck(ack);
+	public void displayAckNoDatasetInDcf() {
 		
-		Message m = reportService.displayAck("31322");
-		assertNull(m);
+		report.setId("19320923103");  // not in dcf
+		
+		// no dataset related to the report in dcf
+		DisplayAckResult m = reportService.displayAck(report);
+		assertNull(m.getDownloadedAck());
+		assertEquals(1, m.getMessages().size());
+		assertEquals("ERR808", m.getMessages().get(0).getCode());
 	}
 	
 	@Test
@@ -1650,7 +1918,7 @@ public class ReportServiceTest {
 	}
 	
 	@Test(expected = AmendException.class)
-	public void exportReportWithAmendmentsButNoDifferences() throws IOException, ParserConfigurationException, 
+	public void exportReportWithAmendmentsButNoDifferencesException() throws IOException, ParserConfigurationException, 
 		SAXException, ReportException, AmendException {
 		
 		// create two versions of the report
@@ -1659,16 +1927,27 @@ public class ReportServiceTest {
 		
 		MessageConfigBuilder builder = reportService.getSendMessageConfiguration(amendedReport);
 		builder.setOpType(OperationType.INSERT);
-		File exportedFile = reportService.export(amendedReport, builder);
+		reportService.export(amendedReport, builder);
+	}
+	
+	@Test
+	public void exportReportWithAmendmentsButNoDifferencesStatusChangedToUploadFailed() throws IOException, ParserConfigurationException, 
+		SAXException, ReportException, DetailedSOAPException, SendMessageException {
 		
-		assertNotNull(exportedFile);
-		
-		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(exportedFile);
-		
-		// no amendment should have been applied
-		assertEquals(0, doc.getElementsByTagName("result").getLength());
-		assertEquals(0, doc.getElementsByTagName("amType").getLength());
-		System.err.println("exportReportWithAmendments# The exported dataset is correct, but it is empty. DCF will probably give an error for that!");
+		// create two versions of the report
+		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport amendedReport = reportService.amend(report);
+
+		boolean error = false; 
+		try {
+			reportService.exportAndSend(amendedReport, getSendConfig(amendedReport));
+		}
+		catch(AmendException e) {
+			assertEquals(RCLDatasetStatus.UPLOAD_FAILED, amendedReport.getRCLStatus());
+			error = true;
+		}
+
+		assertTrue(error);
 	}
 	
 	@Test

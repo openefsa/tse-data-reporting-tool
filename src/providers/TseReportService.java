@@ -326,8 +326,12 @@ public class TseReportService extends ReportService {
 			report.setYear(year);
 			report.setMonth(month);
 		}
-
-		report.setMessageId("");
+		
+		// copy message ids
+		report.setMessageId(dataset.getLastMessageId());
+		report.setLastMessageId(dataset.getLastMessageId());
+		report.setLastModifyingMessageId(dataset.getLastModifyingMessageId());
+		report.setLastValidationMessageId(dataset.getLastValidationMessageId());
 		
 		// add the preferences
 		try {
