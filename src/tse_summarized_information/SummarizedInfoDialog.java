@@ -180,7 +180,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	 */
 	private boolean validate(TableRow summInfo) {
 		
-		if (!summInfo.areMandatoryFilled()) {
+		if (!summInfo.areMandatoryFilled() && report.isEditable()) {
 			warnUser(TSEMessages.get("error.title"), 
 					TSEMessages.get("si.open.cases.error"));
 			return false;

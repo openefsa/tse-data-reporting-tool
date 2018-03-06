@@ -191,7 +191,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				
 				CaseReport caseReport = new CaseReport(row);
 				
-				if (!caseReport.areMandatoryFilled()) {
+				if (!caseReport.areMandatoryFilled() && report.isEditable()) {
 					warnUser(TSEMessages.get("error.title"), TSEMessages.get("case.open.results.error"));
 					return;
 				}
