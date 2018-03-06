@@ -128,8 +128,46 @@ public class ReportImporterTest {
 	}
 	
 	@Test
-	public void importNonFirstVersionInValidState() {
-		// TODO it depends on the changes we will implement, for now the process is wrong
+	public void importNonFirstVersionNonAcceptedDwhState() throws DetailedSOAPException, XMLStreamException, 
+		IOException, FormulaException, NoAttachmentException, ParseException {
+		
+		String firstVersionId = "11513";
+		String amendedVersionId = "11518";
+		
+		// prepare the get dataset request
+		getDataset.addDatasetFile(firstVersionId, new File("test-files" 
+				+ System.getProperty("file.separator") + "BE1011.00-amtype.xml"));
+		
+		getDataset.addDatasetFile(amendedVersionId, new File("test-files" 
+				+ System.getProperty("file.separator") + "BE1011.01-amtype.xml"));
+		
+		DatasetList datasetVersions = new DatasetList();
+		
+		// note: these information come from the get datasets list
+		// in the normal process flow
+		Dataset d = new Dataset();
+		d.setStatus(DcfDatasetStatus.ACCEPTED_DWH);
+		d.setId(firstVersionId);
+		d.setSenderId("BE1011.00");
+		
+		Dataset d2 = new Dataset();
+		d2.setStatus(DcfDatasetStatus.ACCEPTED_DWH);
+		d2.setId(amendedVersionId);
+		d2.setSenderId("BE1011.01");
+		
+		datasetVersions.add(d);
+		datasetVersions.add(d2);
+		
+		// import the file
+		TseReportImporter imp = new TseReportImporter(reportService, daoService);
+		imp.setDatasetVersions(datasetVersions);
+		imp.importReport();
+
+		// check contents of the file with what was imported
+		// only the merged version is present
+		assertEquals(1, daoService.getAll(TableSchemaList.getByName(AppPaths.REPORT_SHEET)).size());
+		assertEquals(6, daoService.getAll(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET)).size());
+		assertEquals(17, daoService.getAll(TableSchemaList.getByName(CustomStrings.RESULT_SHEET)).size());
 	}
 	
 	@Test
