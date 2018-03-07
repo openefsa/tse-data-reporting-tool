@@ -152,6 +152,9 @@ public class MainMenu {
 					dialog.open();
 				} catch (IOException e) {
 					e.printStackTrace();
+					
+					LOGGER.error("Cannot find the proxy configuration file", e);
+					
 					Message m = Warnings.createFatal(TSEMessages.get("proxy.config.file.not.found.error", 
 							PropertiesReader.getSupportEmail()));
 					
