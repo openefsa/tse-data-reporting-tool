@@ -22,6 +22,8 @@ import org.xml.sax.SAXException;
 
 import amend_manager.AmendException;
 import app_config.PropertiesReader;
+import dataset.RCLDatasetStatus;
+import formula.FormulaException;
 import global_utils.Message;
 import global_utils.Warnings;
 import i18n_messages.TSEMessages;
@@ -34,8 +36,10 @@ import report.ReportException;
 import soap.DetailedSOAPException;
 import table_dialog.DialogBuilder;
 import table_dialog.RowValidatorLabelProvider;
+import table_relations.Relation;
 import table_skeleton.TableCell;
 import table_skeleton.TableRow;
+import table_skeleton.TableVersion;
 import tse_config.CustomStrings;
 import tse_config.TSEWarnings;
 import tse_report.TseReport;
@@ -143,6 +147,26 @@ public class SettingsDialog extends OptionsDialog {
 	public RowValidatorLabelProvider getValidator() {
 		return new SimpleRowValidatorLabelProvider();
 	}
+	
+	private TseReport createTestReport() throws IOException {
+		
+		TseReport report = new TseReport();
+		report.setCountry("TEST");
+		report.setSenderId("TEST");
+		report.setStatus(RCLDatasetStatus.DRAFT);
+		report.setMonth("1");
+		report.setYear("2010");
+		report.setVersion(TableVersion.getFirstVersion());
+		report.setMessageId("TEST");
+		report.setId("");  // empty
+		report.setLastMessageId("TEST");
+		report.setLastModifyingMessageId("TEST");
+		report.setLastValidationMessageId("TEST");
+		
+		Relation.injectGlobalParent(report, CustomStrings.PREFERENCES_SHEET);
+		
+		return report;
+	}
 
 	/**
 	 * Test the connection with the inserted credentials
@@ -150,10 +174,17 @@ public class SettingsDialog extends OptionsDialog {
 	private void testConnection() {
 		
 		getPanelBuilder().selectRow(0);
-		
-		TableRow settings = getRows().iterator().next();
+		TableRow settings = getPanelBuilder().getTableElements().iterator().next();
 
-		if (settings == null || !settings.areMandatoryFilled()) {
+		boolean mandatoryFilled = false;
+
+		try {
+			mandatoryFilled = settings == null || reportService.getMandatoryFieldNotFilled(settings).isEmpty();
+		} catch (FormulaException e1) {
+			e1.printStackTrace();
+		}
+		
+		if (!mandatoryFilled) {
 			
 			LOGGER.error("Cannot perform test connection. Credentials missing.");
 			
@@ -162,6 +193,10 @@ public class SettingsDialog extends OptionsDialog {
 					TSEMessages.get("settings.test.connection.warning"));
 			return;
 		}
+		
+		// TODO the message xml builder requires data saved in the
+		// database because of the RELATION formulas
+		daoService.update(settings);
 
 		// login the user if not done before
 		boolean ok = login(getSelection());
@@ -179,7 +214,7 @@ public class SettingsDialog extends OptionsDialog {
 		TseReport report = null;
 		try {
 			
-			report = TseReport.createDefault();
+			report = createTestReport();
 			
 			// save report in db in order to perform send
 			daoService.add(report);

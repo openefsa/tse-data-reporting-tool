@@ -50,7 +50,7 @@ public class TSEWarnings {
 		default:
 			
 			msg = Warnings.createFatal(TSEMessages.get("send.message.failed",
-					PropertiesReader.getSupportEmail()), reports);
+					messageError, PropertiesReader.getSupportEmail()), reports);
 			break;
 		}
 		
