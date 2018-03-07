@@ -113,7 +113,7 @@ public class TseReportValidator extends ReportValidator {
 			if (getRowType(row) != RowType.CASE)
 				continue;
 			
-			String currentSampId = row.getLabel(CustomStrings.CASE_INFO_SAMPLE_ID);
+			String currentSampId = row.getLabel(CustomStrings.SAMPLE_ID_COL);
 			
 			// if there is already an element, error! duplicated value
 			if (cases.containsKey(currentSampId)) {
@@ -146,7 +146,7 @@ public class TseReportValidator extends ReportValidator {
 			if (getRowType(row) != RowType.RESULT)
 				continue;
 			
-			String currentId = row.getLabel(CustomStrings.RES_ID_COLUMN);
+			String currentId = row.getLabel(CustomStrings.RES_ID_COL);
 			
 			// if there is already an element, error! duplicated value
 			if (results.containsKey(currentId)) {
@@ -233,15 +233,15 @@ public class TseReportValidator extends ReportValidator {
 		switch(type) {
 		case SUMM:
 			id = TSEMessages.get("si.id.label", 
-					row.getCode(CustomStrings.SUMMARIZED_INFO_PROG_ID));
+					row.getCode(CustomStrings.PROG_ID_COL));
 			break;
 		case CASE:
 			id = TSEMessages.get("case.id.label", 
-					row.getCode(CustomStrings.CASE_INFO_SAMPLE_ID));
+					row.getCode(CustomStrings.SAMPLE_ID_COL));
 			break;
 		case RESULT:
 			id = TSEMessages.get("result.id.label", 
-					row.getCode(CustomStrings.RES_ID_COLUMN));
+					row.getCode(CustomStrings.RES_ID_COL));
 			break;
 		default:
 			id = "";
@@ -346,12 +346,12 @@ public class TseReportValidator extends ReportValidator {
 				
 				TableSchema schema = TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET);
 				
-				String targetLabel = schema.getById(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP).getLabel();
-				String prodLabel = schema.getById(CustomStrings.SUMMARIZED_INFO_PROD).getLabel();
+				String targetLabel = schema.getById(CustomStrings.TARGET_GROUP_COL).getLabel();
+				String prodLabel = schema.getById(CustomStrings.PROD_COL).getLabel();
 				
 				String id = getStackTrace(row);
-				TableCell targetGroup = row.get(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP);
-				TableCell prod = row.get(CustomStrings.SUMMARIZED_INFO_PROD);
+				TableCell targetGroup = row.get(CustomStrings.TARGET_GROUP_COL);
+				TableCell prod = row.get(CustomStrings.PROD_COL);
 				
 				errors.add(new NonWildAndKilledError(id, targetLabel + ": " + targetGroup.getLabel(), 
 						prodLabel + ": " + prod.getLabel()));
@@ -368,8 +368,8 @@ public class TseReportValidator extends ReportValidator {
 			
 			// if not RGT type, then check declared cases
 			
-			String total = row.getLabel(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES);
-			String unsuitable = row.getLabel(CustomStrings.SUMMARIZED_INFO_UNS_SAMPLES);
+			String total = row.getLabel(CustomStrings.TOT_SAMPLE_TESTED_COL);
+			String unsuitable = row.getLabel(CustomStrings.TOT_SAMPLE_UNSUITABLE_COL);
 			
 			// if no declared case, then show error
 			if (total.equals("0") && unsuitable.equals("0")) {
@@ -433,32 +433,32 @@ public class TseReportValidator extends ReportValidator {
 	public Collection<ReportError> checkNationalCaseId(Collection<TableRow> reportRecords) {
 
 		String[] fieldsToCheck = {
-				CustomStrings.CASE_INFO_ANIMAL_ID
+				CustomStrings.ANIMAL_ID_COL
 			};
 		
-		return checkIdField(reportRecords, CustomStrings.CASE_INFO_CASE_ID, 
+		return checkIdField(reportRecords, CustomStrings.NATIONAL_CASE_ID_COL, 
 				TSEMessages.get("inconsistent.national.case.id"), fieldsToCheck);
 	}
 	
 	public Collection<ReportError> checkAnimalId(Collection<TableRow> reportRecords) {
 
 		String[] fieldsToCheck = {
-				CustomStrings.CASE_INFO_CASE_ID,
-				CustomStrings.CASE_INFO_HERD_ID,
-				CustomStrings.CASE_INFO_STATUS,
-				CustomStrings.CASE_INFO_HOLDING_ID,
-				CustomStrings.RESULT_SAMP_DAY,
-				CustomStrings.RESULT_SAMP_AREA,
-				CustomStrings.CASE_INDEX_CASE,
-				CustomStrings.CASE_BIRTH_COUNTRY,
-				CustomStrings.CASE_INFO_BIRTH_YEAR,
-				CustomStrings.CASE_INFO_BIRTH_MONTH,
-				CustomStrings.CASE_INFO_BORN_FLOCK,
-				CustomStrings.CASE_INFO_BREED,
-				CustomStrings.CASE_INFO_COMMENT
+				CustomStrings.NATIONAL_CASE_ID_COL,
+				CustomStrings.HERD_ID_COL,
+				CustomStrings.STATUS_HERD_COL,
+				CustomStrings.SAMP_HOLDING_ID_COL,
+				CustomStrings.SAMP_DAY_COL,
+				CustomStrings.SAMP_AREA_COL,
+				CustomStrings.INDEX_CASE_COL,
+				CustomStrings.BIRTH_COUNTRY_COL,
+				CustomStrings.BIRTH_YEAR_COL,
+				CustomStrings.BIRTH_MONTH_COL,
+				CustomStrings.BORN_FLOCK_HERD_COL,
+				CustomStrings.BREED_COL,
+				CustomStrings.EVAL_COMMENT_COL
 			};
 		
-		return checkIdField(reportRecords, CustomStrings.CASE_INFO_ANIMAL_ID, 
+		return checkIdField(reportRecords, CustomStrings.ANIMAL_ID_COL, 
 				TSEMessages.get("inconsistent.animal.id"), fieldsToCheck);
 	}
 	
@@ -524,14 +524,14 @@ public class TseReportValidator extends ReportValidator {
 		int summId = row.getNumCode(Relation.foreignKeyFromParent(CustomStrings.SUMMARIZED_INFO_SHEET));
 		TableRow summInfo = daoService.getById(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET), summId);
 
-		String reportYear = report.getCode(AppPaths.REPORT_YEAR);
-		String reportMonth = report.getCode(AppPaths.REPORT_MONTH);
-		String reportMonthLabel = report.getLabel(AppPaths.REPORT_MONTH);
-		String ageClass = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_AGE);
-		String ageClassLabel = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_AGE);
-		String birthYear = row.getCode(CustomStrings.CASE_INFO_BIRTH_YEAR);
-		String birthMonth = row.getCode(CustomStrings.CASE_INFO_BIRTH_MONTH);
-		String birthMonthLabel = row.getLabel(CustomStrings.CASE_INFO_BIRTH_MONTH);
+		String reportYear = report.getCode(AppPaths.REPORT_YEAR_COL);
+		String reportMonth = report.getCode(AppPaths.REPORT_MONTH_COL);
+		String reportMonthLabel = report.getLabel(AppPaths.REPORT_MONTH_COL);
+		String ageClass = summInfo.getCode(CustomStrings.ANIMAGE_COL);
+		String ageClassLabel = summInfo.getLabel(CustomStrings.ANIMAGE_COL);
+		String birthYear = row.getCode(CustomStrings.BIRTH_YEAR_COL);
+		String birthMonth = row.getCode(CustomStrings.BIRTH_MONTH_COL);
+		String birthMonthLabel = row.getLabel(CustomStrings.BIRTH_MONTH_COL);
 		
 		if (birthYear.isEmpty() || birthMonth.isEmpty() || ageClass.isEmpty())
 			return errors;
@@ -578,13 +578,13 @@ public class TseReportValidator extends ReportValidator {
 		switch(errorType) {
 		case ALLELE_ERROR:
 			errors.add(new AlleleNotReportableError(rowId, 
-					row.getLabel(CustomStrings.RESULT_ALLELE_1), 
-					row.getLabel(CustomStrings.RESULT_ALLELE_2)));
+					row.getLabel(CustomStrings.ALLELE_1_COL), 
+					row.getLabel(CustomStrings.ALLELE_2_COL)));
 			break;
 		case WRONG_ALLELE_PAIR:
 			errors.add(new WrongAllelesPairError(rowId, 
-					row.getLabel(CustomStrings.RESULT_ALLELE_1), 
-					row.getLabel(CustomStrings.RESULT_ALLELE_2)));
+					row.getLabel(CustomStrings.ALLELE_1_COL), 
+					row.getLabel(CustomStrings.ALLELE_2_COL)));
 			break;
 		default:
 			break;
@@ -605,11 +605,11 @@ public class TseReportValidator extends ReportValidator {
 			if (getRowType(row) == RowType.SUMM && row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
 					.equals(CustomStrings.SUMMARIZED_INFO_BSE_TYPE)) {
 				
-				int totalSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES);
+				int totalSamples = row.getNumLabel(CustomStrings.TOT_SAMPLE_TESTED_COL);
 				total += totalSamples;
 				
 				// if unknown age class
-				if (row.getCode(CustomStrings.SUMMARIZED_INFO_AGE)
+				if (row.getCode(CustomStrings.ANIMAGE_COL)
 						.equals(CustomStrings.UNKNOWN_AGE_CLASS_CODE)) {
 					unk += totalSamples;
 				}

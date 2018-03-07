@@ -76,16 +76,16 @@ public class TseSummarizedInfoImporterTest {
 		TableRow copiedSi = copiedSummInfo.iterator().next();
 		
 		// declared samples should be reset
-		assertEquals("0", copiedSi.getCode(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES));
-		assertEquals("0", copiedSi.getCode(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES));
-		assertEquals("0", copiedSi.getCode(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES));
-		assertEquals("0", copiedSi.getCode(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES));
-		assertEquals("0", copiedSi.getCode(CustomStrings.SUMMARIZED_INFO_UNS_SAMPLES));
+		assertEquals("0", copiedSi.getCode(CustomStrings.TOT_SAMPLE_POSITIVE_COL));
+		assertEquals("0", copiedSi.getCode(CustomStrings.TOT_SAMPLE_NEGATIVE_COL));
+		assertEquals("0", copiedSi.getCode(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL));
+		assertEquals("0", copiedSi.getCode(CustomStrings.TOT_SAMPLE_TESTED_COL));
+		assertEquals("0", copiedSi.getCode(CustomStrings.TOT_SAMPLE_UNSUITABLE_COL));
 		
 		// different res id (it was reinitialized)
-		assertFalse(si.getCode(CustomStrings.RES_ID_COLUMN).equals(copiedSi.getCode(CustomStrings.RES_ID_COLUMN)));
+		assertFalse(si.getCode(CustomStrings.RES_ID_COL).equals(copiedSi.getCode(CustomStrings.RES_ID_COL)));
 		
 		// different prog id (it was reinitialized)
-		assertFalse(si.getCode(CustomStrings.RESULT_PROG_ID).equals(copiedSi.getCode(CustomStrings.RESULT_PROG_ID)));
+		assertFalse(si.getCode(CustomStrings.PROG_ID_COL).equals(copiedSi.getCode(CustomStrings.PROG_ID_COL)));
 	}
 }

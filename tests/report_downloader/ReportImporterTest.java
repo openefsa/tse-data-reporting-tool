@@ -2,6 +2,7 @@ package report_downloader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,25 +107,139 @@ public class ReportImporterTest {
 			assertEquals(String.valueOf(report.getDatabaseId()), si.getCode(CustomStrings.REPORT_ID_COL));
 			
 			// check contents
-			if (si.getLabel(CustomStrings.RES_ID_COLUMN).equals("0404_000069.0")) {
+			if (si.getLabel(CustomStrings.RES_ID_COL).equals("0404_000069.0")) {
 				siIdForCheckingCase = si.getDatabaseId();
-				assertEquals("0404_000069", si.getLabel(CustomStrings.RESULT_PROG_ID));
+				assertEquals("0404_000069", si.getLabel(CustomStrings.PROG_ID_COL));
 			}
-			if (si.getLabel(CustomStrings.RES_ID_COLUMN).equals("0404_000068.0")) {
-				assertEquals("0404_000068", si.getLabel(CustomStrings.RESULT_PROG_ID));
+			if (si.getLabel(CustomStrings.RES_ID_COL).equals("0404_000068.0")) {
+				assertEquals("0404_000068", si.getLabel(CustomStrings.PROG_ID_COL));
 			}
 		}
 		
 		for(TableRow c: cases) {
 			
-			assertNotNull(c.getCode(CustomStrings.SUMMARIZED_INFO_PART));
+			assertNotNull(c.getCode(CustomStrings.PART_COL));
 			if (c.getLabel(Relation.foreignKeyFromParent(CustomStrings.SUMMARIZED_INFO_SHEET))
 					.equals(String.valueOf(siIdForCheckingCase))) {
 				
-				assertEquals("F02.A06AM", c.getCode(CustomStrings.SUMMARIZED_INFO_PART));
+				assertEquals("F02.A06AM", c.getCode(CustomStrings.PART_COL));
 			}
 		}
 		//TODO check other contents
+	}
+	
+	@Test
+	public void importFirstVersionWithOnlyOneRGT() throws DetailedSOAPException, 
+		XMLStreamException, IOException, FormulaException, NoAttachmentException, ParseException {
+		
+		String datasetId = "11920";
+		
+		getDataset.addDatasetFile(datasetId, new File("test-files" 
+				+ System.getProperty("file.separator") + "RGT-import-test.xml"));
+		
+		DatasetList datasetVersions = new DatasetList();
+		
+		Dataset d = new Dataset();
+		
+		// note: these information come from the get datasets list
+		// in the normal process flow
+		d.setStatus(DcfDatasetStatus.ACCEPTED_DWH);
+		d.setId(datasetId);
+		d.setSenderId("AT1706.00");
+		
+		datasetVersions.add(d);
+		
+		// import the file
+		TseReportImporter imp = new TseReportImporter(reportService, daoService);
+		imp.setDatasetVersions(datasetVersions);
+		imp.importReport();
+		
+		assertEquals(1, daoService.getAll(TableSchemaList.getByName(AppPaths.REPORT_SHEET)).size());
+		assertEquals(1, daoService.getAll(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET)).size());
+		assertEquals(1, daoService.getAll(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET)).size());
+		assertEquals(1, daoService.getAll(TableSchemaList.getByName(CustomStrings.RESULT_SHEET)).size());
+		
+		TableRowList cases = daoService.getAll(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET));
+		
+		for (TableRow c: cases) {
+			String animage = c.getCode(CustomStrings.ANIMAGE_COL);
+			assertEquals("F31.A16ND", animage);
+			
+			// NO sex
+			assertTrue(c.getCode(CustomStrings.SEX_COL).isEmpty());
+		}
+	}
+	
+	@Test
+	public void importFirstVersionOfReportWithAllDataTypes() throws DetailedSOAPException, XMLStreamException, 
+		IOException, FormulaException, NoAttachmentException, ParseException {
+		// TODO!!
+		assertEquals("Implemented", "NOT IMPLEMENTED!");
+	}
+	
+	@Test
+	public void importFirstVersionCheckSexAndPsuId() throws DetailedSOAPException, XMLStreamException, 
+		IOException, FormulaException, NoAttachmentException, ParseException {
+		
+		String datasetId = "12279";
+		
+		getDataset.addDatasetFile(datasetId, new File("test-files" 
+				+ System.getProperty("file.separator") + "import-test-cyprus.xml"));
+		
+		DatasetList datasetVersions = new DatasetList();
+		
+		Dataset d = new Dataset();
+		
+		// note: these information come from the get datasets list
+		// in the normal process flow
+		d.setStatus(DcfDatasetStatus.VALID);
+		d.setId(datasetId);
+		d.setSenderId("CY1202.00");
+		
+		datasetVersions.add(d);
+		
+		// import the file
+		TseReportImporter imp = new TseReportImporter(reportService, daoService);
+		imp.setDatasetVersions(datasetVersions);
+		imp.importReport();
+		
+		// check contents of the file with what was imported
+		assertEquals(1, daoService.getAll(TableSchemaList.getByName(AppPaths.REPORT_SHEET)).size());
+		assertEquals(4, daoService.getAll(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET)).size());
+
+		// get the objects
+		TableRow report = daoService.getAll(TableSchemaList.getByName(AppPaths.REPORT_SHEET)).iterator().next();
+		TableRowList summInfos = daoService.getAll(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+		TableRowList cases = daoService.getAll(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET));
+		TableRowList results = daoService.getAll(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		
+		// psu id and sex must be set for CWD
+		for (TableRow si: summInfos) {
+
+			if (si.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
+					.equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE)) {
+				String psuId = si.getCode(CustomStrings.PSU_ID_COL);
+				assertTrue(psuId != null && !psuId.isEmpty());
+				
+				String sex = si.getCode(CustomStrings.SEX_COL);
+				assertTrue(sex != null && !sex.isEmpty());
+			}
+		}
+		
+		for (TableRow c: cases) {
+			TableRow si = daoService.getById(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET), 
+					c.getNumCode(Relation.foreignKeyFromParent(CustomStrings.SUMMARIZED_INFO_SHEET)));
+			
+			// for non CWD, sex is optional
+			if (!si.getCode(CustomStrings.SUMMARIZED_INFO_TYPE).equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE)) {
+				
+				// we know in the dataset this element has the sex
+				if (c.getCode(CustomStrings.SAMPLE_ID_COL).equals("ofiasdfijdsiofds")) {
+					String sex = c.getCode(CustomStrings.SEX_COL);
+					assertTrue(sex != null && !sex.isEmpty());
+				}
+			}
+		}
 	}
 	
 	@Test

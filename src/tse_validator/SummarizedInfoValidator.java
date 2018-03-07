@@ -43,8 +43,8 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 		for (TableRow caseReport : cases) {
 
-			String caseId = caseReport.getCode(CustomStrings.CASE_INFO_CASE_ID);
-			String sampAnAsses = caseReport.getCode(CustomStrings.CASE_INFO_ASSESS);
+			String caseId = caseReport.getCode(CustomStrings.NATIONAL_CASE_ID_COL);
+			String sampAnAsses = caseReport.getCode(CustomStrings.SAMP_AN_ASSES_COL);
 
 			if ((sampAnAsses.equals(sampAnAssesType) && !exclude) 
 					||(!sampAnAsses.equals(sampAnAssesType) && exclude))
@@ -60,7 +60,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 		for (TableRow caseReport : cases) {
 
-			String caseId = caseReport.getCode(CustomStrings.CASE_INFO_CASE_ID);
+			String caseId = caseReport.getCode(CustomStrings.NATIONAL_CASE_ID_COL);
 
 			hash.add(caseId);
 		}
@@ -86,8 +86,8 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 		Collection<SampleCheck> checks = new ArrayList<>();
 		
-		String targetGroup = row.getCode(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP);
-		String prod = row.getCode(CustomStrings.SUMMARIZED_INFO_PROD);
+		String targetGroup = row.getCode(CustomStrings.TARGET_GROUP_COL);
+		String prod = row.getCode(CustomStrings.PROD_COL);
 		
 		// non wild for killed error
 		if (targetGroup.equals(CustomStrings.KILLED_TARGET_GROUP) 
@@ -109,8 +109,8 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 			if (!isRGT) {
 
 				// declared inc/pos
-				int incSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
-				int posSamples = row.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
+				int incSamples = row.getNumLabel(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL);
+				int posSamples = row.getNumLabel(CustomStrings.TOT_SAMPLE_POSITIVE_COL);
 				
 				// detailed inc
 				int detailedIncSamples = getDistinctCaseIndex(cases, 

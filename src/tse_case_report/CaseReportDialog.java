@@ -98,8 +98,8 @@ public class CaseReportDialog extends TableDialogWithMenu {
 			
 			@Override
 			public void editEnded(TableRow row, TableColumn field, boolean changed) {
-				if (changed && field.equals(CustomStrings.CASE_INFO_STATUS)) {
-					row.remove(CustomStrings.CASE_INDEX_CASE);
+				if (changed && field.equals(CustomStrings.STATUS_HERD_COL)) {
+					row.remove(CustomStrings.INDEX_CASE_COL);
 				}
 			}
 		});
@@ -153,8 +153,8 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	 */
 	private int getNumberOfExpectedCases(TableRow summInfo) {
 		
-		int positive = summInfo.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
-		int inconclusive = summInfo.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
+		int positive = summInfo.getNumLabel(CustomStrings.TOT_SAMPLE_POSITIVE_COL);
+		int inconclusive = summInfo.getNumLabel(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL);
 		int total = positive + inconclusive;
 		
 		return total;
@@ -277,15 +277,15 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	@Override
 	public void addWidgets(DialogBuilder viewer) {
 		
-		String reportMonth = report.getLabel(AppPaths.REPORT_MONTH);
-		String reportYear = report.getLabel(AppPaths.REPORT_YEAR);
-		String source = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_SOURCE);
-		String prod = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_PROD);
-		String age = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_AGE);
-		String target = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP);
-		String progId = summInfo.getLabel(CustomStrings.SUMMARIZED_INFO_PROG_ID);
+		String reportMonth = report.getLabel(AppPaths.REPORT_MONTH_COL);
+		String reportYear = report.getLabel(AppPaths.REPORT_YEAR_COL);
+		String source = summInfo.getLabel(CustomStrings.SOURCE_COL);
+		String prod = summInfo.getLabel(CustomStrings.PROD_COL);
+		String age = summInfo.getLabel(CustomStrings.ANIMAGE_COL);
+		String target = summInfo.getLabel(CustomStrings.TARGET_GROUP_COL);
+		String progId = summInfo.getLabel(CustomStrings.PROG_ID_COL);
 		
-		String sex = summInfo.getLabel(CustomStrings.SEX_COL_ID);
+		String sex = summInfo.getLabel(CustomStrings.SEX_COL);
 		
 		String yearRow = TSEMessages.get("case.samp.year", reportYear);
 		String monthRow = TSEMessages.get("case.samp.month", reportMonth);

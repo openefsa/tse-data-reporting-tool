@@ -92,11 +92,11 @@ public class ResultDialog extends TableDialogWithMenu {
 				
 				// update the base term and the result value if
 				// the test aim was changed
-				if (changed && (field.getId().equals(CustomStrings.RESULT_TEST_AIM) 
-						|| field.getId().equals(CustomStrings.AN_METH_CODE))) {
+				if (changed && (field.getId().equals(CustomStrings.TEST_AIM_COL) 
+						|| field.getId().equals(CustomStrings.AN_METH_CODE_COL))) {
 
 					// if genotyping set base term
-					if (row.getCode(CustomStrings.AN_METH_CODE).equals(CustomStrings.AN_METH_CODE_GENOTYPING)
+					if (row.getCode(CustomStrings.AN_METH_CODE_COL).equals(CustomStrings.AN_METH_CODE_GENOTYPING)
 							&& !summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
 								.equals(CustomStrings.SUMMARIZED_INFO_BSEOS_TYPE)) {
 
@@ -116,20 +116,20 @@ public class ResultDialog extends TableDialogWithMenu {
 						}
 					}
 					else {
-						if (!row.getCode(CustomStrings.RESULT_TEST_AIM).isEmpty())
+						if (!row.getCode(CustomStrings.TEST_AIM_COL).isEmpty())
 							PredefinedResultService.addParamAndResult(row, row.getCode(field.getId()));
 					}
 				}
 				
 				// reset the aim of the test if the test type is changed
-				if (changed && field.equals(CustomStrings.RESULT_TEST_TYPE)) {
+				if (changed && field.equals(CustomStrings.AN_METH_TYPE_COL)) {
 					
 					TableRow completeRow = getPanelBuilder().getTable().getCompleteRow(row.getDatabaseId());
 					
-					completeRow.remove(CustomStrings.RESULT_TEST_AIM);
-					completeRow.remove(CustomStrings.AN_METH_CODE);
-					row.remove(CustomStrings.RESULT_TEST_AIM);
-					row.remove(CustomStrings.AN_METH_CODE);
+					completeRow.remove(CustomStrings.TEST_AIM_COL);
+					completeRow.remove(CustomStrings.AN_METH_CODE_COL);
+					row.remove(CustomStrings.TEST_AIM_COL);
+					row.remove(CustomStrings.AN_METH_CODE_COL);
 
 					completeRow.update();
 				}
@@ -168,7 +168,7 @@ public class ResultDialog extends TableDialogWithMenu {
 			} catch (IOException e) {
 				e.printStackTrace();
 				LOGGER.error("Cannot create predefined results for case with sampId=" 
-				+ caseInfo.getCode(CustomStrings.CASE_INFO_SAMPLE_ID), e);
+				+ caseInfo.getCode(CustomStrings.SAMPLE_ID_COL), e);
 			}
 		}
 	}
@@ -243,9 +243,9 @@ public class ResultDialog extends TableDialogWithMenu {
 	@Override
 	public void addWidgets(DialogBuilder viewer) {
 		
-		String sampleId = caseInfo.getLabel(CustomStrings.CASE_INFO_SAMPLE_ID);
-		String animalId = caseInfo.getLabel(CustomStrings.CASE_INFO_ANIMAL_ID);
-		String caseId = caseInfo.getLabel(CustomStrings.CASE_INFO_CASE_ID);
+		String sampleId = caseInfo.getLabel(CustomStrings.SAMPLE_ID_COL);
+		String animalId = caseInfo.getLabel(CustomStrings.ANIMAL_ID_COL);
+		String caseId = caseInfo.getLabel(CustomStrings.NATIONAL_CASE_ID_COL);
 		
 		String sampleIdRow = TSEMessages.get("result.sample.id", sampleId);
 		String animalIdRow = TSEMessages.get("result.animal.id", animalId);

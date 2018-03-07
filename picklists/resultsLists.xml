@@ -30,7 +30,7 @@
 			<description>L-Type</description>
 		</selection>
 		<selection code="RF-00004888-PAR$POS">
-			<description>Other BSE (POSonclusive)</description>
+			<description>Other BSE (Inconclusive)</description>
 		</selection>
 	</selectionList>
 	<selectionList id="SCRAPIEAT06A">
@@ -69,7 +69,24 @@
 			<description>CH1641 like</description>
 		</selection>
 		<selection code="RF-00004894-PAR$POS">
-			<description>Other Scrapie (POSonclusive)</description>
+			<description>Other Scrapie (Inconclusive)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIEAT13A">
+		<selection code="RF-00004890-PAR$POS">
+			<description>Dummy</description>
+		</selection>
+		<selection code="RF-00004892-PAR$POS">
+			<description>Dummy</description>
+		</selection>
+		<selection code="RF-00004893-PAR$POS">
+			<description>Dummy</description>
+		</selection>
+		<selection code="RF-00004891-PAR$POS">
+			<description>Dummy</description>
+		</selection>
+		<selection code="RF-00004894-PAR$POS">
+			<description>Dummy</description>
 		</selection>
 	</selectionList>
 	<selectionList id="CWDAT06A">
@@ -99,7 +116,7 @@
 			<description>BSE like</description>
 		</selection>
 		<selection code="RF-00004898-PAR$POS">
-			<description>Other CWD (POSonclusive)</description>
+			<description>Other CWD (Inconclusive)</description>
 		</selection>
 	</selectionList>
 	<selectionList id="BSEOSAT06A">
@@ -132,7 +149,12 @@
 			<description>L-Type</description>
 		</selection>
 		<selection code="RF-00004888-PAR$POS">
-			<description>Other BSE (POSonclusive)</description>
+			<description>Other BSE (Inconclusive)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="RGTAT13A">
+		<selection code="RF-00004629-PAR$POS">
+			<description>Dummy</description>
 		</selection>
 	</selectionList>
 </resultsLists>

@@ -25,13 +25,13 @@ public class TseSummarizedInfoImporter extends TableImporter {
 	public void filterRowData(TableRow row) {
 		
 		// remove declared data related to samples
-		row.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "0");
-		row.put(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES, "0");
-		row.put(CustomStrings.SUMMARIZED_INFO_UNS_SAMPLES, "0");
-		row.put(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES, "0");
-		row.put(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES, "0");
+		row.put(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL, "0");
+		row.put(CustomStrings.TOT_SAMPLE_POSITIVE_COL, "0");
+		row.put(CustomStrings.TOT_SAMPLE_UNSUITABLE_COL, "0");
+		row.put(CustomStrings.TOT_SAMPLE_NEGATIVE_COL, "0");
+		row.put(CustomStrings.TOT_SAMPLE_TESTED_COL, "0");
 
-		this.formulaService.initialize(row, CustomStrings.RESULT_PROG_ID);
-		this.formulaService.initialize(row, CustomStrings.RES_ID_COLUMN);
+		this.formulaService.initialize(row, CustomStrings.PROG_ID_COL);
+		this.formulaService.initialize(row, CustomStrings.RES_ID_COL);
 	}
 }

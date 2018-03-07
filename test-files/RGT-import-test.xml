@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<message>
+    <header>
+        <type>dcfmsg</type>
+        <version>2.0</version>
+        <senderMessageId/>
+        <senderOrgCode>EFSA</senderOrgCode>
+        <receiverOrgCode>EFSA</receiverOrgCode>
+    </header>
+    <payload>
+        <operation>
+            <opType>Export</opType>
+            <senderDatasetId>CY1202.00</senderDatasetId>
+            <datasetId>12279</datasetId>
+            <dcCode>TSE.TEST</dcCode>
+            <dcTable>SSD2_CENTRAL_2017</dcTable>
+            <orgCode>EFSA</orgCode>
+            <opCom>The dataset was downloaded from DCF on 2018-03-06 15:31:05 in status Valid.</opCom>
+        </operation>
+        <dataset>
+    <result>
+        <progId>1202_000027</progId>
+        <progLegalRef>N123A</progLegalRef>
+        <sampEventId>1202_000027.S.989898</sampEventId>
+        <sampId>989898</sampId>
+        <repCountry>CY</repCountry>
+        <sampCountry>CY</sampCountry>
+        <repYear>2012</repYear>
+        <sampY>2012</sampY>
+        <sampM>2</sampM>
+        <sampMatType>S000A</sampMatType>
+        <sampMatCode>A04MQ#F01.A057G$F02.A06AL$F21.A07RV$F31.A16ND</sampMatCode>
+        <sampAnId>RGT</sampAnId>
+        <analysisY>2012</analysisY>
+        <paramType>P001A</paramType>
+        <paramCode>RF-00004629-PAR#allele=AXRR$allele=AXRR</paramCode>
+        <anMethRefId>AT13A.F089A</anMethRefId>
+        <anMethType>AT13A</anMethType>
+        <anMethCode>F089A</anMethCode>
+        <resId>1202_000027.000090</resId>
+        <resQualValue>POS</resQualValue>
+        <resType>BIN</resType>
+    </result>
+</dataset>
+    </payload>
+</message>

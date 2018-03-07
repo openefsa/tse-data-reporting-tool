@@ -40,7 +40,7 @@ public class SummarizedInfo extends TableRow {
 	}
 	
 	public String getSpecies() {
-		return this.getCode(CustomStrings.SUMMARIZED_INFO_SOURCE);
+		return this.getCode(CustomStrings.SOURCE_COL);
 	}
 	
 	public String getType() {
@@ -56,7 +56,7 @@ public class SummarizedInfo extends TableRow {
 	}
 	
 	public String getProgId() {
-		return this.getLabel(CustomStrings.SUMMARIZED_INFO_PROG_ID);
+		return this.getLabel(CustomStrings.PROG_ID_COL);
 	}
 	
 	public String computeContextId() throws FormulaException {

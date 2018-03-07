@@ -8,9 +8,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -113,7 +117,7 @@ public class ReportServiceTest {
 		SummarizedInfo info = RowCreatorMock.genRandSummInfo(report.getDatabaseId(), 
 				settings.getDatabaseId(), pref.getDatabaseId());
 		info.put(CustomStrings.SUMMARIZED_INFO_TYPE, CustomStrings.SUMMARIZED_INFO_CWD_TYPE);
-		info.put(CustomStrings.SEX_COL_ID, CustomStrings.SEX_MALE);
+		info.put(CustomStrings.SEX_COL, CustomStrings.SEX_MALE);
 		
 		daoService.add(info);
 		
@@ -1838,7 +1842,7 @@ public class ReportServiceTest {
 		TableRow rgt = list.iterator().next();
 		
 		// blood as part for rgt
-		assertEquals(CustomStrings.BLOOD_CODE, rgt.getCode(CustomStrings.SUMMARIZED_INFO_PART));
+		assertEquals(CustomStrings.BLOOD_CODE, rgt.getCode(CustomStrings.PART_COL));
 	}
 	
 	@Test
@@ -1852,9 +1856,9 @@ public class ReportServiceTest {
 		
 		SummarizedInfo si = RowCreatorMock.genRandSummInfo(report.getDatabaseId(), optId, prefId);
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
-		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "1");
-		si.put(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES, "0");
-		si.put(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES, "0");
+		si.put(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL, "1");
+		si.put(CustomStrings.TOT_SAMPLE_POSITIVE_COL, "0");
+		si.put(CustomStrings.TOT_SAMPLE_NEGATIVE_COL, "0");
 		
 		reportService.createDefaultCases(report, si);
 		
@@ -1867,10 +1871,10 @@ public class ReportServiceTest {
 		
 		TableRow case1 = iterator.next();
 		
-		assertEquals(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, case1.getCode(CustomStrings.CASE_INFO_ASSESS));
+		assertEquals(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, case1.getCode(CustomStrings.SAMP_AN_ASSES_COL));
 		
 		// obex and lymph for cases part
-		boolean hasObex1 = CustomStrings.OBEX_CODE.equals(case1.getCode(CustomStrings.SUMMARIZED_INFO_PART));
+		boolean hasObex1 = CustomStrings.OBEX_CODE.equals(case1.getCode(CustomStrings.PART_COL));
 		
 		assertTrue(hasObex1);
 	}
@@ -1886,9 +1890,9 @@ public class ReportServiceTest {
 		
 		SummarizedInfo si = RowCreatorMock.genRandSummInfo(report.getDatabaseId(), optId, prefId);
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, new TableCell(CustomStrings.SUMMARIZED_INFO_CWD_TYPE, ""));
-		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "1");
-		si.put(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES, "0");
-		si.put(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES, "0");
+		si.put(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL, "1");
+		si.put(CustomStrings.TOT_SAMPLE_POSITIVE_COL, "0");
+		si.put(CustomStrings.TOT_SAMPLE_NEGATIVE_COL, "0");
 		
 		reportService.createDefaultCases(report, si);
 		
@@ -1902,17 +1906,17 @@ public class ReportServiceTest {
 		TableRow case1 = iterator.next();
 		TableRow case2 = iterator.next();
 		
-		assertEquals(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, case1.getCode(CustomStrings.CASE_INFO_ASSESS));
-		assertEquals(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, case2.getCode(CustomStrings.CASE_INFO_ASSESS));
+		assertEquals(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, case1.getCode(CustomStrings.SAMP_AN_ASSES_COL));
+		assertEquals(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, case2.getCode(CustomStrings.SAMP_AN_ASSES_COL));
 		
 		// obex and lymph for cases part
-		boolean hasObex1 = CustomStrings.OBEX_CODE.equals(case1.getCode(CustomStrings.SUMMARIZED_INFO_PART));
-		boolean hasObex2 = CustomStrings.OBEX_CODE.equals(case2.getCode(CustomStrings.SUMMARIZED_INFO_PART));
+		boolean hasObex1 = CustomStrings.OBEX_CODE.equals(case1.getCode(CustomStrings.PART_COL));
+		boolean hasObex2 = CustomStrings.OBEX_CODE.equals(case2.getCode(CustomStrings.PART_COL));
 		
 		assertTrue(hasObex1 || hasObex2);
 		
-		boolean hasLymph1 = CustomStrings.LYMPH_CODE.equals(case1.getCode(CustomStrings.SUMMARIZED_INFO_PART));
-		boolean hasLymph2 = CustomStrings.LYMPH_CODE.equals(case2.getCode(CustomStrings.SUMMARIZED_INFO_PART));
+		boolean hasLymph1 = CustomStrings.LYMPH_CODE.equals(case1.getCode(CustomStrings.PART_COL));
+		boolean hasLymph2 = CustomStrings.LYMPH_CODE.equals(case2.getCode(CustomStrings.PART_COL));
 		
 		assertTrue(hasLymph1 || hasLymph2);
 	}
@@ -1962,8 +1966,8 @@ public class ReportServiceTest {
 		SummarizedInfo si = RowCreatorMock.genRandSummInfo(amendedReport.getDatabaseId(), 1, // settId not required
 				amendedReport.getNumCode(CustomStrings.PREFERENCES_ID_COL));
 		
-		si.put(CustomStrings.RES_ID_COLUMN, "jdbadabdjsabdjsb");  // needed to say that it is different from the other summ info
-		si.put(CustomStrings.SUMMARIZED_INFO_PROG_ID, "proggoid");
+		si.put(CustomStrings.RES_ID_COL, "jdbadabdjsabdjsb");  // needed to say that it is different from the other summ info
+		si.put(CustomStrings.PROG_ID_COL, "proggoid");
 		daoService.add(si);
 		
 		MessageConfigBuilder builder = reportService.getSendMessageConfiguration(amendedReport);
@@ -1990,7 +1994,7 @@ public class ReportServiceTest {
 				amendedReport.getSchema().getSheetName(), amendedReport.getDatabaseId(), false);
 		
 		TableRow si = list.iterator().next();
-		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "20");  // update
+		si.put(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL, "20");  // update
 		daoService.update(si);
 		
 		MessageConfigBuilder builder = reportService.getSendMessageConfiguration(amendedReport);
@@ -2085,5 +2089,112 @@ public class ReportServiceTest {
 		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(exportedFile);
 
 		assertEquals(1, doc.getElementsByTagName("result").getLength());
+	}
+	
+	@Test
+	public void computeContextIdForAnalyticalResultNoSexForBSE() 
+			throws NoSuchAlgorithmException, ParseException, FormulaException {
+		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		
+		String tg = "TG001A";
+		String sampC = "CY";
+		String sampY = "2012";
+		String sampM = "2";
+		String source = "F01.A057C";
+		String prod = "F21.A07RV";
+		String animage = "F31.A16NJ";
+		String sex = "F32.A0C8Z";  // present but not considered in context
+		
+		result.put(CustomStrings.TARGET_GROUP_COL, tg);
+		result.put("sampCountry", sampC);
+		result.put("sampY", sampY);
+		result.put("sampM", sampM);
+		result.put("source", source);
+		result.put("prod", prod);
+		result.put("animage", animage);
+		result.put("sex", sex);
+		
+		String hashAlgorithm = "MD5";
+		String value = tg + sampC + sampY + sampM + source + prod + animage;
+		
+		byte[] byteArray = value.getBytes();
+		byte[] digest;
+		digest = MessageDigest.getInstance(hashAlgorithm).digest(byteArray);
+		
+		String hash = DatatypeConverter.printHexBinary(digest);
+		
+		assertEquals(hash, reportService.getContextIdFrom(result));
+	}
+	
+	@Test
+	public void computeContextIdForAnalyticalResultForCWD() 
+			throws NoSuchAlgorithmException, ParseException, FormulaException {
+		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		
+		String tg = "TG001A";
+		String sampC = "CY";
+		String sampY = "2012";
+		String sampM = "2";
+		String source = "F01.A056N";
+		String prod = "F21.A07RV";
+		String animage = "F31.A16NJ";
+		String sex = "F32.A0C8Z";
+		String psuId = "mypsuID";
+		
+		result.put(CustomStrings.TARGET_GROUP_COL, tg);
+		result.put("sampCountry", sampC);
+		result.put("sampY", sampY);
+		result.put("sampM", sampM);
+		result.put("source", source);
+		result.put("prod", prod);
+		result.put("animage", animage);
+		result.put("sex", sex);
+		result.put("psuId", psuId);
+		
+		String hashAlgorithm = "MD5";
+		String value = tg + sampC + sampY + sampM + source + prod + animage + sex + psuId;
+		
+		byte[] byteArray = value.getBytes();
+		byte[] digest;
+		digest = MessageDigest.getInstance(hashAlgorithm).digest(byteArray);
+		
+		String hash = DatatypeConverter.printHexBinary(digest);
+		
+		assertEquals(hash, reportService.getContextIdFrom(result));
+	}
+	
+	@Test
+	public void computeContextIdForAnalyticalResultForSCRAPIE() 
+			throws NoSuchAlgorithmException, ParseException, FormulaException {
+		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		
+		String tg = "TG001A";
+		String sampC = "CY";
+		String sampY = "2012";
+		String sampM = "2";
+		String source = "F01.A057G";  // sheep
+		String prod = "F21.A07RV";
+		String animage = "F31.A16NJ";
+		String sex = "F32.A0C8Z";  // present but not considered in context
+		
+		result.put(CustomStrings.TARGET_GROUP_COL, tg);
+		result.put("sampCountry", sampC);
+		result.put("sampY", sampY);
+		result.put("sampM", sampM);
+		result.put("source", source);
+		result.put("prod", prod);
+		result.put("animage", animage);
+		result.put("sex", sex);
+		
+		String hashAlgorithm = "MD5";
+		String value = tg + sampC + sampY + sampM + source + prod + animage;
+		
+		byte[] byteArray = value.getBytes();
+		byte[] digest;
+		digest = MessageDigest.getInstance(hashAlgorithm).digest(byteArray);
+		
+		String hash = DatatypeConverter.printHexBinary(digest);
+		
+		assertEquals(hash, reportService.getContextIdFrom(result));
 	}
 }

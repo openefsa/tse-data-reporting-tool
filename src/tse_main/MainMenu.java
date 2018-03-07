@@ -256,7 +256,7 @@ public class MainMenu {
 					return;
 
 				LOGGER.info("Importing summarized information from report=" 
-						+ report.getCode(CustomStrings.SENDER_DATASET_ID_COLUMN)
+						+ report.getCode(CustomStrings.SENDER_DATASET_ID_COL)
 						+ " to report=" + mainPanel.getOpenedReport().getSenderId());
 				
 				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));

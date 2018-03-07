@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import amend_manager.ReportImporter;
 import dataset.Dataset;
+import formula.FormulaDecomposer;
 import formula.FormulaException;
 import providers.ITableDaoService;
 import providers.TseReportService;
@@ -46,7 +47,7 @@ public class TseReportImporter extends ReportImporter {
 	 * This is needed to manage amendments.
 	 */
 	public TseReportImporter(TseReportService reportService, ITableDaoService daoService) {
-		super(CustomStrings.RES_ID_COLUMN, CustomStrings.SENDER_DATASET_ID_COLUMN, reportService, daoService);
+		super(CustomStrings.RES_ID_COL, CustomStrings.SENDER_DATASET_ID_COL, reportService, daoService);
 		
 		this.reportService = reportService;
 		this.daoService = daoService;
@@ -87,7 +88,8 @@ public class TseReportImporter extends ReportImporter {
 				daoService.add(si);
 
 				LOGGER.info("Imported summ info; contextId=" + reportService.getContextId(si));
-				
+				System.err.println("Imported summ info; contextId=" + reportService.getContextId(si) + " from " 
+						+ si.getCode(CustomStrings.SAMP_MAT_CODE_COL));
 				// save it in the cache
 				summInfos.add(si);
 			}
@@ -102,7 +104,7 @@ public class TseReportImporter extends ReportImporter {
 	 */
 	private boolean isRGT(TableRow row) throws ParseException {
 		
-		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer(row);
+		FormulaDecomposer decomposer = new FormulaDecomposer();
 		String paramBaseTerm = decomposer.getBaseTerm(
 				row.getCode(CustomStrings.PARAM_CODE_COL));
 		
@@ -120,7 +122,7 @@ public class TseReportImporter extends ReportImporter {
 	 * @throws ParseException 
 	 */
 	private void importCasesAndResults(TseReport report, Collection<TableRow> datasetRows) throws FormulaException, ParseException {
-		
+
 		// process the cases and analytical results
 		for (TableRow row : datasetRows) {
 
@@ -130,11 +132,11 @@ public class TseReportImporter extends ReportImporter {
 				
 				// if random genotyping, create the summarized information
 				if (isRGT(row)) {
-					
+	
 					summInfo = extractSummarizedInfo(report, row, true);
-					
+
 					summInfo.setType(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
-					
+	
 					// create the summarized information
 					daoService.add(summInfo);
 					
@@ -142,24 +144,29 @@ public class TseReportImporter extends ReportImporter {
 					// for the different results
 					summInfos.add(summInfo);
 
-					LOGGER.info("Imported RGT summarized information; contextId=" 
-							+ reportService.getContextId(summInfo));
+					LOGGER.info("Created fake RGT summarized information");
 				}
 				else {
 
-					String contextId = getContextIdFrom(row);
+					String contextId = this.reportService.getContextIdFrom(row);
 
 					LOGGER.info("Context id=" + contextId + " for " + row);
 
 					// get the summarized info related to the case/result
 					summInfo = getSummInfoByContextId(contextId);
-
+					
 					LOGGER.info("Related summarized info with same contextId= " + summInfo);
+				}
+
+				if (summInfo == null) {
+					String contextId = this.reportService.getContextIdFrom(row);
+					throw new ParseException("No aggregated data was found related to context id=" + contextId 
+							+ " for individual case=" + row + ". Available aggregated data are: " + summInfos, 0);
 				}
 
 				// import the case
 				TableRow caseInfo = importCase(report, summInfo, row);
-				
+
 				// import the result
 				TableRow result = importResult(report, summInfo, caseInfo, row);
 				
@@ -187,7 +194,7 @@ public class TseReportImporter extends ReportImporter {
 			// import case in the db
 			daoService.add(currentCaseInfo);
 			
-			String sampId = currentCaseInfo.getLabel(CustomStrings.CASE_INFO_SAMPLE_ID);
+			String sampId = currentCaseInfo.getLabel(CustomStrings.SAMPLE_ID_COL);
 
 			LOGGER.info("Imported case/sample with database id=" + currentCaseInfo.getDatabaseId() 
 				+ ", sampId=" + sampId);
@@ -239,11 +246,17 @@ public class TseReportImporter extends ReportImporter {
 
 		HashMap<String, TableCell> rowValues = new HashMap<>();
 
-		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer(row);
-		rowValues.putAll(decomposer.decompose(CustomStrings.SUMMARIZED_INFO_SAMP_MAT_CODE));
+		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer();
+		rowValues.putAll(decomposer.decompose(CustomStrings.SAMP_MAT_CODE_COL, 
+				row.getCode(CustomStrings.SAMP_MAT_CODE_COL)));
+		
+		// extract psu id for cwd
+		rowValues.putAll(decomposer.decompose(CustomStrings.SAMP_UNIT_IDS_COL,
+				row.getCode(CustomStrings.SAMP_UNIT_IDS_COL)));
 		
 		if (!isRGT)
-			rowValues.putAll(decomposer.decompose(CustomStrings.SUMMARIZED_INFO_PROG_INFO));
+			rowValues.putAll(decomposer.decompose(CustomStrings.PROG_INFO_COL,
+					row.getCode(CustomStrings.PROG_INFO_COL)));
 		
 		// copy values into the summarized information
 		SummarizedInfo summInfo = new SummarizedInfo(row);
@@ -293,7 +306,7 @@ public class TseReportImporter extends ReportImporter {
 		// even if we are extracting the case information data!
 		row.setSchema(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
 		
-		TableCell sampId = row.get(CustomStrings.RESULT_SAMPLE_ID);
+		TableCell sampId = row.get(CustomStrings.SAMPLE_ID_COL);
 		
 		if (sampId == null)
 			throw new ParseException("Missing sampId", -1);
@@ -311,28 +324,28 @@ public class TseReportImporter extends ReportImporter {
 
 			HashMap<String, TableCell> rowValues = new HashMap<>();
 
-			TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer(row);
+			TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer();
 
-			rowValues.putAll(decomposer.decompose(CustomStrings.RESULT_EVAL_INFO));
-			rowValues.putAll(decomposer.decompose(CustomStrings.RESULT_SAMP_UNIT_IDS));
-			rowValues.putAll(decomposer.decompose(CustomStrings.RESULT_SAMP_EVENT_INFO));
-			
-			HashMap<String, TableCell> sampMatCodeDecomposed = 
-					decomposer.decompose(CustomStrings.SUMMARIZED_INFO_SAMP_MAT_CODE);
-			
-			TableCell part = sampMatCodeDecomposed.get(CustomStrings.SUMMARIZED_INFO_PART);
-			rowValues.put(CustomStrings.SUMMARIZED_INFO_PART, part);
+			// get decomposed values
+			for (String id: new String[]{CustomStrings.EVAL_INFO_COL, 
+					CustomStrings.SAMP_UNIT_IDS_COL, CustomStrings.SAMP_EVENT_INFO_COL,
+					CustomStrings.SAMP_EVENT_INFO_COL, CustomStrings.SAMP_MAT_INFO_COL,
+					CustomStrings.SAMP_MAT_CODE_COL}) {
+				rowValues.putAll(decomposer.decompose(id, row.getCode(id)));
+				
+				if (id.equals(CustomStrings.SAMP_MAT_CODE_COL)) {
+					System.out.println("SAMP MAT " + row);
+				}
+			}
 
 			// save sample id
-			rowValues.put(CustomStrings.CASE_INFO_SAMPLE_ID, sampId);
-
-			rowValues.putAll(decomposer.decompose(CustomStrings.RESULT_SAMP_EVENT_INFO));
-			rowValues.putAll(decomposer.decompose(CustomStrings.RESULT_SAMP_MAT_INFO));
+			rowValues.put(CustomStrings.SAMPLE_ID_COL, sampId);
 			
-			rowValues.put(CustomStrings.RESULT_SAMP_AREA, 
-					row.get(CustomStrings.RESULT_SAMP_AREA));
+			rowValues.put(CustomStrings.SAMP_AREA_COL, 
+					row.get(CustomStrings.SAMP_AREA_COL));
 			
-			rowValues.put(CustomStrings.RESULT_SAMP_DAY, row.get(CustomStrings.RESULT_SAMP_DAY));
+			rowValues.put(CustomStrings.SAMP_DAY_COL, 
+					row.get(CustomStrings.SAMP_DAY_COL));
 
 			// store all the values into the case report
 			for (String key : rowValues.keySet()) {
@@ -351,51 +364,6 @@ public class TseReportImporter extends ReportImporter {
 
 		return caseReport;
 	}
-
-	/**
-	 * Get the context id of an analytical result
-	 * @param result
-	 * @return
-	 * @throws ParseException
-	 * @throws FormulaException
-	 */
-	private String getContextIdFrom(TableRow result) throws ParseException, FormulaException {
-		
-		// decompose param code
-		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer(result);
-
-		HashMap<String, TableCell> context1 = 
-				decomposer.decompose(CustomStrings.SUMMARIZED_INFO_SAMP_MAT_CODE);
-
-		HashMap<String, TableCell> context2 = 
-				decomposer.decompose(CustomStrings.SUMMARIZED_INFO_PROG_INFO);
-		
-		// use a summarized information to use the excel formula
-		// directly for computing the context id
-		SummarizedInfo summInfo = new SummarizedInfo();
-		summInfo.copyValues(result);
-		
-		for (String key: context1.keySet()) {
-			
-			TableCell cell = context1.get(key);
-			if (cell != null) {
-				TableCell copy = new TableCell(cell.getCode(), cell.getLabel());
-				summInfo.put(key, copy);
-			}
-		}
-		
-		for (String key: context2.keySet()) {
-			TableCell cell = context2.get(key);
-			if (cell != null) {
-				TableCell copy = new TableCell(cell.getCode(), cell.getLabel());
-				summInfo.put(key, copy);
-			}
-		}
-
-		String contextId = reportService.getContextId(summInfo);
-		
-		return contextId;
-	}
 	
 	/**
 	 * Extract the analytical result data from the current row
@@ -413,10 +381,11 @@ public class TseReportImporter extends ReportImporter {
 		row.setSchema(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
 
 		// decompose param code
-		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer(row);
+		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer();
 		
 		HashMap<String, TableCell> rowValues = 
-				decomposer.decompose(CustomStrings.PARAM_CODE_COL);
+				decomposer.decompose(CustomStrings.PARAM_CODE_COL, 
+						row.getCode(CustomStrings.PARAM_CODE_COL));
 
 		// save also the test aim with base term and test result
 		String paramBaseTerm = decomposer.getBaseTerm(
@@ -425,12 +394,12 @@ public class TseReportImporter extends ReportImporter {
 		// save the base term also
 		row.put(CustomStrings.PARAM_CODE_BASE_TERM_COL, paramBaseTerm);
 		
-		String resQualValue = row.getCode(CustomStrings.RESULT_TEST_RESULT);
+		String resQualValue = row.getCode(CustomStrings.RES_QUAL_VALUE_COL);
 		
 		// only if we have the test result put also the test aim
 		if (!resQualValue.isEmpty()) {
 			String testAim = paramBaseTerm + "$" + resQualValue;
-			row.put(CustomStrings.RESULT_TEST_AIM, testAim);
+			row.put(CustomStrings.TEST_AIM_COL, testAim);
 		}
 
 		// copy values into the row

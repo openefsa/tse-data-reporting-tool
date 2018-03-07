@@ -176,8 +176,8 @@ public class PredefinedResultService {
 
 		// get the info to know which result should be created
 		String recordType = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
-		String source = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_SOURCE);
-		String sampAnAsses = caseReport.getCode(CustomStrings.CASE_INFO_ASSESS);
+		String source = summInfo.getCode(CustomStrings.SOURCE_COL);
+		String sampAnAsses = caseReport.getCode(CustomStrings.SAMP_AN_ASSES_COL);
 		boolean confirmatoryTested = isConfirmatoryTested(recordType);
 
 		// get the default value
@@ -220,7 +220,7 @@ public class PredefinedResultService {
 			daoService.add(resultRow);
 			formulaService.initialize(resultRow);
 			
-			resultRow.put(CustomStrings.RESULT_TEST_TYPE, testTypeCode);
+			resultRow.put(CustomStrings.AN_METH_TYPE_COL, testTypeCode);
 			
 			// get the info to know which result should be created
 			String recordType = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
@@ -229,7 +229,7 @@ public class PredefinedResultService {
 			String prefTest = getPreferredTestType(resultRow, recordType, testTypeCode);
 			
 			if (prefTest != null)
-				resultRow.put(CustomStrings.AN_METH_CODE, prefTest);
+				resultRow.put(CustomStrings.AN_METH_CODE_COL, prefTest);
 			else
 				LOGGER.warn("No preferred value of anMethCode was found for anMethType " + testTypeCode);
 			
@@ -260,7 +260,7 @@ public class PredefinedResultService {
 		
 		// put the test aim
 		if (codeCol != PredefinedResultHeader.GENOTYPING_BASE_TERM && code != null && !code.equals("null"))  // excel fix
-			result.put(CustomStrings.RESULT_TEST_AIM, code);
+			result.put(CustomStrings.TEST_AIM_COL, code);
 		
 		// extract from it the param code and the result
 		// and add them to the row
@@ -295,7 +295,7 @@ public class PredefinedResultService {
 			added = true;
 			
 			if (resultValue != null) {
-				result.put(CustomStrings.RESULT_TEST_RESULT, resultValue);
+				result.put(CustomStrings.RES_QUAL_VALUE_COL, resultValue);
 			}
 		}
 		

@@ -67,6 +67,48 @@ public abstract class TableDialogWithMenu extends TableDialog {
 				public void widgetDefaultSelected(SelectionEvent arg0) {}
 			});
 			
+			MenuItem button5 = new MenuItem(menu, SWT.PUSH);
+			button5.setText("[DEBUG] Print row solved");
+			button5.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					
+					TableRow row = getSelection();
+					
+					if (row == null)
+						return;
+					
+					row.updateFormulas();
+					
+					System.out.println("ROW==================");
+					System.out.println(row);
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {}
+			});
+			
+			MenuItem button6 = new MenuItem(menu, SWT.PUSH);
+			button6.setText("[DEBUG] Print row schema");
+			button6.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					
+					TableRow row = getSelection();
+					
+					if (row == null)
+						return;
+					
+					System.out.println("ROW==================");
+					System.out.println(row.getSchema());
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {}
+			});
+			
 			MenuItem button2 = new MenuItem(menu, SWT.PUSH);
 			button2.setText("[DEBUG] Check mandatory fields");
 			button2.addSelectionListener(new SelectionListener() {

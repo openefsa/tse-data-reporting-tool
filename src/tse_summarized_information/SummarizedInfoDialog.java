@@ -115,12 +115,12 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			public void editEnded(TableRow row, TableColumn field, boolean changed) {
 				if (changed) {
 					switch(field.getId()) {
-					case CustomStrings.SUMMARIZED_INFO_TARGET_GROUP:
-						row.remove(CustomStrings.SUMMARIZED_INFO_TEST_TYPE);
-						row.remove(CustomStrings.AN_METH_CODE);
+					case CustomStrings.TARGET_GROUP_COL:
+						row.remove(CustomStrings.AN_METH_TYPE_COL);
+						row.remove(CustomStrings.AN_METH_CODE_COL);
 						break;
-					case CustomStrings.SUMMARIZED_INFO_TEST_TYPE:
-						row.remove(CustomStrings.AN_METH_CODE);
+					case CustomStrings.AN_METH_TYPE_COL:
+						row.remove(CustomStrings.AN_METH_CODE_COL);
 						break;
 					}
 				}
@@ -798,7 +798,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	 */
 	public void updateUI() {
 		
-		String reportMonth = report.getLabel(AppPaths.REPORT_MONTH);
+		String reportMonth = report.getLabel(AppPaths.REPORT_MONTH_COL);
 		String reportYear = report.getYear();
 		String status = report.getRCLStatus().getLabel();
 		String messageId = report.getMessageId();

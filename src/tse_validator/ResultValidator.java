@@ -18,10 +18,10 @@ public class ResultValidator extends SimpleRowValidatorLabelProvider {
 	
 	public ErrorType getError(TableRow row) {
 		
-		String testType = row.getCode(CustomStrings.RESULT_TEST_TYPE);
+		String testType = row.getCode(CustomStrings.AN_METH_TYPE_COL);
 		
-		String allele1 = row.getCode(CustomStrings.RESULT_ALLELE_1);
-		String allele2 = row.getCode(CustomStrings.RESULT_ALLELE_2);
+		String allele1 = row.getCode(CustomStrings.ALLELE_1_COL);
+		String allele2 = row.getCode(CustomStrings.ALLELE_2_COL);
 		
 		// if it is not molecular test
 		if (!testType.equals(CustomStrings.MOLECULAR_TEST_CODE)) {

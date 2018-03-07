@@ -44,15 +44,15 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		
 		Collection<Check> checks = new ArrayList<>();
 		
-		String caseId = row.getCode(CustomStrings.CASE_INFO_CASE_ID);
-		String sampAnAsses = row.getCode(CustomStrings.CASE_INFO_ASSESS);
+		String caseId = row.getCode(CustomStrings.NATIONAL_CASE_ID_COL);
+		String sampAnAsses = row.getCode(CustomStrings.SAMP_AN_ASSES_COL);
 		
 		// case id cannot be specified
 		if (!caseId.isEmpty() && sampAnAsses.equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE)) {
 			checks.add(Check.CASE_ID_FOR_NEGATIVE);
 		}
 		
-		String indexCase = row.getCode(CustomStrings.CASE_INDEX_CASE);
+		String indexCase = row.getCode(CustomStrings.INDEX_CASE_COL);
 		
 		// index case on negative sample
 		if (!indexCase.isEmpty() && sampAnAsses.equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE)) {
@@ -83,7 +83,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 				row.getNumCode(Relation.foreignKeyFromParent(CustomStrings.SUMMARIZED_INFO_SHEET)));
 
 		String type = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
-		String farmed = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_PROD);
+		String farmed = summInfo.getCode(CustomStrings.PROD_COL);
 
 		// Index case 'No' for farmed cwd is forbidden
 		if (indexCase.equals(CustomStrings.INDEX_CASE_NO) && type.equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE)) {
@@ -95,9 +95,9 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		// if eradication measure for status herd F in scrapie
 		//if (type.equals(CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE)) {
 
-			if (row.getCode(CustomStrings.CASE_INFO_STATUS)
+			if (row.getCode(CustomStrings.STATUS_HERD_COL)
 					.equals(CustomStrings.CASE_INFO_STATUS_NOT_INFECTED) &&
-				summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP)
+				summInfo.getCode(CustomStrings.TARGET_GROUP_COL)
 					.equals(CustomStrings.EM_TARGET_GROUP)) {
 				checks.add(Check.EM_FOR_NOT_INFECTED);
 			}
@@ -110,7 +110,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		
 		HashSet<String> set = new HashSet<>();
 		for (TableRow row : results) {
-			set.add(row.getCode(CustomStrings.RESULT_TEST_TYPE));
+			set.add(row.getCode(CustomStrings.AN_METH_TYPE_COL));
 		}
 		
 		return (set.size() != results.size());

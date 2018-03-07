@@ -81,13 +81,13 @@ public class ReportValidatorTest {
 		int reportId = daoService.add(report);
 		
 		si = RowCreatorMock.genRandSummInfo(reportId, optId, prefId);
-		si.put(CustomStrings.SUMMARIZED_INFO_AGE, new TableCell("F31.A16NK", ""));  // < 24 months
+		si.put(CustomStrings.ANIMAGE_COL, new TableCell("F31.A16NK", ""));  // < 24 months
 		
 		int siId = daoService.add(si);
 		
 		cr = RowCreatorMock.genRandCase(reportId, siId, optId, siId);
-		cr.put(CustomStrings.CASE_INFO_BIRTH_MONTH, "6");
-		cr.put(CustomStrings.CASE_INFO_BIRTH_YEAR, "2004");
+		cr.put(CustomStrings.BIRTH_MONTH_COL, "6");
+		cr.put(CustomStrings.BIRTH_YEAR_COL, "2004");
 		
 		int caseId = daoService.add(cr);
 		
@@ -98,7 +98,7 @@ public class ReportValidatorTest {
 	@Test
 	public void checkMandatoryFieldsForSummarizedInformation() throws FormulaException {
 		
-		si.remove(CustomStrings.SUMMARIZED_INFO_SOURCE);
+		si.remove(CustomStrings.SOURCE_COL);
 
 		assertFalse(reportService.getMandatoryFieldNotFilled(si).isEmpty());
 	}
@@ -106,7 +106,7 @@ public class ReportValidatorTest {
 	@Test
 	public void checkMandatoryFieldsForCaseInfo() throws FormulaException {
 		
-		cr.remove(CustomStrings.CASE_INFO_SAMPLE_ID);
+		cr.remove(CustomStrings.SAMPLE_ID_COL);
 
 		assertFalse(reportService.getMandatoryFieldNotFilled(cr).isEmpty());
 	}
@@ -114,7 +114,7 @@ public class ReportValidatorTest {
 	@Test
 	public void checkMandatoryFieldsForResult() throws FormulaException {
 		
-		result.remove(CustomStrings.RESULT_TEST_TYPE);
+		result.remove(CustomStrings.AN_METH_TYPE_COL);
 		
 		assertFalse(reportService.getMandatoryFieldNotFilled(result).isEmpty());
 	}
@@ -126,9 +126,9 @@ public class ReportValidatorTest {
 				new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
 		
 		// one declared, two detailed
-		si.put(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES, "1");
+		si.put(CustomStrings.TOT_SAMPLE_POSITIVE_COL, "1");
 		
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
+		cr.put(CustomStrings.SAMP_AN_ASSES_COL, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
 		
 		// create a second positive case
@@ -150,17 +150,17 @@ public class ReportValidatorTest {
 				new TableCell(CustomStrings.SUMMARIZED_INFO_CWD_TYPE, ""));
 		
 		// one declared, two detailed
-		si.put(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES, "1");
+		si.put(CustomStrings.TOT_SAMPLE_POSITIVE_COL, "1");
 		
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
+		cr.put(CustomStrings.SAMP_AN_ASSES_COL, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
 		
-		cr.put(CustomStrings.CASE_INFO_CASE_ID, "caseXdofndofj");
+		cr.put(CustomStrings.NATIONAL_CASE_ID_COL, "caseXdofndofj");
 		
 		// create a second positive case
 		CaseReport cr2 = new CaseReport();
 		cr2.copyValues(cr);
-		cr2.put(CustomStrings.CASE_INFO_CASE_ID, "dsadsadijaidjsoiajdoisjadsa");
+		cr2.put(CustomStrings.NATIONAL_CASE_ID_COL, "dsadsadijaidjsoiajdoisjadsa");
 		
 		daoService.add(cr2);
 		
@@ -176,14 +176,14 @@ public class ReportValidatorTest {
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
 				new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
 		
-		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "1");
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
+		si.put(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL, "1");
+		cr.put(CustomStrings.SAMP_AN_ASSES_COL, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
 		
 		// another inc report
 		CaseReport cr2 = new CaseReport();
 		cr2.copyValues(cr);
-		cr2.put(CustomStrings.CASE_INFO_CASE_ID, "fkdsajkdjsakdjskajd");
+		cr2.put(CustomStrings.NATIONAL_CASE_ID_COL, "fkdsajkdjsakdjskajd");
 		daoService.add(cr2);
 		
 		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
@@ -198,8 +198,8 @@ public class ReportValidatorTest {
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
 				new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
 		
-		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "1");
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
+		si.put(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL, "1");
+		cr.put(CustomStrings.SAMP_AN_ASSES_COL, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
 		
 		// another inc report
@@ -234,10 +234,10 @@ public class ReportValidatorTest {
 
 		report.setYear("2005");
 		report.setMonth("5");
-		si.put(CustomStrings.SUMMARIZED_INFO_AGE, new TableCell("F31.A16NK", ""));  // < 24 months
+		si.put(CustomStrings.ANIMAGE_COL, new TableCell("F31.A16NK", ""));  // < 24 months
 
-		cr.put(CustomStrings.CASE_INFO_BIRTH_MONTH, "5");
-		cr.put(CustomStrings.CASE_INFO_BIRTH_YEAR, "2002");
+		cr.put(CustomStrings.BIRTH_MONTH_COL, "5");
+		cr.put(CustomStrings.BIRTH_YEAR_COL, "2002");
 
 		TseReportValidator validator = new TseReportValidator(report, reportService, daoService);
 		Collection<ReportError> errors = validator.validate();
@@ -257,10 +257,10 @@ public class ReportValidatorTest {
 		report.setYear("2005");
 		report.setMonth("5");
 
-		si.put(CustomStrings.SUMMARIZED_INFO_AGE, new TableCell("F31.A16NK", ""));  // < 24 months
+		si.put(CustomStrings.ANIMAGE_COL, new TableCell("F31.A16NK", ""));  // < 24 months
 
-		cr.put(CustomStrings.CASE_INFO_BIRTH_MONTH, "6");
-		cr.put(CustomStrings.CASE_INFO_BIRTH_YEAR, "2005");
+		cr.put(CustomStrings.BIRTH_MONTH_COL, "6");
+		cr.put(CustomStrings.BIRTH_YEAR_COL, "2005");
 
 		TseReportValidator validator = new TseReportValidator(report, reportService, daoService);
 		Collection<ReportError> errors = validator.validate();
@@ -279,9 +279,9 @@ public class ReportValidatorTest {
 		
 		report.setYear("2005");
 		report.setMonth("5");
-		si.put(CustomStrings.SUMMARIZED_INFO_AGE, new TableCell("F31.A16NK", ""));  // < 24 months
-		cr.put(CustomStrings.CASE_INFO_BIRTH_MONTH, "6");
-		cr.put(CustomStrings.CASE_INFO_BIRTH_YEAR, "2004");
+		si.put(CustomStrings.ANIMAGE_COL, new TableCell("F31.A16NK", ""));  // < 24 months
+		cr.put(CustomStrings.BIRTH_MONTH_COL, "6");
+		cr.put(CustomStrings.BIRTH_YEAR_COL, "2004");
 		
 		TseReportValidator validator = new TseReportValidator(report, reportService, daoService);
 		Collection<ReportError> errors = validator.validate();
@@ -301,12 +301,12 @@ public class ReportValidatorTest {
 		
 		// unknown/all = 1/19 > 5%
 		
-		si.put(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES, "18");
+		si.put(CustomStrings.TOT_SAMPLE_TESTED_COL, "18");
 		
 		SummarizedInfo si2 = new SummarizedInfo();
 		si2.copyValues(si);
-		si2.put(CustomStrings.SUMMARIZED_INFO_AGE, new TableCell(CustomStrings.UNKNOWN_AGE_CLASS_CODE, ""));
-		si2.put(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES, "1");
+		si2.put(CustomStrings.ANIMAGE_COL, new TableCell(CustomStrings.UNKNOWN_AGE_CLASS_CODE, ""));
+		si2.put(CustomStrings.TOT_SAMPLE_TESTED_COL, "1");
 		
 		daoService.add(si2);
 		
@@ -328,12 +328,12 @@ public class ReportValidatorTest {
 		
 		// unknown/all = 1/20 <= 5%
 		
-		si.put(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES, "19");
+		si.put(CustomStrings.TOT_SAMPLE_TESTED_COL, "19");
 		
 		SummarizedInfo si2 = new SummarizedInfo();
 		si2.copyValues(si);
-		si2.put(CustomStrings.SUMMARIZED_INFO_AGE, new TableCell(CustomStrings.UNKNOWN_AGE_CLASS_CODE, ""));
-		si2.put(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES, "1");
+		si2.put(CustomStrings.ANIMAGE_COL, new TableCell(CustomStrings.UNKNOWN_AGE_CLASS_CODE, ""));
+		si2.put(CustomStrings.TOT_SAMPLE_TESTED_COL, "1");
 		
 		daoService.add(si2);
 		
@@ -353,8 +353,8 @@ public class ReportValidatorTest {
 	@Test
 	public void nonWildCwdAndKilledShouldBeRejected() {
 		
-		si.put(CustomStrings.SUMMARIZED_INFO_PROD, new TableCell(CustomStrings.FARMED_PROD, ""));
-		si.put(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP, new TableCell(CustomStrings.KILLED_TARGET_GROUP, ""));
+		si.put(CustomStrings.PROD_COL, new TableCell(CustomStrings.FARMED_PROD, ""));
+		si.put(CustomStrings.TARGET_GROUP_COL, new TableCell(CustomStrings.KILLED_TARGET_GROUP, ""));
 		
 		TseReportValidator validator = new TseReportValidator(report, reportService, daoService);
 		Collection<ReportError> errors = validator.validate();
@@ -372,8 +372,8 @@ public class ReportValidatorTest {
 	@Test
 	public void wildCwdAndKilledShouldBeAccepted() {
 		
-		si.put(CustomStrings.SUMMARIZED_INFO_PROD, new TableCell(CustomStrings.WILD_PROD, ""));
-		si.put(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP, new TableCell(CustomStrings.KILLED_TARGET_GROUP, ""));
+		si.put(CustomStrings.PROD_COL, new TableCell(CustomStrings.WILD_PROD, ""));
+		si.put(CustomStrings.TARGET_GROUP_COL, new TableCell(CustomStrings.KILLED_TARGET_GROUP, ""));
 		
 		TseReportValidator validator = new TseReportValidator(report, reportService, daoService);
 		Collection<ReportError> errors = validator.validate();
@@ -392,8 +392,8 @@ public class ReportValidatorTest {
 	@Test
 	public void allelesNotReportableWithScreening() {
 		
-		result.put(CustomStrings.RESULT_ALLELE_1, new TableCell(CustomStrings.ALLELE_AFRR, ""));
-		result.put(CustomStrings.RESULT_TEST_TYPE, new TableCell(CustomStrings.SCREENING_TEST_CODE, ""));
+		result.put(CustomStrings.ALLELE_1_COL, new TableCell(CustomStrings.ALLELE_AFRR, ""));
+		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.SCREENING_TEST_CODE, ""));
 		
 		ResultValidator validator = new ResultValidator();
 		ErrorType error = validator.getError(result);
@@ -404,8 +404,8 @@ public class ReportValidatorTest {
 	@Test
 	public void allelesNotReportableWithConfirmatory() {
 		
-		result.put(CustomStrings.RESULT_ALLELE_1, new TableCell(CustomStrings.ALLELE_AFRR, ""));
-		result.put(CustomStrings.RESULT_TEST_TYPE, new TableCell(CustomStrings.CONFIRMATORY_TEST_CODE, ""));
+		result.put(CustomStrings.ALLELE_1_COL, new TableCell(CustomStrings.ALLELE_AFRR, ""));
+		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.CONFIRMATORY_TEST_CODE, ""));
 		
 		ResultValidator validator = new ResultValidator();
 		ErrorType error = validator.getError(result);
@@ -416,8 +416,8 @@ public class ReportValidatorTest {
 	@Test
 	public void allelesNotReportableWithDiscriminatory() {
 		
-		result.put(CustomStrings.RESULT_ALLELE_1, new TableCell(CustomStrings.ALLELE_AFRR, ""));
-		result.put(CustomStrings.RESULT_TEST_TYPE, new TableCell(CustomStrings.DISCRIMINATORY_TEST_CODE, ""));
+		result.put(CustomStrings.ALLELE_1_COL, new TableCell(CustomStrings.ALLELE_AFRR, ""));
+		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.DISCRIMINATORY_TEST_CODE, ""));
 		
 		ResultValidator validator = new ResultValidator();
 		ErrorType error = validator.getError(result);
@@ -428,8 +428,8 @@ public class ReportValidatorTest {
 	@Test
 	public void allelesAreReportableWithGenotyping() {
 		
-		result.put(CustomStrings.RESULT_ALLELE_1, new TableCell(CustomStrings.ALLELE_AFRR, ""));
-		result.put(CustomStrings.RESULT_TEST_TYPE, new TableCell(CustomStrings.MOLECULAR_TEST_CODE, ""));
+		result.put(CustomStrings.ALLELE_1_COL, new TableCell(CustomStrings.ALLELE_AFRR, ""));
+		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.MOLECULAR_TEST_CODE, ""));
 		
 		ResultValidator validator = new ResultValidator();
 		ErrorType error = validator.getError(result);
@@ -440,9 +440,9 @@ public class ReportValidatorTest {
 	@Test
 	public void wrongAllelePairsAfrrAfrr() {
 		
-		result.put(CustomStrings.RESULT_ALLELE_1, new TableCell(CustomStrings.ALLELE_AFRR, ""));
-		result.put(CustomStrings.RESULT_ALLELE_2, new TableCell(CustomStrings.ALLELE_AFRR, ""));
-		result.put(CustomStrings.RESULT_TEST_TYPE, new TableCell(CustomStrings.MOLECULAR_TEST_CODE, ""));
+		result.put(CustomStrings.ALLELE_1_COL, new TableCell(CustomStrings.ALLELE_AFRR, ""));
+		result.put(CustomStrings.ALLELE_2_COL, new TableCell(CustomStrings.ALLELE_AFRR, ""));
+		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.MOLECULAR_TEST_CODE, ""));
 		
 		ResultValidator validator = new ResultValidator();
 		ErrorType error = validator.getError(result);
@@ -453,9 +453,9 @@ public class ReportValidatorTest {
 	@Test
 	public void wrongAllelePairsAfrrAlrr() {
 		
-		result.put(CustomStrings.RESULT_ALLELE_1, new TableCell(CustomStrings.ALLELE_AFRR, ""));
-		result.put(CustomStrings.RESULT_ALLELE_2, new TableCell(CustomStrings.ALLELE_ALRR, ""));
-		result.put(CustomStrings.RESULT_TEST_TYPE, new TableCell(CustomStrings.MOLECULAR_TEST_CODE, ""));
+		result.put(CustomStrings.ALLELE_1_COL, new TableCell(CustomStrings.ALLELE_AFRR, ""));
+		result.put(CustomStrings.ALLELE_2_COL, new TableCell(CustomStrings.ALLELE_ALRR, ""));
+		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.MOLECULAR_TEST_CODE, ""));
 		
 		ResultValidator validator = new ResultValidator();
 		ErrorType error = validator.getError(result);
@@ -466,9 +466,9 @@ public class ReportValidatorTest {
 	@Test
 	public void wrongAllelePairsAlrrAfrr() {
 		
-		result.put(CustomStrings.RESULT_ALLELE_1, new TableCell(CustomStrings.ALLELE_ALRR, ""));
-		result.put(CustomStrings.RESULT_ALLELE_2, new TableCell(CustomStrings.ALLELE_AFRR, ""));
-		result.put(CustomStrings.RESULT_TEST_TYPE, new TableCell(CustomStrings.MOLECULAR_TEST_CODE, ""));
+		result.put(CustomStrings.ALLELE_1_COL, new TableCell(CustomStrings.ALLELE_ALRR, ""));
+		result.put(CustomStrings.ALLELE_2_COL, new TableCell(CustomStrings.ALLELE_AFRR, ""));
+		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.MOLECULAR_TEST_CODE, ""));
 		
 		ResultValidator validator = new ResultValidator();
 		ErrorType error = validator.getError(result);
@@ -479,9 +479,9 @@ public class ReportValidatorTest {
 	@Test
 	public void wrongAllelePairsAlrrAlrr() {
 		
-		result.put(CustomStrings.RESULT_ALLELE_1, new TableCell(CustomStrings.ALLELE_ALRR, ""));
-		result.put(CustomStrings.RESULT_ALLELE_2, new TableCell(CustomStrings.ALLELE_ALRR, ""));
-		result.put(CustomStrings.RESULT_TEST_TYPE, new TableCell(CustomStrings.MOLECULAR_TEST_CODE, ""));
+		result.put(CustomStrings.ALLELE_1_COL, new TableCell(CustomStrings.ALLELE_ALRR, ""));
+		result.put(CustomStrings.ALLELE_2_COL, new TableCell(CustomStrings.ALLELE_ALRR, ""));
+		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.MOLECULAR_TEST_CODE, ""));
 		
 		ResultValidator validator = new ResultValidator();
 		ErrorType error = validator.getError(result);
@@ -492,11 +492,11 @@ public class ReportValidatorTest {
 	@Test
 	public void duplicatedScreeningTestCheck() throws IOException {
 
-		result.put(CustomStrings.RESULT_TEST_TYPE, new TableCell(CustomStrings.SCREENING_TEST_CODE, ""));
+		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.SCREENING_TEST_CODE, ""));
 		
 		AnalyticalResult r2 = new AnalyticalResult();
 		r2.copyValues(result);
-		r2.put(CustomStrings.RES_ID_COLUMN, "9089038139281");
+		r2.put(CustomStrings.RES_ID_COL, "9089038139281");
 		
 		daoService.add(r2);
 		
@@ -509,11 +509,11 @@ public class ReportValidatorTest {
 	@Test
 	public void duplicatedConfirmatoryTestCheck() throws IOException {
 
-		result.put(CustomStrings.RESULT_TEST_TYPE, new TableCell(CustomStrings.CONFIRMATORY_TEST_CODE, ""));
+		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.CONFIRMATORY_TEST_CODE, ""));
 		
 		AnalyticalResult r2 = new AnalyticalResult();
 		r2.copyValues(result);
-		r2.put(CustomStrings.RES_ID_COLUMN, "9089038139281");
+		r2.put(CustomStrings.RES_ID_COL, "9089038139281");
 		
 		daoService.add(r2);
 
@@ -526,11 +526,11 @@ public class ReportValidatorTest {
 	@Test
 	public void duplicatedDiscriminatoryTestCheck() throws IOException {
 
-		result.put(CustomStrings.RESULT_TEST_TYPE, new TableCell(CustomStrings.DISCRIMINATORY_TEST_CODE, ""));
+		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.DISCRIMINATORY_TEST_CODE, ""));
 		
 		AnalyticalResult r2 = new AnalyticalResult();
 		r2.copyValues(result);
-		r2.put(CustomStrings.RES_ID_COLUMN, "9089038139281");
+		r2.put(CustomStrings.RES_ID_COL, "9089038139281");
 		
 		daoService.add(r2);
 
@@ -543,11 +543,11 @@ public class ReportValidatorTest {
 	@Test
 	public void duplicatedGenotypingTestCheck() throws IOException {
 
-		result.put(CustomStrings.RESULT_TEST_TYPE, new TableCell(CustomStrings.MOLECULAR_TEST_CODE, ""));
+		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.MOLECULAR_TEST_CODE, ""));
 		
 		AnalyticalResult r2 = new AnalyticalResult();
 		r2.copyValues(result);
-		r2.put(CustomStrings.RES_ID_COLUMN, "9089038139281");
+		r2.put(CustomStrings.RES_ID_COL, "9089038139281");
 		
 		daoService.add(r2);
 
@@ -571,10 +571,10 @@ public class ReportValidatorTest {
 	@Test
 	public void indexCaseForNegativeSampleCheck() throws IOException {
 
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
+		cr.put(CustomStrings.SAMP_AN_ASSES_COL, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, ""));
 
-		cr.put(CustomStrings.CASE_INDEX_CASE, 
+		cr.put(CustomStrings.INDEX_CASE_COL, 
 				new TableCell(CustomStrings.INDEX_CASE_NO, ""));
 		
 		CaseReportValidator validator = new CaseReportValidator(daoService);
@@ -586,10 +586,10 @@ public class ReportValidatorTest {
 	@Test
 	public void caseIdForNegativeSampleCheck() throws IOException {
 
-		cr.put(CustomStrings.CASE_INFO_ASSESS, 
+		cr.put(CustomStrings.SAMP_AN_ASSES_COL, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, ""));
 
-		cr.put(CustomStrings.CASE_INFO_CASE_ID, new TableCell("caseid", "caseid"));
+		cr.put(CustomStrings.NATIONAL_CASE_ID_COL, new TableCell("caseid", "caseid"));
 		
 		CaseReportValidator validator = new CaseReportValidator(daoService);
 		Collection<Check> checks = validator.isRecordCorrect(cr);
@@ -601,14 +601,14 @@ public class ReportValidatorTest {
 	public void indexCaseNOForFarmedCwdCheck() throws IOException {
 
 		// prod
-		si.put(CustomStrings.SUMMARIZED_INFO_PROD, 
+		si.put(CustomStrings.PROD_COL, 
 				new TableCell(CustomStrings.FARMED_PROD, ""));
 		
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
 				new TableCell(CustomStrings.SUMMARIZED_INFO_CWD_TYPE, ""));
 		
 		// put index case
-		cr.put(CustomStrings.CASE_INDEX_CASE, 
+		cr.put(CustomStrings.INDEX_CASE_COL, 
 				new TableCell(CustomStrings.INDEX_CASE_NO, ""));
 		
 		CaseReportValidator validator = new CaseReportValidator(daoService);
@@ -641,11 +641,11 @@ public class ReportValidatorTest {
 	public void notInfectedStatusForEradicationTargetGroupCheck() throws IOException {
 		
 		// Eradication measure
-		si.put(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP, 
+		si.put(CustomStrings.TARGET_GROUP_COL, 
 				new TableCell(CustomStrings.EM_TARGET_GROUP, ""));
 		
 		// not infected
-		cr.put(CustomStrings.CASE_INFO_STATUS, 
+		cr.put(CustomStrings.STATUS_HERD_COL, 
 				new TableCell(CustomStrings.CASE_INFO_STATUS_NOT_INFECTED, ""));
 		
 		CaseReportValidator validator = new CaseReportValidator(daoService);
@@ -658,11 +658,11 @@ public class ReportValidatorTest {
 	public void infectedStatusForEradicationTargetGroupInSheepShouldRaiseNoWarning() throws IOException {
 
 		// Eradication measure
-		si.put(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP, 
+		si.put(CustomStrings.TARGET_GROUP_COL, 
 				new TableCell(CustomStrings.EM_TARGET_GROUP, ""));
 		
 		// infected
-		cr.put(CustomStrings.CASE_INFO_STATUS, 
+		cr.put(CustomStrings.STATUS_HERD_COL, 
 				new TableCell(CustomStrings.CASE_INFO_STATUS_INFECTED, ""));
 		
 		CaseReportValidator validator = new CaseReportValidator(daoService);
@@ -675,11 +675,11 @@ public class ReportValidatorTest {
 	public void notInfectedStatusForNOTEradicationTargetGroupShouldRaiseNoWarning() throws IOException {
 		
 		// Eradication measure
-		si.put(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP, 
+		si.put(CustomStrings.TARGET_GROUP_COL, 
 				new TableCell(CustomStrings.KILLED_TARGET_GROUP, ""));
 		
 		// infected
-		cr.put(CustomStrings.CASE_INFO_STATUS, 
+		cr.put(CustomStrings.STATUS_HERD_COL, 
 				new TableCell(CustomStrings.CASE_INFO_STATUS_NOT_INFECTED, ""));
 		
 		CaseReportValidator validator = new CaseReportValidator(daoService);
@@ -753,7 +753,7 @@ public class ReportValidatorTest {
 	@Test
 	public void duplicatedResultIdForResults() throws IOException {
 
-		result.put(CustomStrings.RES_ID_COLUMN, "resId");
+		result.put(CustomStrings.RES_ID_COL, "resId");
 
 		AnalyticalResult res2 = new AnalyticalResult();
 		res2.copyValues(result);
@@ -775,7 +775,7 @@ public class ReportValidatorTest {
 	@Test
 	public void duplicatedSampleIdForCases() throws IOException {
 
-		cr.put(CustomStrings.CASE_INFO_SAMPLE_ID, "sampleid");
+		cr.put(CustomStrings.SAMPLE_ID_COL, "sampleid");
 
 		CaseReport cr2 = new CaseReport();
 		cr2.copyValues(cr);
@@ -798,13 +798,13 @@ public class ReportValidatorTest {
 	@Test
 	public void inconsistentCaseDataWithSameAnimalId() throws IOException {
 
-		cr.put(CustomStrings.CASE_INFO_ANIMAL_ID, "animalId");
-		cr.put(CustomStrings.CASE_INFO_HOLDING_ID, "hold1");
+		cr.put(CustomStrings.ANIMAL_ID_COL, "animalId");
+		cr.put(CustomStrings.SAMP_HOLDING_ID_COL, "hold1");
 
 		// different holding id
 		CaseReport cr2 = new CaseReport();
 		cr2.copyValues(cr);
-		cr2.put(CustomStrings.CASE_INFO_HOLDING_ID, "hold2");
+		cr2.put(CustomStrings.SAMP_HOLDING_ID_COL, "hold2");
 		
 		daoService.add(cr2);
 
@@ -824,13 +824,13 @@ public class ReportValidatorTest {
 	@Test
 	public void differentAnimalIdWithSameNationalCaseId() throws IOException {
 
-		cr.put(CustomStrings.CASE_INFO_CASE_ID, "caseId");
-		cr.put(CustomStrings.CASE_INFO_ANIMAL_ID, "animalId1");
+		cr.put(CustomStrings.NATIONAL_CASE_ID_COL, "caseId");
+		cr.put(CustomStrings.ANIMAL_ID_COL, "animalId1");
 
 		// different holding id
 		CaseReport cr2 = new CaseReport();
 		cr2.copyValues(cr);
-		cr2.put(CustomStrings.CASE_INFO_ANIMAL_ID, "animalId2");
+		cr2.put(CustomStrings.ANIMAL_ID_COL, "animalId2");
 		
 		daoService.add(cr2);
 
@@ -852,11 +852,11 @@ public class ReportValidatorTest {
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
 				new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
 		
-		si.put(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES, "0");
-		si.put(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES, "0");
-		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "0");
-		si.put(CustomStrings.SUMMARIZED_INFO_UNS_SAMPLES, "0");
-		si.put(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES, "0");
+		si.put(CustomStrings.TOT_SAMPLE_POSITIVE_COL, "0");
+		si.put(CustomStrings.TOT_SAMPLE_NEGATIVE_COL, "0");
+		si.put(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL, "0");
+		si.put(CustomStrings.TOT_SAMPLE_UNSUITABLE_COL, "0");
+		si.put(CustomStrings.TOT_SAMPLE_TESTED_COL, "0");
 		
 		TseReportValidator validator = new TseReportValidator(report, reportService, daoService);
 		Collection<ReportError> errors = validator.validate();
@@ -876,11 +876,11 @@ public class ReportValidatorTest {
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
 				new TableCell(CustomStrings.SUMMARIZED_INFO_RGT_TYPE, ""));
 		
-		si.put(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES, "0");
-		si.put(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES, "0");
-		si.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "0");
-		si.put(CustomStrings.SUMMARIZED_INFO_UNS_SAMPLES, "0");
-		si.put(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES, "0");
+		si.put(CustomStrings.TOT_SAMPLE_POSITIVE_COL, "0");
+		si.put(CustomStrings.TOT_SAMPLE_NEGATIVE_COL, "0");
+		si.put(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL, "0");
+		si.put(CustomStrings.TOT_SAMPLE_UNSUITABLE_COL, "0");
+		si.put(CustomStrings.TOT_SAMPLE_TESTED_COL, "0");
 		
 		TseReportValidator validator = new TseReportValidator(report, reportService, daoService);
 		Collection<ReportError> errors = validator.validate();

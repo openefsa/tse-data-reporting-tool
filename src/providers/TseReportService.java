@@ -1,8 +1,10 @@
 package providers;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Stack;
 
 import org.apache.log4j.LogManager;
@@ -16,6 +18,7 @@ import formula.FormulaException;
 import formula.FormulaSolver;
 import message.MessageConfigBuilder;
 import report.Report;
+import report_downloader.TSEFormulaDecomposer;
 import soap_interface.IGetAck;
 import soap_interface.IGetDataset;
 import soap_interface.IGetDatasetsList;
@@ -62,6 +65,69 @@ public class TseReportService extends ReportService {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Extract the context id from an analytical result
+	 * @param result
+	 * @return
+	 * @throws ParseException
+	 * @throws FormulaException
+	 */
+	public String getContextIdFrom(TableRow result) throws ParseException, FormulaException {
+		
+		// decompose param code
+		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer();
+
+		HashMap<String, TableCell> context1 = 
+				decomposer.decompose(CustomStrings.SAMP_MAT_CODE_COL, 
+						result.getCode(CustomStrings.SAMP_MAT_CODE_COL));
+
+		HashMap<String, TableCell> context2 = 
+				decomposer.decompose(CustomStrings.PROG_INFO_COL, 
+						result.getCode(CustomStrings.PROG_INFO_COL));
+		
+
+		HashMap<String, TableCell> context3 = 
+				decomposer.decompose(CustomStrings.SAMP_UNIT_IDS_COL, 
+						result.getCode(CustomStrings.SAMP_UNIT_IDS_COL));
+		
+		// use a summarized information to use the excel formula
+		// directly for computing the context id
+		SummarizedInfo summInfo = new SummarizedInfo();
+		summInfo.copyValues(result);
+		
+		for (String key: context1.keySet()) {
+			
+			TableCell cell = context1.get(key);
+			if (cell != null) {
+				TableCell copy = new TableCell(cell.getCode(), cell.getLabel());
+				summInfo.put(key, copy);
+			}
+		}
+		
+		for (String key: context2.keySet()) {
+			TableCell cell = context2.get(key);
+			if (cell != null) {
+				TableCell copy = new TableCell(cell.getCode(), cell.getLabel());
+				summInfo.put(key, copy);
+			}
+		}
+		
+		for (String key: context3.keySet()) {
+			TableCell cell = context3.get(key);
+			if (cell != null) {
+				TableCell copy = new TableCell(cell.getCode(), cell.getLabel());
+				summInfo.put(key, copy);
+			}
+		}
+		
+		// set the type (required for context id)
+		summInfo.setType(summInfo.getTypeBySpecies());
+		
+		String contextId = this.getContextId(summInfo);
+
+		return contextId;
 	}
 	
 	/**
@@ -359,7 +425,7 @@ public class TseReportService extends ReportService {
 
 		formulaService.initialize(resultRow);
 
-		resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.BLOOD_CODE);
+		resultRow.put(CustomStrings.PART_COL, CustomStrings.BLOOD_CODE);
 		
 		daoService.update(resultRow);
 	}
@@ -375,8 +441,8 @@ public class TseReportService extends ReportService {
 	public void createDefaultCases(Report report, TableRow summInfo) throws IOException {
 		
 		// check cases number
-		int positive = summInfo.getNumLabel(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES);
-		int inconclusive = summInfo.getNumLabel(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES);
+		int positive = summInfo.getNumLabel(CustomStrings.TOT_SAMPLE_POSITIVE_COL);
+		int inconclusive = summInfo.getNumLabel(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL);
 		
 		TableSchema resultSchema = TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET);
 		
@@ -407,17 +473,17 @@ public class TseReportService extends ReportService {
 				TableCell value = new TableCell();
 				value.setCode(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE);
 				value.setLabel(CustomStrings.DEFAULT_ASSESS_INC_CASE_LABEL);
-				resultRow.put(CustomStrings.CASE_INFO_ASSESS, value);
+				resultRow.put(CustomStrings.SAMP_AN_ASSES_COL, value);
 				
 				// default always obex
-				resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
+				resultRow.put(CustomStrings.PART_COL, CustomStrings.OBEX_CODE);
 				
 				if (isCervid) {
 					if (j==0) {
-						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
+						resultRow.put(CustomStrings.PART_COL, CustomStrings.OBEX_CODE);
 					}
 					else if (j==1) {
-						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.LYMPH_CODE);
+						resultRow.put(CustomStrings.PART_COL, CustomStrings.LYMPH_CODE);
 					}
 				}
 
@@ -441,14 +507,14 @@ public class TseReportService extends ReportService {
 				daoService.add(resultRow);
 
 				// default always obex
-				resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
+				resultRow.put(CustomStrings.PART_COL, CustomStrings.OBEX_CODE);
 				
 				if (isCervid) {
 					if (j==0) {
-						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.OBEX_CODE);
+						resultRow.put(CustomStrings.PART_COL, CustomStrings.OBEX_CODE);
 					}
 					else if (j==1) {
-						resultRow.put(CustomStrings.SUMMARIZED_INFO_PART, CustomStrings.LYMPH_CODE);
+						resultRow.put(CustomStrings.PART_COL, CustomStrings.LYMPH_CODE);
 					}
 				}
 

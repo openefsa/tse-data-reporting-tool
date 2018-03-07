@@ -67,19 +67,19 @@ public class RowCreatorMock {
 		summInfo.put(CustomStrings.SETTINGS_ID_COL, String.valueOf(settingsId));
 		summInfo.put(CustomStrings.PREFERENCES_ID_COL, String.valueOf(prefId));
 
-		summInfo.put(CustomStrings.SUMMARIZED_INFO_SOURCE, "F01.A057A");
-		summInfo.put(CustomStrings.SUMMARIZED_INFO_PROD, "F21.A07RV");
-		summInfo.put(CustomStrings.SUMMARIZED_INFO_AGE, "F31.A16NK");
-		summInfo.put(CustomStrings.SUMMARIZED_INFO_TARGET_GROUP, "TG001A");
-		summInfo.put(CustomStrings.SUMMARIZED_INFO_NEG_SAMPLES, "1");
-		summInfo.put(CustomStrings.SUMMARIZED_INFO_POS_SAMPLES, "0");
-		summInfo.put(CustomStrings.SUMMARIZED_INFO_INC_SAMPLES, "0");
-		summInfo.put(CustomStrings.SUMMARIZED_INFO_UNS_SAMPLES, "0");
-		summInfo.put(CustomStrings.SUMMARIZED_INFO_TOT_SAMPLES, "1");
-		summInfo.put(CustomStrings.SUMMARIZED_INFO_PROG_ID, Long.toHexString(Double.doubleToLongBits(Math.random())));
+		summInfo.put(CustomStrings.SOURCE_COL, "F01.A057A");
+		summInfo.put(CustomStrings.PROD_COL, "F21.A07RV");
+		summInfo.put(CustomStrings.ANIMAGE_COL, "F31.A16NK");
+		summInfo.put(CustomStrings.TARGET_GROUP_COL, "TG001A");
+		summInfo.put(CustomStrings.TOT_SAMPLE_NEGATIVE_COL, "1");
+		summInfo.put(CustomStrings.TOT_SAMPLE_POSITIVE_COL, "0");
+		summInfo.put(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL, "0");
+		summInfo.put(CustomStrings.TOT_SAMPLE_UNSUITABLE_COL, "0");
+		summInfo.put(CustomStrings.TOT_SAMPLE_TESTED_COL, "1");
+		summInfo.put(CustomStrings.PROG_ID_COL, Long.toHexString(Double.doubleToLongBits(Math.random())));
 		
 		// random res id
-		summInfo.put(CustomStrings.RES_ID_COLUMN, Long.toHexString(Double.doubleToLongBits(Math.random())));
+		summInfo.put(CustomStrings.RES_ID_COL, Long.toHexString(Double.doubleToLongBits(Math.random())));
 		
 		return summInfo;
 	}
@@ -93,9 +93,9 @@ public class RowCreatorMock {
 		caseReport.put(CustomStrings.SETTINGS_ID_COL, String.valueOf(settingsId));
 		caseReport.put(CustomStrings.PREFERENCES_ID_COL, String.valueOf(prefId));
 
-		caseReport.put(CustomStrings.CASE_INFO_SAMPLE_ID, "kjed9okj3e");
-		caseReport.put(CustomStrings.CASE_INFO_ASSESS, new TableCell(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, ""));
-		caseReport.put(CustomStrings.SUMMARIZED_INFO_PART, new TableCell(CustomStrings.BRAIN_CODE, ""));
+		caseReport.put(CustomStrings.SAMPLE_ID_COL, "kjed9okj3e");
+		caseReport.put(CustomStrings.SAMP_AN_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, ""));
+		caseReport.put(CustomStrings.PART_COL, new TableCell(CustomStrings.BRAIN_CODE, ""));
 		
 		return caseReport;
 	}
@@ -111,9 +111,9 @@ public class RowCreatorMock {
 		caseReport.put(CustomStrings.PREFERENCES_ID_COL, String.valueOf(prefId));
 
 		caseReport.put(CustomStrings.PARAM_TYPE_COL, "P001A");
-		caseReport.put(CustomStrings.CASE_INFO_SAMPLE_ID, "kjed9okj3e");
+		caseReport.put(CustomStrings.SAMPLE_ID_COL, "kjed9okj3e");
 		caseReport.put("sampAnId", "jhgjhgjhgjhg");
-		caseReport.put(CustomStrings.SUMMARIZED_INFO_PART, new TableCell(CustomStrings.BRAIN_CODE, ""));
+		caseReport.put(CustomStrings.PART_COL, new TableCell(CustomStrings.BRAIN_CODE, ""));
 		caseReport.put("progLegalRef", new TableCell("N123A", ""));
 		
 		return caseReport;

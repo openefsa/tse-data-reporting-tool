@@ -49,13 +49,13 @@ public class PredefinedResultServiceTest {
 		int reportId = daoService.add(report);
 		
 		si = RowCreatorMock.genRandSummInfo(reportId, optId, prefId);
-		si.put(CustomStrings.SUMMARIZED_INFO_AGE, new TableCell("F31.A16NK", ""));  // < 24 months
+		si.put(CustomStrings.ANIMAGE_COL, new TableCell("F31.A16NK", ""));  // < 24 months
 		
 		int siId = daoService.add(si);
 		
 		cr = RowCreatorMock.genRandCase(reportId, siId, optId, siId);
-		cr.put(CustomStrings.CASE_INFO_BIRTH_MONTH, "6");
-		cr.put(CustomStrings.CASE_INFO_BIRTH_YEAR, "2004");
+		cr.put(CustomStrings.BIRTH_MONTH_COL, "6");
+		cr.put(CustomStrings.BIRTH_YEAR_COL, "2004");
 		
 		daoService.add(cr);
 	}
@@ -70,7 +70,7 @@ public class PredefinedResultServiceTest {
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
 		
 		// C-BSE asses
-		cr.put(CustomStrings.CASE_INFO_ASSESS, new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
+		cr.put(CustomStrings.SAMP_AN_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
 		
 		TableRowList results = resultService.createDefaultResults(report, si, cr);
 		
@@ -90,7 +90,7 @@ public class PredefinedResultServiceTest {
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
 		
 		// C-BSE asses
-		cr.put(CustomStrings.CASE_INFO_ASSESS, new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
+		cr.put(CustomStrings.SAMP_AN_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
 		
 		TableRowList results = resultService.createDefaultResults(report, si, cr);
 		
@@ -107,10 +107,10 @@ public class PredefinedResultServiceTest {
 		
 		// scrapie
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, new TableCell(CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE, ""));
-		si.put(CustomStrings.SUMMARIZED_INFO_SOURCE, new TableCell(CustomStrings.SOURCE_SHEEP_CODE, ""));
+		si.put(CustomStrings.SOURCE_COL, new TableCell(CustomStrings.SOURCE_SHEEP_CODE, ""));
 		
 		// inc asses
-		cr.put(CustomStrings.CASE_INFO_ASSESS, new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
+		cr.put(CustomStrings.SAMP_AN_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
 		
 		TableRowList results = resultService.createDefaultResults(report, si, cr);
 		
@@ -127,10 +127,10 @@ public class PredefinedResultServiceTest {
 		
 		// scrapie
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, new TableCell(CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE, ""));
-		si.put(CustomStrings.SUMMARIZED_INFO_SOURCE, new TableCell(CustomStrings.SOURCE_GOAT_CODE, ""));
+		si.put(CustomStrings.SOURCE_COL, new TableCell(CustomStrings.SOURCE_GOAT_CODE, ""));
 		
 		// inc asses
-		cr.put(CustomStrings.CASE_INFO_ASSESS, new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
+		cr.put(CustomStrings.SAMP_AN_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
 		
 		TableRowList results = resultService.createDefaultResults(report, si, cr);
 		

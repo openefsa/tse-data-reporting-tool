@@ -61,7 +61,7 @@ public class TseReport extends Report {
 	
 	@Override
 	public Collection<TableRow> getRecords(ITableDaoService daoService) {
-
+		
 		// children schemas
 		TableSchema[] schemas = new TableSchema[] {
 				TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET),
@@ -184,7 +184,7 @@ public class TseReport extends Report {
 	
 	@Override
 	public String getRowIdFieldName() {
-		return CustomStrings.RES_ID_COLUMN;
+		return CustomStrings.RES_ID_COL;
 	}
 	
 	/**
