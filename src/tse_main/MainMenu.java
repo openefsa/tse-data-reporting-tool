@@ -148,7 +148,15 @@ public class MainMenu {
 			public void widgetSelected(SelectionEvent arg0) {
 				ProxySettingsDialog dialog = new ProxySettingsDialog(shell, 
 						SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-				dialog.open();
+				try {
+					dialog.open();
+				} catch (IOException e) {
+					e.printStackTrace();
+					Message m = Warnings.createFatal(TSEMessages.get("proxy.config.file.not.found.error", 
+							PropertiesReader.getSupportEmail()));
+					
+					m.open(shell);
+				}
 			}
 		});
 
