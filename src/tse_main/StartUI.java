@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Shell;
 import app_config.AppPaths;
 import app_config.PropertiesReader;
 import dataset.IDataset;
+import formula.FormulaException;
 import global_utils.EFSARCL;
 import global_utils.FileUtils;
 import global_utils.Warnings;
@@ -311,22 +312,34 @@ public class StartUI {
 		if (!checkPreferences()) {
 			PreferencesDialog pref = new PreferencesDialog(shell);
 			pref.open();
+			
+			TableRow preferences = daoService.getAll(TableSchemaList.getByName(CustomStrings.PREFERENCES_SHEET)).get(0);
+			
 			// if the preferences were not set
-			if (pref.getStatus() == SWT.CANCEL) {
-				// close the application
-				return db;
+			try {
+				if (!reportService.getMandatoryFieldNotFilled(preferences).isEmpty()) {
+					// close the application
+					return db;
+				}
+			} catch (FormulaException e) {
+				e.printStackTrace();
+				LOGGER.error("Cannot check if preferences were set", e);
 			}
 		}
 
 		// check settings
 		if (!checkSettings()) {
-			SettingsDialog settings = new SettingsDialog(shell, reportService, daoService);
-			settings.open();
+			SettingsDialog settingsDialog = new SettingsDialog(shell, reportService, daoService);
+			settingsDialog.open();
 
-			// if the settings were not set
-			if (settings.getStatus() == SWT.CANCEL) {
-				// close the application
-				return db;
+			TableRow settings = daoService.getAll(TableSchemaList.getByName(CustomStrings.SETTINGS_SHEET)).get(0);
+			
+			try {
+				if (!reportService.getMandatoryFieldNotFilled(settings).isEmpty())
+					return db;
+			} catch (FormulaException e) {
+				e.printStackTrace();
+				LOGGER.error("Cannot check if settings were set", e);
 			}
 		}
 		else {

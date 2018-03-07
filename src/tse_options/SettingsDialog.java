@@ -194,7 +194,16 @@ public class SettingsDialog extends OptionsDialog {
 			return;
 		}
 		
-		// TODO the message xml builder requires data saved in the
+		Message m = Warnings.create(TSEMessages.get("warning.title"), 
+				TSEMessages.get("test.connection.confirm"), 
+				SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+		
+		int val = m.open(getDialog());
+		
+		if (val != SWT.YES)
+			return;
+		
+		// the message xml builder requires data saved in the
 		// database because of the RELATION formulas
 		daoService.update(settings);
 
