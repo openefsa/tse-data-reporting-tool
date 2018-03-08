@@ -140,7 +140,7 @@ public class ReportValidatorTest {
 		SummarizedInfoValidator validator = new SummarizedInfoValidator(daoService);
 		Collection<SampleCheck> checks = validator.isSampleCorrect(si);
 		
-		assertTrue(checks.contains(SampleCheck.TOO_MANY_POSITIVES));
+		assertFalse(checks.contains(SampleCheck.TOO_MANY_POSITIVES));
 	}
 
 	@Test

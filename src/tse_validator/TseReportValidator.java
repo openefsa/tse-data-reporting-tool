@@ -1,6 +1,7 @@
 package tse_validator;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import formula.FormulaException;
 import i18n_messages.TSEMessages;
 import providers.ITableDaoService;
 import providers.TseReportService;
+import providers.TseReportService.RowType;
 import report_validator.ReportError;
 import report_validator.ReportValidator;
 import table_relations.Relation;
@@ -73,7 +75,7 @@ public class TseReportValidator extends ReportValidator {
 				e.printStackTrace();
 			}
 			
-			RowType type = getRowType(row);
+			RowType type = reportService.getRowType(row);
 
 			if (type == RowType.RESULT) {
 				errors.addAll(checkResult(row));
@@ -110,7 +112,7 @@ public class TseReportValidator extends ReportValidator {
 		HashMap<String, TableRow> cases = new HashMap<>();
 		for (TableRow row : reportRecords) {
 			
-			if (getRowType(row) != RowType.CASE)
+			if (reportService.getRowType(row) != RowType.CASE)
 				continue;
 			
 			String currentSampId = row.getLabel(CustomStrings.SAMPLE_ID_COL);
@@ -143,7 +145,7 @@ public class TseReportValidator extends ReportValidator {
 		HashMap<String, TableRow> results = new HashMap<>();
 		for (TableRow row : reportRecords) {
 			
-			if (getRowType(row) != RowType.RESULT)
+			if (reportService.getRowType(row) != RowType.RESULT)
 				continue;
 			
 			String currentId = row.getLabel(CustomStrings.RES_ID_COL);
@@ -171,7 +173,7 @@ public class TseReportValidator extends ReportValidator {
 		HashMap<String, TableRow> summInfos = new HashMap<>();
 		for (TableRow row: reportRecords) {
 			
-			if (getRowType(row) != RowType.SUMM)
+			if (reportService.getRowType(row) != RowType.SUMM)
 				continue;
 			String id = row.getLabel(CustomStrings.CONTEXT_ID_COL);
 			if (summInfos.containsKey(id)) {
@@ -189,36 +191,6 @@ public class TseReportValidator extends ReportValidator {
 		return errors;
 	}
 	
-	public enum RowType {
-		SUMM,
-		CASE,
-		RESULT
-	}
-	
-	/**
-	 * Get the type of the row
-	 * @param row
-	 * @return
-	 */
-	public RowType getRowType(TableRow row) {
-		
-		RowType type = null;
-
-		switch(row.getSchema().getSheetName()) {
-		case CustomStrings.SUMMARIZED_INFO_SHEET:
-			type = RowType.SUMM;
-			break;
-		case CustomStrings.CASE_INFO_SHEET:
-			type = RowType.CASE;
-			break;
-		case CustomStrings.RESULT_SHEET:
-			type = RowType.RESULT;
-			break;
-		}
-		
-		return type;
-	}
-	
 	/**
 	 * Get the row id field of a row (not of db, the one defined by the domain)
 	 * @param row
@@ -228,7 +200,7 @@ public class TseReportValidator extends ReportValidator {
 		
 		String id = null;
 		
-		RowType type = getRowType(row);
+		RowType type = reportService.getRowType(row);
 		
 		switch(type) {
 		case SUMM:
@@ -253,7 +225,7 @@ public class TseReportValidator extends ReportValidator {
 	
 	public String getStackTrace(TableRow row) {
 		
-		RowType type = getRowType(row);
+		RowType type = reportService.getRowType(row);
 		
 		String trace = null;
 		
@@ -424,7 +396,11 @@ public class TseReportValidator extends ReportValidator {
 			}
 		}
 		
-		errors.addAll(checkAgeClass(row));
+		try {
+			errors.addAll(checkAgeClass(row));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		
 		return errors;
 	}
@@ -479,7 +455,7 @@ public class TseReportValidator extends ReportValidator {
 		HashMap<String, TableRow> cases = new HashMap<>();
 		for (TableRow row : reportRecords) {
 
-			if (getRowType(row) != RowType.CASE)
+			if (reportService.getRowType(row) != RowType.CASE)
 				continue;
 			
 			String id = row.getLabel(idField);
@@ -514,7 +490,7 @@ public class TseReportValidator extends ReportValidator {
 		return errors;
 	}
 	
-	public Collection<ReportError> checkAgeClass(TableRow row) {
+	public Collection<ReportError> checkAgeClass(TableRow row) throws ParseException {
 		
 		Collection<ReportError> errors = new ArrayList<>();
 		
@@ -527,8 +503,21 @@ public class TseReportValidator extends ReportValidator {
 		String reportYear = report.getCode(AppPaths.REPORT_YEAR_COL);
 		String reportMonth = report.getCode(AppPaths.REPORT_MONTH_COL);
 		String reportMonthLabel = report.getLabel(AppPaths.REPORT_MONTH_COL);
-		String ageClass = summInfo.getCode(CustomStrings.ANIMAGE_COL);
-		String ageClassLabel = summInfo.getLabel(CustomStrings.ANIMAGE_COL);
+		
+		String ageClass;
+		String ageClassLabel;
+
+		// for RGT age class is defined at case level
+		if (summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE).equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE)) {
+			ageClass = row.getCode(CustomStrings.ANIMAGE_COL);
+			ageClassLabel = row.getLabel(CustomStrings.ANIMAGE_COL);
+		}
+		else {  // otherwise aggregated level
+			ageClass = summInfo.getCode(CustomStrings.ANIMAGE_COL);
+			ageClassLabel = summInfo.getLabel(CustomStrings.ANIMAGE_COL);
+		}
+		
+		
 		String birthYear = row.getCode(CustomStrings.BIRTH_YEAR_COL);
 		String birthMonth = row.getCode(CustomStrings.BIRTH_MONTH_COL);
 		String birthMonthLabel = row.getLabel(CustomStrings.BIRTH_MONTH_COL);
@@ -602,7 +591,7 @@ public class TseReportValidator extends ReportValidator {
 		for (TableRow row: rows) {
 			
 			// only for BSE summ info
-			if (getRowType(row) == RowType.SUMM && row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
+			if (reportService.getRowType(row) == RowType.SUMM && row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
 					.equals(CustomStrings.SUMMARIZED_INFO_BSE_TYPE)) {
 				
 				int totalSamples = row.getNumLabel(CustomStrings.TOT_SAMPLE_TESTED_COL);

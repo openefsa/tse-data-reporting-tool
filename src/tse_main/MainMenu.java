@@ -329,7 +329,7 @@ public class MainMenu {
 				
 				ReportSendOperation opSendType = null;
 				try {
-					Dataset dataset = reportService.getLatestDataset(report);
+					Dataset dataset = reportService.getDataset(report);
 					opSendType = reportService.getSendOperation(report, dataset);
 				} catch (DetailedSOAPException e1) {
 					

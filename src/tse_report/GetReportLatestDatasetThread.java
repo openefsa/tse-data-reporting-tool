@@ -29,7 +29,7 @@ public class GetReportLatestDatasetThread extends Thread {
 	@Override
 	public void run() {
 		try {
-			dataset = reportService.getLatestDataset(report);
+			dataset = reportService.getDataset(report);
 			if (listener != null)
 				listener.finished(this);
 		} catch (DetailedSOAPException e) {

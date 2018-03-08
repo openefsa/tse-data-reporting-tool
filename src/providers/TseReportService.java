@@ -14,6 +14,7 @@ import dataset.Dataset;
 import dataset.IDataset;
 import dataset.RCLDatasetStatus;
 import formula.Formula;
+import formula.FormulaDecomposer;
 import formula.FormulaException;
 import formula.FormulaSolver;
 import message.MessageConfigBuilder;
@@ -68,6 +69,53 @@ public class TseReportService extends ReportService {
 	}
 	
 	/**
+	 * Check if the analytical result is related to random genotyping
+	 * @param row
+	 * @return
+	 * @throws ParseException 
+	 */
+	public boolean isRGTResult(TableRow row) throws ParseException {
+		
+		FormulaDecomposer decomposer = new FormulaDecomposer();
+		String paramBaseTerm = decomposer.getBaseTerm(
+				row.getCode(CustomStrings.PARAM_CODE_COL));
+		
+		boolean rgtParamCode = paramBaseTerm.equals(CustomStrings.RGT_PARAM_CODE);
+		
+		return rgtParamCode;
+	}
+	
+	public enum RowType {
+		SUMM,
+		CASE,
+		RESULT
+	}
+	
+	/**
+	 * Get the type of the row
+	 * @param row
+	 * @return
+	 */
+	public RowType getRowType(TableRow row) {
+		
+		RowType type = null;
+		
+		switch(row.getSchema().getSheetName()) {
+		case CustomStrings.SUMMARIZED_INFO_SHEET:
+			type = RowType.SUMM;
+			break;
+		case CustomStrings.CASE_INFO_SHEET:
+			type = RowType.CASE;
+			break;
+		case CustomStrings.RESULT_SHEET:
+			type = RowType.RESULT;
+			break;
+		}
+		
+		return type;
+	}
+	
+	/**
 	 * Extract the context id from an analytical result
 	 * @param result
 	 * @return
@@ -87,7 +135,6 @@ public class TseReportService extends ReportService {
 				decomposer.decompose(CustomStrings.PROG_INFO_COL, 
 						result.getCode(CustomStrings.PROG_INFO_COL));
 		
-
 		HashMap<String, TableCell> context3 = 
 				decomposer.decompose(CustomStrings.SAMP_UNIT_IDS_COL, 
 						result.getCode(CustomStrings.SAMP_UNIT_IDS_COL));

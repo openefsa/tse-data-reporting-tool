@@ -142,8 +142,11 @@ public class ReportServiceTest {
 		dcfReport.setHeader(new Header("", "", "", "", ""));
 		dcfReport.setOperation(new Operation("", "11234", "AT0404", "TSE.TEST", "SSD2_CENTRAL", "EFSA", ""));
 		dcfReport.setId("11234");
-		dcfReport.setSenderId("AT0404");
+		dcfReport.setSenderId("AT0404.00");
 		dcfReport.setStatus(dcfStatus);
+		
+		report.setSenderId("AT0404");
+		report.setVersion("00");
 		
 		if (sameModyfingMessageId) {
 			String msgId = "12345";
@@ -181,7 +184,7 @@ public class ReportServiceTest {
 		
 		Dataset r3 = new Dataset();
 		r3.setId("42842");
-		r3.setSenderId("AT0404.01");
+		r3.setSenderId("AT0404.00");
 		r3.setStatus(DcfDatasetStatus.VALID);
 		
 		DatasetList list = new DatasetList();
@@ -191,7 +194,7 @@ public class ReportServiceTest {
 		
 		getDatasetsList.setList(list);
 		
-		DatasetList out = reportService.getDatasetsOf("AT0404", "2017");
+		DatasetList out = reportService.getDatasetsOf("AT0404.00", "2017");
 		
 		// two versions
 		assertEquals(2, out.size());
@@ -222,14 +225,14 @@ public class ReportServiceTest {
 		
 		getDatasetsList.setList(list);
 		
-		Dataset data = reportService.getDatasetById("AT0404", "2017", "11234");
+		Dataset data = reportService.getDatasetById("AT0404.00", "2017", "11234");
 		
 		assertEquals(r1.getId(), data.getId());
 		assertEquals(r1.getSenderId(), data.getSenderId());
 	}
 	
 	@Test
-	public void getLatestDatasetByVersion() throws DetailedSOAPException {
+	public void getDatasetUsingVersion() throws DetailedSOAPException {
 		
 		Dataset r1 = new Dataset();
 		r1.setId("11234");
@@ -243,38 +246,7 @@ public class ReportServiceTest {
 		
 		Dataset r3 = new Dataset();
 		r3.setId("42842");
-		r3.setSenderId("AT0404.01");
-		r3.setStatus(DcfDatasetStatus.VALID);
-		
-		DatasetList list = new DatasetList();
-		list.add(r1);
-		list.add(r2);
-		list.add(r3);
-		
-		getDatasetsList.setList(list);
-		
-		Dataset data = reportService.getLatestDataset("AT0404", "2017");
-		
-		assertEquals(r3.getId(), data.getId());
-		assertEquals(r3.getSenderId(), data.getSenderId());
-	}
-	
-	@Test
-	public void getLatestDatasetUsingVersion() throws DetailedSOAPException {
-		
-		Dataset r1 = new Dataset();
-		r1.setId("11234");
-		r1.setSenderId("AT0404.00");
-		r1.setStatus(DcfDatasetStatus.REJECTED);
-		
-		Dataset r2 = new Dataset();
-		r2.setId("49201");
-		r2.setSenderId("FR0404.00");
-		r2.setStatus(DcfDatasetStatus.VALID);
-		
-		Dataset r3 = new Dataset();
-		r3.setId("42842");
-		r3.setSenderId("AT0404.01");
+		r3.setSenderId("AT0404.00");
 		r3.setStatus(DcfDatasetStatus.VALID);
 		
 		DatasetList list = new DatasetList();
@@ -289,14 +261,14 @@ public class ReportServiceTest {
 		
 		getDatasetsList.setList(list);
 		
-		Dataset data = reportService.getLatestDataset(report);
+		Dataset data = reportService.getDataset(report);
 		
 		assertEquals(r3.getId(), data.getId());
 		assertEquals(r3.getSenderId(), data.getSenderId());
 	}
 	
 	@Test
-	public void getLatestDatasetUsingId() throws DetailedSOAPException {
+	public void getDatasetUsingId() throws DetailedSOAPException {
 		
 		Dataset r1 = new Dataset();
 		r1.setId("11234");
@@ -310,7 +282,7 @@ public class ReportServiceTest {
 		
 		Dataset r3 = new Dataset();
 		r3.setId("42842");
-		r3.setSenderId("AT0404.01");
+		r3.setSenderId("AT0404.00");
 		r3.setStatus(DcfDatasetStatus.VALID);
 		
 		DatasetList list = new DatasetList();
@@ -326,7 +298,7 @@ public class ReportServiceTest {
 		report.setVersion(TableVersion.getFirstVersion());
 		report.setYear("2017");
 		
-		Dataset data = reportService.getLatestDataset(report);
+		Dataset data = reportService.getDataset(report);
 		
 		assertEquals(r3.getId(), data.getId());
 		assertEquals(r3.getSenderId(), data.getSenderId());
@@ -339,7 +311,7 @@ public class ReportServiceTest {
 		report.setVersion(TableVersion.getFirstVersion());
 		report.setYear("2017");
 		
-		Dataset dataset = reportService.getLatestDataset(report);
+		Dataset dataset = reportService.getDataset(report);
 		ReportSendOperation op = reportService.getSendOperation(report, dataset);
 		assertEquals(OperationType.INSERT, op.getOpType());
 	}
@@ -364,7 +336,7 @@ public class ReportServiceTest {
 		report.setVersion(TableVersion.getFirstVersion());
 		report.setYear("2017");
 		
-		Dataset dataset = reportService.getLatestDataset(report);
+		Dataset dataset = reportService.getDataset(report);
 		ReportSendOperation op = reportService.getSendOperation(report, dataset);
 		assertEquals(OperationType.REPLACE, op.getOpType());
 	}
@@ -389,7 +361,7 @@ public class ReportServiceTest {
 		report.setVersion("01");
 		report.setYear("2017");
 		
-		Dataset dataset = reportService.getLatestDataset(report);
+		Dataset dataset = reportService.getDataset(report);
 		ReportSendOperation op = reportService.getSendOperation(report, dataset);
 		assertEquals(OperationType.INSERT, op.getOpType());
 	}
@@ -413,7 +385,7 @@ public class ReportServiceTest {
 		report.setVersion("00");
 		report.setYear("2017");
 		
-		Dataset dataset = reportService.getLatestDataset(report);
+		Dataset dataset = reportService.getDataset(report);
 		ReportSendOperation op = reportService.getSendOperation(report, dataset);
 		assertEquals(OperationType.REPLACE, op.getOpType());
 	}
@@ -437,7 +409,7 @@ public class ReportServiceTest {
 		report.setVersion("00");
 		report.setYear("2017");
 		
-		Dataset dataset = reportService.getLatestDataset(report);
+		Dataset dataset = reportService.getDataset(report);
 		ReportSendOperation op = reportService.getSendOperation(report, dataset);
 		assertEquals(OperationType.INSERT, op.getOpType());
 	}
@@ -461,7 +433,7 @@ public class ReportServiceTest {
 		report.setVersion("00");
 		report.setYear("2017");
 		
-		Dataset dataset = reportService.getLatestDataset(report);
+		Dataset dataset = reportService.getDataset(report);
 		ReportSendOperation op = reportService.getSendOperation(report, dataset);
 		assertEquals(OperationType.NOT_SUPPORTED, op.getOpType());
 	}
@@ -485,7 +457,7 @@ public class ReportServiceTest {
 		report.setVersion("00");
 		report.setYear("2017");
 		
-		Dataset dataset = reportService.getLatestDataset(report);
+		Dataset dataset = reportService.getDataset(report);
 		ReportSendOperation op = reportService.getSendOperation(report, dataset);
 		assertEquals(OperationType.NOT_SUPPORTED, op.getOpType());
 	}
@@ -509,7 +481,7 @@ public class ReportServiceTest {
 		report.setVersion("00");
 		report.setYear("2017");
 		
-		Dataset dataset = reportService.getLatestDataset(report);
+		Dataset dataset = reportService.getDataset(report);
 		ReportSendOperation op = reportService.getSendOperation(report, dataset);
 		assertEquals(OperationType.REPLACE, op.getOpType());
 	}
@@ -631,6 +603,7 @@ public class ReportServiceTest {
 	@Test
 	public void refreshStatusWithValidSameModifyingMessageId() {
 		
+		report.setStatus(RCLDatasetStatus.VALID);
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.VALID, true);
 	
 		assertEquals(RCLDatasetStatus.VALID, report.getRCLStatus());
@@ -638,7 +611,18 @@ public class ReportServiceTest {
 	}
 	
 	@Test
+	public void refreshStatusLocalUploadedUpToDateMessageId() {
+		report.setStatus(RCLDatasetStatus.UPLOADED);
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.VALID, true);
+
+		assertEquals(RCLDatasetStatus.VALID, report.getRCLStatus());
+		assertEquals("OK500", m.getCode());
+		assertFalse(report.getId().isEmpty());
+	}
+	
+	@Test
 	public void refreshStatusWithValidWithWarningsSameModifyingMessageId() {
+		report.setStatus(RCLDatasetStatus.VALID);
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.VALID_WITH_WARNINGS, true);
 
 		assertEquals(RCLDatasetStatus.VALID_WITH_WARNINGS, report.getRCLStatus());
@@ -647,6 +631,7 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusWithRejectedEditableSameModifyingMessageId() {
+		report.setStatus(RCLDatasetStatus.VALID);
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.REJECTED_EDITABLE, true);
 
 		assertEquals(RCLDatasetStatus.REJECTED_EDITABLE, report.getRCLStatus());
@@ -655,6 +640,7 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusWithRejectedSameModifyingMessageId() {
+		report.setStatus(RCLDatasetStatus.VALID);
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.REJECTED, true);
 
 		assertEquals(RCLDatasetStatus.REJECTED, report.getRCLStatus());
@@ -663,6 +649,7 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusWithSubmittedSameModifyingMessageId() {
+		report.setStatus(RCLDatasetStatus.VALID);
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.SUBMITTED, true);
 
 		assertEquals(RCLDatasetStatus.SUBMITTED, report.getRCLStatus());
@@ -671,6 +658,7 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusWithAcceptedDwhSameModifyingMessageId() {
+		report.setStatus(RCLDatasetStatus.VALID);
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.ACCEPTED_DWH, true);
 
 		assertEquals(RCLDatasetStatus.ACCEPTED_DWH, report.getRCLStatus());
@@ -679,6 +667,7 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusWithAcceptedDcfSameModifyingMessageId() {
+		report.setStatus(RCLDatasetStatus.VALID);
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.OTHER, true);
 
 		assertEquals(RCLDatasetStatus.OTHER, report.getRCLStatus());
@@ -687,6 +676,7 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusWithDeletedSameModifyingMessageId() {
+		report.setStatus(RCLDatasetStatus.VALID);
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.DELETED, true);
 
 		assertEquals(RCLDatasetStatus.DRAFT, report.getRCLStatus());
@@ -695,6 +685,9 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusWithDeletedDifferentModifyingMessageId() {
+		
+		report.setStatus(RCLDatasetStatus.VALID);
+		
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.DELETED, false);
 
 		assertEquals(RCLDatasetStatus.DRAFT, report.getRCLStatus());
@@ -703,6 +696,9 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusWithRejectedDifferentModifyingMessageId() {
+		
+		report.setStatus(RCLDatasetStatus.VALID);
+		
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.REJECTED, false);
 
 		assertEquals(RCLDatasetStatus.DRAFT, report.getRCLStatus());
@@ -711,6 +707,9 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusWithRejectedEditableDifferentModifyingMessageId() {
+		
+		report.setStatus(RCLDatasetStatus.VALID);
+		
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.REJECTED_EDITABLE, false);
 
 		assertEquals(RCLDatasetStatus.DRAFT, report.getRCLStatus());
@@ -719,6 +718,8 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusWithValidDifferentModifyingMessageId() {
+		report.setStatus(RCLDatasetStatus.VALID);
+		
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.VALID, false);
 
 		assertEquals(RCLDatasetStatus.DRAFT, report.getRCLStatus());
@@ -727,6 +728,8 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusWithValidWithWarningsDifferentModifyingMessageId() {
+		
+		report.setStatus(RCLDatasetStatus.VALID);
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.VALID_WITH_WARNINGS, false);
 
 		assertEquals(RCLDatasetStatus.DRAFT, report.getRCLStatus());
@@ -735,7 +738,7 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusWithAcceptedDwhDifferentModifyingMessageId() {
-		
+		report.setStatus(RCLDatasetStatus.VALID);
 		RCLDatasetStatus prevStat = report.getRCLStatus();
 		
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.ACCEPTED_DWH, false);
@@ -746,7 +749,7 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusWithAcceptedDcfDifferentModifyingMessageId() {
-		
+		report.setStatus(RCLDatasetStatus.VALID);
 		RCLDatasetStatus prevStat = report.getRCLStatus();
 		
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.OTHER, false);
@@ -757,7 +760,7 @@ public class ReportServiceTest {
 	
 	@Test
 	public void refreshStatusWithSubmittedDifferentModifyingMessageId() {
-		
+		report.setStatus(RCLDatasetStatus.VALID);
 		RCLDatasetStatus prevStat = report.getRCLStatus();
 		
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.SUBMITTED, false);
@@ -874,7 +877,7 @@ public class ReportServiceTest {
 		Dataset d = new Dataset();
 		d.setId(report.getId());
 		d.setStatus(DcfDatasetStatus.VALID);
-		d.setSenderId(report.getSenderId());
+		d.setSenderId(TableVersion.mergeNameAndVersion(report.getSenderId(), report.getVersion()));
 		d.setLastModifyingMessageId("15402");
 		d.setLastValidationMessageId("15402");
 		d.setLastMessageId("15402");
@@ -903,7 +906,7 @@ public class ReportServiceTest {
 		Dataset d = new Dataset();
 		d.setId(report.getId());
 		d.setStatus(DcfDatasetStatus.VALID);
-		d.setSenderId(report.getSenderId());
+		d.setSenderId(TableVersion.mergeNameAndVersion(report.getSenderId(), report.getVersion()));
 		d.setLastModifyingMessageId("15402");
 		d.setLastValidationMessageId("15402");
 		d.setLastMessageId("15402");
@@ -930,7 +933,7 @@ public class ReportServiceTest {
 		Dataset d = new Dataset();
 		d.setId(report.getId());
 		d.setStatus(DcfDatasetStatus.VALID);
-		d.setSenderId(report.getSenderId());
+		d.setSenderId(TableVersion.mergeNameAndVersion(report.getSenderId(), report.getVersion()));
 		d.setLastModifyingMessageId("15402");
 		d.setLastValidationMessageId("15402");
 		d.setLastMessageId("15402");
@@ -958,7 +961,7 @@ public class ReportServiceTest {
 		Dataset d = new Dataset();
 		d.setId(report.getId());
 		d.setStatus(DcfDatasetStatus.VALID);
-		d.setSenderId(report.getSenderId());
+		d.setSenderId(TableVersion.mergeNameAndVersion(report.getSenderId(), report.getVersion()));
 		d.setLastModifyingMessageId("15402");
 		d.setLastValidationMessageId("15403");  // bigger than local modifying
 		d.setLastMessageId("15403");
@@ -987,7 +990,7 @@ public class ReportServiceTest {
 		Dataset d = new Dataset();
 		d.setId(report.getId());
 		d.setStatus(DcfDatasetStatus.VALID);
-		d.setSenderId(report.getSenderId());
+		d.setSenderId(TableVersion.mergeNameAndVersion(report.getSenderId(), report.getVersion()));
 		d.setLastModifyingMessageId("15402");
 		d.setLastValidationMessageId("15402");
 		d.setLastMessageId("15402");
@@ -1021,7 +1024,7 @@ public class ReportServiceTest {
 		Dataset d = new Dataset();
 		d.setId(report.getId());
 		d.setStatus(DcfDatasetStatus.VALID);
-		d.setSenderId(report.getSenderId());
+		d.setSenderId(TableVersion.mergeNameAndVersion(report.getSenderId(), report.getVersion()));
 		d.setLastModifyingMessageId("15402");
 		d.setLastValidationMessageId("15402");
 		d.setLastMessageId("15402");
@@ -1048,7 +1051,7 @@ public class ReportServiceTest {
 		Dataset d = new Dataset();
 		d.setId(report.getId());
 		d.setStatus(DcfDatasetStatus.VALID);
-		d.setSenderId(report.getSenderId());
+		d.setSenderId(TableVersion.mergeNameAndVersion(report.getSenderId(), report.getVersion()));
 		d.setLastModifyingMessageId("15402");
 		d.setLastValidationMessageId("15402");
 		d.setLastMessageId("15402");
@@ -1075,7 +1078,7 @@ public class ReportServiceTest {
 		Dataset d = new Dataset();
 		d.setId(report.getId());
 		d.setStatus(DcfDatasetStatus.VALID);
-		d.setSenderId(report.getSenderId());
+		d.setSenderId(TableVersion.mergeNameAndVersion(report.getSenderId(), report.getVersion()));
 		d.setLastModifyingMessageId("15402");
 		d.setLastValidationMessageId("15403");  // bigger than local modifying
 		d.setLastMessageId("15403");
@@ -1106,7 +1109,7 @@ public class ReportServiceTest {
 		Dataset d = new Dataset();
 		d.setId(report.getId());
 		d.setStatus(DcfDatasetStatus.VALID);
-		d.setSenderId(report.getSenderId());
+		d.setSenderId(TableVersion.mergeNameAndVersion(report.getSenderId(), report.getVersion()));
 		d.setLastModifyingMessageId(report.getLastModifyingMessageId());
 		d.setLastValidationMessageId("19402");
 		list.add(d);
@@ -1517,7 +1520,7 @@ public class ReportServiceTest {
 		
 		MessageConfigBuilder messageConfig = reportService.getSendMessageConfiguration(report);
 		
-		Dataset dcfDataset = reportService.getLatestDataset(report);
+		Dataset dcfDataset = reportService.getDataset(report);
 		ReportSendOperation op = reportService.getSendOperation(report, dcfDataset);
 		
 		messageConfig.setOpType(op.getOpType());
@@ -1560,8 +1563,8 @@ public class ReportServiceTest {
 	
 	private Dataset setReportCopyInDcfWithStatus(Report report, DcfDatasetStatus status) {
 		Dataset d = new Dataset();
-		d.setId("32421");
-		d.setSenderId(report.getSenderId());
+		d.setId(report.getId());
+		d.setSenderId(TableVersion.mergeNameAndVersion(report.getSenderId(), report.getVersion()));
 		d.setStatus(status);
 		
 		DatasetList list = new DatasetList();
@@ -1589,7 +1592,6 @@ public class ReportServiceTest {
 		assertNotNull(report.getMessageId());
 		assertFalse(report.getMessageId().isEmpty());
 		assertNotNull(report.getId());
-		assertFalse(d.getId().equals(report.getId()));
 	}
 	
 	@Test
@@ -2114,6 +2116,13 @@ public class ReportServiceTest {
 		result.put("animage", animage);
 		result.put("sex", sex);
 		
+		String sampMatCode = "A04MQ#";
+		for (String facet: new String[] {source, prod, animage, sex})
+			sampMatCode = sampMatCode + "$" + facet;
+		
+		result.put(CustomStrings.SAMP_MAT_CODE_COL, sampMatCode);
+		result.put(CustomStrings.PROG_ID_COL, "tseTargetGroup=" + tg);
+		
 		String hashAlgorithm = "MD5";
 		String value = tg + sampC + sampY + sampM + source + prod + animage;
 		
@@ -2145,11 +2154,20 @@ public class ReportServiceTest {
 		result.put("sampCountry", sampC);
 		result.put("sampY", sampY);
 		result.put("sampM", sampM);
-		result.put("source", source);
-		result.put("prod", prod);
-		result.put("animage", animage);
-		result.put("sex", sex);
-		result.put("psuId", psuId);
+		result.put(CustomStrings.SOURCE_COL, source);
+		result.put(CustomStrings.PROD_COL, prod);
+		result.put(CustomStrings.ANIMAGE_COL, animage);
+		result.put(CustomStrings.SEX_COL, sex);
+		result.put(CustomStrings.PSU_ID_COL, psuId);
+		
+		String sampMatCode = "A04MQ#";
+		
+		for (String facet: new String[] {source, prod, animage, sex})
+			sampMatCode = sampMatCode + "$" + facet;
+		
+		result.put(CustomStrings.SAMP_MAT_CODE_COL, sampMatCode);
+		result.put(CustomStrings.PROG_ID_COL, "tseTargetGroup=" + tg);
+		result.put(CustomStrings.SAMP_UNIT_IDS_COL, "PSUId=" + psuId);
 		
 		String hashAlgorithm = "MD5";
 		String value = tg + sampC + sampY + sampM + source + prod + animage + sex + psuId;
@@ -2185,6 +2203,14 @@ public class ReportServiceTest {
 		result.put("prod", prod);
 		result.put("animage", animage);
 		result.put("sex", sex);
+		
+		String sampMatCode = "A04MQ#";
+		
+		for (String facet: new String[] {source, prod, animage, sex})
+			sampMatCode = sampMatCode + "$" + facet;
+		
+		result.put(CustomStrings.SAMP_MAT_CODE_COL, sampMatCode);
+		result.put(CustomStrings.PROG_ID_COL, "tseTargetGroup=" + tg);
 		
 		String hashAlgorithm = "MD5";
 		String value = tg + sampC + sampY + sampM + source + prod + animage;

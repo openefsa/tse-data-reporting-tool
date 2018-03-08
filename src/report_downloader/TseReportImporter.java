@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 
 import amend_manager.ReportImporter;
 import dataset.Dataset;
-import formula.FormulaDecomposer;
 import formula.FormulaException;
 import providers.ITableDaoService;
 import providers.TseReportService;
@@ -88,31 +87,13 @@ public class TseReportImporter extends ReportImporter {
 				daoService.add(si);
 
 				LOGGER.info("Imported summ info; contextId=" + reportService.getContextId(si));
-				System.err.println("Imported summ info; contextId=" + reportService.getContextId(si) + " from " 
-						+ si.getCode(CustomStrings.SAMP_MAT_CODE_COL));
+
 				// save it in the cache
 				summInfos.add(si);
 			}
 		}
 	}
 
-	/**
-	 * Check if the row is random genotyping
-	 * @param row
-	 * @return
-	 * @throws ParseException 
-	 */
-	private boolean isRGT(TableRow row) throws ParseException {
-		
-		FormulaDecomposer decomposer = new FormulaDecomposer();
-		String paramBaseTerm = decomposer.getBaseTerm(
-				row.getCode(CustomStrings.PARAM_CODE_COL));
-		
-		boolean rgtParamCode = paramBaseTerm.equals(CustomStrings.RGT_PARAM_CODE);
-		
-		return rgtParamCode;
-	}
-	
 	/**
 	 * Import all the cases and analytical results
 	 * @param report
@@ -131,7 +112,7 @@ public class TseReportImporter extends ReportImporter {
 				SummarizedInfo summInfo = null;
 				
 				// if random genotyping, create the summarized information
-				if (isRGT(row)) {
+				if (reportService.isRGTResult(row)) {
 	
 					summInfo = extractSummarizedInfo(report, row, true);
 
@@ -332,10 +313,6 @@ public class TseReportImporter extends ReportImporter {
 					CustomStrings.SAMP_EVENT_INFO_COL, CustomStrings.SAMP_MAT_INFO_COL,
 					CustomStrings.SAMP_MAT_CODE_COL}) {
 				rowValues.putAll(decomposer.decompose(id, row.getCode(id)));
-				
-				if (id.equals(CustomStrings.SAMP_MAT_CODE_COL)) {
-					System.out.println("SAMP MAT " + row);
-				}
 			}
 
 			// save sample id
