@@ -93,8 +93,11 @@ public class CustomStrings {
 	
 	public static final String BIRTH_COUNTRY_COL = "birthCountry";
 	public static final String BORN_FLOCK_HERD_COL = "birthInFlockHerd";
+	
 	public static final String BREED_COL = "breed";
 	public static final String EVAL_COMMENT_COL = "evalCom";
+	public static final String EVAL_COMMENT_BREED_ATTRIBUTE_NAME = "com";  // mapping with breed and evalCom
+	
 	public static final String BRAIN_CODE = "F02.A06AM";
 	public static final String OBEX_CODE = "F02.A16YL";
 	public static final String LYMPH_CODE = "F02.A0CJN";

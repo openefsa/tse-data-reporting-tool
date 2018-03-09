@@ -309,12 +309,25 @@ public class TseReportImporter extends ReportImporter {
 
 			// get decomposed values
 			for (String id: new String[]{CustomStrings.EVAL_INFO_COL, 
-					CustomStrings.SAMP_UNIT_IDS_COL, CustomStrings.SAMP_EVENT_INFO_COL,
-					CustomStrings.SAMP_EVENT_INFO_COL, CustomStrings.SAMP_MAT_INFO_COL,
+					CustomStrings.SAMP_UNIT_IDS_COL, 
+					CustomStrings.SAMP_EVENT_INFO_COL, 
+					CustomStrings.SAMP_MAT_INFO_COL,
 					CustomStrings.SAMP_MAT_CODE_COL}) {
 				rowValues.putAll(decomposer.decompose(id, row.getCode(id)));
 			}
 
+			// manually convert eval info com into evalCom
+			TableCell evalCom = decomposer.decompose(CustomStrings.EVAL_INFO_COL, 
+					row.getCode(CustomStrings.EVAL_INFO_COL))
+					.get(CustomStrings.EVAL_COMMENT_BREED_ATTRIBUTE_NAME);
+			rowValues.put(CustomStrings.EVAL_COMMENT_COL, evalCom);
+			
+			// manually convert samp event info into breed
+			TableCell breed = decomposer.decompose(CustomStrings.SAMP_MAT_INFO_COL, 
+					row.getCode(CustomStrings.SAMP_MAT_INFO_COL))
+					.get(CustomStrings.EVAL_COMMENT_BREED_ATTRIBUTE_NAME);
+			rowValues.put(CustomStrings.BREED_COL, breed);
+			
 			// save sample id
 			rowValues.put(CustomStrings.SAMPLE_ID_COL, sampId);
 			

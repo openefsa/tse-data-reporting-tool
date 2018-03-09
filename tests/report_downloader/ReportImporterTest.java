@@ -1,6 +1,7 @@
 package report_downloader;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -173,8 +174,46 @@ public class ReportImporterTest {
 	@Test
 	public void importFirstVersionOfReportWithAllDataTypes() throws DetailedSOAPException, XMLStreamException, 
 		IOException, FormulaException, NoAttachmentException, ParseException {
-		// TODO!!
-		assertEquals("Implemented", "NOT IMPLEMENTED!");
+
+		String datasetId = "12288";
+		
+		getDataset.addDatasetFile(datasetId, new File("test-files" 
+				+ System.getProperty("file.separator") + "import-all-filled.xml"));
+		
+		DatasetList datasetVersions = new DatasetList();
+		
+		Dataset d = new Dataset();
+		
+		// note: these information come from the get datasets list
+		// in the normal process flow
+		d.setStatus(DcfDatasetStatus.VALID);
+		d.setId(datasetId);
+		d.setSenderId("CY1803.00");
+		
+		datasetVersions.add(d);
+		
+		// import the file
+		TseReportImporter imp = new TseReportImporter(reportService, daoService);
+		imp.setDatasetVersions(datasetVersions);
+		imp.importReport();
+		
+		assertEquals(1, daoService.getAll(TableSchemaList.getByName(AppPaths.REPORT_SHEET)).size());
+		assertEquals(5, daoService.getAll(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET)).size());
+		
+		TableRowList cases = daoService.getAll(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET));
+		
+		// breed and eval com are filled ?
+		for (TableRow c: cases) {
+			
+			// skip negative samples
+			if (c.getCode(CustomStrings.SAMP_AN_ASSES_COL).equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE))
+				continue;
+			
+			String breed = c.getCode(CustomStrings.BREED_COL);
+			assertFalse(breed.isEmpty());
+			String evalCom = c.getCode(CustomStrings.EVAL_COMMENT_COL);
+			assertFalse(evalCom.isEmpty());
+		}
 	}
 	
 	@Test
