@@ -10,6 +10,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import app_config.AppPaths;
+import date_comparator.TseDate;
 import formula.FormulaException;
 import i18n_messages.TSEMessages;
 import providers.ITableDaoService;
@@ -578,6 +579,13 @@ public class TseReportValidator extends ReportValidator {
 		default:
 			break;
 		}
+		
+		// check analysis year (must be >= than report year)
+		TseDate analysisDate = new TseDate(row.getCode(CustomStrings.ANALYSIS_Y_COL), "0");
+		TseDate reportDate = new TseDate(report.getYear(), "0");
+		
+		if (analysisDate.compareTo(reportDate) < 0)
+			errors.add(new WrongAnalysisYearError(rowId, analysisDate, reportDate));
 		
 		return errors;
 	}

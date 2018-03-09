@@ -113,6 +113,7 @@ public class CustomStrings {
 	
 	public static final String ALLELE_1_COL = "allele1";
 	public static final String ALLELE_2_COL = "allele2";
+	public static final String ANALYSIS_Y_COL = "analysisY";
 	public static final String ALLELE_AFRR = "AFRR";
 	public static final String ALLELE_ALRR = "ALRR";
 	

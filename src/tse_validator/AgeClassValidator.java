@@ -2,6 +2,7 @@ package tse_validator;
 
 import java.io.IOException;
 
+import date_comparator.TseDate;
 import tse_config.CatalogLists;
 import xml_catalog_reader.Selection;
 import xml_catalog_reader.XmlContents;
@@ -25,13 +26,16 @@ public class AgeClassValidator {
 	private String birthYear;
 	private String birthMonth;
 	
+	private TseDate reportDate;
+	private TseDate birthDate;
+	
 	public AgeClassValidator(String ageClassCode, String reportYear, 
 			String reportMonth, String birthYear, String birthMonth) {
 		this.ageClassCode = ageClassCode;
-		this.reportMonth = reportMonth;
 		this.reportYear = reportYear;
-		this.birthMonth = birthMonth;
+		this.reportMonth = reportMonth;
 		this.birthYear = birthYear;
+		this.birthMonth = birthMonth;
 	}
 	
 	public enum Check {
@@ -58,7 +62,10 @@ public class AgeClassValidator {
 		boolean validated = false;
 		try {
 			
-			int months = getMonthsDifference();
+			this.reportDate = new TseDate(reportYear, reportMonth);
+			this.birthDate = new TseDate(birthYear, birthMonth);
+			
+			int months = reportDate.compareTo(birthDate);
 			
 			if (months < 0) {
 				return Check.REPORT_DATE_EXCEEDED;
@@ -101,10 +108,6 @@ public class AgeClassValidator {
 	 * @throws NumberFormatException
 	 */
 	public int getMonthsDifference() {
-		int rY = Integer.valueOf(this.reportYear);
-		int rM = Integer.valueOf(this.reportMonth);
-		int bY = Integer.valueOf(this.birthYear);
-		int bM = Integer.valueOf(this.birthMonth);
-		return (rY - bY) * 12 + (rM - bM);
+		return this.reportDate.getMonthsDifference(this.birthDate);
 	}
 }

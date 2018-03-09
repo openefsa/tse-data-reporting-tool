@@ -10,6 +10,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -297,17 +298,26 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		String sexRow = TSEMessages.get("case.sex.id", sex);
 		
 		viewer.addHelp(TSEMessages.get("case.help.title"))
-			.addLabel("yearLabel", yearRow)
-			.addLabel("monthLabel", monthRow)
-			.addLabel("sourceLabel", sourceRow)
-			.addLabel("prodLabel", prodRow)
-			.addLabel("ageLabel", ageRow)
-			.addLabel("targetLabel", targetRow)
-			.addLabel("progIdLabel", progIdRow);
+			.addComposite("labelsComp", new GridLayout(1, false), null)
+			.addLabelToComposite("yearLabel", yearRow, "labelsComp")
+			.addLabelToComposite("monthLabel", monthRow, "labelsComp");
+		
+		if (!source.isEmpty())
+			viewer.addLabelToComposite("sourceLabel", sourceRow, "labelsComp");
+		
+		if (!prod.isEmpty())
+			viewer.addLabelToComposite("prodLabel", prodRow, "labelsComp");
+		
+		if (!age.isEmpty())
+			viewer.addLabelToComposite("ageLabel", ageRow, "labelsComp");
+		
+		if (!target.isEmpty())
+			viewer.addLabelToComposite("targetLabel", targetRow, "labelsComp");
+		
+		viewer.addLabelToComposite("progIdLabel", progIdRow, "labelsComp");
 			
-		if (summInfo.getType().equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE)) {
-			viewer.addLabel("sexLabel", sexRow);
-		}
+		if (summInfo.getType().equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE))
+			viewer.addLabelToComposite("sexLabel", sexRow, "labelsComp");
 			
 		viewer.addRowCreator(TSEMessages.get("case.add.record"))
 			.addTable(CustomStrings.CASE_INFO_SHEET, true, report, summInfo);

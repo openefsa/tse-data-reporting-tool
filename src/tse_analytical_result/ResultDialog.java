@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 
@@ -145,23 +146,29 @@ public class ResultDialog extends TableDialogWithMenu {
 		if (!reportService.hasChildren(caseInfo, TableSchemaList.getByName(CustomStrings.RESULT_SHEET)) 
 				&& isEditable() && !this.summInfo.isBSEOS()) {
 
-			int val = Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"), 
-					TSEMessages.get("result.confirm.default"),
-					SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-			
-			LOGGER.info("Add default results to the list? " + (val == SWT.YES));
-			
-			if (val == SWT.NO)
-				return;
+			// for RGT create directly the record
+			if (!this.summInfo.isRGT()) {
+				int val = Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"), 
+						TSEMessages.get("result.confirm.default"),
+						SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+				
+				LOGGER.info("Add default results to the list? " + (val == SWT.YES));
+				
+				if (val == SWT.NO)
+					return;
+			}
 			
 			try {
 				
 				TableRowList results = reportService.createDefaultResults(report, summInfo, caseInfo);
 				this.setRows(results);
 				
-				warnUser(TSEMessages.get("warning.title"), 
-						TSEMessages.get("result.check.default"),
-						SWT.ICON_WARNING);
+				// warn user only if not RGT
+				if (!this.summInfo.isRGT()) {
+					warnUser(TSEMessages.get("warning.title"), 
+							TSEMessages.get("result.check.default"),
+							SWT.ICON_WARNING);
+				}
 
 				LOGGER.info("Default results created");
 				
@@ -253,9 +260,17 @@ public class ResultDialog extends TableDialogWithMenu {
 		
 		viewer.addHelp(TSEMessages.get("result.help.title"))
 			.addRowCreator(TSEMessages.get("result.add.record"))
-			.addLabel("sampLabel", sampleIdRow.toString())
-			.addLabel("animalLabel", animalIdRow.toString())
-			.addLabel("caseIdLabel", caseIdRow.toString())
-			.addTable(CustomStrings.RESULT_SHEET, true, report, summInfo, caseInfo);  // add parent to be able to solve isVisible field
+			.addComposite("labelsComp", new GridLayout(1, false), null);
+		
+		if (!sampleId.isEmpty())
+			viewer.addLabelToComposite("sampLabel", sampleIdRow.toString(), "labelsComp");
+		
+		if (!animalId.isEmpty())
+			viewer.addLabelToComposite("animalLabel", animalIdRow.toString(), "labelsComp");
+		
+		if (!caseId.isEmpty())
+			viewer.addLabelToComposite("caseIdLabel", caseIdRow.toString(), "labelsComp");
+		
+		viewer.addTable(CustomStrings.RESULT_SHEET, true, report, summInfo, caseInfo);  // add parent to be able to solve isVisible field
 	}
 }
