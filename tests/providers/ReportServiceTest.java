@@ -1917,8 +1917,8 @@ public class ReportServiceTest {
 		
 		assertTrue(hasObex1 || hasObex2);
 		
-		boolean hasLymph1 = CustomStrings.LYMPH_CODE.equals(case1.getCode(CustomStrings.PART_COL));
-		boolean hasLymph2 = CustomStrings.LYMPH_CODE.equals(case2.getCode(CustomStrings.PART_COL));
+		boolean hasLymph1 = CustomStrings.RETROPHARYNGEAL_CODE.equals(case1.getCode(CustomStrings.PART_COL));
+		boolean hasLymph2 = CustomStrings.RETROPHARYNGEAL_CODE.equals(case2.getCode(CustomStrings.PART_COL));
 		
 		assertTrue(hasLymph1 || hasLymph2);
 	}

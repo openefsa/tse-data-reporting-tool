@@ -530,7 +530,7 @@ public class TseReportService extends ReportService {
 						resultRow.put(CustomStrings.PART_COL, CustomStrings.OBEX_CODE);
 					}
 					else if (j==1) {
-						resultRow.put(CustomStrings.PART_COL, CustomStrings.LYMPH_CODE);
+						resultRow.put(CustomStrings.PART_COL, CustomStrings.RETROPHARYNGEAL_CODE);
 					}
 				}
 
@@ -561,7 +561,7 @@ public class TseReportService extends ReportService {
 						resultRow.put(CustomStrings.PART_COL, CustomStrings.OBEX_CODE);
 					}
 					else if (j==1) {
-						resultRow.put(CustomStrings.PART_COL, CustomStrings.LYMPH_CODE);
+						resultRow.put(CustomStrings.PART_COL, CustomStrings.RETROPHARYNGEAL_CODE);
 					}
 				}
 

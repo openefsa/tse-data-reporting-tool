@@ -100,9 +100,9 @@ public class CustomStrings {
 	
 	public static final String BRAIN_CODE = "F02.A06AM";
 	public static final String OBEX_CODE = "F02.A16YL";
-	public static final String LYMPH_CODE = "F02.A0CJN";
+	public static final String RETROPHARYNGEAL_CODE = "F02.A16YZ";
 	public static final String BLOOD_CODE = "F02.A06AL";
-	
+
 	public static final String DEFAULT_ASSESS_CBSE_CASE_CODE = "J046A";
 	public static final String DEFAULT_ASSESS_NEG_CASE_CODE = "J051A";
 	public static final String DEFAULT_ASSESS_INC_CASE_CODE = "J050A";
