@@ -6,10 +6,10 @@ import java.util.Collection;
 import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 
-public class TooManyIncCasesError implements ReportError {
+public class CheckInconclusiveCasesError implements ReportError {
 
 	private String rowId;
-	public TooManyIncCasesError(String rowId) {
+	public CheckInconclusiveCasesError(String rowId) {
 		this.rowId = rowId;
 	}
 	
@@ -20,7 +20,7 @@ public class TooManyIncCasesError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return TSEMessages.get("too.many.inc.message");
+		return TSEMessages.get("check.inc.message");
 	}
 
 	@Override

@@ -6,11 +6,11 @@ import java.util.Collection;
 import i18n_messages.TSEMessages;
 import report_validator.ReportError;
 
-public class TooManyPositivesError implements ReportError {
+public class CheckPositiveCasesError implements ReportError {
 
 	private String rowId;
 	
-	public TooManyPositivesError(String rowId) {
+	public CheckPositiveCasesError(String rowId) {
 		this.rowId = rowId;
 	}
 	
@@ -21,7 +21,7 @@ public class TooManyPositivesError implements ReportError {
 
 	@Override
 	public String getErrorMessage() {
-		return TSEMessages.get("too.many.pos.message");
+		return TSEMessages.get("check.pos.message");
 	}
 
 	@Override

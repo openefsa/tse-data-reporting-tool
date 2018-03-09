@@ -31,7 +31,9 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		OK,
 		MISSING_RGT_CASE,
 		TOO_MANY_INCONCLUSIVES,
+		TOO_FEW_INCONCLUSIVES,
 		TOO_MANY_POSITIVES,
+		TOO_FEW_POSITIVES,
 		NON_WILD_FOR_KILLED,
 		WRONG_CASES
 	}
@@ -120,9 +122,13 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 				if (detailedPosSamples > posSamples)
 					checks.add(SampleCheck.TOO_MANY_POSITIVES);
+				else if (detailedPosSamples < posSamples)
+					checks.add(SampleCheck.TOO_FEW_POSITIVES);
 
 				if (detailedIncSamples > incSamples)
 					checks.add(SampleCheck.TOO_MANY_INCONCLUSIVES);
+				else if (detailedIncSamples < incSamples)
+					checks.add(SampleCheck.TOO_FEW_INCONCLUSIVES);
 			}
 			else {
 
@@ -174,6 +180,8 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		case TOO_MANY_INCONCLUSIVES:
 		case NON_WILD_FOR_KILLED:
 		case TOO_MANY_POSITIVES:
+		case TOO_FEW_POSITIVES:
+		case TOO_FEW_INCONCLUSIVES:
 			level = 1;
 			break;
 		case WRONG_CASES:
@@ -210,7 +218,8 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 			text = TSEMessages.get("si.missing.rgt.case");
 			break;
 		case TOO_MANY_INCONCLUSIVES:
-			text = TSEMessages.get("si.too.many.inc");
+		case TOO_FEW_INCONCLUSIVES:
+			text = TSEMessages.get("si.check.inc");
 			break;
 		case NON_WILD_FOR_KILLED:
 			text = TSEMessages.get("si.non.wild.for.killed");
@@ -219,7 +228,8 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 			text = TSEMessages.get("si.wrong.cases");
 			break;
 		case TOO_MANY_POSITIVES:
-			text = TSEMessages.get("si.too.many.pos");
+		case TOO_FEW_POSITIVES:
+			text = TSEMessages.get("si.check.pos");
 			break;
 		default:
 			break;

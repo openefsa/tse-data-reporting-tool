@@ -306,13 +306,13 @@ public class TseReportValidator extends ReportValidator {
 		for (SampleCheck check: checks) {
 			switch(check) {
 			case TOO_MANY_INCONCLUSIVES:
-				errors.add(new TooManyIncCasesError(rowId));
+				errors.add(new CheckInconclusiveCasesError(rowId));
 				break;
 			case MISSING_RGT_CASE:
 				errors.add(new MissingRGTCaseError(rowId));
 				break;
 			case TOO_MANY_POSITIVES:
-				errors.add(new TooManyPositivesError(rowId));
+				errors.add(new CheckPositiveCasesError(rowId));
 				break;
 			case NON_WILD_FOR_KILLED:
 				
