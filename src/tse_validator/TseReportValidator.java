@@ -392,6 +392,15 @@ public class TseReportValidator extends ReportValidator {
 			case EM_FOR_NOT_INFECTED:
 				errors.add(new NotInfectedStatusForEradicationError(getStackTrace(row)));
 				break;
+			case INDEX_CASE_FOR_INFECTED:
+			case NOT_INDEX_CASE_FOR_FREE:
+				errors.add(new IndexCaseInconsistentWithStatusHerdError(getStackTrace(row), 
+						row.getLabel(CustomStrings.INDEX_CASE_COL), 
+						row.getLabel(CustomStrings.STATUS_HERD_COL)));
+				break;
+			case NOT_CONSTANT_ANALYSIS_YEAR:
+				errors.add(new NotConstantAnalysisYearError(getStackTrace(row)));
+				break;
 			default:
 				break;
 			}
@@ -518,7 +527,6 @@ public class TseReportValidator extends ReportValidator {
 			ageClassLabel = summInfo.getLabel(CustomStrings.ANIMAGE_COL);
 		}
 		
-		
 		String birthYear = row.getCode(CustomStrings.BIRTH_YEAR_COL);
 		String birthMonth = row.getCode(CustomStrings.BIRTH_MONTH_COL);
 		String birthMonthLabel = row.getLabel(CustomStrings.BIRTH_MONTH_COL);
@@ -581,11 +589,14 @@ public class TseReportValidator extends ReportValidator {
 		}
 		
 		// check analysis year (must be >= than report year)
-		TseDate analysisDate = new TseDate(row.getCode(CustomStrings.ANALYSIS_Y_COL), "0");
-		TseDate reportDate = new TseDate(report.getYear(), "0");
-		
-		if (analysisDate.compareTo(reportDate) < 0)
-			errors.add(new WrongAnalysisYearError(rowId, analysisDate, reportDate));
+		try {
+			TseDate analysisDate = new TseDate(row.getCode(CustomStrings.ANALYSIS_Y_COL), "0");
+			TseDate reportDate = new TseDate(report.getYear(), "0");
+			
+			if (analysisDate.compareTo(reportDate) < 0)
+				errors.add(new WrongAnalysisYearError(rowId, analysisDate, reportDate));
+		}
+		catch (NumberFormatException e) {}
 		
 		return errors;
 	}

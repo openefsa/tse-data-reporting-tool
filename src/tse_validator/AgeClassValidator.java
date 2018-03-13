@@ -65,7 +65,7 @@ public class AgeClassValidator {
 			this.reportDate = new TseDate(reportYear, reportMonth);
 			this.birthDate = new TseDate(birthYear, birthMonth);
 			
-			int months = reportDate.compareTo(birthDate);
+			int months = reportDate.getMonthsDifference(birthDate);
 			
 			if (months < 0) {
 				return Check.REPORT_DATE_EXCEEDED;

@@ -646,7 +646,7 @@ public class ReportValidatorTest {
 		
 		// not infected
 		cr.put(CustomStrings.STATUS_HERD_COL, 
-				new TableCell(CustomStrings.CASE_INFO_STATUS_NOT_INFECTED, ""));
+				new TableCell(CustomStrings.STATUS_HERD_NOT_INFECTED_CODE, ""));
 		
 		CaseReportValidator validator = new CaseReportValidator(daoService);
 		Collection<Check> checks = validator.isRecordCorrect(cr);
@@ -663,7 +663,7 @@ public class ReportValidatorTest {
 		
 		// infected
 		cr.put(CustomStrings.STATUS_HERD_COL, 
-				new TableCell(CustomStrings.CASE_INFO_STATUS_INFECTED, ""));
+				new TableCell(CustomStrings.STATUS_HERD_INFECTED_CODE, ""));
 		
 		CaseReportValidator validator = new CaseReportValidator(daoService);
 		Collection<Check> checks = validator.isRecordCorrect(cr);
@@ -680,7 +680,7 @@ public class ReportValidatorTest {
 		
 		// infected
 		cr.put(CustomStrings.STATUS_HERD_COL, 
-				new TableCell(CustomStrings.CASE_INFO_STATUS_NOT_INFECTED, ""));
+				new TableCell(CustomStrings.STATUS_HERD_NOT_INFECTED_CODE, ""));
 		
 		CaseReportValidator validator = new CaseReportValidator(daoService);
 		Collection<Check> checks = validator.isRecordCorrect(cr);

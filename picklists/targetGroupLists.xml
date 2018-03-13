@@ -38,17 +38,8 @@
 		</selection>
 	</selectionList>
 	<selectionList id="CWD">
-		<selection code="TG002A">
-			<description>FS (fallen stock)</description>
-		</selection>
 		<selection code="TG006A">
 			<description>SUS (clinical suspect animals)</description>
-		</selection>
-		<selection code="TG007A">
-			<description>SHC (slaughtered for human consumption at abattoir and home killed for human consumption)</description>
-		</selection>
-		<selection code="TG008A">
-			<description>NSHC (not slaughtered for human consumption)</description>
 		</selection>
 		<selection code="TG009A">
 			<description>RK Road/predator killed</description>

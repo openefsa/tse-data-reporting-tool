@@ -32,6 +32,9 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		INDEX_CASE_FOR_NEGATIVE,
 		INDEX_CASE_FOR_FARMED_CWD,
 		EM_FOR_NOT_INFECTED,
+		NOT_CONSTANT_ANALYSIS_YEAR,
+		INDEX_CASE_FOR_INFECTED,
+		NOT_INDEX_CASE_FOR_FREE,
 	}
 	
 	private ITableDaoService daoService;
@@ -46,6 +49,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		
 		String caseId = row.getCode(CustomStrings.NATIONAL_CASE_ID_COL);
 		String sampAnAsses = row.getCode(CustomStrings.SAMP_AN_ASSES_COL);
+		String statusHerd = row.getCode(CustomStrings.STATUS_HERD_COL);
 		
 		// case id cannot be specified
 		if (!caseId.isEmpty() && sampAnAsses.equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE)) {
@@ -57,6 +61,16 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		// index case on negative sample
 		if (!indexCase.isEmpty() && sampAnAsses.equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE)) {
 			checks.add(Check.INDEX_CASE_FOR_NEGATIVE);
+		}
+		
+		if (indexCase.equals(CustomStrings.INDEX_CASE_YES) 
+				&& statusHerd.equals(CustomStrings.STATUS_HERD_INFECTED_CODE)) {
+			checks.add(Check.INDEX_CASE_FOR_INFECTED);
+		}
+		
+		if (indexCase.equals(CustomStrings.INDEX_CASE_NO) 
+				&& statusHerd.equals(CustomStrings.STATUS_HERD_NOT_INFECTED_CODE)) {
+			checks.add(Check.NOT_INDEX_CASE_FOR_FREE);
 		}
 		
 		TableSchema childSchema = TableSchemaList.getByName(CustomStrings.RESULT_SHEET);
@@ -74,11 +88,15 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			checks.add(Check.DUPLICATED_TEST);
 		}
 		
+		if (!isAnalysisYearConstant(results)) {
+			checks.add(Check.NOT_CONSTANT_ANALYSIS_YEAR);
+		}
+		
 		// check children errors
 		if (row.hasChildrenError()) {
 			checks.add(Check.WRONG_RESULTS);
 		}
-		
+
 		TableRow summInfo = daoService.getById(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET), 
 				row.getNumCode(Relation.foreignKeyFromParent(CustomStrings.SUMMARIZED_INFO_SHEET)));
 
@@ -96,7 +114,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		//if (type.equals(CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE)) {
 
 			if (row.getCode(CustomStrings.STATUS_HERD_COL)
-					.equals(CustomStrings.CASE_INFO_STATUS_NOT_INFECTED) &&
+					.equals(CustomStrings.STATUS_HERD_NOT_INFECTED_CODE) &&
 				summInfo.getCode(CustomStrings.TARGET_GROUP_COL)
 					.equals(CustomStrings.EM_TARGET_GROUP)) {
 				checks.add(Check.EM_FOR_NOT_INFECTED);
@@ -104,6 +122,16 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		//}
 		
 		return checks;
+	}
+	
+	public boolean isAnalysisYearConstant(Collection<TableRow> results) {
+		
+		HashSet<String> set = new HashSet<>();
+		for (TableRow row : results) {
+			set.add(row.getCode(CustomStrings.ANALYSIS_Y_COL));
+		}
+		
+		return (set.size() == 1);
 	}
 	
 	public boolean isTestDuplicated(Collection<TableRow> results) {
@@ -189,8 +217,13 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			case INDEX_CASE_FOR_NEGATIVE:
 				text = TSEMessages.get("index.case.for.negative");
 				break;
+			case INDEX_CASE_FOR_INFECTED:
+			case NOT_INDEX_CASE_FOR_FREE:
+				text = TSEMessages.get("inconsistent.index.case.status.herd");
+				break;
 			case INDEX_CASE_FOR_FARMED_CWD:  // bypass
 			case EM_FOR_NOT_INFECTED:
+			case NOT_CONSTANT_ANALYSIS_YEAR:
 				text = super.getText(row);
 				//text = TSEMessages.get("index.case.for.farmed.cwd");
 				break;
@@ -235,6 +268,8 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			case DUPLICATED_TEST:
 			case CASE_ID_FOR_NEGATIVE:
 			case INDEX_CASE_FOR_NEGATIVE:
+			case INDEX_CASE_FOR_INFECTED:
+			case NOT_INDEX_CASE_FOR_FREE:
 			//case INDEX_CASE_FOR_FARMED_CWD:
 			// EM_FOR_NOT_INFECTED:
 				color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);

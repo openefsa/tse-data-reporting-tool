@@ -79,8 +79,8 @@ public class CustomStrings {
 	public static final String MOLECULAR_TEST_CODE = "AT13A";
 
 	public static final String STATUS_HERD_COL = "statusHerd";
-	public static final String CASE_INFO_STATUS_INFECTED = "N";
-	public static final String CASE_INFO_STATUS_NOT_INFECTED = "F";
+	public static final String STATUS_HERD_INFECTED_CODE = "N";
+	public static final String STATUS_HERD_NOT_INFECTED_CODE = "F";
 	public static final String SAMPLE_ID_COL = "sampId";
 	public static final String HERD_ID_COL = "herdId";
 	public static final String ANIMAL_ID_COL = "animalId";
@@ -89,6 +89,7 @@ public class CustomStrings {
 	public static final String SAMP_AN_ASSES_COL = "sampAnAsses";
 	public static final String INDEX_CASE_COL = "tseIndexCase";
 	
+	public static final String INDEX_CASE_YES = "Y";
 	public static final String INDEX_CASE_NO = "N";
 	
 	public static final String BIRTH_COUNTRY_COL = "birthCountry";
