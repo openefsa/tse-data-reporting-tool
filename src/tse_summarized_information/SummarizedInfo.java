@@ -77,11 +77,16 @@ public class SummarizedInfo extends TableRow {
 	public String getTypeBySpecies() {
 		
 		String species = getSpecies();
-
+		
 		// get the type whose species is the current one
 		String listId = XmlLoader.getByPicklistKey(CatalogLists.SPECIES_LIST)
 				.getElementByCode(species).getListId();
 		
+		// If we found composite filter, get only the first part
+		if (listId.contains("$")) {
+			listId = listId.split("\\$")[0];
+		}
+
 		return listId;
 	}
 }

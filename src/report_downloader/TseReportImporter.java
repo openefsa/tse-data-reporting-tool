@@ -129,6 +129,8 @@ public class TseReportImporter extends ReportImporter {
 				}
 				else {
 
+					row.put(CustomStrings.REPORT_ID_COL, report.getDatabaseId()); // Report is needed for results formulas (contextid)
+					
 					String contextId = this.reportService.getContextIdFrom(row);
 
 					LOGGER.info("Context id=" + contextId + " for " + row);
@@ -140,9 +142,18 @@ public class TseReportImporter extends ReportImporter {
 				}
 
 				if (summInfo == null) {
+					
 					String contextId = this.reportService.getContextIdFrom(row);
+					
+					String hashes = "";
+					for (SummarizedInfo si : summInfos) {
+						hashes += this.reportService.getContextIdFrom(si) + "\n";
+					}
+					
+					System.err.println("Cannot find contextId " + contextId);
+					
 					throw new ParseException("No aggregated data was found related to context id=" + contextId 
-							+ " for individual case=" + row + ". Available aggregated data are: " + summInfos, 0);
+							+ " for individual case=" + row + ". Available aggregated data are: " + summInfos + "with hashes" + hashes, 0);
 				}
 
 				// import the case
@@ -441,9 +452,13 @@ public class TseReportImporter extends ReportImporter {
 	@Override
 	public void importDatasetRows(List<TableRow> rows) throws FormulaException, ParseException {
 
+		LOGGER.info("Importing the summarized information");
+		
 		// first import the summarized information
 		importSummarizedInformation(report, rows);
 
+		LOGGER.info("Importing cases and results");
+		
 		// then import cases and results
 		importCasesAndResults(report, rows);
 	}

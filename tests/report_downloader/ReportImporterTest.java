@@ -130,6 +130,39 @@ public class ReportImporterTest {
 	}
 	
 	@Test
+	public void importFirstVersionOfReport2() throws DetailedSOAPException, XMLStreamException, 
+		IOException, FormulaException, NoAttachmentException, ParseException {
+		
+		String datasetId = "12648";
+		
+		getDataset.addDatasetFile(datasetId, new File("test-files" 
+				+ System.getProperty("file.separator") + "LT1704.00.xml"));
+		
+		DatasetList datasetVersions = new DatasetList();
+		
+		Dataset d = new Dataset();
+		
+		// note: these information come from the get datasets list
+		// in the normal process flow
+		d.setStatus(DcfDatasetStatus.VALID);
+		d.setId(datasetId);
+		d.setSenderId("LT1704.00");
+		
+		datasetVersions.add(d);
+		
+		// import the file
+		TseReportImporter imp = new TseReportImporter(reportService, daoService);
+		imp.setDatasetVersions(datasetVersions);
+		imp.importReport();
+		
+		// check contents of the file with what was imported
+		assertEquals(1, daoService.getAll(TableSchemaList.getByName(AppPaths.REPORT_SHEET)).size());
+		assertEquals(2, daoService.getAll(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET)).size());
+		assertEquals(3, daoService.getAll(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET)).size());
+		assertEquals(6, daoService.getAll(TableSchemaList.getByName(CustomStrings.RESULT_SHEET)).size());
+	}
+	
+	@Test
 	public void importFirstVersionWithOnlyOneRGT() throws DetailedSOAPException, 
 		XMLStreamException, IOException, FormulaException, NoAttachmentException, ParseException {
 		

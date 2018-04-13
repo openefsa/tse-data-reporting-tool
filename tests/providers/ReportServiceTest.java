@@ -56,6 +56,7 @@ import soap_test.GetAckMock;
 import soap_test.GetDatasetMock;
 import soap_test.GetDatasetsListMock;
 import soap_test.SendMessageMock;
+import table_relations.Relation;
 import table_skeleton.TableCell;
 import table_skeleton.TableRow;
 import table_skeleton.TableRowList;
@@ -63,6 +64,7 @@ import table_skeleton.TableVersion;
 import tse_config.CustomStrings;
 import tse_report.TseReport;
 import tse_summarized_information.SummarizedInfo;
+import xlsx_reader.TableHeaders.XlsxHeader;
 import xlsx_reader.TableSchemaList;
 
 public class ReportServiceTest {
@@ -99,6 +101,7 @@ public class ReportServiceTest {
 		report.setVersion(TableVersion.getFirstVersion());
 		report.setYear("2017");
 		report.setStatus(RCLDatasetStatus.DRAFT);
+		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "No");
 	}
 	
 	
@@ -117,7 +120,7 @@ public class ReportServiceTest {
 		SummarizedInfo info = RowCreatorMock.genRandSummInfo(report.getDatabaseId(), 
 				settings.getDatabaseId(), pref.getDatabaseId());
 		info.put(CustomStrings.SUMMARIZED_INFO_TYPE, CustomStrings.SUMMARIZED_INFO_CWD_TYPE);
-		info.put(CustomStrings.SEX_COL, CustomStrings.SEX_MALE);
+		info.put(CustomStrings.SEX_COL, new TableCell(CustomStrings.SEX_MALE, ""));
 		
 		daoService.add(info);
 		
@@ -485,6 +488,39 @@ public class ReportServiceTest {
 		ReportSendOperation op = reportService.getSendOperation(report, dataset);
 		assertEquals(OperationType.REPLACE, op.getOpType());
 	}
+	
+	@Test
+	public void refreshStatusFault() {
+		
+		DcfAck ack = new DcfAck(FileState.EXCEPTION, null);
+		getAck.setAck(ack);
+		
+		RCLDatasetStatus localStatus = RCLDatasetStatus.UPLOADED; // status which uses the ack
+		
+		report.setStatus(localStatus);
+
+		Message m = reportService.refreshStatus(report);
+		
+		assertEquals(RCLDatasetStatus.UPLOAD_FAILED, report.getRCLStatus());
+		assertEquals("ERR809", m.getCode());
+	}
+	
+	@Test
+	public void refreshStatusAccessDenied() {
+		
+		DcfAck ack = new DcfAck(FileState.ACCESS_DENIED, null);
+		getAck.setAck(ack);
+		
+		RCLDatasetStatus localStatus = RCLDatasetStatus.UPLOADED; // status which uses the ack
+		
+		report.setStatus(localStatus);
+
+		Message m = reportService.refreshStatus(report);
+		
+		assertEquals(RCLDatasetStatus.UPLOAD_FAILED, report.getRCLStatus());
+		assertEquals("ERR810", m.getCode());
+	}
+	
 	
 	@Test
 	public void refreshStatusDiscardedMessage() {
@@ -2094,9 +2130,24 @@ public class ReportServiceTest {
 	}
 	
 	@Test
-	public void computeContextIdForAnalyticalResultNoSexForBSE() 
+	public void computeContextIdForAnalyticalResultForBSEExceptionCountry() 
 			throws NoSuchAlgorithmException, ParseException, FormulaException {
+		
+		TableRow pref = RowCreatorMock.genRandPreferences();
+		int prefId = daoService.add(pref);
+		
+		TableRow settings = RowCreatorMock.genRandSettings();
+		int setId = daoService.add(settings);
+		
+		TableRow report = RowCreatorMock.genRandReport(prefId);
+		report.put(CustomStrings.REPORT_COUNTRY, "EE");
+		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "Yes");
+		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
+		
+		int repId = daoService.add(report);
+
 		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		Relation.injectParent(report, result);
 		
 		String tg = "TG001A";
 		String sampC = "CY";
@@ -2136,9 +2187,307 @@ public class ReportServiceTest {
 	}
 	
 	@Test
-	public void computeContextIdForAnalyticalResultForCWD() 
+	public void contextIdForAggregatedCWDForExceptionalCountry() throws NoSuchAlgorithmException, FormulaException {
+		
+		TableRow pref = RowCreatorMock.genRandPreferences();
+		int prefId = daoService.add(pref);
+		
+		TableRow settings = RowCreatorMock.genRandSettings();
+		int setId = daoService.add(settings);
+		
+		TableRow report = RowCreatorMock.genRandReport(prefId);
+		report.put(CustomStrings.REPORT_COUNTRY, "EE");
+		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "Yes");
+		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
+		
+		int repId = daoService.add(report);
+		
+		TableRow aggr = new TableRow(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+		Relation.injectParent(report, aggr);
+		
+		aggr.put(CustomStrings.SUMMARIZED_INFO_TYPE, CustomStrings.SUMMARIZED_INFO_CWD_TYPE);
+		
+		String tg = "TG006A";
+		String sampC = "CY";
+		String sampY = "2012";
+		String sampM = "2";
+		String source = "F01.A056N";
+		String prod = "F21.A07RV";
+		String animage = "F31.A16NF";
+		String sex = "F32.A0C8Z";
+		String psuId = "mypsuID";
+		
+		aggr.put(CustomStrings.TARGET_GROUP_COL, tg);
+		aggr.put("sampCountry", sampC);
+		aggr.put("sampY", sampY);
+		aggr.put("sampM", sampM);
+		aggr.put(CustomStrings.SOURCE_COL, new TableCell(source, ""));
+		aggr.put(CustomStrings.PROD_COL, prod);
+		aggr.put(CustomStrings.ANIMAGE_COL, animage);
+		aggr.put(CustomStrings.SEX_COL, new TableCell(sex, ""));
+		aggr.put(CustomStrings.PSU_ID_COL, psuId);
+		
+		int summId = daoService.add(aggr);
+		
+		String contextId = formulaService.solve(aggr, aggr.getSchema()
+				.getById(CustomStrings.CONTEXT_ID_COL), XlsxHeader.LABEL_FORMULA);
+		
+		String hashAlgorithm = "MD5";
+		String value = tg + sampC + sampY + sampM + source + prod + animage + sex + psuId;
+		
+		byte[] byteArray = value.getBytes();
+		byte[] digest;
+		digest = MessageDigest.getInstance(hashAlgorithm).digest(byteArray);
+		
+		String hash = DatatypeConverter.printHexBinary(digest);
+		
+		assertEquals(hash, contextId);
+	}
+	
+	@Test
+	public void contextIdForAggregatedCWDForNONExceptionalCountry() throws NoSuchAlgorithmException, FormulaException {
+		
+		TableRow pref = RowCreatorMock.genRandPreferences();
+		int prefId = daoService.add(pref);
+		
+		TableRow settings = RowCreatorMock.genRandSettings();
+		int setId = daoService.add(settings);
+		
+		TableRow report = RowCreatorMock.genRandReport(prefId);
+		report.put(CustomStrings.REPORT_COUNTRY, "CY");
+		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "No");
+		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
+		
+		int repId = daoService.add(report);
+		
+		TableRow aggr = new TableRow(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+		Relation.injectParent(report, aggr);
+		
+		aggr.put(CustomStrings.SUMMARIZED_INFO_TYPE, CustomStrings.SUMMARIZED_INFO_CWD_TYPE);
+		
+		String tg = "TG006A";
+		String sampC = "CY";
+		String sampY = "2012";
+		String sampM = "2";
+		String source = "F01.A056N";
+		String prod = "F21.A07RV";
+		String animage = "F31.A16NF";
+		String sex = "F32.A0C9B";
+		String psuId = "mypsuID";
+		
+		aggr.put(CustomStrings.TARGET_GROUP_COL, tg);
+		aggr.put("sampCountry", sampC);
+		aggr.put("sampY", sampY);
+		aggr.put("sampM", sampM);
+		aggr.put(CustomStrings.SOURCE_COL, new TableCell(source, ""));
+		aggr.put(CustomStrings.PROD_COL, prod);
+		aggr.put(CustomStrings.ANIMAGE_COL, animage);
+		aggr.put(CustomStrings.SEX_COL, new TableCell(sex, ""));
+		aggr.put(CustomStrings.PSU_ID_COL, psuId);
+		
+		int summId = daoService.add(aggr);
+		
+		String contextId = formulaService.solve(aggr, aggr.getSchema()
+				.getById(CustomStrings.CONTEXT_ID_COL), XlsxHeader.LABEL_FORMULA);
+		
+		String hashAlgorithm = "MD5";
+		String value = tg + sampC + sampY + sampM + source + prod + animage;
+		
+		byte[] byteArray = value.getBytes();
+		byte[] digest;
+		digest = MessageDigest.getInstance(hashAlgorithm).digest(byteArray);
+		
+		String hash = DatatypeConverter.printHexBinary(digest);
+		
+		assertEquals(hash, contextId);
+	}
+	
+	@Test
+	public void contextIdForAggregatedBSEForExceptionalCountry() throws NoSuchAlgorithmException, FormulaException {
+		
+		TableRow pref = RowCreatorMock.genRandPreferences();
+		int prefId = daoService.add(pref);
+		
+		TableRow settings = RowCreatorMock.genRandSettings();
+		int setId = daoService.add(settings);
+		
+		TableRow report = RowCreatorMock.genRandReport(prefId);
+		report.put(CustomStrings.REPORT_COUNTRY, "EE");
+		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "Yes");
+		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
+		
+		int repId = daoService.add(report);
+
+		TableRow aggr = new TableRow(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+		Relation.injectParent(report, aggr);
+		
+		aggr.put(CustomStrings.SUMMARIZED_INFO_TYPE, CustomStrings.SUMMARIZED_INFO_BSE_TYPE);
+		
+		String tg = "TG006A";
+		String sampC = "CY";
+		String sampY = "2012";
+		String sampM = "2";
+		String source = "F01.A056N";
+		String prod = "F21.A07RV";
+		String animage = "F31.A16NF";
+		String sex = "F32.A0C9B";
+		
+		aggr.put(CustomStrings.TARGET_GROUP_COL, new TableCell(tg, ""));
+		aggr.put("sampCountry", sampC);
+		aggr.put("sampY", sampY);
+		aggr.put("sampM", sampM);
+		aggr.put(CustomStrings.SOURCE_COL, new TableCell(source, ""));
+		aggr.put(CustomStrings.PROD_COL, new TableCell(prod, ""));
+		aggr.put(CustomStrings.ANIMAGE_COL, new TableCell(animage, ""));
+		aggr.put(CustomStrings.SEX_COL, new TableCell(sex, ""));
+		
+		int summId = daoService.add(aggr);
+		
+		String contextId = formulaService.solve(aggr, aggr.getSchema()
+				.getById(CustomStrings.CONTEXT_ID_COL), XlsxHeader.LABEL_FORMULA);
+		
+		String hashAlgorithm = "MD5";
+		String value = tg + sampC + sampY + sampM + source + prod + animage;
+		
+		byte[] byteArray = value.getBytes();
+		byte[] digest;
+		digest = MessageDigest.getInstance(hashAlgorithm).digest(byteArray);
+		
+		String hash = DatatypeConverter.printHexBinary(digest);
+		
+		assertEquals(hash, contextId);
+	}
+	
+	@Test
+	public void contextIdForAggregatedBSEForNONExceptionalCountry() throws NoSuchAlgorithmException, FormulaException {
+		
+		TableRow pref = RowCreatorMock.genRandPreferences();
+		int prefId = daoService.add(pref);
+		
+		TableRow settings = RowCreatorMock.genRandSettings();
+		int setId = daoService.add(settings);
+		
+		TableRow report = RowCreatorMock.genRandReport(prefId);
+		report.put(CustomStrings.REPORT_COUNTRY, "CY");
+		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "No");
+		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
+		
+		int repId = daoService.add(report);
+
+		TableRow aggr = new TableRow(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+		Relation.injectParent(report, aggr);
+		
+		aggr.put(CustomStrings.SUMMARIZED_INFO_TYPE, CustomStrings.SUMMARIZED_INFO_BSE_TYPE);
+		
+		String tg = "TG006A";
+		String sampC = "CY";
+		String sampY = "2012";
+		String sampM = "2";
+		String source = "F01.A056N";
+		String prod = "F21.A07RV";
+		String animage = "F31.A16NF";
+		String sex = "F32.A0C9B";
+		
+		aggr.put(CustomStrings.TARGET_GROUP_COL, new TableCell(tg, ""));
+		aggr.put("sampCountry", sampC);
+		aggr.put("sampY", sampY);
+		aggr.put("sampM", sampM);
+		aggr.put(CustomStrings.SOURCE_COL, new TableCell(source, ""));
+		aggr.put(CustomStrings.PROD_COL, new TableCell(prod, ""));
+		aggr.put(CustomStrings.ANIMAGE_COL, new TableCell(animage, ""));
+		aggr.put(CustomStrings.SEX_COL, new TableCell(sex, ""));
+		
+		int summId = daoService.add(aggr);
+		
+		String contextId = formulaService.solve(aggr, aggr.getSchema()
+				.getById(CustomStrings.CONTEXT_ID_COL), XlsxHeader.LABEL_FORMULA);
+		
+		String hashAlgorithm = "MD5";
+		String value = tg + sampC + sampY + sampM + source + prod + animage;
+		
+		byte[] byteArray = value.getBytes();
+		byte[] digest;
+		digest = MessageDigest.getInstance(hashAlgorithm).digest(byteArray);
+		
+		String hash = DatatypeConverter.printHexBinary(digest);
+		
+		assertEquals(hash, contextId);
+	}
+	
+	@Test
+	public void computeContextIdForAnalyticalResultForCWDNONExceptionalCountry() 
 			throws NoSuchAlgorithmException, ParseException, FormulaException {
+		
+		TableRow pref = RowCreatorMock.genRandPreferences();
+		int prefId = daoService.add(pref);
+		
+		TableRow report = RowCreatorMock.genRandReport(prefId);
+		report.put(CustomStrings.REPORT_COUNTRY, "CY");
+		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "No");
+		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
+		
+		int repId = daoService.add(report);
+		
 		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		Relation.injectParent(report, result);
+		
+		String tg = "TG006A";
+		String sampC = "CY";
+		String sampY = "2012";
+		String sampM = "2";
+		String source = "F01.A056N";
+		String prod = "F21.A07RV";
+		String animage = "F31.A16NJ";
+		String sex = "F32.A0C9B";
+		String psuId = "mypsuID";
+		
+		result.put(CustomStrings.TARGET_GROUP_COL, new TableCell(tg, ""));
+		result.put("sampCountry", sampC);
+		result.put("sampY", sampY);
+		result.put("sampM", sampM);
+		result.put(CustomStrings.SOURCE_COL, new TableCell(source, ""));
+		result.put(CustomStrings.PROD_COL, new TableCell(prod, ""));
+		result.put(CustomStrings.ANIMAGE_COL, new TableCell(animage, ""));
+		result.put(CustomStrings.SEX_COL, new TableCell(sex, ""));
+		result.put(CustomStrings.PSU_ID_COL, psuId);
+		
+		String sampMatCode = "A04MQ#";
+		
+		for (String facet: new String[] {source, prod, animage, sex})
+			sampMatCode = sampMatCode + "$" + facet;
+		
+		result.put(CustomStrings.SAMP_MAT_CODE_COL, sampMatCode);
+		result.put(CustomStrings.PROG_ID_COL, "tseTargetGroup=" + tg);
+		result.put(CustomStrings.SAMP_UNIT_IDS_COL, "PSUId=" + psuId);
+		
+		String hashAlgorithm = "MD5";
+		String value = tg + sampC + sampY + sampM + source + prod + animage;
+		
+		byte[] byteArray = value.getBytes();
+		byte[] digest;
+		digest = MessageDigest.getInstance(hashAlgorithm).digest(byteArray);
+		
+		String hash = DatatypeConverter.printHexBinary(digest);
+		
+		assertEquals(hash, reportService.getContextIdFrom(result));
+	}
+	
+	@Test
+	public void computeContextIdForAnalyticalResultForCWDExceptionalCountry() 
+			throws NoSuchAlgorithmException, ParseException, FormulaException {
+		
+		TableRow pref = RowCreatorMock.genRandPreferences();
+		int prefId = daoService.add(pref);
+		
+		TableRow report = RowCreatorMock.genRandReport(prefId);
+		report.put(CustomStrings.REPORT_COUNTRY, "EE");
+		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "Yes");
+		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
+		
+		int repId = daoService.add(report);
+		
+		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		Relation.injectParent(report, result);
 		
 		String tg = "TG001A";
 		String sampC = "CY";
@@ -2150,14 +2499,14 @@ public class ReportServiceTest {
 		String sex = "F32.A0C8Z";
 		String psuId = "mypsuID";
 		
-		result.put(CustomStrings.TARGET_GROUP_COL, tg);
+		result.put(CustomStrings.TARGET_GROUP_COL, new TableCell(tg, ""));
 		result.put("sampCountry", sampC);
 		result.put("sampY", sampY);
 		result.put("sampM", sampM);
-		result.put(CustomStrings.SOURCE_COL, source);
-		result.put(CustomStrings.PROD_COL, prod);
-		result.put(CustomStrings.ANIMAGE_COL, animage);
-		result.put(CustomStrings.SEX_COL, sex);
+		result.put(CustomStrings.SOURCE_COL, new TableCell(source, ""));
+		result.put(CustomStrings.PROD_COL, new TableCell(prod, ""));
+		result.put(CustomStrings.ANIMAGE_COL, new TableCell(animage, ""));
+		result.put(CustomStrings.SEX_COL, new TableCell(sex, ""));
 		result.put(CustomStrings.PSU_ID_COL, psuId);
 		
 		String sampMatCode = "A04MQ#";
@@ -2182,9 +2531,76 @@ public class ReportServiceTest {
 	}
 	
 	@Test
-	public void computeContextIdForAnalyticalResultForSCRAPIE() 
+	public void computeContextIdForAnalyticalResultForSCRAPIEExceptionCountry() 
 			throws NoSuchAlgorithmException, ParseException, FormulaException {
+		
+		TableRow pref = RowCreatorMock.genRandPreferences();
+		int prefId = daoService.add(pref);
+		
+		TableRow report = RowCreatorMock.genRandReport(prefId);
+		report.put(CustomStrings.REPORT_COUNTRY, "EE");
+		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "Yes");
+		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
+		
+		int repId = daoService.add(report);
+		
 		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		Relation.injectParent(report, result);
+		
+		String tg = "TG001A";
+		String sampC = "CY";
+		String sampY = "2012";
+		String sampM = "2";
+		String source = "F01.A057G";  // sheep
+		String prod = "F21.A07RV";
+		String animage = "F31.A16NJ";
+		String sex = "F32.A0C8Z";  // present but not considered in context
+		
+		result.put(CustomStrings.TARGET_GROUP_COL, tg);
+		result.put("sampCountry", sampC);
+		result.put("sampY", sampY);
+		result.put("sampM", sampM);
+		result.put("source", source);
+		result.put("prod", prod);
+		result.put("animage", animage);
+		result.put("sex", sex);
+		
+		String sampMatCode = "A04MQ#";
+		
+		for (String facet: new String[] {source, prod, animage, sex})
+			sampMatCode = sampMatCode + "$" + facet;
+		
+		result.put(CustomStrings.SAMP_MAT_CODE_COL, sampMatCode);
+		result.put(CustomStrings.PROG_ID_COL, "tseTargetGroup=" + tg);
+		
+		String hashAlgorithm = "MD5";
+		String value = tg + sampC + sampY + sampM + source + prod + animage;
+		
+		byte[] byteArray = value.getBytes();
+		byte[] digest;
+		digest = MessageDigest.getInstance(hashAlgorithm).digest(byteArray);
+		
+		String hash = DatatypeConverter.printHexBinary(digest);
+		
+		assertEquals(hash, reportService.getContextIdFrom(result));
+	}
+	
+	@Test
+	public void computeContextIdForAnalyticalResultForSCRAPIENONExceptionCountry() 
+			throws NoSuchAlgorithmException, ParseException, FormulaException {
+		
+		TableRow pref = RowCreatorMock.genRandPreferences();
+		int prefId = daoService.add(pref);
+		
+		TableRow report = RowCreatorMock.genRandReport(prefId);
+		report.put(CustomStrings.REPORT_COUNTRY, "CY");
+		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "No");
+		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
+		
+		int repId = daoService.add(report);
+		
+		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		Relation.injectParent(report, result);
 		
 		String tg = "TG001A";
 		String sampC = "CY";

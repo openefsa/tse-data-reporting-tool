@@ -178,6 +178,14 @@ public class TseReport extends Report {
 				getTableColumnValue(country, CatalogLists.COUNTRY_LIST));
 	}
 	
+	public void setExceptionCountry(String exp) {
+		this.put(CustomStrings.EXCEPTION_COUNTRY_COL, exp);
+	}
+	
+	public String getExceptionCountry() {
+		return this.getLabel(CustomStrings.EXCEPTION_COUNTRY_COL);
+	}
+	
 	public String getCountry() {
 		return this.getCode(CustomStrings.REPORT_COUNTRY);
 	}

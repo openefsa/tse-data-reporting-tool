@@ -27,6 +27,7 @@ public class CustomStrings {
 	public static final String SETTINGS_ORG_CODE = "orgCode";
 	
 	public static final String REPORT_COUNTRY = "country";
+	public static final String EXCEPTION_COUNTRY_COL = "isExceptionCountry";
 	
 	public static final String PREFERENCES_COUNTRY = "country";
 	

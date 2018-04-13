@@ -168,12 +168,13 @@ public class TseReportService extends ReportService {
 				summInfo.put(key, copy);
 			}
 		}
-		
+
 		// set the type (required for context id)
 		summInfo.setType(summInfo.getTypeBySpecies());
+
+		LOGGER.info("Result to summarized information" + result + " => " + summInfo);
 		
 		String contextId = this.getContextId(summInfo);
-
 		return contextId;
 	}
 	
@@ -450,6 +451,14 @@ public class TseReportService extends ReportService {
 		try {
 			Relation.injectGlobalParent(report, CustomStrings.PREFERENCES_SHEET, getDaoService());
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			String isExceptionCountry = formulaService.solve(report, report.getSchema()
+					.getById(CustomStrings.EXCEPTION_COUNTRY_COL), XlsxHeader.LABEL_FORMULA);
+			report.setExceptionCountry(isExceptionCountry);
+		} catch (FormulaException e) {
 			e.printStackTrace();
 		}
 		

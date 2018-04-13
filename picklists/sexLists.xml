@@ -23,7 +23,12 @@
 			<description>Mixed females and males</description>
 		</selection>
 	</selectionList>
-	<selectionList id="CWD">
+	<selectionList id="CWD$No">
+		<selection code="F32.A0C9B">
+			<description>Mixed females and males</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD$Yes">
 		<selection code="F32.A0C8Z">
 			<description>Female</description>
 		</selection>

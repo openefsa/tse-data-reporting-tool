@@ -34,7 +34,45 @@
 			<description>Goat (Capra aegagrus hircus L.$Capra hircus L.)</description>
 		</selection>
 	</selectionList>
-	<selectionList id="CWD">
+	<selectionList id="CWD$No">
+		<selection code="F01.A056M">
+			<description>Deer (Species unspecified)</description>
+		</selection>
+		<selection code="F01.A056N">
+			<description>European moose (Alces alces)</description>
+		</selection>
+		<selection code="F01.A056P">
+			<description>Fallow deer (Dama dama L.)</description>
+		</selection>
+		<selection code="F01.A16PB">
+			<description>Mule deer (Odocoileus hemionus)</description>
+		</selection>
+		<selection code="F01.A16NY">
+			<description>Musk ox (Ovibos moschatus)</description>
+		</selection>
+		<selection code="F01.A0CEM">
+			<description>Red Deer (Cervus elaphus)</description>
+		</selection>
+		<selection code="F01.A16PA">
+			<description>Reeve’s Muntjac (Muntiacus reevesi)</description>
+		</selection>
+		<selection code="F01.A056Q">
+			<description>Reindeer (Rangifer tarandus L.)</description>
+		</selection>
+		<selection code="F01.A056R">
+			<description>Roe deer (Capreolus capreolus L.)</description>
+		</selection>
+		<selection code="F01.A16HM">
+			<description>Sika deer (Cervus nippon)</description>
+		</selection>
+		<selection code="F01.A16PC">
+			<description>White-tailed deer (Odocoileus virginianus)</description>
+		</selection>
+		<selection code="F01.A16NZ">
+			<description>Wild forest reindeer (Rangifer tarandus fennicus)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD$Yes">
 		<selection code="F01.A056N">
 			<description>European moose (Alces alces)</description>
 		</selection>

@@ -49,6 +49,7 @@ public class RowCreatorMock {
 		report.setYear("2004");
 		report.setMonth("4");
 		report.setCountry("AT");
+		report.setExceptionCountry("No");
 		report.setId("12342");
 		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
 		report.setStatus(RCLDatasetStatus.DRAFT);
@@ -67,10 +68,10 @@ public class RowCreatorMock {
 		summInfo.put(CustomStrings.SETTINGS_ID_COL, String.valueOf(settingsId));
 		summInfo.put(CustomStrings.PREFERENCES_ID_COL, String.valueOf(prefId));
 
-		summInfo.put(CustomStrings.SOURCE_COL, "F01.A057A");
-		summInfo.put(CustomStrings.PROD_COL, "F21.A07RV");
-		summInfo.put(CustomStrings.ANIMAGE_COL, "F31.A16NK");
-		summInfo.put(CustomStrings.TARGET_GROUP_COL, "TG001A");
+		summInfo.put(CustomStrings.SOURCE_COL, new TableCell("F01.A057A", ""));
+		summInfo.put(CustomStrings.PROD_COL, new TableCell("F21.A07RV", ""));
+		summInfo.put(CustomStrings.ANIMAGE_COL, new TableCell("F31.A16NK", ""));
+		summInfo.put(CustomStrings.TARGET_GROUP_COL, new TableCell("TG001A", ""));
 		summInfo.put(CustomStrings.TOT_SAMPLE_NEGATIVE_COL, "1");
 		summInfo.put(CustomStrings.TOT_SAMPLE_POSITIVE_COL, "0");
 		summInfo.put(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL, "0");
