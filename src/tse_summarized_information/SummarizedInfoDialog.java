@@ -3,8 +3,8 @@ package tse_summarized_information;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -391,6 +391,53 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				updateUI();
 			}
 		};
+
+		SelectionListener checkListener = new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+
+				if (report == null)
+					return;
+
+				// validate and show the errors in the browser
+				TseReportValidator validator = new TseReportValidator(report, reportService, daoService);
+				try {
+					
+					getDialog().setCursor(getDialog().getDisplay()
+							.getSystemCursor(SWT.CURSOR_WAIT));
+					
+					// validate the report
+					Collection<ReportError> errors = validator.validate();
+					
+					getDialog().setCursor(getDialog().getDisplay()
+							.getSystemCursor(SWT.CURSOR_ARROW));
+					
+					// if no errors update report status
+					if (errors.isEmpty()) {
+						report.setStatus(RCLDatasetStatus.LOCALLY_VALIDATED);
+						report.update();
+						updateUI();
+						warnUser(TSEMessages.get("success.title"), TSEMessages.get("check.success"),
+								SWT.ICON_INFORMATION);
+					}
+					else { // otherwise show them to the user
+						validator.show(errors);
+						warnUser(TSEMessages.get("error.title"), 
+								TSEMessages.get("check.report.failed"));
+					}
+					
+				} catch (IOException e) {
+					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+					e.printStackTrace();
+					
+					LOGGER.error("Cannot validate the report=" + report.getSenderId(), e);
+					
+					warnUser(TSEMessages.get("error.title"), 
+							TSEMessages.get("check.report.error", 
+									Warnings.getStackTrace(e)));
+				}
+			}
+		};
 		
 		SelectionListener sendListener = new SelectionAdapter() {
 			@Override
@@ -558,54 +605,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				setParentFilter(newVersion);
 			}
 		};
-		
-		SelectionListener validateListener = new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
 				
-				if (report == null)
-					return;
-
-				// validate and show the errors in the browser
-				TseReportValidator validator = new TseReportValidator(report, reportService, daoService);
-				try {
-					
-					getDialog().setCursor(getDialog().getDisplay()
-							.getSystemCursor(SWT.CURSOR_WAIT));
-					
-					// validate the report
-					Collection<ReportError> errors = validator.validate();
-					
-					getDialog().setCursor(getDialog().getDisplay()
-							.getSystemCursor(SWT.CURSOR_ARROW));
-					
-					// if no errors update report status
-					if (errors.isEmpty()) {
-						report.setStatus(RCLDatasetStatus.LOCALLY_VALIDATED);
-						report.update();
-						updateUI();
-						warnUser(TSEMessages.get("success.title"), TSEMessages.get("check.success"),
-								SWT.ICON_INFORMATION);
-					}
-					else { // otherwise show them to the user
-						validator.show(errors);
-						warnUser(TSEMessages.get("error.title"), 
-								TSEMessages.get("check.report.failed"));
-					}
-					
-				} catch (IOException e) {
-					getDialog().setCursor(getDialog().getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
-					e.printStackTrace();
-					
-					LOGGER.error("Cannot validate the report=" + report.getSenderId(), e);
-					
-					warnUser(TSEMessages.get("error.title"), 
-							TSEMessages.get("check.report.error", 
-									Warnings.getStackTrace(e)));
-				}
-			}
-		};
-		
 		SelectionListener changeStatusListener = new SelectionAdapter() {
 		
 			@Override
@@ -702,7 +702,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			.addGroupToComposite("buttonsComp", "panel", TSEMessages.get("si.toolbar.title"), new GridLayout(8, false), null)
 			
 			.addButtonToComposite("editBtn", "buttonsComp", TSEMessages.get("si.toolbar.edit"), editListener)
-			.addButtonToComposite("validateBtn", "buttonsComp", TSEMessages.get("si.toolbar.check"), validateListener)
+			.addButtonToComposite("validateBtn", "buttonsComp", TSEMessages.get("si.toolbar.check"), checkListener)
 			.addButtonToComposite("sendBtn", "buttonsComp", TSEMessages.get("si.toolbar.send"), sendListener)
 			.addButtonToComposite("submitBtn", "buttonsComp", TSEMessages.get("si.toolbar.submit"), submitListener)
 			.addButtonToComposite("amendBtn", "buttonsComp", TSEMessages.get("si.toolbar.amend"), amendListener)

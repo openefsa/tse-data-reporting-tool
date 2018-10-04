@@ -3,8 +3,8 @@ package tse_analytical_result;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Menu;
@@ -53,8 +53,6 @@ public class ResultDialog extends TableDialogWithMenu {
 	
 	private TseReportService reportService;
 	private ITableDaoService daoService;
-	private IFormulaService formulaService;
-	
 	private Report report;
 	private SummarizedInfo summInfo;
 	private CaseReport caseInfo;
@@ -70,8 +68,6 @@ public class ResultDialog extends TableDialogWithMenu {
 		this.caseInfo = caseInfo;
 		this.reportService = reportService;
 		this.daoService = daoService;
-		this.formulaService = formulaService;
-		
 		// create the dialog
 		super.create();
 		
@@ -88,6 +84,7 @@ public class ResultDialog extends TableDialogWithMenu {
 			@Override
 			public void editStarted() {}
 			
+			@SuppressWarnings("unlikely-arg-type")
 			@Override
 			public void editEnded(TableRow row, TableColumn field, boolean changed) {
 				
@@ -123,6 +120,7 @@ public class ResultDialog extends TableDialogWithMenu {
 				}
 				
 				// reset the aim of the test if the test type is changed
+				//albydev here I should put the default value (empty obj)
 				if (changed && field.equals(CustomStrings.AN_METH_TYPE_COL)) {
 					
 					TableRow completeRow = getPanelBuilder().getTable().getCompleteRow(row.getDatabaseId());
@@ -233,7 +231,39 @@ public class ResultDialog extends TableDialogWithMenu {
 	}
 
 	@Override
-	public void processNewRow(TableRow row) {}
+	public void processNewRow(TableRow row) {
+		
+		TableRowList results = this.getRows();
+		
+		if (results.size() <= 1)
+			return;
+		
+		int max = Integer.MIN_VALUE;
+		
+		for (TableRow result: results) {
+			
+			if (result.getDatabaseId() == row.getDatabaseId())
+				continue;
+			
+			String seq = result.getLabel(CustomStrings.AN_PORT_SEQ_COL);
+			
+			int candidateMax;
+			
+			try {
+				candidateMax = Integer.valueOf(seq);
+			}
+			catch(NumberFormatException e) {
+				candidateMax = 0;
+			}
+			
+			if (candidateMax > max)
+				max = candidateMax;
+		}
+
+		row.put(CustomStrings.AN_PORT_SEQ_COL, max + 1);
+		daoService.update(row);
+		this.refresh(row);
+	}
 	
 	@Override
 	public RowValidatorLabelProvider getValidator() {

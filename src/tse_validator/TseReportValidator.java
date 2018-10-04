@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import app_config.AppPaths;
 import date_comparator.TseDate;
@@ -90,7 +90,7 @@ public class TseReportValidator extends ReportValidator {
 		}
 		
 		// check errors across different rows
-		errors.addAll(checkDuplicatedContext(reportRecords));
+		//errors.addAll(checkDuplicatedContext(reportRecords));
 		errors.addAll(checkDuplicatedSampleId(reportRecords));
 		errors.addAll(checkDuplicatedResId(reportRecords));
 		errors.addAll(checkNationalCaseId(reportRecords));
@@ -177,6 +177,8 @@ public class TseReportValidator extends ReportValidator {
 			if (reportService.getRowType(row) != RowType.SUMM)
 				continue;
 			String id = row.getLabel(CustomStrings.CONTEXT_ID_COL);
+			
+			System.out.println("Ciao "+id+", "+row.toString());
 			if (summInfos.containsKey(id)) {
 				TableRow conflict = summInfos.get(id);
 				String rowId1 = getStackTrace(row);

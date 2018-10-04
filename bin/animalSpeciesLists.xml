@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<animalSpeciesLists xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<selectionList id="BSE">
+		<selection code="F01.A057A">
+			<description>African buffalo (Syncerus caffer Sparrman)</description>
+		</selection>
+		<selection code="F01.A057B">
+			<description>American buffalo (Bison bison L.)</description>
+		</selection>
+		<selection code="F01.A057C">
+			<description>Buffalo (Bubalus spp. C.H. Smith)</description>
+		</selection>
+		<selection code="F01.A057D">
+			<description>Cape buffalo (Syncerus caffer caffer Sparrman)</description>
+		</selection>
+		<selection code="F01.A057E">
+			<description>Cattle (Bos taurus Bojanus)</description>
+		</selection>
+		<selection code="F01.A0CTA">
+			<description>European buffalo (Bison bonasus)</description>
+		</selection>
+		<selection code="F01.A0CTC">
+			<description>Hybrids of genera Bison, Bos, Bubalus and Poëphagus</description>
+		</selection>
+		<selection code="F01.A057H">
+			<description>Water buffalo (Bubalus bubalis)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIE">
+		<selection code="F01.A057G">
+			<description>Sheep (Ovis aries L.)</description>
+		</selection>
+		<selection code="F01.A057P">
+			<description>Goat (Capra aegagrus hircus L.$Capra hircus L.)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD$No">
+		<selection code="F01.A056M">
+			<description>Deer (Species unspecified)</description>
+		</selection>
+		<selection code="F01.A056N">
+			<description>European moose (Alces alces)</description>
+		</selection>
+		<selection code="F01.A056P">
+			<description>Fallow deer (Dama dama L.)</description>
+		</selection>
+		<selection code="F01.A16PB">
+			<description>Mule deer (Odocoileus hemionus)</description>
+		</selection>
+		<selection code="F01.A16NY">
+			<description>Musk ox (Ovibos moschatus)</description>
+		</selection>
+		<selection code="F01.A0CEM">
+			<description>Red Deer (Cervus elaphus)</description>
+		</selection>
+		<selection code="F01.A16PA">
+			<description>Reeve’s Muntjac (Muntiacus reevesi)</description>
+		</selection>
+		<selection code="F01.A056Q">
+			<description>Reindeer (Rangifer tarandus L.)</description>
+		</selection>
+		<selection code="F01.A056R">
+			<description>Roe deer (Capreolus capreolus L.)</description>
+		</selection>
+		<selection code="F01.A16HM">
+			<description>Sika deer (Cervus nippon)</description>
+		</selection>
+		<selection code="F01.A16PC">
+			<description>White-tailed deer (Odocoileus virginianus)</description>
+		</selection>
+		<selection code="F01.A16NZ">
+			<description>Wild forest reindeer (Rangifer tarandus fennicus)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD$Yes">
+		<selection code="F01.A056N">
+			<description>European moose (Alces alces)</description>
+		</selection>
+		<selection code="F01.A056P">
+			<description>Fallow deer (Dama dama L.)</description>
+		</selection>
+		<selection code="F01.A16PB">
+			<description>Mule deer (Odocoileus hemionus)</description>
+		</selection>
+		<selection code="F01.A16NY">
+			<description>Musk ox (Ovibos moschatus)</description>
+		</selection>
+		<selection code="F01.A0CEM">
+			<description>Red Deer (Cervus elaphus)</description>
+		</selection>
+		<selection code="F01.A16PA">
+			<description>Reeve’s Muntjac (Muntiacus reevesi)</description>
+		</selection>
+		<selection code="F01.A056Q">
+			<description>Reindeer (Rangifer tarandus L.)</description>
+		</selection>
+		<selection code="F01.A056R">
+			<description>Roe deer (Capreolus capreolus L.)</description>
+		</selection>
+		<selection code="F01.A16HM">
+			<description>Sika deer (Cervus nippon)</description>
+		</selection>
+		<selection code="F01.A16PC">
+			<description>White-tailed deer (Odocoileus virginianus)</description>
+		</selection>
+		<selection code="F01.A16NZ">
+			<description>Wild forest reindeer (Rangifer tarandus fennicus)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="RGT">
+		<selection code="F01.A057G">
+			<description>Sheep (Ovis aries L.)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSEOS">
+		<selection code="F01.A16EB">
+			<description>Sciuridae (family)</description>
+		</selection>
+		<selection code="F01.A0CNM">
+			<description>Felis catus</description>
+		</selection>
+		<selection code="F01.A16CM">
+			<description>Acinonyx jubatus</description>
+		</selection>
+		<selection code="F01.A16CY">
+			<description>Vulpes spp.</description>
+		</selection>
+		<selection code="F01.A16DH">
+			<description>Panthera pardus</description>
+		</selection>
+		<selection code="F01.A16DJ">
+			<description>Panthera leo</description>
+		</selection>
+		<selection code="F01.A16DK">
+			<description>Lynx spp.</description>
+		</selection>
+		<selection code="F01.A0CNN">
+			<description>Neovison vison</description>
+		</selection>
+		<selection code="F01.A16EC">
+			<description>Panthera tigris</description>
+		</selection>
+		<selection code="F01.A16DS">
+			<description>Procyon lotor</description>
+		</selection>
+		<selection code="F01.A16BX">
+			<description>Bovidae (only part)</description>
+		</selection>
+		<selection code="F01.A16BY">
+			<description>Oryx spp.</description>
+		</selection>
+		<selection code="F01.A0CTL">
+			<description>Taurotragus oryx</description>
+		</selection>
+	</selectionList>
+</animalSpeciesLists>

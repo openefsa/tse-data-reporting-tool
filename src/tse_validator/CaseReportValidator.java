@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
@@ -48,18 +48,18 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		Collection<Check> checks = new ArrayList<>();
 		
 		String caseId = row.getCode(CustomStrings.NATIONAL_CASE_ID_COL);
-		String sampAnAsses = row.getCode(CustomStrings.SAMP_AN_ASSES_COL);
+		String sampEventAsses = row.getCode(CustomStrings.SAMP_EVENT_ASSES_COL);
 		String statusHerd = row.getCode(CustomStrings.STATUS_HERD_COL);
 		
 		// case id cannot be specified
-		if (!caseId.isEmpty() && sampAnAsses.equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE)) {
+		if (!caseId.isEmpty() && sampEventAsses.equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE)) {
 			checks.add(Check.CASE_ID_FOR_NEGATIVE);
 		}
 		
 		String indexCase = row.getCode(CustomStrings.INDEX_CASE_COL);
 		
 		// index case on negative sample
-		if (!indexCase.isEmpty() && sampAnAsses.equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE)) {
+		if (!indexCase.isEmpty() && sampEventAsses.equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE)) {
 			checks.add(Check.INDEX_CASE_FOR_NEGATIVE);
 		}
 		

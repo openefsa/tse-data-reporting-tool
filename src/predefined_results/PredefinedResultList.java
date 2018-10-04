@@ -3,8 +3,8 @@ package predefined_results;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import app_config.BooleanValue;
 
@@ -19,16 +19,16 @@ public class PredefinedResultList extends ArrayList<PredefinedResult> {
 	/**
 	 * Get a predefined result using the record type and the samp an asses fields
 	 * @param recordType
-	 * @param sampAnAsses
+	 * @param sampEventAsses
 	 * @return
 	 */
-	public PredefinedResult get(String recordType, String source, boolean confirmatoryTested, String sampAnAsses) {
+	public PredefinedResult get(String recordType, String source, boolean confirmatoryTested, String sampEventAsses) {
 		
 		for (PredefinedResult prh : this) {
 			
 			String thisRecordType = prh.get(PredefinedResultHeader.RECORD_TYPE);
 			String thisSource = prh.get(PredefinedResultHeader.SOURCE);
-			String thisSampAnAsses = prh.get(PredefinedResultHeader.SAMP_AN_ASSES);
+			String thisSampEventAsses = prh.get(PredefinedResultHeader.SAMP_EVENT_ASSES);
 			String thisConfTested = prh.get(PredefinedResultHeader.CONFIRMATORY_EXECUTED);
 			
 			boolean confCheck = (BooleanValue.isTrue(thisConfTested) && confirmatoryTested)
@@ -36,7 +36,7 @@ public class PredefinedResultList extends ArrayList<PredefinedResult> {
 
 			if (isFieldEqual(thisRecordType, recordType)
 					&& isFieldEqual(thisSource, source)
-					&& isFieldEqual(thisSampAnAsses, sampAnAsses)
+					&& isFieldEqual(thisSampEventAsses, sampEventAsses)
 					&& confCheck) {
 				return prh;
 			}

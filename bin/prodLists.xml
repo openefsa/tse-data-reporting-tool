@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<prodLists xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<selectionList id="BSE">
+		<selection code="F21.A07RV">
+			<description>Farmed</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIE">
+		<selection code="F21.A07RV">
+			<description>Farmed</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD">
+		<selection code="F21.A07RV">
+			<description>Farmed/Captive</description>
+		</selection>
+		<selection code="F21.A07RX">
+			<description>Semi-domesticated</description>
+		</selection>
+		<selection code="F21.A07RY">
+			<description>Wild</description>
+		</selection>
+	</selectionList>
+	<selectionList id="RGT">
+		<selection code="F21.A07RV">
+			<description>Farmed</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSEOS">
+		<selection code="F21.A07RV">
+			<description>Farmed/Captive</description>
+		</selection>
+		<selection code="F21.A07RX">
+			<description>Semi-domesticated</description>
+		</selection>
+		<selection code="F21.A07RY">
+			<description>Wild</description>
+		</selection>
+	</selectionList>
+</prodLists>

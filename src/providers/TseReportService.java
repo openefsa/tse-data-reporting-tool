@@ -3,12 +3,13 @@ package providers;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Stack;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import dataset.Dataset;
 import dataset.IDataset;
@@ -53,12 +54,14 @@ public class TseReportService extends ReportService {
 		this.formulaService = formulaService;
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	public String getContextId(SummarizedInfo summInfo) throws FormulaException {
 		
 		// we need all the fields to compute the context id, in order to
 		// solve formula dependencies
 		FormulaSolver solver = new FormulaSolver(summInfo, daoService);
 		ArrayList<Formula> formulas = solver.solveAll(XlsxHeader.LABEL_FORMULA.getHeaderName());
+		System.out.println(Arrays.asList(formulas));
 		
 		for (Formula f: formulas) {
 			if (f.getColumn().equals(CustomStrings.CONTEXT_ID_COL))
@@ -116,66 +119,24 @@ public class TseReportService extends ReportService {
 	}
 	
 	/**
-	 * Extract the context id from an analytical result
+	 * Extract the samp orig id from an analytical result
 	 * @param result
 	 * @return
 	 * @throws ParseException
 	 * @throws FormulaException
 	 */
-	public String getContextIdFrom(TableRow result) throws ParseException, FormulaException {
+	public String getSampOrigIdFrom(TableRow result) throws ParseException, FormulaException {
 		
 		// decompose param code
 		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer();
 
-		HashMap<String, TableCell> context1 = 
-				decomposer.decompose(CustomStrings.SAMP_MAT_CODE_COL, 
-						result.getCode(CustomStrings.SAMP_MAT_CODE_COL));
+		HashMap<String, TableCell> sampOrigId = 
+				decomposer.decompose(CustomStrings.SAMP_INFO_COL, 
+						result.getCode(CustomStrings.SAMP_INFO_COL));
 
-		HashMap<String, TableCell> context2 = 
-				decomposer.decompose(CustomStrings.PROG_INFO_COL, 
-						result.getCode(CustomStrings.PROG_INFO_COL));
+		LOGGER.info("Result sampOrigId" + sampOrigId);
 		
-		HashMap<String, TableCell> context3 = 
-				decomposer.decompose(CustomStrings.SAMP_UNIT_IDS_COL, 
-						result.getCode(CustomStrings.SAMP_UNIT_IDS_COL));
-		
-		// use a summarized information to use the excel formula
-		// directly for computing the context id
-		SummarizedInfo summInfo = new SummarizedInfo();
-		summInfo.copyValues(result);
-		
-		for (String key: context1.keySet()) {
-			
-			TableCell cell = context1.get(key);
-			if (cell != null) {
-				TableCell copy = new TableCell(cell.getCode(), cell.getLabel());
-				summInfo.put(key, copy);
-			}
-		}
-		
-		for (String key: context2.keySet()) {
-			TableCell cell = context2.get(key);
-			if (cell != null) {
-				TableCell copy = new TableCell(cell.getCode(), cell.getLabel());
-				summInfo.put(key, copy);
-			}
-		}
-		
-		for (String key: context3.keySet()) {
-			TableCell cell = context3.get(key);
-			if (cell != null) {
-				TableCell copy = new TableCell(cell.getCode(), cell.getLabel());
-				summInfo.put(key, copy);
-			}
-		}
-
-		// set the type (required for context id)
-		summInfo.setType(summInfo.getTypeBySpecies());
-
-		LOGGER.info("Result to summarized information" + result + " => " + summInfo);
-		
-		String contextId = this.getContextId(summInfo);
-		return contextId;
+		return sampOrigId.get(CustomStrings.SAMP_ORIG_ID_COL).getLabel();
 	}
 	
 	/**
@@ -529,7 +490,7 @@ public class TseReportService extends ReportService {
 				TableCell value = new TableCell();
 				value.setCode(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE);
 				value.setLabel(CustomStrings.DEFAULT_ASSESS_INC_CASE_LABEL);
-				resultRow.put(CustomStrings.SAMP_AN_ASSES_COL, value);
+				resultRow.put(CustomStrings.SAMP_EVENT_ASSES_COL, value);
 				
 				// default always obex
 				resultRow.put(CustomStrings.PART_COL, CustomStrings.OBEX_CODE);

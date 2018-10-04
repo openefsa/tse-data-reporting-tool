@@ -128,7 +128,7 @@ public class ReportValidatorTest {
 		// one declared, two detailed
 		si.put(CustomStrings.TOT_SAMPLE_POSITIVE_COL, "1");
 		
-		cr.put(CustomStrings.SAMP_AN_ASSES_COL, 
+		cr.put(CustomStrings.SAMP_EVENT_ASSES_COL, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
 		
 		// create a second positive case
@@ -152,7 +152,7 @@ public class ReportValidatorTest {
 		// one declared, two detailed
 		si.put(CustomStrings.TOT_SAMPLE_POSITIVE_COL, "1");
 		
-		cr.put(CustomStrings.SAMP_AN_ASSES_COL, 
+		cr.put(CustomStrings.SAMP_EVENT_ASSES_COL, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
 		
 		cr.put(CustomStrings.NATIONAL_CASE_ID_COL, "caseXdofndofj");
@@ -177,7 +177,7 @@ public class ReportValidatorTest {
 				new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
 		
 		si.put(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL, "1");
-		cr.put(CustomStrings.SAMP_AN_ASSES_COL, 
+		cr.put(CustomStrings.SAMP_EVENT_ASSES_COL, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
 		
 		// another inc report
@@ -199,7 +199,7 @@ public class ReportValidatorTest {
 				new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
 		
 		si.put(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL, "1");
-		cr.put(CustomStrings.SAMP_AN_ASSES_COL, 
+		cr.put(CustomStrings.SAMP_EVENT_ASSES_COL, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
 		
 		// another inc report
@@ -571,7 +571,7 @@ public class ReportValidatorTest {
 	@Test
 	public void indexCaseForNegativeSampleCheck() throws IOException {
 
-		cr.put(CustomStrings.SAMP_AN_ASSES_COL, 
+		cr.put(CustomStrings.SAMP_EVENT_ASSES_COL, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, ""));
 
 		cr.put(CustomStrings.INDEX_CASE_COL, 
@@ -586,7 +586,7 @@ public class ReportValidatorTest {
 	@Test
 	public void caseIdForNegativeSampleCheck() throws IOException {
 
-		cr.put(CustomStrings.SAMP_AN_ASSES_COL, 
+		cr.put(CustomStrings.SAMP_EVENT_ASSES_COL, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, ""));
 
 		cr.put(CustomStrings.NATIONAL_CASE_ID_COL, new TableCell("caseid", "caseid"));

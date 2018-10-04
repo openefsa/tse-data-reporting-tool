@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import amend_manager.ReportImporter;
 import dataset.Dataset;
@@ -131,28 +131,28 @@ public class TseReportImporter extends ReportImporter {
 
 					row.put(CustomStrings.REPORT_ID_COL, report.getDatabaseId()); // Report is needed for results formulas (contextid)
 					
-					String contextId = this.reportService.getContextIdFrom(row);
-
-					LOGGER.info("Context id=" + contextId + " for " + row);
+					String sampOrigId = this.reportService.getSampOrigIdFrom(row);
+					
+					LOGGER.info("Samp orig id=" + sampOrigId + " for " + row);
 
 					// get the summarized info related to the case/result
-					summInfo = getSummInfoByContextId(contextId);
+					summInfo = getSummInfoBySampOrigId(sampOrigId);
 					
 					LOGGER.info("Related summarized info with same contextId= " + summInfo);
 				}
 
 				if (summInfo == null) {
 					
-					String contextId = this.reportService.getContextIdFrom(row);
+					String sampOrigId = this.reportService.getSampOrigIdFrom(row);
 					
 					String hashes = "";
 					for (SummarizedInfo si : summInfos) {
-						hashes += this.reportService.getContextIdFrom(si) + "\n";
+						hashes += this.reportService.getSampOrigIdFrom(si) + "\n";
 					}
 					
-					System.err.println("Cannot find contextId " + contextId);
+					System.err.println("Cannot find sampOrigId " + sampOrigId);
 					
-					throw new ParseException("No aggregated data was found related to context id=" + contextId 
+					throw new ParseException("No aggregated data was found related to sampOrigId=" + sampOrigId 
 							+ " for individual case=" + row + ". Available aggregated data are: " + summInfos + "with hashes" + hashes, 0);
 				}
 
@@ -387,6 +387,10 @@ public class TseReportImporter extends ReportImporter {
 		HashMap<String, TableCell> rowValues = 
 				decomposer.decompose(CustomStrings.PARAM_CODE_COL, 
 						row.getCode(CustomStrings.PARAM_CODE_COL));
+		
+		rowValues.putAll(
+				decomposer.decompose(CustomStrings.SAMP_INFO_COL, 
+						row.getCode(CustomStrings.SAMP_INFO_COL)));
 
 		// save also the test aim with base term and test result
 		String paramBaseTerm = decomposer.getBaseTerm(
@@ -418,19 +422,20 @@ public class TseReportImporter extends ReportImporter {
 	}
 
 	/**
-	 * Given a prog id of an analytical result, get the summarized
-	 * information which is related to it
-	 * @param progId
+	 * Given a samp orig id of an analytical result, get the summarized
+	 * information which is related to it (i.e. with a value of sampId equal to
+	 * the sampOrigid)
+	 * @param sampOrigId
 	 * @return
 	 * @throws FormulaException 
 	 */
-	private SummarizedInfo getSummInfoByContextId(String resultContextId) throws FormulaException {
+	private SummarizedInfo getSummInfoBySampOrigId(String sampOrigId) throws FormulaException {
 
 		for (SummarizedInfo info : summInfos) {
 
-			String contextId = reportService.getContextId(info);
+			String sampId = info.getLabel(CustomStrings.SAMPLE_ID_COL);
 
-			if (contextId.equals(resultContextId)) {
+			if (sampId.equals(sampOrigId)) {
 				return info;
 			}
 		}

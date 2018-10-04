@@ -239,7 +239,7 @@ public class ReportImporterTest {
 		for (TableRow c: cases) {
 			
 			// skip negative samples
-			if (c.getCode(CustomStrings.SAMP_AN_ASSES_COL).equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE))
+			if (c.getCode(CustomStrings.SAMP_EVENT_ASSES_COL).equals(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE))
 				continue;
 			
 			String breed = c.getCode(CustomStrings.BREED_COL);

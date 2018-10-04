@@ -17,7 +17,6 @@ public class MainPanel {
 	private ITableDaoService daoService;
 	private IFormulaService formulaService;
 	
-	private MainMenu menu;
 	private SummarizedInfoDialog reportViewer;
 	
 	/**
@@ -79,7 +78,7 @@ public class MainPanel {
 
 		shell.setLayout(new GridLayout());
 		
-		this.menu = new MainMenu(this, shell, reportService, daoService, formulaService);
+		new MainMenu(this, shell, reportService, daoService, formulaService);
 		this.reportViewer = new SummarizedInfoDialog(shell, reportService, daoService, formulaService);
 	}
 }

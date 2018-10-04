@@ -70,7 +70,7 @@ public class PredefinedResultServiceTest {
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
 		
 		// C-BSE asses
-		cr.put(CustomStrings.SAMP_AN_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
+		cr.put(CustomStrings.SAMP_EVENT_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
 		
 		TableRowList results = resultService.createDefaultResults(report, si, cr);
 		
@@ -90,7 +90,7 @@ public class PredefinedResultServiceTest {
 		si.put(CustomStrings.SUMMARIZED_INFO_TYPE, new TableCell(CustomStrings.SUMMARIZED_INFO_BSE_TYPE, ""));
 		
 		// C-BSE asses
-		cr.put(CustomStrings.SAMP_AN_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
+		cr.put(CustomStrings.SAMP_EVENT_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_CBSE_CASE_CODE, ""));
 		
 		TableRowList results = resultService.createDefaultResults(report, si, cr);
 		
@@ -110,7 +110,7 @@ public class PredefinedResultServiceTest {
 		si.put(CustomStrings.SOURCE_COL, new TableCell(CustomStrings.SOURCE_SHEEP_CODE, ""));
 		
 		// inc asses
-		cr.put(CustomStrings.SAMP_AN_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
+		cr.put(CustomStrings.SAMP_EVENT_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
 		
 		TableRowList results = resultService.createDefaultResults(report, si, cr);
 		
@@ -130,7 +130,7 @@ public class PredefinedResultServiceTest {
 		si.put(CustomStrings.SOURCE_COL, new TableCell(CustomStrings.SOURCE_GOAT_CODE, ""));
 		
 		// inc asses
-		cr.put(CustomStrings.SAMP_AN_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
+		cr.put(CustomStrings.SAMP_EVENT_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, ""));
 		
 		TableRowList results = resultService.createDefaultResults(report, si, cr);
 		

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
@@ -39,17 +39,17 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 	}
 
 	private int getDistinctCaseIndex(Collection<TableRow> cases, 
-			String sampAnAssesType, boolean exclude) {
+			String sampEventAssesType, boolean exclude) {
 
 		HashSet<String> hash = new HashSet<>();
 
 		for (TableRow caseReport : cases) {
 
 			String caseId = caseReport.getCode(CustomStrings.NATIONAL_CASE_ID_COL);
-			String sampAnAsses = caseReport.getCode(CustomStrings.SAMP_AN_ASSES_COL);
+			String sampEventAsses = caseReport.getCode(CustomStrings.SAMP_EVENT_ASSES_COL);
 
-			if ((sampAnAsses.equals(sampAnAssesType) && !exclude) 
-					||(!sampAnAsses.equals(sampAnAssesType) && exclude))
+			if ((sampEventAsses.equals(sampEventAssesType) && !exclude) 
+					||(!sampEventAsses.equals(sampEventAssesType) && exclude))
 				hash.add(caseId);
 		}
 

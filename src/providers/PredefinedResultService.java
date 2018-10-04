@@ -2,8 +2,8 @@ package providers;
 
 import java.io.IOException;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import predefined_results.PredefinedResult;
 import predefined_results.PredefinedResultHeader;
@@ -177,11 +177,11 @@ public class PredefinedResultService {
 		// get the info to know which result should be created
 		String recordType = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
 		String source = summInfo.getCode(CustomStrings.SOURCE_COL);
-		String sampAnAsses = caseReport.getCode(CustomStrings.SAMP_AN_ASSES_COL);
+		String sampEventAsses = caseReport.getCode(CustomStrings.SAMP_EVENT_ASSES_COL);
 		boolean confirmatoryTested = isConfirmatoryTested(recordType);
 
 		// get the default value
-		PredefinedResult defaultResult = predResList.get(recordType, source, confirmatoryTested, sampAnAsses);
+		PredefinedResult defaultResult = predResList.get(recordType, source, confirmatoryTested, sampEventAsses);
 		
 		return defaultResult;
 	}

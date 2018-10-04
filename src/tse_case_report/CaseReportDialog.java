@@ -3,8 +3,8 @@ package tse_case_report;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -97,6 +97,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 			@Override
 			public void editStarted() {}
 			
+			@SuppressWarnings("unlikely-arg-type")
 			@Override
 			public void editEnded(TableRow row, TableColumn field, boolean changed) {
 				if (changed && field.equals(CustomStrings.STATUS_HERD_COL)) {

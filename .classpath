@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="config"/>
+	<classpathentry kind="src" path="tests"/>
+	<classpathentry kind="src" path="log4j-config"/>
+	<classpathentry kind="src" path="picklists"/>
+	<classpathentry kind="src" path="icons"/>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/PortableApps/EclipsePortable/App/eclipse/Data/workspace/UnusedJarFiles/org.eclipse.jface_3.7.0.I20110522-1430.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/DCF webservice framework"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/EFSA-RCL"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/email-generator-master"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/HttpManager GUI"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Java exception manager"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Progress bar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Window size save and restore"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/PortableApps/EclipsePortable/App/eclipse/Data/workspace/UnusedJarFiles/swt_x32_4.9.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

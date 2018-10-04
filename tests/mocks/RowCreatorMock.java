@@ -95,7 +95,7 @@ public class RowCreatorMock {
 		caseReport.put(CustomStrings.PREFERENCES_ID_COL, String.valueOf(prefId));
 
 		caseReport.put(CustomStrings.SAMPLE_ID_COL, "kjed9okj3e");
-		caseReport.put(CustomStrings.SAMP_AN_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, ""));
+		caseReport.put(CustomStrings.SAMP_EVENT_ASSES_COL, new TableCell(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, ""));
 		caseReport.put(CustomStrings.PART_COL, new TableCell(CustomStrings.BRAIN_CODE, ""));
 		
 		return caseReport;

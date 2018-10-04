@@ -4,8 +4,8 @@ import java.text.ParseException;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import formula.AttributeElement;
 import formula.FoodexElement;
@@ -33,6 +33,7 @@ public class TSEFormulaDecomposer extends FormulaDecomposer {
 		case CustomStrings.SAMP_UNIT_IDS_COL:
 		case CustomStrings.SAMP_EVENT_INFO_COL:
 		case CustomStrings.SAMP_MAT_INFO_COL:
+		case CustomStrings.SAMP_INFO_COL:
 			values = splitSimple(rowValue);
 			break;
 		case CustomStrings.PARAM_CODE_COL:
