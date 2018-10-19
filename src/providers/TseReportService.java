@@ -424,6 +424,7 @@ public class TseReportService extends ReportService {
 		}
 		
 		return report;
+		
 	}
 	
 	public void createDefaultRGTCase(Report report, TableRow summInfo) {
