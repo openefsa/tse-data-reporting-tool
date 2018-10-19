@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<yesNoLists>	
+	<selectionList id="ALL">>
+		<selection code="Y">
+			<description>Yes</description>
+		</selection>
+		<selection code="N">
+			<description>No</description>
+		</selection>
+	</selectionList>
+	<selectionList id="Y">>
+		<selection code="Y">
+			<description>Yes</description>
+		</selection>
+	</selectionList>
+</yesNoLists>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<targetGroupLists xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<selectionList id="BSE">
+		<selection code="TG001A">
+			<description>HS (healthy slaughtered at abattoir and home killed for human consumption)</description>
+		</selection>
+		<selection code="TG002A">
+			<description>FS (fallen stock)</description>
+		</selection>
+		<selection code="TG003A">
+			<description>EM (eradication measures)</description>
+		</selection>
+		<selection code="TG004A">
+			<description>AM (clinical signs at ante mortem)</description>
+		</selection>
+		<selection code="TG005A">
+			<description>ES (emergency slaughter)</description>
+		</selection>
+		<selection code="TG006A">
+			<description>SUS (clinical suspect animals)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIE">
+		<selection code="TG003A">
+			<description>EM (eradication measures)</description>
+		</selection>
+		<selection code="TG004A">
+			<description>AM (clinical signs at ante mortem)</description>
+		</selection>
+		<selection code="TG006A">
+			<description>SUS (clinical suspect animals)</description>
+		</selection>
+		<selection code="TG007A">
+			<description>SHC (slaughtered for human consumption at abattoir and home killed for human consumption)</description>
+		</selection>
+		<selection code="TG008A">
+			<description>NSHC (not slaughtered for human consumption)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD">
+		<selection code="TG006A">
+			<description>SUS (clinical suspect animals)</description>
+		</selection>
+		<selection code="TG009A">
+			<description>RK Road/predator killed</description>
+		</selection>
+		<selection code="TG010A">
+			<description>FC (Fallen/culled)</description>
+		</selection>
+		<selection code="TG011A">
+			<description>HSNHC (Hunted/slaughtered not fit for HC)</description>
+		</selection>
+		<selection code="TG012A">
+			<description>HSHC (Hunted/slaughtered fit for HC)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSEOS">
+		<selection code="TG001A">
+			<description>HS (healthy slaughtered at abattoir and home killed for human consumption)</description>
+		</selection>
+		<selection code="TG002A">
+			<description>FS (fallen stock)</description>
+		</selection>
+		<selection code="TG003A">
+			<description>EM (eradication measures)</description>
+		</selection>
+		<selection code="TG004A">
+			<description>AM (clinical signs at ante mortem)</description>
+		</selection>
+		<selection code="TG005A">
+			<description>ES (emergency slaughter)</description>
+		</selection>
+		<selection code="TG006A">
+			<description>SUS (clinical suspect animals)</description>
+		</selection>
+		<selection code="TG007A">
+			<description>SHC (slaughtered for human consumption at abattoir and home killed for human consumption)</description>
+		</selection>
+		<selection code="TG008A">
+			<description>NSHC (not slaughtered for human consumption)</description>
+		</selection>
+		<selection code="TG009A">
+			<description>RK Road/predator killed</description>
+		</selection>
+		<selection code="TG010A">
+			<description>FC (Fallen/culled)</description>
+		</selection>
+		<selection code="TG011A">
+			<description>HSNHC (Hunted/slaughtered not fit for HC)</description>
+		</selection>
+		<selection code="TG012A">
+			<description>HSHC (Hunted/slaughtered fit for HC)</description>
+		</selection>
+	</selectionList>
+</targetGroupLists>

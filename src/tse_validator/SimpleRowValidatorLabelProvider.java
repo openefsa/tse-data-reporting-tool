@@ -19,9 +19,11 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 		case OK:
 			text = TSEMessages.get("row.locally.validated");
 			break;
+		case CONDITIONAL_MISSING:
+			text = TSEMessages.get("row.additional.fields.missing");
+			break;
 		case MANDATORY_MISSING:
 			text = TSEMessages.get("row.mandatory.fields.missing");
-			break;
 		default:
 			break;
 		}
@@ -36,6 +38,9 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 		switch (row.getRowStatus()) {
 		case OK:
 			level = 0;
+			break;
+		case CONDITIONAL_MISSING:
+			level = 3;
 			break;
 		case MANDATORY_MISSING:
 			level = 5;
@@ -64,12 +69,16 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 		Color red = display.getSystemColor(SWT.COLOR_RED);
 	    Color green = display.getSystemColor(SWT.COLOR_DARK_GREEN);
 	    Color yellow = display.getSystemColor(SWT.COLOR_DARK_YELLOW);
+	    Color magenta = display.getSystemColor(SWT.COLOR_MAGENTA);
 	    
 	    Color rowColor = green;
 	    
 	    switch (row.getRowStatus()) {
 	    case OK:
 	    	rowColor = green;
+	    	break;
+	    case CONDITIONAL_MISSING:
+	    	rowColor = magenta;
 	    	break;
 	    case MANDATORY_MISSING:
 	    	rowColor = red;

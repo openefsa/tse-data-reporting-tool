@@ -115,10 +115,13 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			public void editEnded(TableRow row, TableColumn field, boolean changed) {
 				if (changed) {
 					switch(field.getId()) {
+					/*
+					 * Not used
 					case CustomStrings.TARGET_GROUP_COL:
 						row.remove(CustomStrings.AN_METH_TYPE_COL);
 						row.remove(CustomStrings.AN_METH_CODE_COL);
 						break;
+					*/
 					case CustomStrings.AN_METH_TYPE_COL:
 						row.remove(CustomStrings.AN_METH_CODE_COL);
 						break;

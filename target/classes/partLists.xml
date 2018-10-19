@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<partLists xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<selectionList id="BSE">
+		<selection code="F02.A06AL">
+			<description>Blood</description>
+		</selection>
+		<selection code="F02.A06AM">
+			<description>Brain</description>
+		</selection>
+		<selection code="F02.A16YL">
+			<description>Obex</description>
+		</selection>
+		<selection code="F02.A16ZA">
+			<description>Other head lymph node</description>
+		</selection>
+		<selection code="F02.A16YZ">
+			<description>Retropharyngeal lymph node</description>
+		</selection>
+		<selection code="F02.A16HJ">
+			<description>Tonsil</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIE">
+		<selection code="F02.A06AL">
+			<description>Blood</description>
+		</selection>
+		<selection code="F02.A06AM">
+			<description>Brain</description>
+		</selection>
+		<selection code="F02.A16YL">
+			<description>Obex</description>
+		</selection>
+		<selection code="F02.A16ZA">
+			<description>Other head lymph node</description>
+		</selection>
+		<selection code="F02.A16YZ">
+			<description>Retropharyngeal lymph node</description>
+		</selection>
+		<selection code="F02.A16HJ">
+			<description>Tonsil</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD">
+		<selection code="F02.A06AL">
+			<description>Blood</description>
+		</selection>
+		<selection code="F02.A06AM">
+			<description>Brain</description>
+		</selection>
+		<selection code="F02.A16YL">
+			<description>Obex</description>
+		</selection>
+		<selection code="F02.A16ZA">
+			<description>Other head lymph node</description>
+		</selection>
+		<selection code="F02.A16YZ">
+			<description>Retropharyngeal lymph node</description>
+		</selection>
+		<selection code="F02.A16HJ">
+			<description>Tonsil</description>
+		</selection>
+	</selectionList>
+	<selectionList id="RGT">
+		<selection code="F02.A06AL">
+			<description>Blood</description>
+		</selection>
+		<selection code="F02.A06AM">
+			<description>Brain</description>
+		</selection>
+		<selection code="F02.A16YL">
+			<description>Obex</description>
+		</selection>
+		<selection code="F02.A16ZA">
+			<description>Other head lymph node</description>
+		</selection>
+		<selection code="F02.A16YZ">
+			<description>Retropharyngeal lymph node</description>
+		</selection>
+		<selection code="F02.A16HJ">
+			<description>Tonsil</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSEOS">
+		<selection code="F02.A06AL">
+			<description>Blood</description>
+		</selection>
+		<selection code="F02.A06AM">
+			<description>Brain</description>
+		</selection>
+		<selection code="F02.A16YL">
+			<description>Obex</description>
+		</selection>
+		<selection code="F02.A16ZA">
+			<description>Other head lymph node</description>
+		</selection>
+		<selection code="F02.A16YZ">
+			<description>Retropharyngeal lymph node</description>
+		</selection>
+		<selection code="F02.A16HJ">
+			<description>Tonsil</description>
+		</selection>
+	</selectionList>
+</partLists>

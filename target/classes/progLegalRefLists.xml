@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<progLegalRefLists>
+	<selectionList id="BSE">
+		<selection code="N123A">
+			<description>Regulation (EC) No 999/2001</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIE">
+		<selection code="N123A">
+			<description>Regulation (EC) No 999/2001</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWD">
+		<selection code="N305A">
+			<description>Commission regulation (EU) 1972/2017</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSEOS">
+		<selection code="N123A">
+			<description>Regulation (EC) No 999/2001</description>
+		</selection>
+	</selectionList>
+</progLegalRefLists>

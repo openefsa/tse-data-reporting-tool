@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<resultsLists xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<selectionList id="BSEAT06A">
+		<selection code="RF-00004884-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004884-PAR$POS">
+			<description>Positive</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSEAT08A">
+		<selection code="RF-00004628-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004628-PAR$POS">
+			<description>Positive</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSEAT12A">
+		<selection code="RF-00004628-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004885-PAR$POS">
+			<description>C-Type</description>
+		</selection>
+		<selection code="RF-00004886-PAR$POS">
+			<description>H-Type</description>
+		</selection>
+		<selection code="RF-00004887-PAR$POS">
+			<description>L-Type</description>
+		</selection>
+		<selection code="RF-00004888-PAR$POS">
+			<description>Other BSE (Inconclusive)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIEAT06A">
+		<selection code="RF-00004889-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004889-PAR$POS">
+			<description>Positive</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIEAT08A">
+		<selection code="RF-00004628-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004628-PAR$POS">
+			<description>Positive (other than Atypical)</description>
+		</selection>
+		<selection code="RF-00004890-PAR$POS">
+			<description>Atypical</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIEAT12A">
+		<selection code="RF-00004628-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004890-PAR$POS">
+			<description>Atypical</description>
+		</selection>
+		<selection code="RF-00004891-PAR$POS">
+			<description>Classical</description>
+		</selection>
+		<selection code="RF-00004892-PAR$POS">
+			<description>BSE like</description>
+		</selection>
+		<selection code="RF-00004893-PAR$POS">
+			<description>CH1641 like</description>
+		</selection>
+		<selection code="RF-00004894-PAR$POS">
+			<description>Other Scrapie (Inconclusive)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="SCRAPIEAT13A">
+		<selection code="RF-00004890-PAR$POS">
+			<description>Dummy</description>
+		</selection>
+		<selection code="RF-00004892-PAR$POS">
+			<description>Dummy</description>
+		</selection>
+		<selection code="RF-00004893-PAR$POS">
+			<description>Dummy</description>
+		</selection>
+		<selection code="RF-00004891-PAR$POS">
+			<description>Dummy</description>
+		</selection>
+		<selection code="RF-00004894-PAR$POS">
+			<description>Dummy</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWDAT06A">
+		<selection code="RF-00004895-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004895-PAR$POS">
+			<description>Positive</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWDAT08A">
+		<selection code="RF-00004628-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004628-PAR$POS">
+			<description>Positive</description>
+		</selection>
+	</selectionList>
+	<selectionList id="CWDAT12A">
+		<selection code="RF-00004628-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004896-PAR$POS">
+			<description>CWD</description>
+		</selection>
+		<selection code="RF-00004897-PAR$POS">
+			<description>BSE like</description>
+		</selection>
+		<selection code="RF-00004898-PAR$POS">
+			<description>Other CWD (Inconclusive)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSEOSAT06A">
+		<selection code="RF-00004884-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004884-PAR$POS">
+			<description>Positive</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSEOSAT08A">
+		<selection code="RF-00004628-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004628-PAR$POS">
+			<description>Positive</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BSEOSAT12A">
+		<selection code="RF-00004628-PAR$NEG">
+			<description>Negative</description>
+		</selection>
+		<selection code="RF-00004885-PAR$POS">
+			<description>C-Type</description>
+		</selection>
+		<selection code="RF-00004886-PAR$POS">
+			<description>H-Type</description>
+		</selection>
+		<selection code="RF-00004887-PAR$POS">
+			<description>L-Type</description>
+		</selection>
+		<selection code="RF-00004888-PAR$POS">
+			<description>Other BSE (Inconclusive)</description>
+		</selection>
+	</selectionList>
+	<selectionList id="RGTAT13A">
+		<selection code="RF-00004629-PAR$POS">
+			<description>Dummy</description>
+		</selection>
+	</selectionList>
+</resultsLists>

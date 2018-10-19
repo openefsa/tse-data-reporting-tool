@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<monthsList>
+	<selectionList>
+		<selection code="1">
+			<description>January</description>
+		</selection>
+		<selection code="2">
+			<description>February</description>
+		</selection>
+		<selection code="3">
+			<description>March</description>
+		</selection>
+		<selection code="4">
+			<description>April</description>
+		</selection>
+		<selection code="5">
+			<description>May</description>
+		</selection>
+		<selection code="6">
+			<description>June</description>
+		</selection>
+		<selection code="7">
+			<description>July</description>
+		</selection>
+		<selection code="8">
+			<description>August</description>
+		</selection>
+		<selection code="9">
+			<description>September</description>
+		</selection>
+		<selection code="10">
+			<description>October</description>
+		</selection>
+		<selection code="11">
+			<description>November</description>
+		</selection>
+		<selection code="12">
+			<description>December</description>
+		</selection>
+	</selectionList>
+</monthsList>

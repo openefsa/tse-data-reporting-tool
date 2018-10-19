@@ -135,7 +135,7 @@ public class TseReportService extends ReportService {
 						result.getCode(CustomStrings.SAMP_INFO_COL));
 
 		LOGGER.info("Result sampOrigId" + sampOrigId);
-		
+
 		return sampOrigId.get(CustomStrings.SAMP_ORIG_ID_COL).getLabel();
 	}
 	

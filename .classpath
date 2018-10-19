@@ -11,15 +11,15 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/PortableApps/EclipsePortable/App/eclipse/Data/workspace/UnusedJarFiles/org.eclipse.jface_3.7.0.I20110522-1430.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/DCF webservice framework"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/EFSA-RCL"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/email-generator-master"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/HttpManager GUI"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Java exception manager"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Progress bar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Window size save and restore"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="D:/PortableApps/EclipsePortable/App/eclipse/Data/workspace/UnusedJarFiles/swt_x32_4.9.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/E-mail generator"/>
+	<classpathentry kind="lib" path="D:/PortableApps/eclipse/libs/swt_x32_4.9.jar"/>
+	<classpathentry kind="lib" path="D:/PortableApps/eclipse/libs/org.eclipse.jface_3.7.0.I20110522-1430.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

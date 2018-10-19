@@ -138,8 +138,8 @@ public class CustomStrings {
 	public static final String PARAM_CODE_BASE_TERM_COL = "paramCodeBaseTerm";
 	public static final String PARAM_CODE_COL = "paramCode";
 	public static final String SAMP_INFO_COL = "sampInfo";
-	public static final String SAMP_ORIG_ID_COL = "sampOrigId";
-	//public static final String SAMP_ORIG_ID_COL = "origSampId";
+	//public static final String SAMP_ORIG_ID_COL = "sampOrigId";
+	public static final String SAMP_ORIG_ID_COL = "origSampId";
 	public static final String AN_PORT_SEQ_COL = "anPortSeq";
 	public static final String SUMMARIZED_INFO_PARAM_TYPE = "P003A";
 	public static final String RESULT_PARAM_TYPE = "P001A";

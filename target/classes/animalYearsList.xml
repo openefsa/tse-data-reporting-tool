@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<animalYearsList>
+	<selectionList>
+		<selection code="1995">
+			<description>1995</description>
+		</selection>
+		<selection code="1996">
+			<description>1996</description>
+		</selection>
+		<selection code="1997">
+			<description>1997</description>
+		</selection>
+		<selection code="1998">
+			<description>1998</description>
+		</selection>
+		<selection code="1999">
+			<description>1999</description>
+		</selection>
+		<selection code="2000">
+			<description>2000</description>
+		</selection>
+		<selection code="2001">
+			<description>2001</description>
+		</selection>
+		<selection code="2002">
+			<description>2002</description>
+		</selection>
+		<selection code="2003">
+			<description>2003</description>
+		</selection>
+		<selection code="2004">
+			<description>2004</description>
+		</selection>
+		<selection code="2005">
+			<description>2005</description>
+		</selection>
+		<selection code="2006">
+			<description>2006</description>
+		</selection>
+		<selection code="2007">
+			<description>2007</description>
+		</selection>
+		<selection code="2008">
+			<description>2008</description>
+		</selection>
+		<selection code="2009">
+			<description>2009</description>
+		</selection>
+		<selection code="2010">
+			<description>2010</description>
+		</selection>
+		<selection code="2011">
+			<description>2011</description>
+		</selection>
+		<selection code="2012">
+			<description>2012</description>
+		</selection>
+		<selection code="2013">
+			<description>2013</description>
+		</selection>
+		<selection code="2014">
+			<description>2014</description>
+		</selection>
+		<selection code="2015">
+			<description>2015</description>
+		</selection>
+		<selection code="2016">
+			<description>2016</description>
+		</selection>
+		<selection code="2017">
+			<description>2017</description>
+		</selection>
+		<selection code="2018">
+			<description>2018</description>
+		</selection>
+		<selection code="2019">
+			<description>2019</description>
+		</selection>
+		<selection code="2020">
+			<description>2020</description>
+		</selection>
+		<selection code="2021">
+			<description>2021</description>
+		</selection>
+		<selection code="2022">
+			<description>2022</description>
+		</selection>
+		<selection code="2023">
+			<description>2023</description>
+		</selection>
+		<selection code="2024">
+			<description>2024</description>
+		</selection>
+		<selection code="2025">
+			<description>2025</description>
+		</selection>
+		<selection code="2026">
+			<description>2026</description>
+		</selection>
+		<selection code="2027">
+			<description>2027</description>
+		</selection>
+		<selection code="2028">
+			<description>2028</description>
+		</selection>
+		<selection code="2029">
+			<description>2029</description>
+		</selection>
+		<selection code="2030">
+			<description>2030</description>
+		</selection>
+		<selection code="2031">
+			<description>2031</description>
+		</selection>
+		<selection code="2032">
+			<description>2032</description>
+		</selection>
+		<selection code="2033">
+			<description>2033</description>
+		</selection>
+		<selection code="2034">
+			<description>2034</description>
+		</selection>
+		<selection code="2035">
+			<description>2035</description>
+		</selection>
+		<selection code="2036">
+			<description>2036</description>
+		</selection>
+		<selection code="2037">
+			<description>2037</description>
+		</selection>
+		<selection code="2038">
+			<description>2038</description>
+		</selection>
+		<selection code="2039">
+			<description>2039</description>
+		</selection>
+		<selection code="2040">
+			<description>2040</description>
+		</selection>
+		<selection code="2041">
+			<description>2041</description>
+		</selection>
+		<selection code="2042">
+			<description>2042</description>
+		</selection>
+		<selection code="2043">
+			<description>2043</description>
+		</selection>
+		<selection code="2044">
+			<description>2044</description>
+		</selection>
+		<selection code="2045">
+			<description>2045</description>
+		</selection>
+		<selection code="2046">
+			<description>2046</description>
+		</selection>
+		<selection code="2047">
+			<description>2047</description>
+		</selection>
+		<selection code="2048">
+			<description>2048</description>
+		</selection>
+		<selection code="2049">
+			<description>2049</description>
+		</selection>
+		<selection code="2050">
+			<description>2050</description>
+		</selection>
+		<selection code="2051">
+			<description>2051</description>
+		</selection>
+		<selection code="2052">
+			<description>2052</description>
+		</selection>
+		<selection code="2053">
+			<description>2053</description>
+		</selection>
+		<selection code="2054">
+			<description>2054</description>
+		</selection>
+		<selection code="2055">
+			<description>2055</description>
+		</selection>
+		<selection code="2056">
+			<description>2056</description>
+		</selection>
+		<selection code="2057">
+			<description>2057</description>
+		</selection>
+		<selection code="2058">
+			<description>2058</description>
+		</selection>
+		<selection code="2059">
+			<description>2059</description>
+		</selection>
+		<selection code="2060">
+			<description>2060</description>
+		</selection>
+		<selection code="2061">
+			<description>2061</description>
+		</selection>
+		<selection code="2062">
+			<description>2062</description>
+		</selection>
+		<selection code="2063">
+			<description>2063</description>
+		</selection>
+		<selection code="2064">
+			<description>2064</description>
+		</selection>
+		<selection code="2065">
+			<description>2065</description>
+		</selection>
+		<selection code="2066">
+			<description>2066</description>
+		</selection>
+		<selection code="2067">
+			<description>2067</description>
+		</selection>
+		<selection code="2068">
+			<description>2068</description>
+		</selection>
+		<selection code="2069">
+			<description>2069</description>
+		</selection>
+		<selection code="2070">
+			<description>2070</description>
+		</selection>
+		<selection code="2071">
+			<description>2071</description>
+		</selection>
+		<selection code="2072">
+			<description>2072</description>
+		</selection>
+		<selection code="2073">
+			<description>2073</description>
+		</selection>
+		<selection code="2074">
+			<description>2074</description>
+		</selection>
+		<selection code="2075">
+			<description>2075</description>
+		</selection>
+		<selection code="2076">
+			<description>2076</description>
+		</selection>
+		<selection code="2077">
+			<description>2077</description>
+		</selection>
+		<selection code="2078">
+			<description>2078</description>
+		</selection>
+		<selection code="2079">
+			<description>2079</description>
+		</selection>
+		<selection code="2080">
+			<description>2080</description>
+		</selection>
+		<selection code="2081">
+			<description>2081</description>
+		</selection>
+		<selection code="2082">
+			<description>2082</description>
+		</selection>
+		<selection code="2083">
+			<description>2083</description>
+		</selection>
+		<selection code="2084">
+			<description>2084</description>
+		</selection>
+		<selection code="2085">
+			<description>2085</description>
+		</selection>
+		<selection code="2086">
+			<description>2086</description>
+		</selection>
+		<selection code="2087">
+			<description>2087</description>
+		</selection>
+		<selection code="2088">
+			<description>2088</description>
+		</selection>
+		<selection code="2089">
+			<description>2089</description>
+		</selection>
+		<selection code="2090">
+			<description>2090</description>
+		</selection>
+		<selection code="2091">
+			<description>2091</description>
+		</selection>
+		<selection code="2092">
+			<description>2092</description>
+		</selection>
+		<selection code="2093">
+			<description>2093</description>
+		</selection>
+		<selection code="2094">
+			<description>2094</description>
+		</selection>
+		<selection code="2095">
+			<description>2095</description>
+		</selection>
+		<selection code="2096">
+			<description>2096</description>
+		</selection>
+		<selection code="2097">
+			<description>2097</description>
+		</selection>
+		<selection code="2098">
+			<description>2098</description>
+		</selection>
+		<selection code="2099">
+			<description>2099</description>
+		</selection>
+	</selectionList>
+</animalYearsList>
