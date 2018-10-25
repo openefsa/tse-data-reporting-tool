@@ -55,7 +55,7 @@ public abstract class OptionsDialog extends TableDialog {
 		
 		TableDao dao = new TableDao();
 		Collection<TableRow> objs = dao.getAll(schema);
-		
+
 		// if no option was set, add an empty row
 		// to the db
 		if (objs.isEmpty()) {

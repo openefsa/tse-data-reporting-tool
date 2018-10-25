@@ -44,7 +44,7 @@ public class ReportListDialog extends TableDialog {
 
 	@Override
 	public Collection<TableRow> loadInitialRows(TableSchema schema, TableRow parentTable) {
-		
+
 		TableDao dao = new TableDao();
 		Collection<TableRow> reports = dao.getAll(schema);
 		

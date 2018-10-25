@@ -68,7 +68,7 @@ public class ReportCreatorDialog extends TableDialog {
 		
 		Collection<TableRow> rows = new ArrayList<>();
 		TseReport row = new TseReport();
-		
+
 		// add preferences to the report
 		try {
 			Relation.injectGlobalParent(row, CustomStrings.PREFERENCES_SHEET);

@@ -49,7 +49,7 @@ public class RowCreatorMock {
 		report.setYear("2004");
 		report.setMonth("4");
 		report.setCountry("AT");
-		report.setExceptionCountry("No");
+		report.setCWDExtendedContext("No");
 		report.setId("12342");
 		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
 		report.setStatus(RCLDatasetStatus.DRAFT);

@@ -101,7 +101,7 @@ public class ReportServiceTest {
 		report.setVersion(TableVersion.getFirstVersion());
 		report.setYear("2017");
 		report.setStatus(RCLDatasetStatus.DRAFT);
-		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "No");
+		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "No");
 	}
 
 	@Test
@@ -2131,7 +2131,7 @@ public class ReportServiceTest {
 
 		TableRow report = RowCreatorMock.genRandReport(prefId);
 		report.put(CustomStrings.REPORT_COUNTRY, "EE");
-		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "Yes");
+		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "Yes");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
 		int repId = daoService.add(report);
@@ -2187,7 +2187,7 @@ public class ReportServiceTest {
 
 		TableRow report = RowCreatorMock.genRandReport(prefId);
 		report.put(CustomStrings.REPORT_COUNTRY, "EE");
-		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "Yes");
+		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "Yes");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
 		int repId = daoService.add(report);
@@ -2245,7 +2245,7 @@ public class ReportServiceTest {
 
 		TableRow report = RowCreatorMock.genRandReport(prefId);
 		report.put(CustomStrings.REPORT_COUNTRY, "CY");
-		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "No");
+		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "No");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
 		int repId = daoService.add(report);
@@ -2303,7 +2303,7 @@ public class ReportServiceTest {
 
 		TableRow report = RowCreatorMock.genRandReport(prefId);
 		report.put(CustomStrings.REPORT_COUNTRY, "EE");
-		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "Yes");
+		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "Yes");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
 		int repId = daoService.add(report);
@@ -2359,7 +2359,7 @@ public class ReportServiceTest {
 
 		TableRow report = RowCreatorMock.genRandReport(prefId);
 		report.put(CustomStrings.REPORT_COUNTRY, "CY");
-		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "No");
+		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "No");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
 		int repId = daoService.add(report);
@@ -2413,7 +2413,7 @@ public class ReportServiceTest {
 
 		TableRow report = RowCreatorMock.genRandReport(prefId);
 		report.put(CustomStrings.REPORT_COUNTRY, "CY");
-		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "No");
+		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "No");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
 		int repId = daoService.add(report);
@@ -2471,7 +2471,7 @@ public class ReportServiceTest {
 
 		TableRow report = RowCreatorMock.genRandReport(prefId);
 		report.put(CustomStrings.REPORT_COUNTRY, "EE");
-		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "Yes");
+		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "Yes");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
 		int repId = daoService.add(report);
@@ -2529,7 +2529,7 @@ public class ReportServiceTest {
 
 		TableRow report = RowCreatorMock.genRandReport(prefId);
 		report.put(CustomStrings.REPORT_COUNTRY, "EE");
-		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "Yes");
+		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "Yes");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
 		int repId = daoService.add(report);
@@ -2584,7 +2584,7 @@ public class ReportServiceTest {
 
 		TableRow report = RowCreatorMock.genRandReport(prefId);
 		report.put(CustomStrings.REPORT_COUNTRY, "CY");
-		report.put(CustomStrings.EXCEPTION_COUNTRY_COL, "No");
+		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "No");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
 		int repId = daoService.add(report);

@@ -42,7 +42,7 @@ import xml_catalog_reader.XmlLoader;
 
 /**
  * Download a report into the local database.
- * @author avonva
+ * @author avonva && shahaal
  *
  */
 public class TseReportDownloader extends ReportDownloaderDialog {

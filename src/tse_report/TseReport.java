@@ -25,7 +25,7 @@ import xlsx_reader.TableSchemaList;
 
 /**
  * A TSE report
- * @author avonva
+ * @author avonva && shahaal
  *
  */
 public class TseReport extends Report {
@@ -69,7 +69,7 @@ public class TseReport extends Report {
 		};
 
 		Collection<TableRow> records = getRecords(daoService, schemas);
-		
+
 		// remove random genotyping from the summarized information
 		List<TableRow> filteredRecords = records.stream().filter(new Predicate<TableRow>() {
 			@Override
@@ -178,12 +178,12 @@ public class TseReport extends Report {
 				getTableColumnValue(country, CatalogLists.COUNTRY_LIST));
 	}
 	
-	public void setExceptionCountry(String exp) {
-		this.put(CustomStrings.EXCEPTION_COUNTRY_COL, exp);
+	public void setCWDExtendedContext(String exp) {
+		this.put(CustomStrings.CWD_EXTENDED_CONTEXT, exp);
 	}
 	
-	public String getExceptionCountry() {
-		return this.getLabel(CustomStrings.EXCEPTION_COUNTRY_COL);
+	public String getCWDExtendedContext() {
+		return this.getLabel(CustomStrings.CWD_EXTENDED_CONTEXT);
 	}
 	
 	public String getCountry() {

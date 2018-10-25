@@ -41,7 +41,7 @@ import xml_catalog_reader.Selection;
 
 /**
  * Class which allows adding and editing a summarized information report.
- * @author avonva
+ * @author avonva && shahaal
  *
  */
 public class ResultDialog extends TableDialogWithMenu {

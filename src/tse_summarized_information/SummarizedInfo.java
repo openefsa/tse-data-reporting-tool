@@ -61,7 +61,7 @@ public class SummarizedInfo extends TableRow {
 	
 	public String computeContextId() throws FormulaException {
 		FormulaSolver solver = new FormulaSolver(this);
-		System.out.println("Ciao "+this.getSchema().getSheetName()+", "+this.getSchema().toString());
+		
 		return solver.solve(this.getSchema().getById(CustomStrings.CONTEXT_ID_COL), 
 				XlsxHeader.LABEL_FORMULA.getHeaderName()).getSolvedFormula();
 	}

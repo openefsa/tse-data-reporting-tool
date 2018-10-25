@@ -19,6 +19,12 @@ import tse_case_report.CaseReport;
 import tse_config.CustomStrings;
 import tse_summarized_information.SummarizedInfo;
 
+/**
+ * Class which models a generic result for the specific case
+ * 
+ * @author avonva && shahaal
+ *
+ */
 public class PredefinedResultService {
 
 	private static final Logger LOGGER = LogManager.getLogger(PredefinedResultService.class);

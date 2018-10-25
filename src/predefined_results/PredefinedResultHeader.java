@@ -40,7 +40,7 @@ public enum PredefinedResultHeader {
 	 * @return
 	 */
 	public static PredefinedResultHeader fromString(String text) {
-		
+
 		for (PredefinedResultHeader b : PredefinedResultHeader.values()) {
 			if (b.headerName.equalsIgnoreCase(text)) {
 				return b;
