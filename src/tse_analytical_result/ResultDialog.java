@@ -120,7 +120,7 @@ public class ResultDialog extends TableDialogWithMenu {
 				}
 				
 				// reset the aim of the test if the test type is changed
-				//albydev here I should put the default value (empty obj)
+				//shahaal here I should put the default value (empty obj)
 				if (changed && field.equals(CustomStrings.AN_METH_TYPE_COL)) {
 					
 					TableRow completeRow = getPanelBuilder().getTable().getCompleteRow(row.getDatabaseId());

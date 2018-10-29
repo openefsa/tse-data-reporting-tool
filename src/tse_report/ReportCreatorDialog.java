@@ -65,7 +65,6 @@ public class ReportCreatorDialog extends TableDialog {
 
 	@Override
 	public Collection<TableRow> loadInitialRows(TableSchema schema, TableRow parentTable) {
-		
 		Collection<TableRow> rows = new ArrayList<>();
 		TseReport row = new TseReport();
 
