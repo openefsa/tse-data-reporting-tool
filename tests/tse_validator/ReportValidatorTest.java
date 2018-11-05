@@ -66,7 +66,8 @@ public class ReportValidatorTest {
 		this.formulaService = new FormulaService(daoService);
 		
 		this.reportService = new TseReportService(getAck, getDatasetsList, sendMessage, getDataset,
-				daoService, formulaService);
+				daoService,
+				formulaService);
 		
 		pref = RowCreatorMock.genRandPreferences();
 		int prefId = daoService.add(pref);
