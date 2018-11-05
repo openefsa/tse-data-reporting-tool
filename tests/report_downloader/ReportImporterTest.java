@@ -99,7 +99,7 @@ public class ReportImporterTest {
 		TableRow report = daoService.getAll(TableSchemaList.getByName(AppPaths.REPORT_SHEET)).iterator().next();
 		TableRowList summInfos = daoService.getAll(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
 		TableRowList cases = daoService.getAll(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET));
-		TableRowList results = daoService.getAll(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		//TableRowList results = daoService.getAll(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
 		
 		int siIdForCheckingCase = -1;
 		for(TableRow si: summInfos) {
@@ -126,7 +126,17 @@ public class ReportImporterTest {
 				assertEquals("F02.A06AM", c.getCode(CustomStrings.PART_COL));
 			}
 		}
+		
 		//TODO check other contents
+		/*for(TableRow r: results) {
+			
+			assertNotNull(r.getCode(CustomStrings.PART_COL));
+			if (r.getLabel(Relation.foreignKeyFromParent(CustomStrings.CASE_INFO_SHEET))
+					.equals(String.valueOf(siIdForCheckingCase))) {
+				
+				assertEquals("F02.A06AM", r.getCode(CustomStrings.PART_COL));
+			}
+		}*/
 	}
 	
 	@Test
@@ -280,10 +290,10 @@ public class ReportImporterTest {
 		assertEquals(4, daoService.getAll(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET)).size());
 
 		// get the objects
-		TableRow report = daoService.getAll(TableSchemaList.getByName(AppPaths.REPORT_SHEET)).iterator().next();
+		//TableRow report = daoService.getAll(TableSchemaList.getByName(AppPaths.REPORT_SHEET)).iterator().next();
 		TableRowList summInfos = daoService.getAll(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
 		TableRowList cases = daoService.getAll(TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET));
-		TableRowList results = daoService.getAll(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		//TableRowList results = daoService.getAll(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
 		
 		// psu id and sex must be set for CWD
 		for (TableRow si: summInfos) {

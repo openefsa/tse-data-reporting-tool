@@ -46,5 +46,8 @@
 		<selection code="VFRQ">
 			<description>VFRQ</description>
 		</selection>
+		<selection code="ZZZZ">
+			<description>ZZZZ</description>
+		</selection>
 	</selectionList>
 </alleleList>

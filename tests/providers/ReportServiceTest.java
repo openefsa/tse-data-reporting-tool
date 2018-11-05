@@ -1541,7 +1541,8 @@ public class ReportServiceTest {
 		int reportId = daoService.add(report);
 
 		SummarizedInfo summInfo = RowCreatorMock.genRandSummInfo(reportId, settingsId, prefId);
-		int summId = daoService.add(summInfo);
+		daoService.add(summInfo);
+		//int summId = daoService.add(summInfo);
 
 		/*
 		 * CaseReport caseSample = RowCreatorMock.genRandCase(reportId, summId,
@@ -2127,14 +2128,14 @@ public class ReportServiceTest {
 		int prefId = daoService.add(pref);
 
 		TableRow settings = RowCreatorMock.genRandSettings();
-		int setId = daoService.add(settings);
+		daoService.add(settings);
 
 		TableRow report = RowCreatorMock.genRandReport(prefId);
 		report.put(CustomStrings.REPORT_COUNTRY, "EE");
 		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "Yes");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
-		int repId = daoService.add(report);
+		daoService.add(report);
 
 		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
 		Relation.injectParent(report, result);
@@ -2183,14 +2184,14 @@ public class ReportServiceTest {
 		int prefId = daoService.add(pref);
 
 		TableRow settings = RowCreatorMock.genRandSettings();
-		int setId = daoService.add(settings);
+		daoService.add(settings);
 
 		TableRow report = RowCreatorMock.genRandReport(prefId);
 		report.put(CustomStrings.REPORT_COUNTRY, "EE");
 		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "Yes");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
-		int repId = daoService.add(report);
+		daoService.add(report);
 
 		TableRow aggr = new TableRow(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
 		Relation.injectParent(report, aggr);
@@ -2217,7 +2218,7 @@ public class ReportServiceTest {
 		aggr.put(CustomStrings.SEX_COL, new TableCell(sex, ""));
 		aggr.put(CustomStrings.PSU_ID_COL, psuId);
 
-		int summId = daoService.add(aggr);
+		daoService.add(aggr);
 
 		String contextId = formulaService.solve(aggr, aggr.getSchema().getById(CustomStrings.CONTEXT_ID_COL),
 				XlsxHeader.LABEL_FORMULA);
@@ -2238,17 +2239,20 @@ public class ReportServiceTest {
 	public void contextIdForAggregatedCWDForNONExceptionalCountry() throws NoSuchAlgorithmException, FormulaException {
 
 		TableRow pref = RowCreatorMock.genRandPreferences();
+		//preferencesId
 		int prefId = daoService.add(pref);
 
 		TableRow settings = RowCreatorMock.genRandSettings();
-		int setId = daoService.add(settings);
+		//settingsId
+		daoService.add(settings);
 
 		TableRow report = RowCreatorMock.genRandReport(prefId);
 		report.put(CustomStrings.REPORT_COUNTRY, "CY");
 		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "No");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
-		int repId = daoService.add(report);
+		//repId
+		daoService.add(report);
 
 		TableRow aggr = new TableRow(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
 		Relation.injectParent(report, aggr);
@@ -2275,7 +2279,8 @@ public class ReportServiceTest {
 		aggr.put(CustomStrings.SEX_COL, new TableCell(sex, ""));
 		aggr.put(CustomStrings.PSU_ID_COL, psuId);
 
-		int summId = daoService.add(aggr);
+		//summId
+		daoService.add(aggr);
 
 		String contextId = formulaService.solve(aggr, aggr.getSchema().getById(CustomStrings.CONTEXT_ID_COL),
 				XlsxHeader.LABEL_FORMULA);
@@ -2299,14 +2304,14 @@ public class ReportServiceTest {
 		int prefId = daoService.add(pref);
 
 		TableRow settings = RowCreatorMock.genRandSettings();
-		int setId = daoService.add(settings);
+		daoService.add(settings);
 
 		TableRow report = RowCreatorMock.genRandReport(prefId);
 		report.put(CustomStrings.REPORT_COUNTRY, "EE");
 		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "Yes");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
-		int repId = daoService.add(report);
+		daoService.add(report);
 
 		TableRow aggr = new TableRow(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
 		Relation.injectParent(report, aggr);
@@ -2331,7 +2336,7 @@ public class ReportServiceTest {
 		aggr.put(CustomStrings.ANIMAGE_COL, new TableCell(animage, ""));
 		aggr.put(CustomStrings.SEX_COL, new TableCell(sex, ""));
 
-		int summId = daoService.add(aggr);
+		daoService.add(aggr);
 
 		String contextId = formulaService.solve(aggr, aggr.getSchema().getById(CustomStrings.CONTEXT_ID_COL),
 				XlsxHeader.LABEL_FORMULA);
@@ -2355,14 +2360,14 @@ public class ReportServiceTest {
 		int prefId = daoService.add(pref);
 
 		TableRow settings = RowCreatorMock.genRandSettings();
-		int setId = daoService.add(settings);
+		daoService.add(settings);
 
 		TableRow report = RowCreatorMock.genRandReport(prefId);
 		report.put(CustomStrings.REPORT_COUNTRY, "CY");
 		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "No");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
-		int repId = daoService.add(report);
+		daoService.add(report);
 
 		TableRow aggr = new TableRow(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
 		Relation.injectParent(report, aggr);
@@ -2387,7 +2392,7 @@ public class ReportServiceTest {
 		aggr.put(CustomStrings.ANIMAGE_COL, new TableCell(animage, ""));
 		aggr.put(CustomStrings.SEX_COL, new TableCell(sex, ""));
 
-		int summId = daoService.add(aggr);
+		daoService.add(aggr);
 
 		String contextId = formulaService.solve(aggr, aggr.getSchema().getById(CustomStrings.CONTEXT_ID_COL),
 				XlsxHeader.LABEL_FORMULA);
@@ -2416,7 +2421,7 @@ public class ReportServiceTest {
 		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "No");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
-		int repId = daoService.add(report);
+		daoService.add(report);
 
 		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
 		Relation.injectParent(report, result);
@@ -2474,7 +2479,7 @@ public class ReportServiceTest {
 		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "Yes");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
-		int repId = daoService.add(report);
+		daoService.add(report);
 
 		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
 		Relation.injectParent(report, result);
@@ -2532,7 +2537,7 @@ public class ReportServiceTest {
 		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "Yes");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
-		int repId = daoService.add(report);
+		daoService.add(report);
 
 		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
 		Relation.injectParent(report, result);
@@ -2587,7 +2592,7 @@ public class ReportServiceTest {
 		report.put(CustomStrings.CWD_EXTENDED_CONTEXT, "No");
 		report.put(AppPaths.REPORT_YEAR_COL, "2012"); // Important to have the same year in report and in data!
 
-		int repId = daoService.add(report);
+		daoService.add(report);
 
 		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
 		Relation.injectParent(report, result);

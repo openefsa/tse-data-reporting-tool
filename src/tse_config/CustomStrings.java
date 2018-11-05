@@ -50,8 +50,8 @@ public class CustomStrings {
 	public static final String ANIMAGE_COL = "animage";
 	public static final String TARGET_GROUP_COL = "tseTargetGroup";
 	public static final String PROG_INFO_COL = "progInfo";
-	public static final String CONTEXT_ID_COL = "contextId";
-	//public static final String CONTEXT_ID_COL = "origSampId";
+	//public static final String CONTEXT_ID_COL = "contextId";
+	public static final String CONTEXT_ID_COL = "origSampId";
 	public static final String SAMP_MAT_CODE_COL = "sampMatCode";
 	public static final String SEX_COL = "sex";
 	public static final String PSU_ID_COL = "PSUId";
@@ -139,7 +139,7 @@ public class CustomStrings {
 	public static final String PARAM_CODE_COL = "paramCode";
 	public static final String SAMP_INFO_COL = "sampInfo";
 	//public static final String SAMP_ORIG_ID_COL = "sampOrigId";
-	public static final String SAMP_ORIG_ID_COL = "origSampId";
+	public static final String ORIG_SAMP_ID_COL = "origSampId";
 	public static final String AN_PORT_SEQ_COL = "anPortSeq";
 	public static final String SUMMARIZED_INFO_PARAM_TYPE = "P003A";
 	public static final String RESULT_PARAM_TYPE = "P001A";

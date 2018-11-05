@@ -71,7 +71,7 @@ public class TseReportService extends ReportService {
 		System.out.println(Arrays.asList(formulas));
 
 		for (Formula f : formulas) {
-			if (f.getColumn().equals(CustomStrings.CONTEXT_ID_COL))
+			if (f.getColumn().getId().equals(CustomStrings.ORIG_SAMP_ID_COL))
 				return f.getSolvedFormula();
 		}
 
@@ -142,7 +142,7 @@ public class TseReportService extends ReportService {
 
 		LOGGER.info("Result sampOrigId" + sampOrigId);
 
-		return sampOrigId.get(CustomStrings.SAMP_ORIG_ID_COL).getLabel();
+		return sampOrigId.get(CustomStrings.ORIG_SAMP_ID_COL).getLabel();
 	}
 
 	/**
