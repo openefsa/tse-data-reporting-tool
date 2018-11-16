@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b09f6978-08b4-4694-ab44-c9d6fe74c5ff" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/.classpath" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/i18n_messages/tse_messages_en.properties" beforeDir="false" afterPath="$PROJECT_DIR$/bin/i18n_messages/tse_messages_en.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/tablesSchema.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/config/tablesSchema.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/tse_messages_en.properties" beforeDir="false" afterPath="$PROJECT_DIR$/config/tse_messages_en.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picklists/tseList.xml" beforeDir="false" afterPath="$PROJECT_DIR$/picklists/tseList.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/i18n_messages/TSEMessages.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/i18n_messages/TSEMessages.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tse_config/DebugConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tse_config/DebugConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/date_comparator/TseDate.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/predefined_results/PredefinedResult.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/predefined_results/PredefinedResultHeader.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/predefined_results/PredefinedResultList.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/predefined_results/PredefinedResultsReader.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/session_manager/TSERestoreableWindowDao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tablesSchema.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tablesSchema.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tseList.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tseList.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_analytical_result/AnalyticalResult.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_analytical_result/ResultDialog$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_analytical_result/ResultDialog.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_case_report/CaseReport.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_case_report/CaseReportDialog$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_case_report/CaseReportDialog$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_case_report/CaseReportDialog$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_case_report/CaseReportDialog.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_components/TableDialogWithMenu$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_components/TableDialogWithMenu$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_components/TableDialogWithMenu$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_components/TableDialogWithMenu$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_components/TableDialogWithMenu$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_components/TableDialogWithMenu$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_components/TableDialogWithMenu$7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_components/TableDialogWithMenu$8.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_components/TableDialogWithMenu.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/tse_messages_en.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/tse_messages_en.properties" afterDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/target/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="-127628773">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="2" />
+          <entry key="project.open.time.19" value="1" />
+          <entry key="project.opened" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="java" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="JAVA" value="2" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/tse_main/StartUI.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1071">
+              <caret line="112" column="18" selection-start-line="112" selection-start-column="18" selection-end-line="112" selection-end-column="18" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="260" />
+    <option name="y" value="20" />
+    <option name="width" value="1400" />
+    <option name="height" value="1000" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="tse-tool" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TSE data reporting tool" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/pom.xml" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b09f6978-08b4-4694-ab44-c9d6fe74c5ff" name="Default Changelist" comment="" />
+      <created>1541689158456</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1541689158456</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="260" y="20" width="1400" height="1000" extended-state="0" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25373134" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Designer" order="2" />
+      <window_info id="UI Designer" order="3" />
+      <window_info id="Favorites" order="4" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Messages" order="10" visible="true" weight="0.3298731" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Palette&#9;" order="4" />
+      <window_info anchor="right" id="Maven Projects" order="5" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/tests/email/EmailTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="52" selection-start-line="15" selection-start-column="52" selection-end-line="15" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tse_main/StartUI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1071">
+          <caret line="112" column="18" selection-start-line="112" selection-start-column="18" selection-end-line="112" selection-end-column="18" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>11</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

@@ -14,7 +14,7 @@
 			<description>random genotyping</description>
 		</selection>
 		<selection code="BSEOS">
-			<description>monitoring of BSE (other species)</description>
+			<description>monitoring of TSE (other species)</description>
 		</selection>
 	</selectionList>
 </tseLists>

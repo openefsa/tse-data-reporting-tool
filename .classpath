@@ -1,35 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**" kind="src" output="target/classes" path="config">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry including="**/*.java" kind="src" output="target/classes" path="picklists">
-		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry excluding="**" kind="src" output="target/classes" path="icons">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry excluding="**" kind="src" output="target/classes" path="log4j-config">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="tests"/>
-	<classpathentry excluding="config/|picklists/|icons/|log4j-config/|src/|tests/|bin/|bin/i18n_messages/|bin/Unused/|compat/|doc/|logs/|preferences/|target/|temp/|database/|database/log/|database/seg0/|database/tmp/" kind="src" path=""/>
+	<classpathentry kind="src" path="icons"/>
+	<classpathentry kind="src" path="config"/>
+	<classpathentry kind="src" path="log4j-config"/>
+	<classpathentry kind="src" path="picklists"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/EFSA-RCL"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/HttpManager GUI"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Java exception manager"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Progress bar"/>
@@ -37,11 +18,16 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/VersionManager"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Window size save and restore"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ZipManager"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/DCF webservice framework"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/email-generator"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.swt.win32.win32.x86_64_3.108.0.v20180904-1901.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_3.14.100.v20180828-0836.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_3.112.0.v20180906-1121.jar"/>
+	<classpathentry kind="lib" path="D:/PortableApps/eclipse/libs/swt_x32_4.9.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_3.14.100.v20180828-0836.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/EFSA-RCL"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

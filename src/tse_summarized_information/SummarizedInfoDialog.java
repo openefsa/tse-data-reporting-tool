@@ -67,7 +67,7 @@ import xml_catalog_reader.Selection;
 
 /**
  * Class which allows adding and editing a summarized information report.
- * @author avonva
+ * @author avonva && shahaal
  *
  */
 public class SummarizedInfoDialog extends TableDialogWithMenu {
@@ -552,12 +552,13 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 								DisplayAckResult log = displayAck.getDisplayAckResult();
 								
 								if (log != null) {
-									
+								    
 									for (Message m: log.getMessages())
 										m.open(getDialog());
 									
 									// open the ack in the browser to see it formatted
 									if (log.getDownloadedAck() != null) {
+									    
 										HtmlViewer viewer = new HtmlViewer();
 										viewer.open(log.getDownloadedAck());
 									}

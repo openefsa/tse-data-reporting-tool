@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 
 public class TSEMessages {
 	/* internal jar properties file
-	private static final String BUNDLE_NAME = "i18n_messages.tse_messages";
+	private static final String BUNDLE_NAME = "i18n_messages.tse_messages_en";
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH);
 

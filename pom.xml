@@ -95,12 +95,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
-			</plugin>
+			
 		</plugins>
 
 	</build>
@@ -194,6 +189,11 @@
 			<version>RELEASE</version>
 		</dependency>
 
+		<dependency>
+			<groupId>net.sf.joost</groupId>
+			<artifactId>joost</artifactId>
+			<version>0.9.1</version>
+		</dependency>
 	</dependencies>
 
 </project>
