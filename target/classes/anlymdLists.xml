@@ -183,6 +183,9 @@
 		<selection code="F621A">
 			<description>ImmunoHistoChemistry (IHC) using C-terminal Ab and P4/12B2</description>
 		</selection>
+		<selection code="F072A">
+			<description>Western Blot</description>
+		</selection>
 	</selectionList>
 	<selectionList id="CWD$AT12A">
 		<selection code="F659A">

@@ -43,6 +43,7 @@ import tse_config.CustomStrings;
 import tse_config.DebugConfig;
 import tse_options.PreferencesDialog;
 import tse_options.SettingsDialog;
+import tse_report.ReportCreatorDialog;
 import user.User;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
@@ -56,6 +57,7 @@ public class StartUI {
 
 	/**
 	 * Check if the mandatory fields of a generic settings table are filled or not
+	 * 
 	 * @param tableName
 	 * @return
 	 * @throws IOException
@@ -66,7 +68,7 @@ public class StartUI {
 
 		Collection<TableRow> data = dao.getAll(TableSchemaList.getByName(tableName));
 
-		if(data.isEmpty())
+		if (data.isEmpty())
 			return false;
 
 		TableRow firstRow = data.iterator().next();
@@ -77,6 +79,7 @@ public class StartUI {
 
 	/**
 	 * Check if the settings were set or not
+	 * 
 	 * @return
 	 * @throws IOException
 	 */
@@ -86,6 +89,7 @@ public class StartUI {
 
 	/**
 	 * Check if the preferences were set or not
+	 * 
 	 * @return
 	 * @throws IOException
 	 */
@@ -94,8 +98,8 @@ public class StartUI {
 	}
 
 	/**
-	 * Login the user into the system in order to be able to
-	 * perform web-service calls
+	 * Login the user into the system in order to be able to perform web-service
+	 * calls
 	 */
 	private static void loginUser() {
 
@@ -124,18 +128,19 @@ public class StartUI {
 
 		User user = User.getInstance();
 		user.login(username, password);
-		
+
 		if (orgVal != null)
 			user.addData(CustomStrings.SETTINGS_ORG_CODE, orgVal.getLabel());
 	}
 
 	/**
 	 * Close the application (db + interface)
+	 * 
 	 * @param db
 	 * @param display
 	 */
 	private static void shutdown(Database db, Display display) {
-		
+
 		LOGGER.info("Application closed " + System.currentTimeMillis());
 
 		if (display != null)
@@ -151,6 +156,7 @@ public class StartUI {
 
 	/**
 	 * Show an error to the user
+	 * 
 	 * @param errorCode
 	 * @param message
 	 */
@@ -166,8 +172,7 @@ public class StartUI {
 	private static int ask(String message) {
 		Display display = new Display();
 		Shell shell = new Shell(display);
-		int val = Warnings.warnUser(shell, TSEMessages.get("warning.title"), 
-				message, 
+		int val = Warnings.warnUser(shell, TSEMessages.get("warning.title"), message,
 				SWT.YES | SWT.NO | SWT.ICON_WARNING);
 
 		shell.dispose();
@@ -178,26 +183,25 @@ public class StartUI {
 
 	/**
 	 * Start the TSE data reporting tool interface & database
+	 * 
 	 * @param args
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public static void main(String args[]) throws IOException {
-		
+
 		try {
 			Database db = launch();
 			shutdown(db, display);
-		}
-		catch (Throwable e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			LOGGER.fatal("Generic error occurred", e);
-			
-			Warnings.createFatal(TSEMessages.get("generic.error", 
-					PropertiesReader.getSupportEmail())).open(shell);
+
+			Warnings.createFatal(TSEMessages.get("generic.error", PropertiesReader.getSupportEmail())).open(shell);
 		}
 	}
 
 	private static Database launch() {
-		
+
 		// application start-up message. Usage of System.err used for red chars
 		LOGGER.info("Application started " + System.currentTimeMillis());
 
@@ -220,15 +224,14 @@ public class StartUI {
 			EFSARCL.init();
 
 			// check also custom files
-			EFSARCL.checkConfigFiles(CustomStrings.PREDEFINED_RESULTS_FILE, 
-					AppPaths.CONFIG_FOLDER);
+			EFSARCL.checkConfigFiles(CustomStrings.PREDEFINED_RESULTS_FILE, AppPaths.CONFIG_FOLDER);
 
 		} catch (IOException | SQLException e) {
 			LOGGER.fatal("Cannot initialize the EFSARCL library and accessory files", e);
 			showInitError(TSEMessages.get("efsa.rcl.init.error", e.getMessage()));
 			return db;
 		} catch (DatabaseVersionException e) {
-			
+
 			LOGGER.warn("Old version of the database found", e);
 
 			int val = ask(TSEMessages.get("db.need.removal"));
@@ -268,32 +271,30 @@ public class StartUI {
 		ITableDao dao = new TableDao();
 		ITableDaoService daoService = new TableDaoService(dao);
 		IFormulaService formulaService = new FormulaService(daoService);
-		
+
 		IGetAck getAck = new GetAck();
 		IGetDatasetsList<IDataset> getDatasetsList = new GetDatasetsList<>();
 		ISendMessage sendMessage = new SendMessage();
 		IGetDataset getDataset = new GetDataset();
-		
-		TseReportService reportService = new TseReportService(getAck, getDatasetsList, 
-				sendMessage, getDataset, daoService, formulaService);
-		
+
+		TseReportService reportService = new TseReportService(getAck, getDatasetsList, sendMessage, getDataset,
+				daoService, formulaService);
+
 		// open the main panel
-		
+
 		try {
 			new MainPanel(shell, reportService, daoService, formulaService);
-		}
-		catch (Throwable e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			LOGGER.fatal("Generic error occurred", e);
-			
-			Warnings.createFatal(TSEMessages.get("generic.error", 
-					PropertiesReader.getSupportEmail())).open(shell);
-			
+
+			Warnings.createFatal(TSEMessages.get("generic.error", PropertiesReader.getSupportEmail())).open(shell);
+
 			return null;
 		}
 
 		// set the application icon into the shell
-		Image image = new Image(Display.getCurrent(), 
+		Image image = new Image(Display.getCurrent(),
 				ClassLoader.getSystemResourceAsStream(PropertiesReader.getAppIcon()));
 
 		if (image != null)
@@ -312,9 +313,9 @@ public class StartUI {
 		if (!checkPreferences()) {
 			PreferencesDialog pref = new PreferencesDialog(shell);
 			pref.open();
-			
+
 			TableRow preferences = daoService.getAll(TableSchemaList.getByName(CustomStrings.PREFERENCES_SHEET)).get(0);
-			
+
 			// if the preferences were not set
 			try {
 				if (!reportService.getMandatoryFieldNotFilled(preferences).isEmpty()) {
@@ -333,7 +334,7 @@ public class StartUI {
 			settingsDialog.open();
 
 			TableRow settings = daoService.getAll(TableSchemaList.getByName(CustomStrings.SETTINGS_SHEET)).get(0);
-			
+
 			try {
 				if (!reportService.getMandatoryFieldNotFilled(settings).isEmpty())
 					return db;
@@ -341,8 +342,15 @@ public class StartUI {
 				e.printStackTrace();
 				LOGGER.error("Cannot check if settings were set", e);
 			}
-		}
-		else {
+			
+			//shahaal force the user to create a report after inserting preferences and settings
+			LOGGER.debug("Opening new report dialog");
+
+			ReportCreatorDialog dialog = new ReportCreatorDialog(shell, reportService);
+			dialog.setButtonText(TSEMessages.get("new.report.button"));
+			dialog.open();
+			
+		} else {
 			// if settings are not opened, then login the user
 			// with the current credentials
 			loginUser();

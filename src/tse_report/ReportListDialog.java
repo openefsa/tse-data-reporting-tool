@@ -35,6 +35,7 @@ public class ReportListDialog extends TableDialog {
 		this.window = new RestoreableWindow(getDialog(), WINDOW_CODE);
 		window.restore(TSERestoreableWindowDao.class);
 		window.saveOnClosure(TSERestoreableWindowDao.class);
+		
 	}
 
 	@Override
@@ -76,7 +77,7 @@ public class ReportListDialog extends TableDialog {
 
 	@Override
 	public boolean apply(TableSchema schema, Collection<TableRow> rows, TableRow selectedRow) {
-		
+
 		if (selectedRow == null) {
 			warnUser(TSEMessages.get("error.title"), TSEMessages.get("report.not.selected"));
 			return false;
@@ -114,4 +115,5 @@ public class ReportListDialog extends TableDialog {
 		viewer.addHelp(getDialog().getText(), true)
 			.addTable(CustomStrings.REPORT_SHEET, false);
 	}
+	
 }

@@ -67,6 +67,10 @@ public class TseReportValidator extends ReportValidator {
 			errors.add(new EmptyReportError());
 		}
 		
+		// shahaal set the status heard from the level 1 and pass it to level 2
+		// the var doesnt exists anymore in the tableSchema
+		String statusHerd="";
+		
 		// check errors on single row (no interdependency is evaluated)
 		for (TableRow row : reportRecords) {
 			
@@ -82,9 +86,10 @@ public class TseReportValidator extends ReportValidator {
 				errors.addAll(checkResult(row));
 			}
 			else if (type == RowType.CASE) {
-				errors.addAll(checkCaseInfo(row));
+				errors.addAll(checkCaseInfo(row, statusHerd));
 			}
 			else if (type == RowType.SUMM) {
+				statusHerd=row.getCode(CustomStrings.STATUS_HERD_COL);
 				errors.addAll(checkSummarizedInfo(row));
 			}
 		}
@@ -359,7 +364,7 @@ public class TseReportValidator extends ReportValidator {
 	 * @param row
 	 * @return
 	 */
-	public Collection<ReportError> checkCaseInfo(TableRow row) {
+	public Collection<ReportError> checkCaseInfo(TableRow row, String statusHerd) {
 		
 		Collection<ReportError> errors = new ArrayList<>();
 

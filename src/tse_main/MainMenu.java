@@ -198,7 +198,7 @@ public class MainMenu {
 				dialog.setButtonText(TSEMessages.get("open.report.button"));
 
 				dialog.open();
-
+				
 				TseReport report = dialog.getSelectedReport();
 
 				if (report == null)
