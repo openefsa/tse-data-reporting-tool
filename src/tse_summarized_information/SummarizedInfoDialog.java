@@ -115,6 +115,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 
 			@Override
 			public void editEnded(TableRow row, TableColumn field, boolean changed) {
+
 				if (changed) {
 					switch (field.getId()) {
 					/*
@@ -129,6 +130,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				}
 			}
 		});
+		
 	}
 
 	@Override
@@ -173,7 +175,8 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		});
 
 		addRemoveMenuItem(menu);
-
+		addCloneMenuItem(menu);
+		
 		return menu;
 	}
 
@@ -632,8 +635,8 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				
 				ReportActions actions = new TseReportActions(getDialog(), report, reportService);
 
-				MessageConfigBuilder config = reportService.getSendMessageConfiguration(report);
-				config.setOpType(OperationType.ACCEPTED_DWH);
+				MessageConfigBuilder config = reportService.getAcceptDwhBetaMessageConfiguration(report);
+				config.setOpType(OperationType.ACCEPTED_DWH_BETA);
 
 				// reject the report and update the ui
 				actions.perform(config, new Listener() {
@@ -742,7 +745,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 						CatalogLists.TSE_LIST)
 
 				.addTable(CustomStrings.SUMMARIZED_INFO_SHEET, true);
-
+		
 		initUI();
 	}
 
@@ -880,7 +883,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setEnabled("changeMessageIdBtn", true);
 		panel.setEnabled("changeDatasetIdBtn", true);
 
-		panel.setEnabled("betaAcceptedDwh", datasetStatus.canBeRefreshed());
+		panel.setEnabled("betaAcceptedDwh", datasetStatus.getStatus().contains("SUBMITTED"));
 	}
 
 	private boolean askConfirmation(ReportAction action) {
@@ -896,6 +899,9 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			break;
 		case SEND:
 			message = TSEMessages.get("send.confirm");
+			break;
+		case ACCEPTED_DWH_BETA:
+			message = TSEMessages.get("beta_accepted_dhw.confirm");
 			break;
 		case AMEND:
 			message = TSEMessages.get("amend.confirm");

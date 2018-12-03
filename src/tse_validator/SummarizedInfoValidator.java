@@ -82,13 +82,17 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 		Collection<SampleCheck> checks = new ArrayList<>();
 
+		
+		/*shahaal
+		 * br dropped since not valid any more
+		 *
 		String targetGroup = row.getCode(CustomStrings.TARGET_GROUP_COL);
 		String prod = row.getCode(CustomStrings.PROD_COL);
 
 		// non wild for killed error
 		if (targetGroup.equals(CustomStrings.KILLED_TARGET_GROUP) && !prod.equals(CustomStrings.WILD_PROD)) {
 			checks.add(SampleCheck.NON_WILD_FOR_KILLED);
-		}
+		}*/
 
 		String rowType = row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
 		boolean isRGT = rowType.equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);

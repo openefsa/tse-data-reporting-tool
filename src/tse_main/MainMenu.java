@@ -6,7 +6,6 @@ import java.text.ParseException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
@@ -86,6 +85,9 @@ public class MainMenu {
 	private MenuItem exportReport;
 	private MenuItem exitApplication;
 
+	// TODO to finish
+	//private MenuItem importExcelReport;
+
 	public MainMenu(MainPanel mainPanel, Shell shell, TseReportService reportService, ITableDaoService daoService,
 			IFormulaService formulaService) {
 		this.shell = shell;
@@ -132,6 +134,9 @@ public class MainMenu {
 				// can only export valid reports
 				exportReport.setEnabled(isReportOpened && mainPanel.getOpenedReport().getRCLStatus().isValid());
 				importReport.setEnabled(!DebugConfig.disableFileFuncs && editable);
+				
+				//shahaal enable import excel report if not report is currently opened
+				//importExcelReport.setEnabled(editable);
 			}
 		});
 
@@ -198,7 +203,7 @@ public class MainMenu {
 				dialog.setButtonText(TSEMessages.get("open.report.button"));
 
 				dialog.open();
-				
+
 				TseReport report = dialog.getSelectedReport();
 
 				if (report == null)
@@ -256,18 +261,17 @@ public class MainMenu {
 				dialog.setButtonText(TSEMessages.get("import.report.button"));
 				dialog.open();
 
-				
 				/*
-				 * shahaal
-				 * create a dialog with ok and cancel buttons and a question icon in order
-				 * to let the user to know the the data of the imported report will be overwritten
+				 * shahaal create a dialog with ok and cancel buttons and a question icon in
+				 * order to let the user to know the the data of the imported report will be
+				 * overwritten
 				 */
 				MessageBox mb = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
 				mb.setText("My info");
 				mb.setMessage(TSEMessages.get("import.report.warning"));
 
 				// if the user press cancel then return
-				if(mb.open()==SWT.CANCEL)
+				if (mb.open() == SWT.CANCEL)
 					return;
 
 				// import the report into the opened report
@@ -302,6 +306,71 @@ public class MainMenu {
 			public void widgetDefaultSelected(SelectionEvent arg0) {
 			}
 		});
+
+		/*
+		 * TODO shahaal
+		 * to be concluded the import excel function
+		 * with release 1.2.3
+		 * 
+		// add buttons to the file menu
+		this.importExcelReport = new MenuItem(fileMenu, SWT.PUSH);
+		this.importExcelReport.setText(TSEMessages.get("import.excel_report.button"));
+		this.importExcelReport.setEnabled(false);
+		this.importExcelReport.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				//choose the excel file to import
+				TseFileDialog fileDialog = new TseFileDialog(shell);
+				File excelFile = fileDialog.loadExcel();
+				
+				// take the info of the current opened report
+				TseReport report = mainPanel.getOpenedReport();
+
+				if (report == null)
+					return;
+				
+				LOGGER.debug("Importing excel in report " + report.getSenderId());
+				MessageConfigBuilder messageConfig = reportService.getSendMessageConfiguration(report);
+				messageConfig.setOpType(OperationType.INSERT);
+								
+				// TODO this part of messageConfig should be replaced with the one received from the ExcelToXml class
+				// System.out.println("shahaal msg config "+messageConfig.getMessageConfig().toXml(true));
+
+				try {
+					reportService.export(report, messageConfig);
+				} catch (IOException | ParserConfigurationException | SAXException | ReportException
+						| AmendException e) {
+					e.printStackTrace();
+					LOGGER.error("Export report failed", e);
+				}
+				
+				ExcelXmlConverter converter = new ExcelXmlConverter();
+				
+				try {
+					File file=converter.convertXExcelToXml(excelFile);
+					
+					if (file == null)
+						return;
+					
+					TseReportImporter imp = new TseReportImporter(reportService, daoService);
+					imp.importFirstDatasetVersion(file);
+
+				} catch (XMLStreamException | IOException | FormulaException | ParseException | ParserConfigurationException | TransformerException e) {
+					e.printStackTrace();
+				}
+				
+				LOGGER.debug("Opening import report dialog");
+				
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});*/
 
 		this.downloadReport = new MenuItem(fileMenu, SWT.PUSH);
 		this.downloadReport.setText(TSEMessages.get("download.report.item"));
@@ -583,6 +652,7 @@ public class MainMenu {
 				}
 			}
 		});
+
 	}
 
 	public Menu getMenu() {

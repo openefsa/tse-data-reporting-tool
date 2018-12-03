@@ -274,6 +274,7 @@ public class ResultDialog extends TableDialogWithMenu {
 	public Menu createMenu() {
 		Menu menu = super.createMenu();
 		addRemoveMenuItem(menu);
+		addCloneMenuItem(menu);
 		return menu;
 	}
 

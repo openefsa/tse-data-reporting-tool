@@ -24,10 +24,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/DCF webservice framework"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/email-generator"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_3.112.0.v20180906-1121.jar"/>
-	<classpathentry kind="lib" path="D:/PortableApps/eclipse/libs/swt_x32_4.9.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_3.14.100.v20180828-0836.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/EFSA-RCL"/>
+	<classpathentry kind="var" path="JFace"/>
+	<classpathentry kind="var" path="SWT_32"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/email-generator"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/HttpManager"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

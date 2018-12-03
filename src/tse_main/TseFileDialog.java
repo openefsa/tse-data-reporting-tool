@@ -44,4 +44,8 @@ public class TseFileDialog {
 	public File loadXml() {
 		return select(SWT.NONE, "*.xml", "");
 	}
+
+	public File loadExcel() {
+		return select(SWT.NONE, "*.xlsx", "");
+	}
 }

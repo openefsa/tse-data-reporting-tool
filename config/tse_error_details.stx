@@ -49,110 +49,71 @@
 		<stx:assign name="_blank" select="h:put($descriptions,'F662A','APHA Prionics Hybrid WB using additional antibodies (incl.SAF84,12B2)')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'F663A','FLI BSE Discriminatory test')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'F664A','WBVR In-house immunoblot with 4 primary antibodies')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NK','&lt;24 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NJ','24-35 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16YG','36-47 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NL','48-59 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NM','60-71 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NN','72-83 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NP','84-95 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NQ','96-107 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NR','108-119 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NS','120-131 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NT','132-143 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NV','144-155 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NX','&gt;=156 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16PN','Unknown')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16ND','&lt;18 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NE','18-47 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NH','&gt;=48 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16ZR','&gt;=18 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NF','&lt;12 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NG','&gt;=12 months')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A057A','African buffalo (Syncerus caffer Sparrman)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A057B','American buffalo (Bison bison L.)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A057C','Buffalo (Bubalus spp. C.H. Smith)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A057D','Cape buffalo (Syncerus caffer caffer Sparrman)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A057E','Cattle (Bos taurus Bojanus)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A0CTA','European buffalo (Bison bonasus)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A0CTC','Hybrids of genera Bison, Bos, Bubalus and Poëphagus')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A057H','Water buffalo (Bubalus bubalis)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A057G','Sheep (Ovis aries L.)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A057P','Goat (Capra aegagrus hircus L.$Capra hircus L.)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A056M','Deer (Species unspecified)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A056N','European moose (Alces alces)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A056P','Fallow deer (Dama dama L.)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16PB','Mule deer (Odocoileus hemionus)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NY','Musk ox (Ovibos moschatus)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A0CEM','Red Deer (Cervus elaphus)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16PA','Reeve’s Muntjac (Muntiacus reevesi)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A056Q','Reindeer (Rangifer tarandus L.)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A056R','Roe deer (Capreolus capreolus L.)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16HM','Sika deer (Cervus nippon)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16PC','White-tailed deer (Odocoileus virginianus)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16NZ','Wild forest reindeer (Rangifer tarandus fennicus)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16EB','Sciuridae (family)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A0CNM','Felis catus')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16CM','Acinonyx jubatus')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16CY','Vulpes spp.')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16DH','Panthera pardus')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16DJ','Panthera leo')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16DK','Lynx spp.')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A0CNN','Neovison vison')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16EC','Panthera tigris')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16DS','Procyon lotor')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16BX','Bovidae (only part)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16BY','Oryx spp.')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A0CTL','Taurotragus oryx')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F639A','Bio-Rad TeSeE SAP rapid test')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F080A','ELISA')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F642A','IDEXX HerdChek BSE Antigen Test Kit, EIA &amp; HerdChek BSE-Scrapie Antigen (IDEXX Laboratories)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F643A','Prionics Check PrioSTRIP')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F645A','Roboscreen Beta Prion BSE EIA Test Kit')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F626A','Bio-Rad TeSeE Western Blot')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F656A','Demonstration of characteristic fibrils by electron microscopy')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F657A','Histopathological examination')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F155A','ImmunoHistoChemistry (IHC)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F631A','SAF Western Blot')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F072A','Western Blot')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F658A','ANSES Discriminatory Blot: PrPres typing in BSE from cattle (internal reference:LYO/INS/0010)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F660A','APHA Bio-Rad Hybrid WB using additional antibodies (incl.SAF84,12B2)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F661A','APHA Bio-Rad TeSeE-based Hybrid Western blotting Method')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F662A','APHA Prionics Hybrid WB using additional antibodies (incl.SAF84,12B2)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F634A','Bio-Rad in-house modified WB')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F663A','FLI BSE Discriminatory test')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F628A','FLI Discriminatory Western blot method')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F638A','ISS BSE DISCRIMINATORY WB')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F630A','Prionics Check Western')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F632A','Prionics in house two-blots assay')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F637A','PTA precipitation')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F664A','WBVR In-house immunoblot with 4 primary antibodies')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F640A','Bio-Rad TeSeE Sheep/Goat rapid test')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F641A','HerdChek BSE-Scrapie Antigen (IDEXX Laboratories)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F621A','ImmunoHistoChemistry (IHC) using C-terminal Ab and P4/12B2')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F659A','ANSES Discriminatory Blot: PrPres typing in small ruminants (internal reference: LYO/INS/0007)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F625A','Bio-Rad Discriminatory Test (based on the CEA Discriminatory Western blot Method)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F627A','CIDC-Lelystad Discriminatory Western blot method')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F628A','FLI-Discriminatory Western blot method')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F629A','ISS-Discriminatory Western blot method')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F108A','Mouse Bioassay')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F089A','Genotyping')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F646A','The Bio-Rad TeSeE SAP rapid test, using the CWD addendum')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'F647A','The IDEXX HerdChek Chronic Wasting Disease Antigen Test Kit, EIA')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'AT06A','Screening')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'AT08A','Confirmatory')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'AT12A','Discriminatory')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'AT13A','Molecular characterisation/Genotyping')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'J046A','C-BSE')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'J047A','L-BSE')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'J048A','H-BSE')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'J050A','Inconclusive case')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'J051A','Negative sample')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'J043A','Atypical-scrapie')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'J044A','BSE-not excluded (i.e. BSE like)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'J052A','CH1641-like')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'J045A','Classical-scrapie (i.e. BSE-excluded in 1st Molecular test)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'J049A','CWD')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NK','&lt;24 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NJ','24-35 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16YG','36-47 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NL','48-59 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NM','60-71 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NN','72-83 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NP','84-95 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NQ','96-107 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NR','108-119 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NS','120-131 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NT','132-143 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NV','144-155 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NX','&gt;=156 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16PN','Unknown')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16ND','&lt;18 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NE','18-47 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NH','&gt;=48 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16ZR','&gt;=18 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NF','&lt;12 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NG','&gt;=12 months')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A057A','African buffalo (Syncerus caffer Sparrman)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A057B','American buffalo (Bison bison L.)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A057C','Buffalo (Bubalus spp. C.H. Smith)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A057D','Cape buffalo (Syncerus caffer caffer Sparrman)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A057E','Cattle (Bos taurus Bojanus)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A0CTA','European buffalo (Bison bonasus)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A0CTC','Hybrids of genera Bison, Bos, Bubalus and Poëphagus')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A057H','Water buffalo (Bubalus bubalis)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A057G','Sheep (Ovis aries L.)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A057P','Goat (Capra aegagrus hircus L.$Capra hircus L.)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A056M','Deer (Species unspecified)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A056N','European moose (Alces alces)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A056P','Fallow deer (Dama dama L.)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16PB','Mule deer (Odocoileus hemionus)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NY','Musk ox (Ovibos moschatus)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A0CEM','Red Deer (Cervus elaphus)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16PA','Reeve’s Muntjac (Muntiacus reevesi)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A056Q','Reindeer (Rangifer tarandus L.)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A056R','Roe deer (Capreolus capreolus L.)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16HM','Sika deer (Cervus nippon)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16PC','White-tailed deer (Odocoileus virginianus)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16NZ','Wild forest reindeer (Rangifer tarandus fennicus)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16EB','Sciuridae (family)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A0CNM','Felis catus')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16CM','Acinonyx jubatus')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16CY','Vulpes spp.')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16DH','Panthera pardus')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16DJ','Panthera leo')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16DK','Lynx spp.')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A0CNN','Neovison vison')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16EC','Panthera tigris')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16DS','Procyon lotor')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16BX','Bovidae (only part)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16BY','Oryx spp.')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A0CTL','Taurotragus oryx')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'J043A','Atypical-scrapie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'J044A','BSE-not excluded (i.e. BSE like)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'J045A','Classical-scrapie (i.e. BSE-excluded in 1st Molecular test)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'J046A','C-BSE')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'J047A','L-BSE')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'J048A','H-BSE')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'J049A','CWD')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'J050A','Inconclusive case')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'J051A','Negative sample')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'J052A','CH1641-like')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'AT','Austria')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'BE','Belgium')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'BG','Bulgaria')"/>
@@ -185,434 +146,434 @@
 		<stx:assign name="_blank" select="h:put($descriptions,'SE','Sweden')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'CH','Switzerland')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'GB','United Kingdom')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'Y','Yes')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'N','No')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'1','January')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'2','February')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'3','March')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'4','April')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'5','May')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'6','June')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'7','July')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'8','August')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'9','September')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'10','October')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'11','November')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'12','December')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A06AL','Blood')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A06AM','Brain')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16YL','Obex')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16ZA','Other head lymph node')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16YZ','Retropharyngeal lymph node')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A16HJ','Tonsil')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A07RV','Farmed')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A07RV','Farmed/Captive')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A07RX','Semi-domesticated')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'A07RY','Wild')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'Y','Yes')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'N','No')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A06AL','Blood')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A06AM','Brain')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16YL','Obex')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16ZA','Other head lymph node')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16YZ','Retropharyngeal lymph node')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A16HJ','Tonsil')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A07RV','Farmed/Captive')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A07RX','Semi-domesticated')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'A07RY','Wild')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'N123A','Regulation (EC) No 999/2001')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'N305A','Commission regulation (EU) 1972/2017')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004884-PAR$NEG','Negative')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004884-PAR$POS','Positive')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004628-PAR$NEG','Negative')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004628-PAR$POS','Positive')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004885-PAR$POS','C-Type')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004886-PAR$POS','H-Type')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004887-PAR$POS','L-Type')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004888-PAR$POS','Other BSE (Inconclusive)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004889-PAR$NEG','Negative')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004889-PAR$POS','Positive')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004628-PAR$POS','Positive (other than Atypical)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004890-PAR$POS','Atypical')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004891-PAR$POS','Classical')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004892-PAR$POS','BSE like')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004893-PAR$POS','CH1641 like')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004894-PAR$POS','Other Scrapie (Inconclusive)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004890-PAR$POS','Dummy')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004892-PAR$POS','Dummy')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004893-PAR$POS','Dummy')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004891-PAR$POS','Dummy')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004894-PAR$POS','Dummy')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004895-PAR$NEG','Negative')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004895-PAR$POS','Positive')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004896-PAR$POS','CWD')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004897-PAR$POS','BSE like')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004898-PAR$POS','Other CWD (Inconclusive)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'RF-00004629-PAR$POS','Dummy')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004884-PAR','BSE (Initial reactor)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004628-PAR','TSE')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004885-PAR','C-Type')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004886-PAR','H-Type')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004887-PAR','L-Type')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004888-PAR','Other BSE (Inconclusive)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004889-PAR','Scrapie (Initial reactor)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004628-PAR','Positive (other than Atypical)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004890-PAR','Atypical')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004891-PAR','Classical')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004892-PAR','BSE-like Scrapie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004893-PAR','CH1641 like')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004894-PAR','Other Scrapie (Inconclusive)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004895-PAR','CWD (Initial reactor)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004896-PAR','CWD')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004897-PAR','BSE-like CWD')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004898-PAR','Other CWD (Inconclusive)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RF-00004629-PAR','Genotype (random genotyping)')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'AT11','Burgenland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'AT21','Kärnten')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'AT12','Niederösterreich')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'AT13','Wien')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'AT21','Kärnten')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'AT22','Steiermark')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'AT31','Oberösterreich')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'AT32','Salzburg')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'AT22','Steiermark')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'AT33','Tirol')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'AT34','Vorarlberg')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'AT13','Wien')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ATZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'BE21','Prov. Antwerpen')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'BE31','Prov. Brabant Wallon')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'BE32','Prov. Hainaut')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'BE22','Prov. Limburg')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ATZZ','Extra-Regio')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'BE33','Prov. Liège')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'BE34','Prov. Luxembourg')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'BE35','Prov. Namur')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'BEZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'BE10','Région de Bruxelles-Capitale / Brussels Hoofdstedelijk Gewest')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'BE21','Prov. Antwerpen')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'BE22','Prov. Limburg')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'BE23','Prov. Oost-Vlaanderen')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'BE24','Prov. Vlaams-Brabant')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'BE25','Prov. West-Vlaanderen')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'BE10','Région de Bruxelles-Capitale / Brussels Hoofdstedelijk Gewest')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'BEZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'BG32','Северен централен')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'BE31','Prov. Brabant Wallon')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'BE32','Prov. Hainaut')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'BG31','Северозападен')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'BG32','Северен централен')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'BG33','Североизточен')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'BG41','Югозападен')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'BG34','Югоизточен')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'BG41','Югозападен')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'BG42','Южен централен')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'BGZZ','Extra-Regio NUTS 2')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'BGZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CH01','Région Lémanique')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'CH02','Espace Mittelland')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'CH03','Nordwestschweiz')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CH05','Ostschweiz')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CH01','Région Lémanique')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CH07','Ticino')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CH06','Zentralschweiz')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'CH04','Zürich')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CY00','Κύπρος')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CYZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CZ06','Jihovýchod')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CZ03','Jihozápad')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CZ08','Moravskoslezsko')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CZ01','Praha')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CZ05','Severovýchod')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CZ04','Severozápad')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CZ07','Střední Morava')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CZ02','Střední Čechy')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CZZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DEA5','Arnsberg')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE30','Berlin')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE40','Brandenburg')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE91','Braunschweig')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE50','Bremen')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DED4','Chemnitz')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE71','Darmstadt')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DEA4','Detmold')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DED2','Dresden')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DEA1','Düsseldorf')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE13','Freiburg')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CH05','Ostschweiz')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CH06','Zentralschweiz')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CH07','Ticino')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'DE72','Gießen')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE60','Hamburg')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE92','Hannover')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE12','Karlsruhe')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'DE73','Kassel')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DEB1','Koblenz')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DEA2','Köln')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DED5','Leipzig')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE93','Lüneburg')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'DE80','Mecklenburg-Vorpommern')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE25','Mittelfranken')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE91','Braunschweig')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE92','Hannover')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE93','Lüneburg')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE94','Weser-Ems')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DEA1','Düsseldorf')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DEA2','Köln')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'DEA3','Münster')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE22','Niederbayern')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE21','Oberbayern')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE24','Oberfranken')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE23','Oberpfalz')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DEA4','Detmold')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DEA5','Arnsberg')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DEB1','Koblenz')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DEB2','Trier')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'DEB3','Rheinhessen-Pfalz')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'DEC0','Saarland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DED2','Dresden')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DED4','Chemnitz')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DED5','Leipzig')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'DEE0','Sachsen-Anhalt')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'DEF0','Schleswig-Holstein')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE27','Schwaben')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE11','Stuttgart')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'DEG0','Thüringen')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DEB2','Trier')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE14','Tübingen')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE26','Unterfranken')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DE94','Weser-Ems')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DEZZ','Extra-Regio NUTS 2')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DEZZ','Extra-Regio')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'DK01','Hovedstaden')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DK04','Midtjylland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DK05','Nordjylland')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'DK02','Sjælland')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'DK03','Syddanmark')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'DKZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EE00','Eesti')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EEZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ES61','Andalucía')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ES24','Aragón')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ES70','Canarias')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DK04','Midtjylland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DK05','Nordjylland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DKZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CY00','Κύπρος')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CYZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CZ01','Praha')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CZ02','Střední Čechy')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CZ03','Jihozápad')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CZ04','Severozápad')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CZ05','Severovýchod')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CZ06','Jihovýchod')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CZ07','Střední Morava')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CZ08','Moravskoslezsko')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'CZZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE11','Stuttgart')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE12','Karlsruhe')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE13','Freiburg')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE14','Tübingen')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE21','Oberbayern')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE22','Niederbayern')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE23','Oberpfalz')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE24','Oberfranken')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE25','Mittelfranken')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE26','Unterfranken')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE27','Schwaben')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE30','Berlin')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE40','Brandenburg')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE50','Bremen')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE60','Hamburg')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'DE71','Darmstadt')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FR10','Île de France')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRB0','Centre - Val de Loire')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRC1','Bourgogne')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRC2','Franche-Comté')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRD1','Basse-Normandie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRD2','Haute-Normandie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRE1','Nord-Pas de Calais')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRE2','Picardie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRF1','Alsace')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRF2','Champagne-Ardenne')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRF3','Lorraine')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRG0','Pays de la Loire')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRH0','Bretagne')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRI1','Aquitaine')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRI2','Limousin')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRI3','Poitou-Charentes')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRJ1','Languedoc-Roussillon')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRJ2','Midi-Pyrénées')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRK1','Auvergne')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRK2','Rhône-Alpes')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRL0','Provence-Alpes-Côte d’Azur')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRM0','Corse')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRY1','Guadeloupe')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRY2','Martinique')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRY3','Guyane')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRY4','La Réunion')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRY5','Mayotte')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FRZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EL30','Attiki')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EL41','Βόρειο Αιγαίο')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EL42','Νότιο Αιγαίο')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EL43','Κρήτη')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EL51','Aνατολική Μακεδονία, Θράκη')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EL52','Κεντρική Μακεδονία')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EL53','Δυτική Μακεδονία')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EL54','Ήπειρος')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EL61','Θεσσαλία')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EL62','Ιόνια Νησιά')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EL63','Δυτική Ελλάδα')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EL64','Στερεά Ελλάδα')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EL65','Πελοπόννησος')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ELZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ES11','Galicia')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ES12','Principado de Asturias')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'ES13','Cantabria')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ES21','País Vasco')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ES22','Comunidad Foral de Navarra')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ES23','La Rioja')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ES24','Aragón')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ES30','Comunidad de Madrid')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'ES41','Castilla y León')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'ES42','Castilla-La Mancha')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ES43','Extremadura')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'ES51','Cataluña')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ES52','Comunidad Valenciana')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ES53','Illes Balears')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ES61','Andalucía')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ES62','Región de Murcia')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'ES63','Ciudad Autónoma de Ceuta')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'ES64','Ciudad Autónoma de Melilla')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ES22','Comunidad Foral de Navarra')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ES52','Comunidad Valenciana')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ES30','Comunidad de Madrid')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ES43','Extremadura')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ES11','Galicia')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ES53','Illes Balears')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ES23','La Rioja')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ES21','País Vasco')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ES12','Principado de Asturias')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ES62','Región de Murcia')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ESZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FI1C','Etelä-Suomi')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FI1B','Helsinki-Uusimaa')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ES70','Canarias')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ESZZ','Extra-Regio')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'FI19','Länsi-Suomi')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EE00','Eesti')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'EEZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FI1B','Helsinki-Uusimaa')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FI1C','Etelä-Suomi')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'FI1D','Pohjois- ja Itä-Suomi')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'FI20','Åland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FIZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR42','Alsace')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR61','Aquitaine')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR72','Auvergne')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR25','Basse-Normandie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR26','Bourgogne')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR52','Bretagne')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR24','Centre')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR21','Champagne-Ardenne')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR83','Corse')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR43','Franche-Comté')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FRA1','Guadeloupe')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FRA3','Guyane')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR23','Haute-Normandie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FRA4','La Réunion')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR81','Languedoc-Roussillon')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR63','Limousin')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR41','Lorraine')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FRA2','Martinique')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FRA5','Mayotte')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR62','Midi-Pyrénées')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR30','Nord - Pas-de-Calais')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR51','Pays de la Loire')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR22','Picardie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR53','Poitou-Charentes')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR82','Provence-Alpes-Côte d Azur')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR71','Rhône-Alpes')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FR10','Île de France')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'FRZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKH2','Bedfordshire and Hertfordshire')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKJ1','Berkshire, Buckinghamshire and Oxfordshire')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'FIZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'IEZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'IS00','Iceland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITC1','Piemonte')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'HR03','Jadranska Hrvatska')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'HR04','Kontinentalna Hrvatska')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'HRZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITC2','Valle d Aosta/Vallée d Aoste')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITC3','Liguria')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITC4','Lombardia')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'HU11','Budapest')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'HU12','Pest')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'HU21','Közép-Dunántúl')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITF1','Abruzzo')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITF2','Molise')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITF3','Campania')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITF4','Puglia')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'HU22','Nyugat-Dunántúl')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'HU23','Dél-Dunántúl')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'HU31','Észak-Magyarország')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'HU32','Észak-Alföld')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'HU33','Dél-Alföld')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'HUZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITF5','Basilicata')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITF6','Calabria')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITG1','Sicilia')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITG2','Sardegna')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITH1','Provincia Autonoma di Bolzano/Bozen')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITH2','Provincia Autonoma di Trento')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITH3','Veneto')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITH4','Friuli-Venezia Giulia')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITH5','Emilia-Romagna')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITI1','Toscana')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITI2','Umbria')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITI3','Marche')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITI4','Lazio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ITZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'IE04','Northern and Western')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'IE05','Southern Southern')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'IE06','Eastern and Midland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'MT00','Malta')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'MTZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'MK00','Поранешна југословенска Република Македонија (Poranešna jugoslovenska Republika Makedonija)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'LT01','Sostinės regionas')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'LT02','Vidurio ir vakarų Lietuvos regionas')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'LTZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'LU00','Luxembourg')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'LUZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'LV00','Latvija')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'LVZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ME00','Црна Гора (Crna Gora)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NO03','Sør-Østlandet')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NO04','Agder Og Rogaland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NO05','Vestlandet')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NO06','Trøndelag')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NO07','Nord-Norge')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NO0SJ','Svalbard And Jan Mayen')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NL11','Groningen')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NL12','Friesland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NL13','Drenthe')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NL21','Overijssel')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NL22','Gelderland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NL23','Flevoland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NL31','Utrecht')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NL32','Noord-Holland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NL33','Zuid-Holland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NL34','Zeeland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NL41','Noord-Brabant')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NL42','Limburg')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NLZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NO01','Oslo Og Akershus')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NO02','Hedmark Og Oppland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL42','Zachodniopomorskie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL43','Lubuskie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL51','Dolnośląskie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL52','Opolskie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL61','Kujawsko-Pomorskie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL62','Warmińsko-Mazurskie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL63','Pomorskie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SE11','Stockholm')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SE12','Östra Mellansverige')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SE21','Småland med öarna')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL71','Łódzkie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL72','Świętokrzyskie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL81','Lubelskie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL82','Podkarpackie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL84','Podlaskie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL91','Warszawski stołeczny')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL92','Mazowiecki regionalny')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PLZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SE22','Sydsverige')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SE23','Västsverige')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SE31','Norra Mellansverige')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SE32','Mellersta Norrland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SE33','Övre Norrland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SEZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SI03','Vzhodna Slovenija')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SI04','Zahodna Slovenija')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SIZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SK01','Bratislavský kraj')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SK02','Západné Slovensko')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SK03','Stredné Slovensko')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SK04','Východné Slovensko')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PT11','Norte')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'SKZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PT15','Algarve')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PT16','Centro')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PT17','Lisboa')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PT18','Alentejo')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PT20','Região Autónoma dos Açores')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PT30','Região Autónoma da Madeira')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PTZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RO11','Nord-Vest')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RO12','Centru')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RO21','Nord-Est')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RO22','Sud-Est')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RO31','Sud - Muntenia')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RO32','Bucureşti - Ilfov')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RO41','Sud-Vest Oltenia')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'RO42','Vest')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'ROZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL21','Małopolskie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL22','Śląskie')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'PL41','Wielkopolskie')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'UKD6','Cheshire')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKK3','Cornwall and Isles of Scilly')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKD1','Cumbria')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKF1','Derbyshire and Nottinghamshire')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKK4','Devon')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKK2','Dorset and Somerset')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKH1','East Anglia')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKL2','East Wales')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKD7','Merseyside')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'UKE1','East Yorkshire and Northern Lincolnshire')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKM2','Eastern Scotland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKH3','Essex')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKK1','Gloucestershire, Wiltshire and Bristol/Bath area')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKD3','Greater Manchester')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKJ3','Hampshire and Isle of Wight')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKG1','Herefordshire, Worcestershire and Warwickshire')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKM6','Highlands and Islands')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKI4','Inner London - East')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKI3','Inner London - West')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKJ4','Kent')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKD4','Lancashire')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKE2','North Yorkshire')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKE3','South Yorkshire')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKE4','West Yorkshire')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKF1','Derbyshire and Nottinghamshire')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'UKF2','Leicestershire, Rutland and Northamptonshire')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'UKF3','Lincolnshire')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKD7','Merseyside')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKM5','North Eastern Scotland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKE2','North Yorkshire')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKN0','Northern Ireland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKC2','Northumberland and Tyne and Wear')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKG1','Herefordshire, Worcestershire and Warwickshire')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKG2','Shropshire and Staffordshire')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKG3','West Midlands')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKH1','East Anglia')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKH2','Bedfordshire and Hertfordshire')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKH3','Essex')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKI3','Inner London - West')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKI4','Inner London - East')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'UKI5','Outer London - East and North East')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'UKI6','Outer London - South')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'UKI7','Outer London - West and North West')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKG2','Shropshire and Staffordshire')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKM3','South Western Scotland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKE3','South Yorkshire')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKJ1','Berkshire, Buckinghamshire and Oxfordshire')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'UKJ2','Surrey, East and West Sussex')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKC1','Tees Valley and Durham')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKG3','West Midlands')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKJ3','Hampshire and Isle of Wight')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKJ4','Kent')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKK1','Gloucestershire, Wiltshire and Bristol/Bath area')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKK2','Dorset and Somerset')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKK3','Cornwall and Isles of Scilly')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKK4','Devon')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'UKL1','West Wales and The Valleys')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKE4','West Yorkshire')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'UKZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EL51','Aνατολική Μακεδονία, Θράκη')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EL30','Aττική')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EL54','Ήπειρος')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EL41','Βόρειο Αιγαίο')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EL63','Δυτική Ελλάδα')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EL53','Δυτική Μακεδονία')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EL61','Θεσσαλία')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EL62','Ιόνια Νησιά')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EL52','Κεντρική Μακεδονία')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EL43','Κρήτη')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EL42','Νότιο Αιγαίο')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EL65','Πελοπόννησος')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'EL64','Στερεά Ελλάδα')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ELZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'HR03','Jadranska Hrvatska')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'HR04','Kontinentalna Hrvatska')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'HRZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'IE01','Border, Midland and Western')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'IE02','Southern and Eastern')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'IEZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'IS00','Iceland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITF1','Abruzzo')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITF5','Basilicata')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITF6','Calabria')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITF3','Campania')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITH5','Emilia-Romagna')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITH4','Friuli-Venezia Giulia')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITI4','Lazio')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITC3','Liguria')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITC4','Lombardia')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITI3','Marche')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITF2','Molise')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITC1','Piemonte')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITH1','Provincia Autonoma di Bolzano/Bozen')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITH2','Provincia Autonoma di Trento')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITF4','Puglia')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITG2','Sardegna')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITG1','Sicilia')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITI1','Toscana')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITI2','Umbria')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITC2','Valle d Aosta/Vallée d Aoste')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITH3','Veneto')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ITZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'LT00','Lietuva')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'LTZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'LU00','Luxembourg')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'LUZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'LV00','Latvija')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'LVZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'MT00','Malta')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'MTZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NL13','Drenthe')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NL23','Flevoland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NL12','Friesland (NL)')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NL22','Gelderland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NL11','Groningen')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NL42','Limburg (NL)')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NL41','Noord-Brabant')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NL32','Noord-Holland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NL21','Overijssel')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NL31','Utrecht')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NL34','Zeeland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NL33','Zuid-Holland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NLZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NO04','Agder Og Rogaland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NO02','Hedmark Og Oppland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NO07','Nord-Norge')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NO01','Oslo Og Akershus')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NO0SJ','Svalbard And Jan Mayen')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NO03','Sør-Østlandet')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NO06','Trøndelag')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'NO05','Vestlandet')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL51','Dolnośląskie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL61','Kujawsko-Pomorskie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL31','Lubelskie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL43','Lubuskie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL12','Mazowieckie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL21','Małopolskie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL52','Opolskie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL32','Podkarpackie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL34','Podlaskie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL63','Pomorskie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL62','Warmińsko-Mazurskie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL41','Wielkopolskie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL42','Zachodniopomorskie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL11','Łódzkie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL22','Śląskie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PL33','Świętokrzyskie')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PLZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PT18','Alentejo')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PT15','Algarve')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PT16','Centro (PT)')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PT17','Lisboa')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PT11','Norte')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PT30','Região Autónoma da Madeira')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PT20','Região Autónoma dos Açores')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'PTZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'RO32','Bucureşti - Ilfov')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'RO12','Centru')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'RO21','Nord-Est')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'RO11','Nord-Vest')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'RO31','Sud - Muntenia')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'RO22','Sud-Est')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'RO41','Sud-Vest Oltenia')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'RO42','Vest')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'ROZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SE32','Mellersta Norrland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SE31','Norra Mellansverige')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SE21','Småland med öarna')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SE11','Stockholm')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SE22','Sydsverige')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SE23','Västsverige')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SE12','Östra Mellansverige')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SE33','Övre Norrland')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SEZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SI03','Vzhodna Slovenija')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SI04','Zahodna Slovenija')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SIZZ','Extra-Regio NUTS 2')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SK01','Bratislavský kraj')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SK03','Stredné Slovensko')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SK04','Východné Slovensko')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SK02','Západné Slovensko')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SKZZ','Extra-Regio NUTS 2')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKL2','East Wales')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKM5','North Eastern Scotland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKM6','Highlands and Islands')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKM7','Eastern Scotland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKM8','West Central Scotland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKM9','Southern Scotland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKN0','Northern Ireland')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKZZ','Extra-Regio')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKC1','Tees Valley and Durham')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKC2','Northumberland and Tyne and Wear')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKD1','Cumbria')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKD3','Greater Manchester')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'UKD4','Lancashire')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'POS','Detected')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'NEG','Not detected')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'BIN','Detected/Not detected')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'F','Not infected')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'N','Infected')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'TG001A','HS (healthy slaughtered at abattoir and home killed for human consumption)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'TG002A','FS (fallen stock)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'TG003A','EM (eradication measures)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'TG004A','AM (clinical signs at ante mortem)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'TG005A','ES (emergency slaughter)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'TG006A','SUS (clinical suspect animals)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'TG007A','SHC (slaughtered for human consumption at abattoir and home killed for human consumption)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'TG008A','NSHC (not slaughtered for human consumption)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'TG009A','RK Road/predator killed')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'TG010A','FC (Fallen/culled)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'TG011A','HSNHC (Hunted/slaughtered not fit for HC)')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'TG012A','HSHC (Hunted/slaughtered fit for HC)')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'BSE','monitoring of BSE')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'SCRAPIE','monitoring of SCRAPIE')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'CWD','monitoring of CWD')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'RGT','random genotyping')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'BSEOS','monitoring of TSE (other species)')"/>
-		<stx:assign name="_blank" select="h:put($descriptions,'paramType','Info level')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'S000A','Animal sample')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'G199A','Animal')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'TG001A','HS (healthy slaughtered at abattoir and home killed for human consumption)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'TG002A','FS (fallen stock)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'TG003A','EM (eradication measures)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'TG004A','AM (clinical signs at ante mortem)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'TG005A','ES (emergency slaughter)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'TG006A','SUS (clinical suspect animals)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'TG007A','SHC (slaughtered for human consumption at abattoir and home killed for human consumption)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'TG008A','NSHC (not slaughtered for human consumption)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'TG009A','RK Road/predator killed')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'TG010A','FC (Fallen/culled)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'TG011A','HSNHC (Hunted/slaughtered not fit for HC)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'TG012A','HSHC (Hunted/slaughtered fit for HC)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'analysisY','Year of analysis')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'anMethCode','First test')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'anMethRefId','Test ref ID')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'anMethType','Test type')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'anPortSeq','Portion')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'evalCom','Comment')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'evalInfo.sampEventAsses','Animal/case assessment')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'herdId','Herd ID')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'orgCode','Organisation code')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'paramCode.allele','Allele')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'paramType','Info level')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'part','Part')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'prod','Type of production')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'progId','Prog ID')"/>
 		<stx:assign name="_blank" select="h:put($descriptions,'progInfo.tseTargetGroup','Target group')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'allele1','Allele 1')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'allele2','Allele 2')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'analysisY','Year of analysis')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'animage','Age class')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'animalId','Animal ID')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'anMethCode','First test')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'anMethRefId','Test ref ID')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'anPortSeq','Portion')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'birthCountry','Country of birth')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'birthInFlockHerd','Born in the flock')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'birthMonth','Month of birth')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'birthYear','Year of birth')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'breed','Breed')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'country','Country')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'cwdExtCont','CWD extended context')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'defConfirmatoryBSE','Confirmatory BSE')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'defConfirmatoryCWD','Confirmatory CWD')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'defConfirmatorySCRAPIE','Confirmatory SCRAPIE')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'defDiscriminatoryBSE','Discriminatory BSE')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'defDiscriminatoryCWD','Discriminatory CWD')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'defDiscriminatorySCRAPIE','Discriminatory SCRAPIE')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'defScreeningBSE','Screening BSE')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'defScreeningCWD','Screening CWD')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'defScreeningSCRAPIE','Screening SCRAPIE')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'evalCom','Comment')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'herdId','Herd ID')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'orgCode','Organisation code')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'part','Part')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'prod','Type of production')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'progId','Prog ID')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'progLegalRef','EU legal reference')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'repCountry','Country')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'repYear','Year')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'resId','Res ID')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'sampArea','Sampling area')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'sampCountry','Sampling Country')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'sampD','Sampling Day')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'sampEventAsses','Sample/case assessment')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'sampHoldingId','Holding ID')"/>
-<stx:assign name="_blank" select="h:put($descriptions,'sampId','Sample ID')"/>
-
+		<stx:assign name="_blank" select="h:put($descriptions,'progInfo.totSamplesTested','Tot num of tested animals')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'progInfo.totSamplesPositive','Tot num of positive animals')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'progInfo.totSamplesNegative','Tot num of negative animals')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'progInfo.totSamplesInconclusive','Tot num of inconclusive animals')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'progInfo.totSamplesUnsuitable','Tot num of unsuitable samples')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'progLegalRef','EU legal reference')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'repCountry','Country')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'repYear','Year')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'resId','Res ID')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'resQualValue','Result')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'resType','Result type')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampAnId','Sample analyzed')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampArea','Sampling area')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampCountry','Sampling Country')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampD','Sampling Day')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampEventId','Sampling Event')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampEventInfo.birthCountry','Country of birth')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampEventInfo.birthInFlockHerd','Born in the flock')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampEventInfo.birthMonth','Month of birth')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampEventInfo.birthYear','Year of birth')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampEventInfo.statusHerd','Status of the holding/herd')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampId','Sample ID')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampInfo.origSampId','Summary id')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampM','Sampling Month')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampMatCode.animage','Age class')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampMatCode.source','Animal species')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampMatCode.part','Sampled part')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampMatCode.gender','Sex')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampMatCode.prod','Husbandry system')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampMatInfo.com','Comment (Breed)')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampMatType','Type of sample')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampUnitIds.animalId','Animal ID')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampUnitIds.herdId','Flock/herd ID')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampUnitIds.sampHoldingId','Holding ID')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampUnitIds.PSUId','Primary Sampling Unit ID')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampUnitType','Sampling unit')"/>
+		<stx:assign name="_blank" select="h:put($descriptions,'sampY','Sampling Year')"/>
 		<payloadAckDetails>
 			<stx:process-children/>
 		</payloadAckDetails>

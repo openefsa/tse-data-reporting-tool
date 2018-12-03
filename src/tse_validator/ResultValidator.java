@@ -34,12 +34,14 @@ public class ResultValidator extends SimpleRowValidatorLabelProvider {
 			}
 		}
 		
+		/* shahaal
+		 * br droped since not valid any more
 		boolean allele1Check = allele1.equals(CustomStrings.ALLELE_AFRR) || allele1.equals(CustomStrings.ALLELE_ALRR);
 		boolean allele2Check = allele2.equals(CustomStrings.ALLELE_AFRR) || allele2.equals(CustomStrings.ALLELE_ALRR);
 		
 		if (allele1Check && allele2Check) {
 			return ErrorType.WRONG_ALLELE_PAIR;
-		}
+		}*/
 		
 		return ErrorType.NONE;
 	}

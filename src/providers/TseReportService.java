@@ -150,7 +150,7 @@ public class TseReportService extends ReportService {
 	 * 
 	 * @return
 	 */
-	public Collection<TableRow> getAllRecords(TseReport report) {
+	public ArrayList<TableRow> getAllRecords(TseReport report) {
 
 		// children schemas
 		TableSchema[] schemas = new TableSchema[] { TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET),
@@ -160,14 +160,14 @@ public class TseReportService extends ReportService {
 		return getRecords(report, schemas);
 	}
 
-	public Collection<TableRow> getRecords(TseReport report, TableSchema[] schemas) {
+	public ArrayList<TableRow> getRecords(TseReport report, TableSchema[] schemas) {
 
-		Collection<TableRow> records = new ArrayList<>();
+		ArrayList<TableRow> records = new ArrayList<>();
 
 		// for each child schema get the rows related to the report
 		for (TableSchema schema : schemas) {
 
-			Collection<TableRow> children = getDaoService().getByParentId(schema, CustomStrings.REPORT_SHEET,
+			ArrayList<TableRow> children = getDaoService().getByParentId(schema, CustomStrings.REPORT_SHEET,
 					report.getDatabaseId(), true, "desc");
 
 			if (children != null)
@@ -235,6 +235,28 @@ public class TseReportService extends ReportService {
 	}
 
 	public MessageConfigBuilder getSendMessageConfiguration(TseReport report) {
+
+		Collection<TableRow> messageParents = new ArrayList<>();
+
+		// add the report data
+		messageParents.add(report);
+
+		// add the settings data
+		try {
+
+			TableRow settings = Relation.getGlobalParent(CustomStrings.SETTINGS_SHEET, getDaoService());
+
+			messageParents.add(settings);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		MessageConfigBuilder builder = new MessageConfigBuilder(formulaService, messageParents);
+
+		return builder;
+	}
+	
+	public MessageConfigBuilder getAcceptDwhBetaMessageConfiguration(TseReport report) {
 
 		Collection<TableRow> messageParents = new ArrayList<>();
 

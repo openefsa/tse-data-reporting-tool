@@ -5,7 +5,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +31,7 @@ import xlsx_reader.TableSchemaList;
 
 /**
  * Validate an entire report and returns the errors
- * @author avonva
+ * @author avonva && shahaal
  *
  */
 public class TseReportValidator extends ReportValidator {
@@ -61,16 +60,29 @@ public class TseReportValidator extends ReportValidator {
 		
 		Collection<ReportError> errors = new ArrayList<>();
 		
-		Collection<TableRow> reportRecords = this.reportService.getAllRecords(report);
+		ArrayList<TableRow> reportRecords = this.reportService.getAllRecords(report);
 
 		if (reportRecords.isEmpty()) {
 			errors.add(new EmptyReportError());
 		}
 		
-		// shahaal set the status heard from the level 1 and pass it to level 2
-		// the var doesnt exists anymore in the tableSchema
-		String statusHerd="";
-		
+		// TODO shahaal check how to perform better the algorithm
+		/*
+		TableRow tempRow1, tempRow2;
+		for(int i=0; i<reportRecords.size()-1;i++) {
+			for(int j=i+1; j<reportRecords.size();j++) {
+				tempRow1=reportRecords.get(i);
+				tempRow1.remove(CustomStrings.PROG_ID_COL);
+				
+				tempRow2=reportRecords.get(j);
+				tempRow2.remove(CustomStrings.PROG_ID_COL);
+				if(tempRow1.sameAs(tempRow2)) {
+					System.out.println("shahaal equals!");
+					break;
+				}
+			}
+		}*/
+
 		// check errors on single row (no interdependency is evaluated)
 		for (TableRow row : reportRecords) {
 			
@@ -86,16 +98,15 @@ public class TseReportValidator extends ReportValidator {
 				errors.addAll(checkResult(row));
 			}
 			else if (type == RowType.CASE) {
-				errors.addAll(checkCaseInfo(row, statusHerd));
+				errors.addAll(checkCaseInfo(row));
 			}
 			else if (type == RowType.SUMM) {
-				statusHerd=row.getCode(CustomStrings.STATUS_HERD_COL);
 				errors.addAll(checkSummarizedInfo(row));
 			}
 		}
 		
 		// check errors across different rows
-		//errors.addAll(checkDuplicatedContext(reportRecords));
+		errors.addAll(checkDuplicatedContext(reportRecords));
 		errors.addAll(checkDuplicatedSampleId(reportRecords));
 		errors.addAll(checkDuplicatedResId(reportRecords));
 		errors.addAll(checkNationalCaseId(reportRecords));
@@ -181,7 +192,9 @@ public class TseReportValidator extends ReportValidator {
 			
 			if (reportService.getRowType(row) != RowType.SUMM)
 				continue;
-			String id = row.getLabel(CustomStrings.CONTEXT_ID_COL);
+			//shahaal suminfo not based on context id any more
+			String id = row.getLabel(CustomStrings.SAMPLE_ID_COL);
+			//String id = row.getLabel(CustomStrings.CONTEXT_ID_COL);
 			
 			if (summInfos.containsKey(id)) {
 				TableRow conflict = summInfos.get(id);
@@ -364,7 +377,7 @@ public class TseReportValidator extends ReportValidator {
 	 * @param row
 	 * @return
 	 */
-	public Collection<ReportError> checkCaseInfo(TableRow row, String statusHerd) {
+	public Collection<ReportError> checkCaseInfo(TableRow row) {
 		
 		Collection<ReportError> errors = new ArrayList<>();
 

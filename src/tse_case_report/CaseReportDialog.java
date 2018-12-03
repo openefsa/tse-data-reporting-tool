@@ -215,7 +215,8 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		});
 		
 		addRemoveMenuItem(menu);
-			
+		addCloneMenuItem(menu);
+		
 		return menu;
 	}
 	

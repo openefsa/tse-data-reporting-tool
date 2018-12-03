@@ -83,19 +83,27 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			checks.add(Check.NO_TEST_SPECIFIED);
 		}
 
+		/* shahaal
+		 * br droped since not valid any more
 		if (isTestDuplicated(results)) {
 			checks.add(Check.DUPLICATED_TEST);
-		}
+		}*/
 
+		/* shahaal
+		 * br droped since not valid any more
 		if (!isAnalysisYearConstant(results)) {
 			checks.add(Check.NOT_CONSTANT_ANALYSIS_YEAR);
-		}
+		}*/
 
 		// check children errors
 		if (row.hasChildrenError()) {
 			checks.add(Check.WRONG_RESULTS);
 		}
 
+		
+		/* shahaal
+		 * br droped since not valid any more
+		 * 
 		String type = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
 		String farmed = summInfo.getCode(CustomStrings.PROD_COL);
 
@@ -104,7 +112,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			if (farmed.equals(CustomStrings.FARMED_PROD)) {
 				checks.add(Check.INDEX_CASE_FOR_FARMED_CWD);
 			}
-		}
+		}*/
 
 		// if eradication measure for status herd F in scrapie
 		// if (type.equals(CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE)) {
