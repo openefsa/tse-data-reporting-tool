@@ -18,7 +18,7 @@ public class TSEFormulaDecomposer extends FormulaDecomposer {
 	private static final Logger LOGGER = LogManager.getLogger(TSEFormulaDecomposer.class);
 	
 	public HashMap<String, TableCell> decompose(String columnId, String rowValue) throws ParseException {
-		
+
 		HashMap<String, TableCell> values = new HashMap<>();
 
 		if (rowValue.isEmpty())

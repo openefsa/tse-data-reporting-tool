@@ -1,14 +1,12 @@
 package tse_summarized_information;
 
-import formula.FormulaException;
-import formula.FormulaSolver;
 import table_skeleton.TableCell;
 import table_skeleton.TableRow;
 import tse_config.CatalogLists;
 import tse_config.CustomStrings;
-import xlsx_reader.TableHeaders.XlsxHeader;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
+import xml_catalog_reader.Selection;
 import xml_catalog_reader.XmlLoader;
 
 public class SummarizedInfo extends TableRow {
@@ -59,13 +57,6 @@ public class SummarizedInfo extends TableRow {
 		return this.getLabel(CustomStrings.PROG_ID_COL);
 	}
 	
-	public String computeContextId() throws FormulaException {
-		FormulaSolver solver = new FormulaSolver(this);
-		
-		return solver.solve(this.getSchema().getById(CustomStrings.CONTEXT_ID_COL), 
-				XlsxHeader.LABEL_FORMULA.getHeaderName()).getSolvedFormula();
-	}
-	
 	public void setType(String type) {
 		this.put(CustomStrings.SUMMARIZED_INFO_TYPE, 
 				getTableColumnValue(type, CatalogLists.TSE_LIST));
@@ -78,10 +69,19 @@ public class SummarizedInfo extends TableRow {
 	public String getTypeBySpecies() {
 		
 		String species = getSpecies();
+
+		//shahaal, handle the null type by species when importing catalogues created
+		//with TSE <1.2.2
 		
 		// get the type whose species is the current one
-		String listId = XmlLoader.getByPicklistKey(CatalogLists.SPECIES_LIST)
-				.getElementByCode(species).getListId();
+		Selection sel = XmlLoader.getByPicklistKey(CatalogLists.SPECIES_LIST).getElementByCode(species);
+		
+		if(sel==null)
+			return "";
+		
+		System.out.println(sel.toString());
+
+		String listId = sel.getListId();
 		
 		// If we found composite filter, get only the first part
 		if (listId.contains("$")) {

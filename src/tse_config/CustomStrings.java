@@ -50,8 +50,6 @@ public class CustomStrings {
 	public static final String ANIMAGE_COL = "animage";
 	public static final String TARGET_GROUP_COL = "tseTargetGroup";
 	public static final String PROG_INFO_COL = "progInfo";
-	//public static final String CONTEXT_ID_COL = "contextId";
-	public static final String CONTEXT_ID_COL = "origSampId";
 	public static final String SAMP_MAT_CODE_COL = "sampMatCode";
 	public static final String SEX_COL = "sex";
 	public static final String PSU_ID_COL = "PSUId";
@@ -153,5 +151,5 @@ public class CustomStrings {
 	// xml tags of dataset
 	public static final String RES_ID_COL = "resId";
 	public static final String SENDER_DATASET_ID_COL = "senderDatasetId";
-	 
+	
 }

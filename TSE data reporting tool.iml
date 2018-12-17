@@ -16,7 +16,7 @@
     <orderEntry type="module" module-name="EFSA catalogues browser" />
     <orderEntry type="module" module-name="DCF webservice framework" />
     <orderEntry type="module" module-name="BusinessRules" />
-    <orderEntry type="module" module-name="TSE-data-reporting-tool-1.2.1" />
+    <orderEntry type="module" module-name="TSE-data-reporting-tool-1.2.2" />
     <orderEntry type="module" module-name="Window size save and restore" />
     <orderEntry type="module" module-name="target" />
   </component>

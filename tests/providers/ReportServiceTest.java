@@ -8,13 +8,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -56,7 +52,6 @@ import soap_test.GetAckMock;
 import soap_test.GetDatasetMock;
 import soap_test.GetDatasetsListMock;
 import soap_test.SendMessageMock;
-import table_relations.Relation;
 import table_skeleton.TableCell;
 import table_skeleton.TableRow;
 import table_skeleton.TableRowList;
@@ -64,7 +59,6 @@ import table_skeleton.TableVersion;
 import tse_config.CustomStrings;
 import tse_report.TseReport;
 import tse_summarized_information.SummarizedInfo;
-import xlsx_reader.TableHeaders.XlsxHeader;
 import xlsx_reader.TableSchemaList;
 
 public class ReportServiceTest {
@@ -123,7 +117,7 @@ public class ReportServiceTest {
 
 		daoService.add(info);
 
-		String contextId = reportService.getContextId(info);
+		String contextId = reportService.getSampId(info);
 
 		assertFalse(contextId.isEmpty());
 	}
@@ -707,7 +701,8 @@ public class ReportServiceTest {
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.OTHER, true);
 
 		assertEquals(RCLDatasetStatus.OTHER, report.getRCLStatus());
-		assertEquals("OK500", m.getCode());
+		//shahaal not OK500 but ERR501, msg changed
+		assertEquals("ERR501", m.getCode());
 	}
 
 	@Test
@@ -2120,6 +2115,8 @@ public class ReportServiceTest {
 		assertEquals(1, doc.getElementsByTagName("result").getLength());
 	}
 
+	/*
+	 * shahaal contextid not used anymore
 	@Test
 	public void computeContextIdForAnalyticalResultForBSEExceptionCountry()
 			throws NoSuchAlgorithmException, ParseException, FormulaException {
@@ -2174,9 +2171,11 @@ public class ReportServiceTest {
 
 		String hash = DatatypeConverter.printHexBinary(digest);
 
-		assertEquals(hash, reportService.getSampOrigIdFrom(result));
-	}
+		assertEquals(hash, reportService.getContextIdFrom(result));
+	}*/
 
+	/*
+	 * shahaal contextid not used anymore
 	@Test
 	public void contextIdForAggregatedCWDForExceptionalCountry() throws NoSuchAlgorithmException, FormulaException {
 
@@ -2220,7 +2219,7 @@ public class ReportServiceTest {
 
 		daoService.add(aggr);
 
-		String contextId = formulaService.solve(aggr, aggr.getSchema().getById(CustomStrings.CONTEXT_ID_COL),
+		String contextId = formulaService.solve(aggr, aggr.getSchema().getById(CustomStrings.SAMPLE_ID_COL),
 				XlsxHeader.LABEL_FORMULA);
 
 		String hashAlgorithm = "MD5";
@@ -2233,8 +2232,10 @@ public class ReportServiceTest {
 		String hash = DatatypeConverter.printHexBinary(digest);
 
 		assertEquals(hash, contextId);
-	}
-
+	}*/
+	
+	/*
+	 * shahaal contextid not used anymore
 	@Test
 	public void contextIdForAggregatedCWDForNONExceptionalCountry() throws NoSuchAlgorithmException, FormulaException {
 
@@ -2282,7 +2283,7 @@ public class ReportServiceTest {
 		//summId
 		daoService.add(aggr);
 
-		String contextId = formulaService.solve(aggr, aggr.getSchema().getById(CustomStrings.CONTEXT_ID_COL),
+		String contextId = formulaService.solve(aggr, aggr.getSchema().getById(CustomStrings.SAMPLE_ID_COL),
 				XlsxHeader.LABEL_FORMULA);
 
 		String hashAlgorithm = "MD5";
@@ -2295,8 +2296,10 @@ public class ReportServiceTest {
 		String hash = DatatypeConverter.printHexBinary(digest);
 
 		assertEquals(hash, contextId);
-	}
-
+	}*/
+	
+	/*
+	 * shahaal contextid not used anymore
 	@Test
 	public void contextIdForAggregatedBSEForExceptionalCountry() throws NoSuchAlgorithmException, FormulaException {
 
@@ -2338,7 +2341,7 @@ public class ReportServiceTest {
 
 		daoService.add(aggr);
 
-		String contextId = formulaService.solve(aggr, aggr.getSchema().getById(CustomStrings.CONTEXT_ID_COL),
+		String contextId = formulaService.solve(aggr, aggr.getSchema().getById(CustomStrings.SAMPLE_ID_COL),
 				XlsxHeader.LABEL_FORMULA);
 
 		String hashAlgorithm = "MD5";
@@ -2351,8 +2354,10 @@ public class ReportServiceTest {
 		String hash = DatatypeConverter.printHexBinary(digest);
 
 		assertEquals(hash, contextId);
-	}
+	}*/
 
+	/*
+	 * shahaal contextid not used anymore
 	@Test
 	public void contextIdForAggregatedBSEForNONExceptionalCountry() throws NoSuchAlgorithmException, FormulaException {
 
@@ -2394,7 +2399,7 @@ public class ReportServiceTest {
 
 		daoService.add(aggr);
 
-		String contextId = formulaService.solve(aggr, aggr.getSchema().getById(CustomStrings.CONTEXT_ID_COL),
+		String contextId = formulaService.solve(aggr, aggr.getSchema().getById(CustomStrings.SAMPLE_ID_COL),
 				XlsxHeader.LABEL_FORMULA);
 
 		String hashAlgorithm = "MD5";
@@ -2407,8 +2412,10 @@ public class ReportServiceTest {
 		String hash = DatatypeConverter.printHexBinary(digest);
 
 		assertEquals(hash, contextId);
-	}
+	}*/
 
+	/*
+	 * shahaal contextid not used anymore
 	@Test
 	public void computeContextIdForAnalyticalResultForCWDNONExceptionalCountry()
 			throws NoSuchAlgorithmException, ParseException, FormulaException {
@@ -2464,9 +2471,11 @@ public class ReportServiceTest {
 
 		String hash = DatatypeConverter.printHexBinary(digest);
 
-		assertEquals(hash, reportService.getSampOrigIdFrom(result));
-	}
+		assertEquals(hash, reportService.getContextIdFrom(result));
+	}*/
 
+	/*
+	 * shahaal contextid not used anymore
 	@Test
 	public void computeContextIdForAnalyticalResultForCWDExceptionalCountry()
 			throws NoSuchAlgorithmException, ParseException, FormulaException {
@@ -2522,9 +2531,11 @@ public class ReportServiceTest {
 
 		String hash = DatatypeConverter.printHexBinary(digest);
 
-		assertEquals(hash, reportService.getSampOrigIdFrom(result));
-	}
+		assertEquals(hash, reportService.getContextIdFrom(result));
+	}*/
 
+	/*
+	 * shahaal not context id not used anymore, BR removed
 	@Test
 	public void computeContextIdForAnalyticalResultForSCRAPIEExceptionCountry()
 			throws NoSuchAlgorithmException, ParseException, FormulaException {
@@ -2577,9 +2588,11 @@ public class ReportServiceTest {
 
 		String hash = DatatypeConverter.printHexBinary(digest);
 		
-		assertEquals(hash, reportService.getSampOrigIdFrom(result));
-	}
+		assertEquals(hash, reportService.getContextIdFrom(result));
+	}*/
 
+	/*
+	 * shahaal contextid not used anymore
 	@Test
 	public void computeContextIdForAnalyticalResultForSCRAPIENONExceptionCountry()
 			throws NoSuchAlgorithmException, ParseException, FormulaException {
@@ -2632,6 +2645,6 @@ public class ReportServiceTest {
 
 		String hash = DatatypeConverter.printHexBinary(digest);
 
-		assertEquals(hash, reportService.getSampOrigIdFrom(result));
-	}
+		assertEquals(hash, reportService.getContextIdFrom(result));
+	}*/
 }

@@ -65,23 +65,6 @@ public class TseReportValidator extends ReportValidator {
 		if (reportRecords.isEmpty()) {
 			errors.add(new EmptyReportError());
 		}
-		
-		// TODO shahaal check how to perform better the algorithm
-		/*
-		TableRow tempRow1, tempRow2;
-		for(int i=0; i<reportRecords.size()-1;i++) {
-			for(int j=i+1; j<reportRecords.size();j++) {
-				tempRow1=reportRecords.get(i);
-				tempRow1.remove(CustomStrings.PROG_ID_COL);
-				
-				tempRow2=reportRecords.get(j);
-				tempRow2.remove(CustomStrings.PROG_ID_COL);
-				if(tempRow1.sameAs(tempRow2)) {
-					System.out.println("shahaal equals!");
-					break;
-				}
-			}
-		}*/
 
 		// check errors on single row (no interdependency is evaluated)
 		for (TableRow row : reportRecords) {

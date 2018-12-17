@@ -254,7 +254,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	 */
 	@Override
 	public TableRow createNewRow(TableSchema schema, Selection element) {
-
+		
 		TableCell value = new TableCell(element);
 
 		// if random genotyping

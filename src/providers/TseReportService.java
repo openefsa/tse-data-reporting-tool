@@ -62,22 +62,31 @@ public class TseReportService extends ReportService {
 		this.formulaService = formulaService;
 	}
 
-	public String getContextId(SummarizedInfo summInfo) throws FormulaException {
+	/**
+	 * shahaal
+	 * get sampId now
+	 * @param summInfo
+	 * @return
+	 * @throws FormulaException
+	 */
+	public String getSampId(SummarizedInfo summInfo) throws FormulaException {
 
 		// we need all the fields to compute the context id, in order to
 		// solve formula dependencies
 		FormulaSolver solver = new FormulaSolver(summInfo, daoService);
+		
 		ArrayList<Formula> formulas = solver.solveAll(XlsxHeader.LABEL_FORMULA.getHeaderName());
+
 		System.out.println(Arrays.asList(formulas));
 
 		for (Formula f : formulas) {
-			if (f.getColumn().getId().equals(CustomStrings.ORIG_SAMP_ID_COL))
+			if (f.getColumn().getId().equals(CustomStrings.SAMPLE_ID_COL))
 				return f.getSolvedFormula();
 		}
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * Check if the analytical result is related to random genotyping
 	 * 
@@ -125,24 +134,31 @@ public class TseReportService extends ReportService {
 	}
 
 	/**
-	 * Extract the samp orig id from an analytical result
-	 * 
+	 * shahaal
+	 * Extract the origSampId from analytical result
 	 * @param result
 	 * @return
 	 * @throws ParseException
 	 * @throws FormulaException
 	 */
-	public String getSampOrigIdFrom(TableRow result) throws ParseException, FormulaException {
-
+	public String getOrigSampIdFrom(TableRow result) throws ParseException, FormulaException {
+		
 		// decompose param code
 		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer();
-
-		HashMap<String, TableCell> sampOrigId = decomposer.decompose(CustomStrings.SAMP_INFO_COL,
-				result.getCode(CustomStrings.SAMP_INFO_COL));
-
-		LOGGER.info("Result sampOrigId" + sampOrigId);
-
-		return sampOrigId.get(CustomStrings.ORIG_SAMP_ID_COL).getLabel();
+		
+		HashMap<String, TableCell> rowValues = 
+				decomposer.decompose(CustomStrings.SAMP_INFO_COL, 
+						result.getCode(CustomStrings.SAMP_INFO_COL));
+		
+		//get the cell for origSampId
+		TableCell cell =rowValues.get(CustomStrings.ORIG_SAMP_ID_COL);
+		
+		// if the cell is null (old report) then retrieve it from resId
+		if(cell==null)
+			return result.getCode(CustomStrings.RES_ID_COL).substring(0,11);
+		
+		// return the sampOrigId
+		return cell.getCode();
 	}
 
 	/**
@@ -255,7 +271,7 @@ public class TseReportService extends ReportService {
 
 		return builder;
 	}
-	
+
 	public MessageConfigBuilder getAcceptDwhBetaMessageConfiguration(TseReport report) {
 
 		Collection<TableRow> messageParents = new ArrayList<>();
@@ -436,24 +452,25 @@ public class TseReportService extends ReportService {
 			e.printStackTrace();
 		}
 
-		// shahaal: removed stmt since the report is not based anymore on the exceptional country
+		// shahaal: removed stmt since the report is not based anymore on the
+		// exceptional country
 		// but instead on the CWD EXTENDED CONTEXT
 		/*
-		try {
+		 * try {
+		 * 
+		 * //shahaal: uncomment for printing the columns of the schema in the report
+		 * //for (TableColumn tc : report.getSchema()) // System.out.println("Column: "
+		 * + tc.getId());
+		 * 
+		 * String isCWDExtendedContext = formulaService.solve(report,
+		 * report.getSchema()..getById(CustomStrings.EXCEPTION_COUNTRY_COL),
+		 * XlsxHeader.LABEL_FORMULA);
+		 * 
+		 * report.setCWDExtendedContext(isCWDExtendedContext);
+		 * 
+		 * } catch (FormulaException e) { e.printStackTrace(); }
+		 */
 
-			//shahaal: uncomment for printing the columns of the schema in the report
-			//for (TableColumn tc : report.getSchema())
-			//	System.out.println("Column: " + tc.getId());
-
-			String isCWDExtendedContext = formulaService.solve(report,
-					report.getSchema()..getById(CustomStrings.EXCEPTION_COUNTRY_COL), XlsxHeader.LABEL_FORMULA);
-
-			report.setCWDExtendedContext(isCWDExtendedContext);
-
-		} catch (FormulaException e) {
-			e.printStackTrace();
-		}*/
-		
 		return report;
 
 	}

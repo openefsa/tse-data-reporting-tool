@@ -6,6 +6,8 @@ import java.nio.file.Paths;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
+import i18n_messages.RCLBundle;
+
 public class TSEMessages {
 	/* internal jar properties file
 	private static final String BUNDLE_NAME = "i18n_messages.tse_messages_en";

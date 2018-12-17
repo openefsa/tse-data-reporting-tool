@@ -241,7 +241,7 @@ public abstract class TableDialogWithMenu extends TableDialog {
 	 * @return
 	 */
 	public MenuItem addCloneMenuItem(Menu menu) {
-
+		
 		MenuItem clone = new MenuItem(menu, SWT.PUSH);
 		clone.setText(TSEMessages.get("clone.records"));
 		clone.setEnabled(false);

@@ -351,6 +351,8 @@ public class ReportValidatorTest {
 		assertFalse(myError);
 	}
 	
+	/*
+	 * shahaal br not used anymore
 	@Test
 	public void nonWildCwdAndKilledShouldBeRejected() {
 		
@@ -368,7 +370,7 @@ public class ReportValidatorTest {
 		}
 		
 		assertTrue(myError);
-	}
+	}*/
 	
 	@Test
 	public void wildCwdAndKilledShouldBeAccepted() {
@@ -438,6 +440,8 @@ public class ReportValidatorTest {
 		assertEquals(ErrorType.NONE, error);
 	}
 	
+	/*
+	 * shahaal not used anymore, BR removed
 	@Test
 	public void wrongAllelePairsAfrrAfrr() {
 		
@@ -462,8 +466,10 @@ public class ReportValidatorTest {
 		ErrorType error = validator.getError(result);
 		
 		assertEquals(ErrorType.WRONG_ALLELE_PAIR, error);
-	}
+	}*/
 	
+	/*
+	 * shahaal br not used anymore
 	@Test
 	public void wrongAllelePairsAlrrAfrr() {
 		
@@ -475,8 +481,10 @@ public class ReportValidatorTest {
 		ErrorType error = validator.getError(result);
 		
 		assertEquals(ErrorType.WRONG_ALLELE_PAIR, error);
-	}
+	}*/
 	
+	/*
+	 * shahaal br not used anymore
 	@Test
 	public void wrongAllelePairsAlrrAlrr() {
 		
@@ -488,8 +496,11 @@ public class ReportValidatorTest {
 		ErrorType error = validator.getError(result);
 		
 		assertEquals(ErrorType.WRONG_ALLELE_PAIR, error);
-	}
+	}*/
 	
+	/*
+	 * shahaal not used anymore BR removed
+
 	@Test
 	public void duplicatedScreeningTestCheck() throws IOException {
 
@@ -505,8 +516,11 @@ public class ReportValidatorTest {
 		Collection<Check> checks = validator.isRecordCorrect(cr);
 
 		assertTrue(checks.contains(Check.DUPLICATED_TEST));
-	}
+	}*/
 	
+
+	/*
+	 * shahaal br not used anymore
 	@Test
 	public void duplicatedConfirmatoryTestCheck() throws IOException {
 
@@ -522,8 +536,10 @@ public class ReportValidatorTest {
 		Collection<Check> checks = validator.isRecordCorrect(cr);
 		
 		assertTrue(checks.contains(Check.DUPLICATED_TEST));
-	}
+	}*/
 	
+	/*
+	 * shahaal br not used anymore
 	@Test
 	public void duplicatedDiscriminatoryTestCheck() throws IOException {
 
@@ -539,8 +555,10 @@ public class ReportValidatorTest {
 		Collection<Check> checks = validator.isRecordCorrect(cr);
 		
 		assertTrue(checks.contains(Check.DUPLICATED_TEST));
-	}
+	}*/
 	
+	/*
+	 * shahaal br not used anymore
 	@Test
 	public void duplicatedGenotypingTestCheck() throws IOException {
 
@@ -556,7 +574,7 @@ public class ReportValidatorTest {
 		Collection<Check> checks = validator.isRecordCorrect(cr);
 		
 		assertTrue(checks.contains(Check.DUPLICATED_TEST));
-	}
+	}*/
 	
 	@Test
 	public void noDetailedTestCheck() throws IOException {
@@ -598,6 +616,8 @@ public class ReportValidatorTest {
 		assertTrue(checks.contains(Check.CASE_ID_FOR_NEGATIVE));
 	}
 	
+	/*
+	 * shahaal br not used anymore
 	@Test
 	public void indexCaseNOForFarmedCwdCheck() throws IOException {
 
@@ -616,7 +636,7 @@ public class ReportValidatorTest {
 		Collection<Check> checks = validator.isRecordCorrect(cr);
 		
 		assertTrue(checks.contains(Check.INDEX_CASE_FOR_FARMED_CWD));
-	}
+	}*/
 	
 	@Test
 	public void duplicatedResIdCheck() {
@@ -729,10 +749,10 @@ public class ReportValidatorTest {
 	public void duplicatedContextIdForSummarizedInformation() throws IOException, FormulaException {
 
 		String contextId = formulaService.solve(si, 
-				si.getSchema().getById(CustomStrings.CONTEXT_ID_COL), 
+				si.getSchema().getById(CustomStrings.SAMPLE_ID_COL), 
 				XlsxHeader.LABEL_FORMULA);
 		
-		si.put(CustomStrings.CONTEXT_ID_COL, contextId);
+		si.put(CustomStrings.SAMPLE_ID_COL, contextId);
 
 		SummarizedInfo si2 = new SummarizedInfo();
 		si2.copyValues(si);

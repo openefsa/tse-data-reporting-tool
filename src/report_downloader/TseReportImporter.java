@@ -86,7 +86,7 @@ public class TseReportImporter extends ReportImporter {
 				// save it in the database
 				daoService.add(si);
 
-				LOGGER.info("Imported summ info; contextId=" + reportService.getContextId(si));
+				LOGGER.info("Imported summ info; sampId=" + reportService.getSampId(si));
 
 				// save it in the cache
 				summInfos.add(si);
@@ -109,15 +109,15 @@ public class TseReportImporter extends ReportImporter {
 
 			if (!isSummarizedInfo(row)) {
 
-				SummarizedInfo summInfo = null;
+				SummarizedInfo summInfo = new SummarizedInfo();
 				
 				// if random genotyping, create the summarized information
 				if (reportService.isRGTResult(row)) {
-	
+
 					summInfo = extractSummarizedInfo(report, row, true);
 
 					summInfo.setType(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
-	
+					
 					// create the summarized information
 					daoService.add(summInfo);
 					
@@ -128,31 +128,31 @@ public class TseReportImporter extends ReportImporter {
 					LOGGER.info("Created fake RGT summarized information");
 				}
 				else {
-
-					row.put(CustomStrings.REPORT_ID_COL, report.getDatabaseId()); // Report is needed for results formulas (contextid)
 					
-					String sampOrigId = this.reportService.getSampOrigIdFrom(row);
+					row.put(CustomStrings.REPORT_ID_COL, report.getDatabaseId()); // Report is needed for results formulas (sampId)
 					
-					LOGGER.info("Samp orig id=" + sampOrigId + " for " + row);
+					String origSampId = this.reportService.getOrigSampIdFrom(row);
+					
+					LOGGER.info("Samp orig id=" + origSampId + " for " + row);
 
 					// get the summarized info related to the case/result
-					summInfo = getSummInfoBySampOrigId(sampOrigId);
-					
-					LOGGER.info("Related summarized info with same contextId= " + summInfo);
-				}
+					summInfo = getSummInfoByOrigSampId(origSampId);
 
+					LOGGER.info("Related summarized info with same origSampId= " + summInfo);
+				}
+				
 				if (summInfo == null) {
 					
-					String sampOrigId = this.reportService.getSampOrigIdFrom(row);
+					String origSampId = this.reportService.getOrigSampIdFrom(row);
 					
 					String hashes = "";
 					for (SummarizedInfo si : summInfos) {
-						hashes += this.reportService.getSampOrigIdFrom(si) + "\n";
+						hashes += this.reportService.getOrigSampIdFrom(si) + "\n";
 					}
 					
-					System.err.println("Cannot find sampOrigId " + sampOrigId);
+					System.err.println("Cannot find sampId " + origSampId);
 					
-					throw new ParseException("No aggregated data was found related to sampOrigId=" + sampOrigId 
+					throw new ParseException("No aggregated data was found related to sampOrigId=" + origSampId 
 							+ " for individual case=" + row + ". Available aggregated data are: " + summInfos + "with hashes" + hashes, 0);
 				}
 
@@ -420,22 +420,21 @@ public class TseReportImporter extends ReportImporter {
 		
 		return result;
 	}
-
+	
 	/**
-	 * Given a samp orig id of an analytical result, get the summarized
-	 * information which is related to it (i.e. with a value of sampId equal to
-	 * the sampOrigid)
-	 * @param sampOrigId
+	 * Given a prog id of an analytical result, get the summarized
+	 * information which is related to it
+	 * @param progId
 	 * @return
 	 * @throws FormulaException 
 	 */
-	private SummarizedInfo getSummInfoBySampOrigId(String sampOrigId) throws FormulaException {
+	private SummarizedInfo getSummInfoByOrigSampId(String resultOrigSampId) throws FormulaException {
 
 		for (SummarizedInfo info : summInfos) {
-
-			String sampId = info.getLabel(CustomStrings.SAMPLE_ID_COL);
-
-			if (sampId.equals(sampOrigId)) {
+			
+			String sampId = reportService.getSampId(info);
+			
+			if (sampId.equals(resultOrigSampId)) {
 				return info;
 			}
 		}
@@ -458,7 +457,7 @@ public class TseReportImporter extends ReportImporter {
 	public void importDatasetRows(List<TableRow> rows) throws FormulaException, ParseException {
 
 		LOGGER.info("Importing the summarized information");
-		
+
 		// first import the summarized information
 		importSummarizedInformation(report, rows);
 
