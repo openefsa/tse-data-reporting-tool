@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Stack;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -98,7 +99,7 @@ public class TseReportService extends ReportService {
 
 		FormulaDecomposer decomposer = new FormulaDecomposer();
 		String paramBaseTerm = decomposer.getBaseTerm(row.getCode(CustomStrings.PARAM_CODE_COL));
-
+		
 		boolean rgtParamCode = paramBaseTerm.equals(CustomStrings.RGT_PARAM_CODE);
 
 		return rgtParamCode;
@@ -154,8 +155,20 @@ public class TseReportService extends ReportService {
 		TableCell cell =rowValues.get(CustomStrings.ORIG_SAMP_ID_COL);
 		
 		// if the cell is null (old report) then retrieve it from resId
-		if(cell==null)
-			return result.getCode(CustomStrings.RES_ID_COL).substring(0,11);
+		if(cell==null) {
+			
+			//get the resId
+			//String resId=result.getCode(CustomStrings.RES_ID_COL);
+			//String dot = ".";
+			//return the substring if dot present
+			//whole string otherwise
+			//if(resId.contains(dot)) {
+			//	return StringUtils.substringBefore(resId, dot);
+			//}else {
+				return StringUtils.substringBefore(result.getCode(CustomStrings.RES_ID_COL),".");
+				//return resId;
+			//}
+		}
 		
 		// return the sampOrigId
 		return cell.getCode();

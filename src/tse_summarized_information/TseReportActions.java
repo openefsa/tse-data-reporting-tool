@@ -78,9 +78,9 @@ public class TseReportActions extends ReportActions {
 		case SUBMIT:
 			submitEnd();
 			break;
-		case ACCEPTED_DWH_BETA:
+		/*case ACCEPTED_DWH_BETA:
 			acceptedDwhBetaEnd();
-			break;
+			break;*/
 		default:
 			unsupportedEnd();
 			break;
@@ -197,14 +197,14 @@ public class TseReportActions extends ReportActions {
 		Warnings.warnUser(shell, title, message, style);
 	}
 	
-	//shahaal
+	/* shahaal, uncomment for beta testers
 	private void acceptedDwhBetaEnd() {
 		String title = TSEMessages.get("success.title");
 		String message = TSEMessages.get("acceptedDwhBeta.success");
 		int style = SWT.ICON_INFORMATION;
 		
 		Warnings.warnUser(shell, title, message, style);
-	}
+	}*/
 	
 	private Message getUnsupportedOpWarning(Dataset dataset) {
 		
@@ -344,9 +344,9 @@ public class TseReportActions extends ReportActions {
 		case SEND:
 			message = TSEMessages.get("send.confirm");
 			break;
-		case ACCEPTED_DWH_BETA:
+		/*case ACCEPTED_DWH_BETA:
 			message = TSEMessages.get("beta_accepted_dhw.confirm");
-			break;
+			break;*/
 		case AMEND:
 			message = TSEMessages.get("amend.confirm");
 			break;

@@ -624,7 +624,9 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			}
 		};
 
-		// shahaal: listener for the beta tester
+		/*
+		 * shahaal, uncomment for the beta tester
+		
 		SelectionListener getAcceptedDwhMsgBeta = new SelectionAdapter() {
 
 			@Override
@@ -648,7 +650,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				});
 				
 			}
-		};
+		};*/
 
 		SelectionListener changeMessageIdListener = new SelectionAdapter() {
 
@@ -716,12 +718,12 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 							changeDatasetIdListener);
 		}
 
-		// shahaal: if in beta test add the change report status button
+		/* shahaal: if in beta test add the change report status button
 		if (DebugConfig.betaTest) {
 			viewer.addGroup("betaTesterPanel", TSEMessages.get("si.beta.tester.panel"), new GridLayout(1, false), null)
 					.addButtonToComposite("betaAcceptedDwh", "betaTesterPanel",
 							TSEMessages.get("si.beta.accepted.dwh"), getAcceptedDwhMsgBeta);
-		}
+		}*/
 
 		viewer.addComposite("panel", new GridLayout(1, false), null)
 
@@ -900,9 +902,9 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		case SEND:
 			message = TSEMessages.get("send.confirm");
 			break;
-		case ACCEPTED_DWH_BETA:
+		/*case ACCEPTED_DWH_BETA:
 			message = TSEMessages.get("beta_accepted_dhw.confirm");
-			break;
+			break;*/
 		case AMEND:
 			message = TSEMessages.get("amend.confirm");
 			break;
