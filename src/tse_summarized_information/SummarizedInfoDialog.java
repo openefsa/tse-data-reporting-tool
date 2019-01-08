@@ -469,6 +469,8 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			}
 		};
 
+		/*
+		//shahaal: uncomment for adding Reject function
 		SelectionListener rejectListener = new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
@@ -490,7 +492,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 					}
 				});
 			}
-		};
+		};*/
 
 		SelectionListener submitListener = new SelectionAdapter() {
 			@Override
@@ -735,7 +737,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				.addButtonToComposite("sendBtn", "buttonsComp", TSEMessages.get("si.toolbar.send"), sendListener)
 				.addButtonToComposite("submitBtn", "buttonsComp", TSEMessages.get("si.toolbar.submit"), submitListener)
 				.addButtonToComposite("amendBtn", "buttonsComp", TSEMessages.get("si.toolbar.amend"), amendListener)
-				.addButtonToComposite("rejectBtn", "buttonsComp", TSEMessages.get("si.toolbar.reject"), rejectListener)
+				//.addButtonToComposite("rejectBtn", "buttonsComp", TSEMessages.get("si.toolbar.reject"), rejectListener) //uncomment for adding Reject function
 				.addButtonToComposite("refreshBtn", "buttonsComp", TSEMessages.get("si.toolbar.refresh.status"),
 						refreshStateListener)
 				.addButtonToComposite("displayAckBtn", "buttonsComp", TSEMessages.get("si.toolbar.display.ack"),
@@ -763,7 +765,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setEnabled("validateBtn", false);
 		panel.setEnabled("editBtn", false);
 		panel.setEnabled("sendBtn", false);
-		panel.setEnabled("rejectBtn", false);
+		//panel.setEnabled("rejectBtn", false);
 		panel.setEnabled("submitBtn", false);
 		panel.setEnabled("amendBtn", false);
 		panel.setEnabled("displayAckBtn", false);
@@ -798,9 +800,9 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.addButtonImage("amendBtn", amendImage);
 
 		// add image to send button
-		Image rejectImage = new Image(Display.getCurrent(),
+		/*Image rejectImage = new Image(Display.getCurrent(),
 				this.getClass().getClassLoader().getResourceAsStream("reject-icon.png"));
-		panel.addButtonImage("rejectBtn", rejectImage);
+		panel.addButtonImage("rejectBtn", rejectImage);*/
 
 		// add image to send button
 		Image displayAckImage = new Image(Display.getCurrent(),
@@ -878,7 +880,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setEnabled("sendBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeSent());
 		panel.setEnabled("amendBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeAmended());
 		panel.setEnabled("submitBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeSubmitted());
-		panel.setEnabled("rejectBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeRejected());
+		//panel.setEnabled("rejectBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeRejected());
 		panel.setEnabled("displayAckBtn", !DebugConfig.disableMainPanel && datasetStatus.canDisplayAck());
 		panel.setEnabled("refreshBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeRefreshed());
 		panel.setEnabled("changeStatusBtn", true);

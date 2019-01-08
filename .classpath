@@ -24,6 +24,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Window size save and restore"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ZipManager"/>
 	<classpathentry kind="var" path="JFace"/>
-	<classpathentry kind="var" path="SWT_32"/>
+	<classpathentry kind="var" path="SWT_64"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
