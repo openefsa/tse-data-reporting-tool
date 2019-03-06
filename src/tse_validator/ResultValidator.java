@@ -16,7 +16,7 @@ public class ResultValidator extends SimpleRowValidatorLabelProvider {
 		NONE
 	}
 	
-	public ErrorType getError(TableRow row) {
+	public static ErrorType getError(TableRow row) {
 		
 		String testType = row.getCode(CustomStrings.AN_METH_TYPE_COL);
 		

@@ -74,6 +74,7 @@ public class MainPanel {
 	/**
 	 * Create the interface
 	 */
+	@SuppressWarnings("unused")
 	private void create() {
 
 		shell.setLayout(new GridLayout());

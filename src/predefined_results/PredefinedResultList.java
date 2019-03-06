@@ -51,7 +51,7 @@ public class PredefinedResultList extends ArrayList<PredefinedResult> {
 	 * @param b
 	 * @return
 	 */
-	private boolean isFieldEqual(String predefResValue, String rowValue) {
+	private static boolean isFieldEqual(String predefResValue, String rowValue) {
 		
 		// always match an empty field in the configuration
 		if(predefResValue == null || predefResValue.isEmpty() || predefResValue.equals("null")) {
@@ -67,6 +67,7 @@ public class PredefinedResultList extends ArrayList<PredefinedResult> {
 
 	/**
 	 * Get all the predefined results
+	 * @author shahaal
 	 * @return
 	 * @throws IOException
 	 */
@@ -77,15 +78,11 @@ public class PredefinedResultList extends ArrayList<PredefinedResult> {
 			
 			predefinedResultsCache = new PredefinedResultList();
 			
-			PredefinedResultsReader reader;
-			
-			try {
-				
-				reader = new PredefinedResultsReader();
+			//solve memory leak
+			try (PredefinedResultsReader reader = new PredefinedResultsReader()){
 				reader.readFirstSheet();
 				
 				predefinedResultsCache = reader.getResults();
-				reader.close();
 				
 			} catch (IOException e) {
 				e.printStackTrace();

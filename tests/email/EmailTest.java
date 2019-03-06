@@ -10,7 +10,7 @@ import user.User;
 public class EmailTest {
 
 	@Test
-	public void openFatalMailPanel() {
+	public static void openFatalMailPanel() {
 		
 		User.getInstance().login("myUsername", "myPass");
 		User.getInstance().addData("organization", "DGAV");

@@ -25,7 +25,7 @@ public class DatabaseUpdaterTest {
 	private File newSchema;
 	
 	@Before
-	public void init() throws IOException {
+	public void init() {
 		
 		oldSchema = new File("test-files" 
 				+ System.getProperty("file.separator") + "tablesSchema-old.xlsx");

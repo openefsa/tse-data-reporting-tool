@@ -55,19 +55,20 @@ import xlsx_reader.TableSchemaList;
 /**
  * Create the main menu of the application in the given shell
  * 
- * @author avonva && shahaal
+ * @author avonva
+ * @author shahaal
  *
  */
 public class MainMenu {
 
-	private static final Logger LOGGER = LogManager.getLogger(MainMenu.class);
+	static final Logger LOGGER = LogManager.getLogger(MainMenu.class);
 
-	private TseReportService reportService;
-	private ITableDaoService daoService;
-	private IFormulaService formulaService;
+	protected TseReportService reportService;
+	protected ITableDaoService daoService;
+	protected IFormulaService formulaService;
 
-	private MainPanel mainPanel;
-	private Shell shell;
+	protected MainPanel mainPanel;
+	protected Shell shell;
 
 	private Menu main;
 	private Menu fileMenu;
@@ -77,13 +78,13 @@ public class MainMenu {
 	private MenuItem settings;
 	private MenuItem proxyConfig;
 
-	private MenuItem newReport;
-	private MenuItem openReport;
-	private MenuItem closeReport;
-	private MenuItem importReport;
-	private MenuItem downloadReport;
-	private MenuItem exportReport;
-	private MenuItem exitApplication;
+	protected MenuItem newReport;
+	protected MenuItem openReport;
+	protected MenuItem closeReport;
+	protected MenuItem importReport;
+	protected MenuItem downloadReport;
+	protected MenuItem exportReport;
+	protected MenuItem exitApplication;
 
 	// TODO to finish
 	//private MenuItem importExcelReport;
@@ -550,15 +551,15 @@ public class MainMenu {
 			}
 		});
 
-		MenuItem exportReport = new MenuItem(fileMenu, SWT.PUSH);
-		exportReport.setText("[DEBUG] Export report");
-		exportReport.addSelectionListener(new SelectionListener() {
+		MenuItem exportReport1 = new MenuItem(fileMenu, SWT.PUSH);
+		exportReport1.setText("[DEBUG] Export report");
+		exportReport1.addSelectionListener(new SelectionListener() {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 
 				TseReport report = mainPanel.getOpenedReport();
-
+				
 				if (report == null)
 					return;
 
@@ -632,20 +633,20 @@ public class MainMenu {
 			}
 		});
 
-		MenuItem importReport = new MenuItem(fileMenu, SWT.PUSH);
-		importReport.setText("[DEBUG] Import first version .xml report");
-		importReport.addSelectionListener(new SelectionAdapter() {
+		MenuItem importReport1 = new MenuItem(fileMenu, SWT.PUSH);
+		importReport1.setText("[DEBUG] Import first version .xml report");
+		importReport1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				TseFileDialog fileDialog = new TseFileDialog(shell);
-				File file = fileDialog.loadXml();
+				File file1 = fileDialog.loadXml();
 
-				if (file == null)
+				if (file1 == null)
 					return;
 
 				try {
 					TseReportImporter imp = new TseReportImporter(reportService, daoService);
-					imp.importFirstDatasetVersion(file);
+					imp.importFirstDatasetVersion(file1);
 
 				} catch (XMLStreamException | IOException | FormulaException | ParseException e) {
 					e.printStackTrace();

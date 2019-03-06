@@ -39,6 +39,8 @@ public class TSEFormulaDecomposer extends FormulaDecomposer {
 		case CustomStrings.PARAM_CODE_COL:
 			values = splitAlleles(rowValue);
 			break;
+		default:
+			break;
 		}
 		
 		return values;
@@ -136,7 +138,7 @@ public class TSEFormulaDecomposer extends FormulaDecomposer {
 	 * @param header
 	 * @return
 	 */
-	private String getColumnByHeader(String header) {
+	private static String getColumnByHeader(String header) {
 		
 		String columnId = null;
 		

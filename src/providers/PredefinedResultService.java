@@ -22,7 +22,8 @@ import tse_summarized_information.SummarizedInfo;
 /**
  * Class which models a generic result for the specific case
  * 
- * @author avonva && shahaal
+ * @author avonva
+ * @author shahaal
  *
  */
 public class PredefinedResultService {
@@ -101,18 +102,20 @@ public class PredefinedResultService {
 			confirmatory = Relation.getGlobalParent(CustomStrings.PREFERENCES_SHEET, daoService)
 			.getCode(CustomStrings.PREFERENCES_CONFIRMATORY_CWD);
 			break;
+		default:
+			break;
 		}
 		
 		return !confirmatory.isEmpty();
 	}
 	
-	public String getPreferredTestType(String type, String testType) throws IOException {
+	public static String getPreferredTestType(String testType) throws IOException {
 		
 		return Relation.getGlobalParent(CustomStrings.PREFERENCES_SHEET)
 				.getCode(testType);
 	}
 
-	public String getPreferredTestType(AnalyticalResult row, String recordType, String testType) 
+	public static String getPreferredTestType(String recordType, String testType) 
 			throws IOException {
 		
 		String preferredTestType = null;
@@ -121,61 +124,68 @@ public class PredefinedResultService {
 		case CustomStrings.SCREENING_TEST_CODE:
 			switch(recordType) {
 			case CustomStrings.SUMMARIZED_INFO_BSE_TYPE:
-				preferredTestType = getPreferredTestType(recordType, 
+				preferredTestType = getPreferredTestType( 
 						CustomStrings.PREFERENCES_SCREENING_BSE);
 				break;
 			case CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE:
-				preferredTestType = getPreferredTestType(recordType, 
+				preferredTestType = getPreferredTestType( 
 						CustomStrings.PREFERENCES_SCREENING_SCRAPIE);
 				break;
 			case CustomStrings.SUMMARIZED_INFO_CWD_TYPE:
-				preferredTestType = getPreferredTestType(recordType, 
+				preferredTestType = getPreferredTestType( 
 						CustomStrings.PREFERENCES_SCREENING_CWD);
+				break;
+			default:
 				break;
 			}
 			break;
 		case CustomStrings.CONFIRMATORY_TEST_CODE:
 			switch(recordType) {
 			case CustomStrings.SUMMARIZED_INFO_BSE_TYPE:
-				preferredTestType = getPreferredTestType(recordType, 
+				preferredTestType = getPreferredTestType( 
 						CustomStrings.PREFERENCES_CONFIRMATORY_BSE);
 				break;
 			case CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE:
-				preferredTestType = getPreferredTestType(recordType, 
+				preferredTestType = getPreferredTestType( 
 						CustomStrings.PREFERENCES_CONFIRMATORY_SCRAPIE);
 				break;
 			case CustomStrings.SUMMARIZED_INFO_CWD_TYPE:
-				preferredTestType = getPreferredTestType(recordType, 
+				preferredTestType = getPreferredTestType( 
 						CustomStrings.PREFERENCES_CONFIRMATORY_CWD);
+				break;
+			default:
 				break;
 			}
 			break;
 		case CustomStrings.DISCRIMINATORY_TEST_CODE:
 			switch(recordType) {
 			case CustomStrings.SUMMARIZED_INFO_BSE_TYPE:
-				preferredTestType = getPreferredTestType(recordType, 
+				preferredTestType = getPreferredTestType( 
 						CustomStrings.PREFERENCES_DISCRIMINATORY_BSE);
 				break;
 			case CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE:
-				preferredTestType = getPreferredTestType(recordType, 
+				preferredTestType = getPreferredTestType( 
 						CustomStrings.PREFERENCES_DISCRIMINATORY_SCRAPIE);
 				break;
 			case CustomStrings.SUMMARIZED_INFO_CWD_TYPE:
-				preferredTestType = getPreferredTestType(recordType, 
+				preferredTestType = getPreferredTestType( 
 						CustomStrings.PREFERENCES_DISCRIMINATORY_CWD);
+				break;
+			default:
 				break;
 			}
 			break;
 		case CustomStrings.MOLECULAR_TEST_CODE:
 			preferredTestType = CustomStrings.AN_METH_CODE_GENOTYPING;
 			break;
+		default:
+			break;
 		}
 		
 		return preferredTestType;
 	}
 	
-	public PredefinedResult getPredefinedResult(Report report, 
-			SummarizedInfo summInfo, TableRow caseReport) throws IOException {
+	public PredefinedResult getPredefinedResult(SummarizedInfo summInfo, TableRow caseReport) throws IOException {
 		
 		// put the predefined value for the param code and the result
 		PredefinedResultList predResList = PredefinedResultList.getAll();
@@ -214,7 +224,7 @@ public class PredefinedResultService {
 		Relation.injectParent(caseReport, resultRow);
 
 		// get the default value
-		PredefinedResult defaultResult = getPredefinedResult(report, summInfo, caseReport);
+		PredefinedResult defaultResult = getPredefinedResult(summInfo, caseReport);
 		
 		// add the param base term and the related default result
 		boolean added = addParamAndResult(resultRow, defaultResult, test);
@@ -232,7 +242,7 @@ public class PredefinedResultService {
 			String recordType = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
 			
 			// add also the preferred test type
-			String prefTest = getPreferredTestType(resultRow, recordType, testTypeCode);
+			String prefTest = getPreferredTestType(recordType, testTypeCode);
 			
 			if (prefTest != null)
 				resultRow.put(CustomStrings.AN_METH_CODE_COL, prefTest);
@@ -258,7 +268,7 @@ public class PredefinedResultService {
 	 * @param codeCol
 	 * @return
 	 */
-	public boolean addParamAndResult(TableRow result, 
+	public static boolean addParamAndResult(TableRow result, 
 			PredefinedResult defValues, 
 			PredefinedResultHeader codeCol) {
 		

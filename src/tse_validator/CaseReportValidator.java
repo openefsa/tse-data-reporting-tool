@@ -35,6 +35,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		this.daoService = daoService;
 	}
 
+	@SuppressWarnings("unused")
 	public Collection<Check> isRecordCorrect(TableRow row) throws IOException {
 
 		Collection<Check> checks = new ArrayList<>();
@@ -125,7 +126,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		return checks;
 	}
 
-	public boolean isAnalysisYearConstant(Collection<TableRow> results) {
+	public static boolean isAnalysisYearConstant(Collection<TableRow> results) {
 
 		HashSet<String> set = new HashSet<>();
 		for (TableRow row : results) {
@@ -135,7 +136,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		return (set.size() == 1);
 	}
 
-	public boolean isTestDuplicated(Collection<TableRow> results) {
+	public static boolean isTestDuplicated(Collection<TableRow> results) {
 
 		HashSet<String> set = new HashSet<>();
 		for (TableRow row : results) {

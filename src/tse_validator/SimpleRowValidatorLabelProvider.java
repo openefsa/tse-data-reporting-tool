@@ -24,6 +24,7 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 			break;
 		case MANDATORY_MISSING:
 			text = TSEMessages.get("row.mandatory.fields.missing");
+			break;
 		default:
 			break;
 		}
@@ -31,6 +32,7 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 		return text;
 	}
 	
+	@SuppressWarnings("static-method")
 	public int getWarningLevel(TableRow row) {
 		
 		int level = 0;
@@ -62,6 +64,7 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 	 * @param row
 	 * @return
 	 */
+	@SuppressWarnings("static-method")
 	private Color getRowColor(TableRow row) {
 		
 		Display display = Display.getDefault();

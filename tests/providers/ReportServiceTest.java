@@ -106,11 +106,11 @@ public class ReportServiceTest {
 		daoService.add(settings);
 		daoService.add(pref);
 
-		TableRow report = RowCreatorMock.genRandReport(pref.getDatabaseId());
+		TableRow report1 = RowCreatorMock.genRandReport(pref.getDatabaseId());
 
-		daoService.add(report);
+		daoService.add(report1);
 
-		SummarizedInfo info = RowCreatorMock.genRandSummInfo(report.getDatabaseId(), settings.getDatabaseId(),
+		SummarizedInfo info = RowCreatorMock.genRandSummInfo(report1.getDatabaseId(), settings.getDatabaseId(),
 				pref.getDatabaseId());
 		info.put(CustomStrings.SUMMARIZED_INFO_TYPE, CustomStrings.SUMMARIZED_INFO_CWD_TYPE);
 		info.put(CustomStrings.SEX_COL, new TableCell(CustomStrings.SEX_MALE, ""));
@@ -252,14 +252,14 @@ public class ReportServiceTest {
 		list.add(r2);
 		list.add(r3);
 
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2017");
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2017");
 
 		getDatasetsList.setList(list);
 
-		Dataset data = reportService.getDataset(report);
+		Dataset data = reportService.getDataset(report1);
 
 		assertEquals(r3.getId(), data.getId());
 		assertEquals(r3.getSenderId(), data.getSenderId());
@@ -290,32 +290,32 @@ public class ReportServiceTest {
 
 		getDatasetsList.setList(list);
 
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setId("42842");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2017");
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setId("42842");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2017");
 
-		Dataset data = reportService.getDataset(report);
+		Dataset data = reportService.getDataset(report1);
 
 		assertEquals(r3.getId(), data.getId());
 		assertEquals(r3.getSenderId(), data.getSenderId());
 	}
 
 	@Test
-	public void getSendOperationFirstSend() throws DetailedSOAPException, ReportException {
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2017");
+	public void getSendOperationFirstSend() throws DetailedSOAPException {
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2017");
 
-		Dataset dataset = reportService.getDataset(report);
-		ReportSendOperation op = reportService.getSendOperation(report, dataset);
+		Dataset dataset = reportService.getDataset(report1);
+		ReportSendOperation op = reportService.getSendOperation(report1, dataset);
 		assertEquals(OperationType.INSERT, op.getOpType());
 	}
 
 	@Test
-	public void getSendOperationSecondSend() throws DetailedSOAPException, ReportException {
+	public void getSendOperationSecondSend() throws DetailedSOAPException {
 
 		Dataset r1 = new Dataset();
 		r1.setId("11234");
@@ -328,19 +328,19 @@ public class ReportServiceTest {
 		getDatasetsList.setList(list);
 
 		// it should replace the report
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setId("11234");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2017");
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setId("11234");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2017");
 
-		Dataset dataset = reportService.getDataset(report);
-		ReportSendOperation op = reportService.getSendOperation(report, dataset);
+		Dataset dataset = reportService.getDataset(report1);
+		ReportSendOperation op = reportService.getSendOperation(report1, dataset);
 		assertEquals(OperationType.REPLACE, op.getOpType());
 	}
 
 	@Test
-	public void getSendOperationSendAmendmended() throws DetailedSOAPException, ReportException {
+	public void getSendOperationSendAmendmended() throws DetailedSOAPException {
 
 		Dataset r1 = new Dataset();
 		r1.setId("11234");
@@ -354,18 +354,18 @@ public class ReportServiceTest {
 
 		// it should insert a new report
 		// with the new version
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion("01");
-		report.setYear("2017");
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion("01");
+		report1.setYear("2017");
 
-		Dataset dataset = reportService.getDataset(report);
-		ReportSendOperation op = reportService.getSendOperation(report, dataset);
+		Dataset dataset = reportService.getDataset(report1);
+		ReportSendOperation op = reportService.getSendOperation(report1, dataset);
 		assertEquals(OperationType.INSERT, op.getOpType());
 	}
 
 	@Test
-	public void getSendOperationSendOverRejected() throws DetailedSOAPException, ReportException {
+	public void getSendOperationSendOverRejected() throws DetailedSOAPException {
 
 		Dataset r1 = new Dataset();
 		r1.setId("11234");
@@ -378,18 +378,18 @@ public class ReportServiceTest {
 		getDatasetsList.setList(list);
 
 		// it should insert a new report
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion("00");
-		report.setYear("2017");
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion("00");
+		report1.setYear("2017");
 
-		Dataset dataset = reportService.getDataset(report);
-		ReportSendOperation op = reportService.getSendOperation(report, dataset);
+		Dataset dataset = reportService.getDataset(report1);
+		ReportSendOperation op = reportService.getSendOperation(report1, dataset);
 		assertEquals(OperationType.REPLACE, op.getOpType());
 	}
 
 	@Test
-	public void getSendOperationSendOverDeleted() throws DetailedSOAPException, ReportException {
+	public void getSendOperationSendOverDeleted() throws DetailedSOAPException {
 
 		Dataset r1 = new Dataset();
 		r1.setId("11234");
@@ -402,18 +402,18 @@ public class ReportServiceTest {
 		getDatasetsList.setList(list);
 
 		// it should insert a new report
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion("00");
-		report.setYear("2017");
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion("00");
+		report1.setYear("2017");
 
-		Dataset dataset = reportService.getDataset(report);
-		ReportSendOperation op = reportService.getSendOperation(report, dataset);
+		Dataset dataset = reportService.getDataset(report1);
+		ReportSendOperation op = reportService.getSendOperation(report1, dataset);
 		assertEquals(OperationType.INSERT, op.getOpType());
 	}
 
 	@Test
-	public void getSendOperationSendOverAcceptedDwh() throws DetailedSOAPException, ReportException {
+	public void getSendOperationSendOverAcceptedDwh() throws DetailedSOAPException {
 
 		Dataset r1 = new Dataset();
 		r1.setId("11234");
@@ -426,18 +426,18 @@ public class ReportServiceTest {
 		getDatasetsList.setList(list);
 
 		// it should insert a new report
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion("00");
-		report.setYear("2017");
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion("00");
+		report1.setYear("2017");
 
-		Dataset dataset = reportService.getDataset(report);
-		ReportSendOperation op = reportService.getSendOperation(report, dataset);
+		Dataset dataset = reportService.getDataset(report1);
+		ReportSendOperation op = reportService.getSendOperation(report1, dataset);
 		assertEquals(OperationType.NOT_SUPPORTED, op.getOpType());
 	}
 
 	@Test
-	public void getSendOperationSendOverAcceptedDcf() throws DetailedSOAPException, ReportException {
+	public void getSendOperationSendOverAcceptedDcf() throws DetailedSOAPException {
 
 		Dataset r1 = new Dataset();
 		r1.setId("11234");
@@ -450,18 +450,18 @@ public class ReportServiceTest {
 		getDatasetsList.setList(list);
 
 		// it should insert a new report
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion("00");
-		report.setYear("2017");
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion("00");
+		report1.setYear("2017");
 
-		Dataset dataset = reportService.getDataset(report);
-		ReportSendOperation op = reportService.getSendOperation(report, dataset);
+		Dataset dataset = reportService.getDataset(report1);
+		ReportSendOperation op = reportService.getSendOperation(report1, dataset);
 		assertEquals(OperationType.NOT_SUPPORTED, op.getOpType());
 	}
 
 	@Test
-	public void getSendOperationSendOverRejEd() throws DetailedSOAPException, ReportException {
+	public void getSendOperationSendOverRejEd() throws DetailedSOAPException {
 
 		Dataset r1 = new Dataset();
 		r1.setId("11234");
@@ -474,13 +474,13 @@ public class ReportServiceTest {
 		getDatasetsList.setList(list);
 
 		// it should insert a new report
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion("00");
-		report.setYear("2017");
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion("00");
+		report1.setYear("2017");
 
-		Dataset dataset = reportService.getDataset(report);
-		ReportSendOperation op = reportService.getSendOperation(report, dataset);
+		Dataset dataset = reportService.getDataset(report1);
+		ReportSendOperation op = reportService.getSendOperation(report1, dataset);
 		assertEquals(OperationType.REPLACE, op.getOpType());
 	}
 
@@ -1181,56 +1181,56 @@ public class ReportServiceTest {
 	@Test
 	public void createNotExistingReportNotExistingInDcf() throws DetailedSOAPException {
 
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2004");
-		report.setMonth("04");
-		report.setCountry("AT");
-		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-		report.setStatus(RCLDatasetStatus.DRAFT);
-		RCLError error = reportService.create(report);
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2004");
+		report1.setMonth("04");
+		report1.setCountry("AT");
+		report1.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report1.setStatus(RCLDatasetStatus.DRAFT);
+		RCLError error = reportService.create(report1);
 
 		assertNull(error);
-		assertEquals(1, daoService.getAll(report.getSchema()).size());
+		assertEquals(1, daoService.getAll(report1.getSchema()).size());
 	}
 
 	@Test
 	public void createExistingReportNotExistingInDcf() throws DetailedSOAPException {
 
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2004");
-		report.setMonth("04");
-		report.setCountry("AT");
-		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-		report.setStatus(RCLDatasetStatus.DRAFT);
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2004");
+		report1.setMonth("04");
+		report1.setCountry("AT");
+		report1.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report1.setStatus(RCLDatasetStatus.DRAFT);
 
 		// add it
-		daoService.add(report);
+		daoService.add(report1);
 
-		RCLError error = reportService.create(report);
+		RCLError error = reportService.create(report1);
 
 		assertNotNull(error);
 		assertEquals("WARN304", error.getCode());
-		assertEquals(1, daoService.getAll(report.getSchema()).size());
+		assertEquals(1, daoService.getAll(report1.getSchema()).size());
 	}
 
 	@Test
 	public void createExistingReportExistingAlsoInDcf() throws DetailedSOAPException {
 
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2004");
-		report.setMonth("04");
-		report.setCountry("AT");
-		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-		report.setStatus(RCLDatasetStatus.DRAFT);
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2004");
+		report1.setMonth("04");
+		report1.setCountry("AT");
+		report1.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report1.setStatus(RCLDatasetStatus.DRAFT);
 
 		// add it
-		daoService.add(report);
+		daoService.add(report1);
 
 		Dataset d = new Dataset();
 		d.setId("42842");
@@ -1242,24 +1242,24 @@ public class ReportServiceTest {
 
 		getDatasetsList.setList(list);
 
-		RCLError error = reportService.create(report);
+		RCLError error = reportService.create(report1);
 
 		assertNotNull(error);
 		assertEquals("WARN304", error.getCode());
-		assertEquals(1, daoService.getAll(report.getSchema()).size());
+		assertEquals(1, daoService.getAll(report1.getSchema()).size());
 	}
 
 	@Test
 	public void createNotExistingReportExistingInDcfAsValid() throws DetailedSOAPException {
 
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2004");
-		report.setMonth("04");
-		report.setCountry("AT");
-		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-		report.setStatus(RCLDatasetStatus.DRAFT);
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2004");
+		report1.setMonth("04");
+		report1.setCountry("AT");
+		report1.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report1.setStatus(RCLDatasetStatus.DRAFT);
 
 		Dataset d = new Dataset();
 		d.setId("42842");
@@ -1271,24 +1271,24 @@ public class ReportServiceTest {
 
 		getDatasetsList.setList(list);
 
-		RCLError error = reportService.create(report);
+		RCLError error = reportService.create(report1);
 
 		assertNotNull(error);
 		assertEquals("WARN303", error.getCode());
-		assertEquals(0, daoService.getAll(report.getSchema()).size());
+		assertEquals(0, daoService.getAll(report1.getSchema()).size());
 	}
 
 	@Test
 	public void createNotExistingReportExistingInDcfAsRejectedEditable() throws DetailedSOAPException {
 
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2004");
-		report.setMonth("04");
-		report.setCountry("AT");
-		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-		report.setStatus(RCLDatasetStatus.DRAFT);
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2004");
+		report1.setMonth("04");
+		report1.setCountry("AT");
+		report1.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report1.setStatus(RCLDatasetStatus.DRAFT);
 
 		Dataset d = new Dataset();
 		d.setId("42842");
@@ -1300,24 +1300,24 @@ public class ReportServiceTest {
 
 		getDatasetsList.setList(list);
 
-		RCLError error = reportService.create(report);
+		RCLError error = reportService.create(report1);
 
 		assertNotNull(error);
 		assertEquals("WARN303", error.getCode());
-		assertEquals(0, daoService.getAll(report.getSchema()).size());
+		assertEquals(0, daoService.getAll(report1.getSchema()).size());
 	}
 
 	@Test
 	public void createNotExistingReportExistingInDcfAsValidWithWarnings() throws DetailedSOAPException {
 
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2004");
-		report.setMonth("04");
-		report.setCountry("AT");
-		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-		report.setStatus(RCLDatasetStatus.DRAFT);
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2004");
+		report1.setMonth("04");
+		report1.setCountry("AT");
+		report1.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report1.setStatus(RCLDatasetStatus.DRAFT);
 
 		Dataset d = new Dataset();
 		d.setId("42842");
@@ -1329,24 +1329,24 @@ public class ReportServiceTest {
 
 		getDatasetsList.setList(list);
 
-		RCLError error = reportService.create(report);
+		RCLError error = reportService.create(report1);
 
 		assertNotNull(error);
 		assertEquals("WARN303", error.getCode());
-		assertEquals(0, daoService.getAll(report.getSchema()).size());
+		assertEquals(0, daoService.getAll(report1.getSchema()).size());
 	}
 
 	@Test
 	public void createNotExistingReportExistingInDcfAsDeleted() throws DetailedSOAPException {
 
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2004");
-		report.setMonth("04");
-		report.setCountry("AT");
-		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-		report.setStatus(RCLDatasetStatus.DRAFT);
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2004");
+		report1.setMonth("04");
+		report1.setCountry("AT");
+		report1.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report1.setStatus(RCLDatasetStatus.DRAFT);
 
 		Dataset d = new Dataset();
 		d.setId("42842");
@@ -1358,12 +1358,12 @@ public class ReportServiceTest {
 
 		getDatasetsList.setList(list);
 
-		RCLError error = reportService.create(report);
+		RCLError error = reportService.create(report1);
 
 		assertNull(error);
-		assertEquals(1, daoService.getAll(report.getSchema()).size());
+		assertEquals(1, daoService.getAll(report1.getSchema()).size());
 
-		TableRow r = daoService.getAll(report.getSchema()).iterator().next();
+		TableRow r = daoService.getAll(report1.getSchema()).iterator().next();
 		assertNotNull(r);
 
 		// the id should NOT be saved
@@ -1373,14 +1373,14 @@ public class ReportServiceTest {
 	@Test
 	public void createNotExistingReportExistingInDcfAsRejected() throws DetailedSOAPException {
 
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2004");
-		report.setMonth("04");
-		report.setCountry("AT");
-		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-		report.setStatus(RCLDatasetStatus.DRAFT);
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2004");
+		report1.setMonth("04");
+		report1.setCountry("AT");
+		report1.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report1.setStatus(RCLDatasetStatus.DRAFT);
 
 		Dataset d = new Dataset();
 		d.setId("42842");
@@ -1392,12 +1392,12 @@ public class ReportServiceTest {
 
 		getDatasetsList.setList(list);
 
-		RCLError error = reportService.create(report);
+		RCLError error = reportService.create(report1);
 
 		assertNull(error);
-		assertEquals(1, daoService.getAll(report.getSchema()).size());
+		assertEquals(1, daoService.getAll(report1.getSchema()).size());
 
-		TableRow r = daoService.getAll(report.getSchema()).iterator().next();
+		TableRow r = daoService.getAll(report1.getSchema()).iterator().next();
 		assertNotNull(r);
 
 		// the id should be saved
@@ -1407,14 +1407,14 @@ public class ReportServiceTest {
 	@Test
 	public void createNotExistingReportExistingInDcfAsSubmitted() throws DetailedSOAPException {
 
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2004");
-		report.setMonth("04");
-		report.setCountry("AT");
-		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-		report.setStatus(RCLDatasetStatus.DRAFT);
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2004");
+		report1.setMonth("04");
+		report1.setCountry("AT");
+		report1.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report1.setStatus(RCLDatasetStatus.DRAFT);
 
 		Dataset d = new Dataset();
 		d.setId("42842");
@@ -1426,24 +1426,24 @@ public class ReportServiceTest {
 
 		getDatasetsList.setList(list);
 
-		RCLError error = reportService.create(report);
+		RCLError error = reportService.create(report1);
 
 		assertNotNull(error);
 		assertEquals("WARN302", error.getCode());
-		assertEquals(0, daoService.getAll(report.getSchema()).size());
+		assertEquals(0, daoService.getAll(report1.getSchema()).size());
 	}
 
 	@Test
 	public void createNotExistingReportExistingInDcfAsAcceptedDwh() throws DetailedSOAPException {
 
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2004");
-		report.setMonth("04");
-		report.setCountry("AT");
-		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-		report.setStatus(RCLDatasetStatus.DRAFT);
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2004");
+		report1.setMonth("04");
+		report1.setCountry("AT");
+		report1.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report1.setStatus(RCLDatasetStatus.DRAFT);
 
 		Dataset d = new Dataset();
 		d.setId("42842");
@@ -1455,24 +1455,24 @@ public class ReportServiceTest {
 
 		getDatasetsList.setList(list);
 
-		RCLError error = reportService.create(report);
+		RCLError error = reportService.create(report1);
 
 		assertNotNull(error);
 		assertEquals("WARN301", error.getCode());
-		assertEquals(0, daoService.getAll(report.getSchema()).size());
+		assertEquals(0, daoService.getAll(report1.getSchema()).size());
 	}
 
 	@Test
 	public void createNotExistingReportExistingInDcfAsProcessing() throws DetailedSOAPException {
 
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2004");
-		report.setMonth("04");
-		report.setCountry("AT");
-		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-		report.setStatus(RCLDatasetStatus.DRAFT);
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2004");
+		report1.setMonth("04");
+		report1.setCountry("AT");
+		report1.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report1.setStatus(RCLDatasetStatus.DRAFT);
 
 		Dataset d = new Dataset();
 		d.setId("42842");
@@ -1484,24 +1484,24 @@ public class ReportServiceTest {
 
 		getDatasetsList.setList(list);
 
-		RCLError error = reportService.create(report);
+		RCLError error = reportService.create(report1);
 
 		assertNotNull(error);
 		assertEquals("WARN300", error.getCode());
-		assertEquals(0, daoService.getAll(report.getSchema()).size());
+		assertEquals(0, daoService.getAll(report1.getSchema()).size());
 	}
 
 	@Test
 	public void createNotExistingReportExistingInDcfAsOther() throws DetailedSOAPException {
 
-		TseReport report = new TseReport();
-		report.setSenderId("AT0404");
-		report.setVersion(TableVersion.getFirstVersion());
-		report.setYear("2004");
-		report.setMonth("04");
-		report.setCountry("AT");
-		report.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
-		report.setStatus(RCLDatasetStatus.DRAFT);
+		TseReport report1 = new TseReport();
+		report1.setSenderId("AT0404");
+		report1.setVersion(TableVersion.getFirstVersion());
+		report1.setYear("2004");
+		report1.setMonth("04");
+		report1.setCountry("AT");
+		report1.setSchema(TableSchemaList.getByName(CustomStrings.REPORT_SHEET));
+		report1.setStatus(RCLDatasetStatus.DRAFT);
 
 		Dataset d = new Dataset();
 		d.setId("42842");
@@ -1513,11 +1513,11 @@ public class ReportServiceTest {
 
 		getDatasetsList.setList(list);
 
-		RCLError error = reportService.create(report);
+		RCLError error = reportService.create(report1);
 
 		assertNotNull(error);
 		assertEquals("ERR300", error.getCode());
-		assertEquals(0, daoService.getAll(report.getSchema()).size());
+		assertEquals(0, daoService.getAll(report1.getSchema()).size());
 	}
 
 	private TseReport genRandReportWithChildrenInDatabase() {
@@ -1531,9 +1531,9 @@ public class ReportServiceTest {
 		TableRow settings = RowCreatorMock.genRandSettings();
 		int settingsId = daoService.add(settings);
 
-		TseReport report = RowCreatorMock.genRandReport(prefId);
-		report.setId("");
-		int reportId = daoService.add(report);
+		TseReport report1 = RowCreatorMock.genRandReport(prefId);
+		report1.setId("");
+		int reportId = daoService.add(report1);
 
 		SummarizedInfo summInfo = RowCreatorMock.genRandSummInfo(reportId, settingsId, prefId);
 		daoService.add(summInfo);
@@ -1547,33 +1547,33 @@ public class ReportServiceTest {
 		 * caseId, settingsId, prefId); daoService.add(result);
 		 */
 
-		return report;
+		return report1;
 	}
 
-	private MessageConfigBuilder getSendConfig(TseReport report) throws DetailedSOAPException, ReportException {
+	private MessageConfigBuilder getSendConfig(TseReport report1) throws DetailedSOAPException {
 
-		MessageConfigBuilder messageConfig = reportService.getSendMessageConfiguration(report);
+		MessageConfigBuilder messageConfig = reportService.getSendMessageConfiguration(report1);
 
-		Dataset dcfDataset = reportService.getDataset(report);
-		ReportSendOperation op = reportService.getSendOperation(report, dcfDataset);
+		Dataset dcfDataset = reportService.getDataset(report1);
+		ReportSendOperation op = reportService.getSendOperation(report1, dcfDataset);
 
 		messageConfig.setOpType(op.getOpType());
 
 		return messageConfig;
 	}
 
-	private MessageConfigBuilder getRejectConfig(TseReport report) throws DetailedSOAPException, ReportException {
+	private MessageConfigBuilder getRejectConfig(TseReport report1) {
 
-		MessageConfigBuilder messageConfig = reportService.getSendMessageConfiguration(report);
+		MessageConfigBuilder messageConfig = reportService.getSendMessageConfiguration(report1);
 
 		messageConfig.setOpType(OperationType.REJECT);
 
 		return messageConfig;
 	}
 
-	private MessageConfigBuilder getSubmitConfig(TseReport report) throws DetailedSOAPException, ReportException {
+	private MessageConfigBuilder getSubmitConfig(TseReport report1) {
 
-		MessageConfigBuilder messageConfig = reportService.getSendMessageConfiguration(report);
+		MessageConfigBuilder messageConfig = reportService.getSendMessageConfiguration(report1);
 
 		messageConfig.setOpType(OperationType.SUBMIT);
 
@@ -1586,11 +1586,11 @@ public class ReportServiceTest {
 
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		reportService.exportAndSend(report, getSendConfig(report));
+		reportService.exportAndSend(report1, getSendConfig(report1));
 
-		assertEquals(RCLDatasetStatus.UPLOADED, report.getRCLStatus());
+		assertEquals(RCLDatasetStatus.UPLOADED, report1.getRCLStatus());
 	}
 
 	private Dataset setReportCopyInDcfWithStatus(Report report, DcfDatasetStatus status) {
@@ -1613,16 +1613,16 @@ public class ReportServiceTest {
 
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		Dataset d = setReportCopyInDcfWithStatus(report, DcfDatasetStatus.DELETED);
+		Dataset d = setReportCopyInDcfWithStatus(report1, DcfDatasetStatus.DELETED);
 
-		reportService.send(report, d, getSendConfig(report), null);
+		reportService.send(report1, d, getSendConfig(report1), null);
 
-		assertEquals(RCLDatasetStatus.UPLOADED, report.getRCLStatus());
-		assertNotNull(report.getMessageId());
-		assertFalse(report.getMessageId().isEmpty());
-		assertNotNull(report.getId());
+		assertEquals(RCLDatasetStatus.UPLOADED, report1.getRCLStatus());
+		assertNotNull(report1.getMessageId());
+		assertFalse(report1.getMessageId().isEmpty());
+		assertNotNull(report1.getId());
 	}
 
 	@Test
@@ -1631,17 +1631,17 @@ public class ReportServiceTest {
 
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		Dataset d = setReportCopyInDcfWithStatus(report, DcfDatasetStatus.REJECTED);
+		Dataset d = setReportCopyInDcfWithStatus(report1, DcfDatasetStatus.REJECTED);
 
-		reportService.send(report, d, getSendConfig(report), null);
+		reportService.send(report1, d, getSendConfig(report1), null);
 
-		assertEquals(RCLDatasetStatus.UPLOADED, report.getRCLStatus());
-		assertNotNull(report.getMessageId());
-		assertFalse(report.getMessageId().isEmpty());
-		assertNotNull(report.getId());
-		assertEquals(d.getId(), report.getId());
+		assertEquals(RCLDatasetStatus.UPLOADED, report1.getRCLStatus());
+		assertNotNull(report1.getMessageId());
+		assertFalse(report1.getMessageId().isEmpty());
+		assertNotNull(report1.getId());
+		assertEquals(d.getId(), report1.getId());
 	}
 
 	@Test
@@ -1650,17 +1650,17 @@ public class ReportServiceTest {
 
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		Dataset d = setReportCopyInDcfWithStatus(report, DcfDatasetStatus.REJECTED_EDITABLE);
+		Dataset d = setReportCopyInDcfWithStatus(report1, DcfDatasetStatus.REJECTED_EDITABLE);
 
-		reportService.send(report, d, getSendConfig(report), null);
+		reportService.send(report1, d, getSendConfig(report1), null);
 
-		assertEquals(RCLDatasetStatus.UPLOADED, report.getRCLStatus());
-		assertNotNull(report.getMessageId());
-		assertFalse(report.getMessageId().isEmpty());
-		assertNotNull(report.getId());
-		assertEquals(d.getId(), report.getId());
+		assertEquals(RCLDatasetStatus.UPLOADED, report1.getRCLStatus());
+		assertNotNull(report1.getMessageId());
+		assertFalse(report1.getMessageId().isEmpty());
+		assertNotNull(report1.getId());
+		assertEquals(d.getId(), report1.getId());
 	}
 
 	@Test
@@ -1669,17 +1669,17 @@ public class ReportServiceTest {
 
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		Dataset d = setReportCopyInDcfWithStatus(report, DcfDatasetStatus.VALID);
+		Dataset d = setReportCopyInDcfWithStatus(report1, DcfDatasetStatus.VALID);
 
-		reportService.send(report, d, getSendConfig(report), null);
+		reportService.send(report1, d, getSendConfig(report1), null);
 
-		assertEquals(RCLDatasetStatus.UPLOADED, report.getRCLStatus());
-		assertNotNull(report.getMessageId());
-		assertFalse(report.getMessageId().isEmpty());
-		assertNotNull(report.getId());
-		assertEquals(d.getId(), report.getId());
+		assertEquals(RCLDatasetStatus.UPLOADED, report1.getRCLStatus());
+		assertNotNull(report1.getMessageId());
+		assertFalse(report1.getMessageId().isEmpty());
+		assertNotNull(report1.getId());
+		assertEquals(d.getId(), report1.getId());
 	}
 
 	@Test
@@ -1688,17 +1688,17 @@ public class ReportServiceTest {
 
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		Dataset d = setReportCopyInDcfWithStatus(report, DcfDatasetStatus.VALID_WITH_WARNINGS);
+		Dataset d = setReportCopyInDcfWithStatus(report1, DcfDatasetStatus.VALID_WITH_WARNINGS);
 
-		reportService.send(report, d, getSendConfig(report), null);
+		reportService.send(report1, d, getSendConfig(report1), null);
 
-		assertEquals(RCLDatasetStatus.UPLOADED, report.getRCLStatus());
-		assertNotNull(report.getMessageId());
-		assertFalse(report.getMessageId().isEmpty());
-		assertNotNull(report.getId());
-		assertEquals(d.getId(), report.getId());
+		assertEquals(RCLDatasetStatus.UPLOADED, report1.getRCLStatus());
+		assertNotNull(report1.getMessageId());
+		assertFalse(report1.getMessageId().isEmpty());
+		assertNotNull(report1.getId());
+		assertEquals(d.getId(), report1.getId());
 	}
 
 	@Test
@@ -1707,18 +1707,18 @@ public class ReportServiceTest {
 
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		Dataset d = setReportCopyInDcfWithStatus(report, DcfDatasetStatus.ACCEPTED_DWH);
+		Dataset d = setReportCopyInDcfWithStatus(report1, DcfDatasetStatus.ACCEPTED_DWH);
 
-		RCLDatasetStatus prev = report.getRCLStatus();
+		RCLDatasetStatus prev = report1.getRCLStatus();
 
-		reportService.send(report, d, getSendConfig(report), null);
+		reportService.send(report1, d, getSendConfig(report1), null);
 
 		// not changed
-		assertEquals(prev, report.getRCLStatus());
-		assertNotNull(report.getMessageId());
-		assertTrue(report.getMessageId().isEmpty());
+		assertEquals(prev, report1.getRCLStatus());
+		assertNotNull(report1.getMessageId());
+		assertTrue(report1.getMessageId().isEmpty());
 	}
 
 	@Test
@@ -1727,17 +1727,17 @@ public class ReportServiceTest {
 
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		RCLDatasetStatus prev = report.getRCLStatus();
+		RCLDatasetStatus prev = report1.getRCLStatus();
 
-		Dataset d = setReportCopyInDcfWithStatus(report, DcfDatasetStatus.SUBMITTED);
+		Dataset d = setReportCopyInDcfWithStatus(report1, DcfDatasetStatus.SUBMITTED);
 
-		reportService.send(report, d, getSendConfig(report), null);
+		reportService.send(report1, d, getSendConfig(report1), null);
 
-		assertEquals(prev, report.getRCLStatus());
-		assertNotNull(report.getMessageId());
-		assertTrue(report.getMessageId().isEmpty());
+		assertEquals(prev, report1.getRCLStatus());
+		assertNotNull(report1.getMessageId());
+		assertTrue(report1.getMessageId().isEmpty());
 	}
 
 	@Test
@@ -1746,17 +1746,17 @@ public class ReportServiceTest {
 
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		RCLDatasetStatus prev = report.getRCLStatus();
+		RCLDatasetStatus prev = report1.getRCLStatus();
 
-		Dataset d = setReportCopyInDcfWithStatus(report, DcfDatasetStatus.OTHER);
+		Dataset d = setReportCopyInDcfWithStatus(report1, DcfDatasetStatus.OTHER);
 
-		reportService.send(report, d, getSendConfig(report), null);
+		reportService.send(report1, d, getSendConfig(report1), null);
 
-		assertEquals(prev, report.getRCLStatus());
-		assertNotNull(report.getMessageId());
-		assertTrue(report.getMessageId().isEmpty());
+		assertEquals(prev, report1.getRCLStatus());
+		assertNotNull(report1.getMessageId());
+		assertTrue(report1.getMessageId().isEmpty());
 	}
 
 	@Test
@@ -1765,17 +1765,17 @@ public class ReportServiceTest {
 
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		RCLDatasetStatus prev = report.getRCLStatus();
+		RCLDatasetStatus prev = report1.getRCLStatus();
 
-		Dataset d = setReportCopyInDcfWithStatus(report, DcfDatasetStatus.PROCESSING);
+		Dataset d = setReportCopyInDcfWithStatus(report1, DcfDatasetStatus.PROCESSING);
 
-		reportService.send(report, d, getSendConfig(report), null);
+		reportService.send(report1, d, getSendConfig(report1), null);
 
-		assertEquals(prev, report.getRCLStatus());
-		assertNotNull(report.getMessageId());
-		assertTrue(report.getMessageId().isEmpty());
+		assertEquals(prev, report1.getRCLStatus());
+		assertNotNull(report1.getMessageId());
+		assertTrue(report1.getMessageId().isEmpty());
 	}
 
 	@Test
@@ -1784,13 +1784,13 @@ public class ReportServiceTest {
 
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		reportService.exportAndSend(report, getRejectConfig(report));
+		reportService.exportAndSend(report1, getRejectConfig(report1));
 
-		assertEquals(RCLDatasetStatus.REJECTION_SENT, report.getRCLStatus());
-		assertNotNull(report.getMessageId());
-		assertFalse(report.getMessageId().isEmpty());
+		assertEquals(RCLDatasetStatus.REJECTION_SENT, report1.getRCLStatus());
+		assertNotNull(report1.getMessageId());
+		assertFalse(report1.getMessageId().isEmpty());
 	}
 
 	@Test
@@ -1799,13 +1799,13 @@ public class ReportServiceTest {
 
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		reportService.exportAndSend(report, getSubmitConfig(report));
+		reportService.exportAndSend(report1, getSubmitConfig(report1));
 
-		assertEquals(RCLDatasetStatus.SUBMISSION_SENT, report.getRCLStatus());
-		assertNotNull(report.getMessageId());
-		assertFalse(report.getMessageId().isEmpty());
+		assertEquals(RCLDatasetStatus.SUBMISSION_SENT, report1.getRCLStatus());
+		assertNotNull(report1.getMessageId());
+		assertFalse(report1.getMessageId().isEmpty());
 	}
 
 	@Test(expected = SendMessageException.class)
@@ -1814,11 +1814,11 @@ public class ReportServiceTest {
 
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXKO, null));
 
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		reportService.exportAndSend(report, getSendConfig(report));
+		reportService.exportAndSend(report1, getSendConfig(report1));
 
-		assertEquals(RCLDatasetStatus.UPLOAD_FAILED, report.getRCLStatus());
+		assertEquals(RCLDatasetStatus.UPLOAD_FAILED, report1.getRCLStatus());
 	}
 
 	@Test
@@ -1826,18 +1826,18 @@ public class ReportServiceTest {
 
 		sendMessage.setResponse(new MessageResponse("12342", TrxCode.TRXOK, null));
 
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		String oldVersion = report.getVersion();
+		String oldVersion = report1.getVersion();
 
 		TableRowList children1 = daoService.getByParentId(
-				TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET), report.getSchema().getSheetName(),
-				report.getDatabaseId(), true);
+				TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET), report1.getSchema().getSheetName(),
+				report1.getDatabaseId(), true);
 
-		Report newVersion = reportService.amend(report);
+		Report newVersion = reportService.amend(report1);
 
 		TableRowList children2 = daoService.getByParentId(
-				TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET), report.getSchema().getSheetName(),
+				TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET), report1.getSchema().getSheetName(),
 				newVersion.getDatabaseId(), true);
 
 		assertEquals(TableVersion.createNewVersion(oldVersion), newVersion.getVersion());
@@ -1950,8 +1950,8 @@ public class ReportServiceTest {
 			throws IOException, ParserConfigurationException, SAXException, ReportException, AmendException {
 
 		// create two versions of the report
-		TseReport report = genRandReportWithChildrenInDatabase();
-		TseReport amendedReport = reportService.amend(report);
+		TseReport report1 = genRandReportWithChildrenInDatabase();
+		TseReport amendedReport = reportService.amend(report1);
 
 		MessageConfigBuilder builder = reportService.getSendMessageConfiguration(amendedReport);
 		builder.setOpType(OperationType.INSERT);
@@ -1963,13 +1963,14 @@ public class ReportServiceTest {
 			ParserConfigurationException, SAXException, ReportException, DetailedSOAPException, SendMessageException {
 
 		// create two versions of the report
-		TseReport report = genRandReportWithChildrenInDatabase();
-		TseReport amendedReport = reportService.amend(report);
+		TseReport report1 = genRandReportWithChildrenInDatabase();
+		TseReport amendedReport = reportService.amend(report1);
 
 		boolean error = false;
 		try {
 			reportService.exportAndSend(amendedReport, getSendConfig(amendedReport));
 		} catch (AmendException e) {
+			e.printStackTrace();
 			assertEquals(RCLDatasetStatus.UPLOAD_FAILED, amendedReport.getRCLStatus());
 			error = true;
 		}
@@ -1982,8 +1983,8 @@ public class ReportServiceTest {
 			throws IOException, ParserConfigurationException, SAXException, ReportException, AmendException {
 
 		// create two versions of the report
-		TseReport report = genRandReportWithChildrenInDatabase();
-		TseReport amendedReport = reportService.amend(report);
+		TseReport report1 = genRandReportWithChildrenInDatabase();
+		TseReport amendedReport = reportService.amend(report1);
 
 		// new summarized information for the second report
 		SummarizedInfo si = RowCreatorMock.genRandSummInfo(amendedReport.getDatabaseId(), 1, // settId not required
@@ -2011,8 +2012,8 @@ public class ReportServiceTest {
 			throws IOException, ParserConfigurationException, SAXException, ReportException, AmendException {
 
 		// create two versions of the report
-		TseReport report = genRandReportWithChildrenInDatabase();
-		TseReport amendedReport = reportService.amend(report);
+		TseReport report1 = genRandReportWithChildrenInDatabase();
+		TseReport amendedReport = reportService.amend(report1);
 
 		TableRowList list = daoService.getByParentId(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET),
 				amendedReport.getSchema().getSheetName(), amendedReport.getDatabaseId(), false);
@@ -2039,9 +2040,9 @@ public class ReportServiceTest {
 			throws IOException, ParserConfigurationException, SAXException, ReportException, AmendException {
 
 		// create two versions of the report
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		TseReport amendedReport = reportService.amend(report);
+		TseReport amendedReport = reportService.amend(report1);
 
 		TableRowList list = daoService.getByParentId(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET),
 				amendedReport.getSchema().getSheetName(), amendedReport.getDatabaseId(), false);
@@ -2068,14 +2069,14 @@ public class ReportServiceTest {
 			throws IOException, ParserConfigurationException, SAXException, ReportException, AmendException {
 
 		// create two versions of the report
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
 		// add an additional summ info
-		SummarizedInfo summInfo = RowCreatorMock.genRandSummInfo(report.getDatabaseId(), 1,
-				report.getNumCode(CustomStrings.PREFERENCES_ID_COL));
+		SummarizedInfo summInfo = RowCreatorMock.genRandSummInfo(report1.getDatabaseId(), 1,
+				report1.getNumCode(CustomStrings.PREFERENCES_ID_COL));
 		daoService.add(summInfo);
 
-		TseReport amendedReport = reportService.amend(report);
+		TseReport amendedReport = reportService.amend(report1);
 
 		TableRowList list = daoService.getByParentId(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET),
 				amendedReport.getSchema().getSheetName(), amendedReport.getDatabaseId(), false);
@@ -2102,11 +2103,11 @@ public class ReportServiceTest {
 			throws IOException, ParserConfigurationException, SAXException, ReportException, AmendException {
 
 		// create two versions of the report
-		TseReport report = genRandReportWithChildrenInDatabase();
+		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		MessageConfigBuilder builder = reportService.getSendMessageConfiguration(report);
+		MessageConfigBuilder builder = reportService.getSendMessageConfiguration(report1);
 		builder.setOpType(OperationType.INSERT);
-		File exportedFile = reportService.export(report, builder);
+		File exportedFile = reportService.export(report1, builder);
 
 		assertNotNull(exportedFile);
 

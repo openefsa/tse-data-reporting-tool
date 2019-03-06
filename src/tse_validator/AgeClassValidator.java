@@ -11,6 +11,7 @@ import xml_catalog_reader.XmlLoader;
 /**
  * Validate an age class
  * @author avonva
+ * @author shahaal
  *
  */
 public class AgeClassValidator {
@@ -90,6 +91,7 @@ public class AgeClassValidator {
 			
 		}
 		catch(NumberFormatException e) {
+			e.printStackTrace();
 			throw new IOException("Cannot validate age with wrong year/month data."
 					+ " Found Report=" + this.reportYear + " " + this.reportMonth
 					+ " Found Birth=" + this.birthYear + " " + this.birthMonth);
@@ -97,8 +99,8 @@ public class AgeClassValidator {
 		
 		if (validated)
 			return Check.OK;
-		else
-			return Check.AGE_CLASS_NOT_RESPECTED;
+		
+		return Check.AGE_CLASS_NOT_RESPECTED;
 	}
 	
 	/**

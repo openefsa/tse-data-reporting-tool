@@ -26,7 +26,8 @@ import xlsx_reader.TableSchemaList;
 /**
  * Download and import a dataset, managing also all the amendments
  * 
- * @author avonva && shahaal
+ * @author avonva
+ * @author shahaal
  *
  */
 public class TseReportImporter extends ReportImporter {
@@ -63,19 +64,19 @@ public class TseReportImporter extends ReportImporter {
 	 * @param row
 	 * @return
 	 */
-	private boolean isSummarizedInfo(TableRow row) {
+	private static boolean isSummarizedInfo(TableRow row) {
 		return row.getCode(CustomStrings.PARAM_TYPE_COL).equals(CustomStrings.SUMMARIZED_INFO_PARAM_TYPE);
 	}
 
 	/**
 	 * Import all the summarized information into the db
 	 * 
-	 * @param report
+	 * @param report1
 	 * @param datasetRows
 	 * @throws FormulaException
 	 * @throws ParseException
 	 */
-	private void importSummarizedInformation(TseReport report, Collection<TableRow> datasetRows)
+	private void importSummarizedInformation(TseReport report1, Collection<TableRow> datasetRows)
 			throws FormulaException, ParseException {
 
 		// first process the summarized information
@@ -85,7 +86,7 @@ public class TseReportImporter extends ReportImporter {
 			// import it
 			if (isSummarizedInfo(row)) {
 
-				SummarizedInfo si = extractSummarizedInfo(report, row, false);
+				SummarizedInfo si = extractSummarizedInfo(report1, row, false);
 
 				// save it in the database
 				daoService.add(si);
@@ -101,13 +102,13 @@ public class TseReportImporter extends ReportImporter {
 	/**
 	 * Import all the cases and analytical results
 	 * 
-	 * @param report
+	 * @param report1
 	 * @param summInfo
 	 * @param datasetRows
 	 * @throws FormulaException
 	 * @throws ParseException
 	 */
-	private void importCasesAndResults(TseReport report, Collection<TableRow> datasetRows)
+	private void importCasesAndResults(TseReport report1, Collection<TableRow> datasetRows)
 			throws FormulaException, ParseException {
 
 		// process the cases and analytical results
@@ -118,9 +119,9 @@ public class TseReportImporter extends ReportImporter {
 				SummarizedInfo summInfo = new SummarizedInfo();
 
 				// if random genotyping, create the summarized information
-				if (reportService.isRGTResult(row)) {
+				if (TseReportService.isRGTResult(row)) {
 
-					summInfo = extractSummarizedInfo(report, row, true);
+					summInfo = extractSummarizedInfo(report1, row, true);
 
 					summInfo.setType(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
 
@@ -134,10 +135,10 @@ public class TseReportImporter extends ReportImporter {
 					LOGGER.info("Created fake RGT summarized information");
 				} else {
 
-					row.put(CustomStrings.REPORT_ID_COL, report.getDatabaseId()); // Report is needed for results
+					row.put(CustomStrings.REPORT_ID_COL, report1.getDatabaseId()); // Report is needed for results
 																					// formulas (sampId)
 
-					String origSampId = this.reportService.getOrigSampIdFrom(row);
+					String origSampId = TseReportService.getOrigSampIdFrom(row);
 
 					LOGGER.info("Samp orig id=" + origSampId + " for " + row);
 
@@ -149,11 +150,11 @@ public class TseReportImporter extends ReportImporter {
 
 				if (summInfo == null) {
 
-					String origSampId = this.reportService.getOrigSampIdFrom(row);
+					String origSampId = TseReportService.getOrigSampIdFrom(row);
 
 					String hashes = "";
 					for (SummarizedInfo si : summInfos) {
-						hashes += this.reportService.getOrigSampIdFrom(si) + "\n";
+						hashes += TseReportService.getOrigSampIdFrom(si) + "\n";
 					}
 
 					System.err.println("Cannot find origSampId " + origSampId);
@@ -165,10 +166,10 @@ public class TseReportImporter extends ReportImporter {
 				}
 
 				// import the case
-				TableRow caseInfo = importCase(report, summInfo, row);
+				TableRow caseInfo = importCase(report1, summInfo, row);
 
 				// import the result
-				TableRow result = importResult(report, summInfo, caseInfo, row);
+				TableRow result = importResult(report1, summInfo, caseInfo, row);
 
 				LOGGER.info("Imported analytical result with database id=" + result.getDatabaseId());
 			}
@@ -178,17 +179,17 @@ public class TseReportImporter extends ReportImporter {
 	/**
 	 * Import the case if possible
 	 * 
-	 * @param report
+	 * @param report1
 	 * @param row
 	 * @return
 	 * @throws FormulaException
 	 * @throws ParseException
 	 */
-	private TableRow importCase(TseReport report, SummarizedInfo summInfo, TableRow row)
+	private TableRow importCase(TseReport report1, SummarizedInfo summInfo, TableRow row)
 			throws FormulaException, ParseException {
 
 		// extract the case from the row
-		TableRow currentCaseInfo = extractCase(report, summInfo, row);
+		TableRow currentCaseInfo = extractCase(report1, summInfo, row);
 
 		// import the case info if not already imported
 		if (currentCaseInfo.getDatabaseId() == -1) {
@@ -216,18 +217,18 @@ public class TseReportImporter extends ReportImporter {
 	/**
 	 * Import the result into the db
 	 * 
-	 * @param report
+	 * @param report1
 	 * @param summInfo
 	 * @param caseInfo
 	 * @param row
 	 * @return
 	 * @throws ParseException
 	 */
-	private TableRow importResult(TseReport report, SummarizedInfo summInfo, TableRow caseInfo, TableRow row)
+	private TableRow importResult(TseReport report1, SummarizedInfo summInfo, TableRow caseInfo, TableRow row)
 			throws ParseException {
 
 		// then import the analytical result
-		TableRow result = extractAnalyticalResult(report, summInfo, caseInfo, row);
+		TableRow result = extractAnalyticalResult(report1, summInfo, caseInfo, row);
 
 		// save the result into the db
 		daoService.add(result);
@@ -238,13 +239,13 @@ public class TseReportImporter extends ReportImporter {
 	/**
 	 * Extract the summarized information data from the current row
 	 * 
-	 * @param report
+	 * @param report1
 	 * @param row
 	 * @return
 	 * @throws FormulaException
 	 * @throws ParseException
 	 */
-	private SummarizedInfo extractSummarizedInfo(TseReport report, TableRow row, boolean isRGT)
+	private SummarizedInfo extractSummarizedInfo(TseReport report1, TableRow row, boolean isRGT)
 			throws FormulaException, ParseException {
 
 		// set the summarized information schema
@@ -272,7 +273,7 @@ public class TseReportImporter extends ReportImporter {
 		}
 
 		// set the report as parent of the summ info
-		Relation.injectParent(report, summInfo);
+		Relation.injectParent(report1, summInfo);
 
 		// add pref and settings as information
 		try {
@@ -300,14 +301,14 @@ public class TseReportImporter extends ReportImporter {
 	/**
 	 * Extract the case row from the analytical result row
 	 * 
-	 * @param report
+	 * @param report1
 	 * @param summInfo
 	 * @param row
 	 * @return
 	 * @throws FormulaException
 	 * @throws ParseException
 	 */
-	private TableRow extractCase(TseReport report, SummarizedInfo summInfo, TableRow row)
+	private TableRow extractCase(TseReport report1, SummarizedInfo summInfo, TableRow row)
 			throws FormulaException, ParseException {
 
 		// set schema (required for next step), we are processing a result row,
@@ -366,7 +367,7 @@ public class TseReportImporter extends ReportImporter {
 			}
 
 			// set the report/summ info as parent of case report
-			Relation.injectParent(report, caseReport);
+			Relation.injectParent(report1, caseReport);
 			Relation.injectParent(summInfo, caseReport);
 		} else {
 
@@ -387,7 +388,7 @@ public class TseReportImporter extends ReportImporter {
 	 * @return
 	 * @throws ParseException
 	 */
-	private TableRow extractAnalyticalResult(TseReport report, SummarizedInfo summInfo, TableRow caseInfo, TableRow row)
+	private static TableRow extractAnalyticalResult(TseReport report, SummarizedInfo summInfo, TableRow caseInfo, TableRow row)
 			throws ParseException {
 
 		// set the summarized information schema

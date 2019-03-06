@@ -239,7 +239,7 @@ public class TseReportActions extends ReportActions {
 	 * @param operation
 	 * @return
 	 */
-	public boolean showSendWarning(Shell shell, ReportSendOperation operation) {
+	public static boolean showSendWarning(Shell shell, ReportSendOperation operation) {
 		
 		boolean goOn = true;
 		

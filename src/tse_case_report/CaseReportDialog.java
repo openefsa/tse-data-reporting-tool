@@ -43,21 +43,22 @@ import xml_catalog_reader.Selection;
 /**
  * Dialog which shows cases report related to a summarized information parent
  * @author avonva
+ * @author shahaal
  *
  */
 public class CaseReportDialog extends TableDialogWithMenu {
 	
-	private static final Logger LOGGER = LogManager.getLogger(CaseReportDialog.class);
+	static final Logger LOGGER = LogManager.getLogger(CaseReportDialog.class);
 	
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "CaseReport";
 	
-	private Report report;
-	private SummarizedInfo summInfo;
+	protected Report report;
+	protected SummarizedInfo summInfo;
 	
-	private TseReportService reportService;
-	private ITableDaoService daoService;
-	private IFormulaService formulaService;
+	protected TseReportService reportService;
+	protected ITableDaoService daoService;
+	protected IFormulaService formulaService;
 	
 	public CaseReportDialog(Shell parent, Report report, SummarizedInfo summInfo, 
 			TseReportService reportService, ITableDaoService daoService, IFormulaService formulaService) {
@@ -153,7 +154,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	 * @param summInfo
 	 * @return
 	 */
-	private int getNumberOfExpectedCases(TableRow summInfo) {
+	private static int getNumberOfExpectedCases(TableRow summInfo) {
 		
 		int positive = summInfo.getNumLabel(CustomStrings.TOT_SAMPLE_POSITIVE_COL);
 		int inconclusive = summInfo.getNumLabel(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL);

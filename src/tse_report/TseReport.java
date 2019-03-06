@@ -3,10 +3,6 @@ package tse_report;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import app_config.AppPaths;
 import dataset.DcfDatasetStatus;
 import dataset.RCLDatasetStatus;
@@ -19,13 +15,13 @@ import table_skeleton.TableRow;
 import table_skeleton.TableVersion;
 import tse_config.CatalogLists;
 import tse_config.CustomStrings;
-import tse_summarized_information.SummarizedInfo;
 import xlsx_reader.TableSchema;
 import xlsx_reader.TableSchemaList;
 
 /**
  * A TSE report
- * @author avonva && shahaal
+ * @author avonva
+ * @author shahaal
  *
  */
 public class TseReport extends Report {
@@ -69,7 +65,10 @@ public class TseReport extends Report {
 		};
 
 		Collection<TableRow> records = getRecords(daoService, schemas);
-
+		
+		/*
+		 * shahaal
+		 * the filter record is not needed because now RGT is defined at SummInfo level
 		// remove random genotyping from the summarized information
 		List<TableRow> filteredRecords = records.stream().filter(new Predicate<TableRow>() {
 			@Override
@@ -86,8 +85,8 @@ public class TseReport extends Report {
 				return true;
 			}
 		}).collect(Collectors.toList());
-		
-		return filteredRecords;
+		*/
+		return records;
 	}
 	
 	/**
@@ -130,6 +129,7 @@ public class TseReport extends Report {
 	/**
 	 * Get all the report versions that are stored locally
 	 */
+	@Override
 	public ReportList getAllVersions(ITableDaoService daoService) {
 
 		ReportList allVersions = new ReportList();
@@ -199,6 +199,7 @@ public class TseReport extends Report {
 	 * Check if the dataset can be edited or not
 	 * @return
 	 */
+	@Override
 	public boolean isEditable() {
 		return getRCLStatus().isEditable();
 	}

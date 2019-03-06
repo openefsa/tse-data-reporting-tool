@@ -35,6 +35,7 @@ import xml_catalog_reader.Selection;
 /**
  * Form to create a new report
  * @author avonva
+ * @author shahaal
  *
  */
 public class ReportCreatorDialog extends TableDialog {
@@ -130,7 +131,7 @@ public class ReportCreatorDialog extends TableDialog {
 		return !errorOccurred;
 	}
 	
-	private Message getErrorMessage(RCLError error, TseReport report) {
+	private static Message getErrorMessage(RCLError error, TseReport report) {
 		
 		IDataset oldReport = (IDataset) error.getData();
 
@@ -157,6 +158,8 @@ public class ReportCreatorDialog extends TableDialog {
 		case "ERR300":
 			fatal = true;
 			message = TSEMessages.get("new.report.failed", PropertiesReader.getSupportEmail());
+			break;
+		default:
 			break;
 		}
 		

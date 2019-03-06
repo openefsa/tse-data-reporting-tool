@@ -398,8 +398,7 @@ public class ReportValidatorTest {
 		result.put(CustomStrings.ALLELE_1_COL, new TableCell(CustomStrings.ALLELE_AFRR, ""));
 		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.SCREENING_TEST_CODE, ""));
 		
-		ResultValidator validator = new ResultValidator();
-		ErrorType error = validator.getError(result);
+		ErrorType error = ResultValidator.getError(result);
 		
 		assertEquals(ErrorType.ALLELE_ERROR, error);
 	}
@@ -410,8 +409,7 @@ public class ReportValidatorTest {
 		result.put(CustomStrings.ALLELE_1_COL, new TableCell(CustomStrings.ALLELE_AFRR, ""));
 		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.CONFIRMATORY_TEST_CODE, ""));
 		
-		ResultValidator validator = new ResultValidator();
-		ErrorType error = validator.getError(result);
+		ErrorType error = ResultValidator.getError(result);
 		
 		assertEquals(ErrorType.ALLELE_ERROR, error);
 	}
@@ -422,8 +420,7 @@ public class ReportValidatorTest {
 		result.put(CustomStrings.ALLELE_1_COL, new TableCell(CustomStrings.ALLELE_AFRR, ""));
 		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.DISCRIMINATORY_TEST_CODE, ""));
 		
-		ResultValidator validator = new ResultValidator();
-		ErrorType error = validator.getError(result);
+		ErrorType error = ResultValidator.getError(result);
 		
 		assertEquals(ErrorType.ALLELE_ERROR, error);
 	}
@@ -434,8 +431,7 @@ public class ReportValidatorTest {
 		result.put(CustomStrings.ALLELE_1_COL, new TableCell(CustomStrings.ALLELE_AFRR, ""));
 		result.put(CustomStrings.AN_METH_TYPE_COL, new TableCell(CustomStrings.MOLECULAR_TEST_CODE, ""));
 		
-		ResultValidator validator = new ResultValidator();
-		ErrorType error = validator.getError(result);
+		ErrorType error = ResultValidator.getError(result);
 		
 		assertEquals(ErrorType.NONE, error);
 	}
@@ -746,7 +742,7 @@ public class ReportValidatorTest {
 	}
 	
 	@Test
-	public void duplicatedContextIdForSummarizedInformation() throws IOException, FormulaException {
+	public void duplicatedContextIdForSummarizedInformation() throws FormulaException {
 
 		String contextId = formulaService.solve(si, 
 				si.getSchema().getById(CustomStrings.SAMPLE_ID_COL), 
@@ -772,7 +768,7 @@ public class ReportValidatorTest {
 	}
 	
 	@Test
-	public void duplicatedResultIdForResults() throws IOException {
+	public void duplicatedResultIdForResults() {
 
 		result.put(CustomStrings.RES_ID_COL, "resId");
 
@@ -794,7 +790,7 @@ public class ReportValidatorTest {
 	}
 	
 	@Test
-	public void duplicatedSampleIdForCases() throws IOException {
+	public void duplicatedSampleIdForCases() {
 
 		cr.put(CustomStrings.SAMPLE_ID_COL, "sampleid");
 
@@ -817,7 +813,7 @@ public class ReportValidatorTest {
 	
 	// two cases with the same animal id must have the same data
 	@Test
-	public void inconsistentCaseDataWithSameAnimalId() throws IOException {
+	public void inconsistentCaseDataWithSameAnimalId() {
 
 		cr.put(CustomStrings.ANIMAL_ID_COL, "animalId");
 		cr.put(CustomStrings.SAMP_HOLDING_ID_COL, "hold1");
@@ -843,7 +839,7 @@ public class ReportValidatorTest {
 	
 	// two cases with the same animal id must have the same data
 	@Test
-	public void differentAnimalIdWithSameNationalCaseId() throws IOException {
+	public void differentAnimalIdWithSameNationalCaseId() {
 
 		cr.put(CustomStrings.NATIONAL_CASE_ID_COL, "caseId");
 		cr.put(CustomStrings.ANIMAL_ID_COL, "animalId1");

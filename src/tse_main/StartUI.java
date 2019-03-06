@@ -137,14 +137,14 @@ public class StartUI {
 	 * Close the application (db + interface)
 	 * 
 	 * @param db
-	 * @param display
+	 * @param display1
 	 */
-	private static void shutdown(Database db, Display display) {
+	private static void shutdown(Database db, Display display1) {
 
 		LOGGER.info("Application closed " + System.currentTimeMillis());
 
-		if (display != null)
-			display.dispose();
+		if (display1 != null)
+			display1.dispose();
 
 		// close the database
 		if (db != null)
@@ -161,22 +161,22 @@ public class StartUI {
 	 * @param message
 	 */
 	private static void showInitError(String message) {
-		Display display = new Display();
-		Shell shell = new Shell(display);
-		Warnings.warnUser(shell, TSEMessages.get("error.title"), message);
+		Display display1 = new Display();
+		Shell shell1 = new Shell(display1);
+		Warnings.warnUser(shell1, TSEMessages.get("error.title"), message);
 
-		shell.dispose();
-		display.dispose();
+		shell1.dispose();
+		display1.dispose();
 	}
 
 	private static int ask(String message) {
-		Display display = new Display();
-		Shell shell = new Shell(display);
-		int val = Warnings.warnUser(shell, TSEMessages.get("warning.title"), message,
+		Display display1 = new Display();
+		Shell shell1 = new Shell(display1);
+		int val = Warnings.warnUser(shell1, TSEMessages.get("warning.title"), message,
 				SWT.YES | SWT.NO | SWT.ICON_WARNING);
 
-		shell.dispose();
-		display.dispose();
+		shell1.dispose();
+		display1.dispose();
 
 		return val;
 	}
@@ -200,6 +200,7 @@ public class StartUI {
 		}
 	}
 
+	@SuppressWarnings({ "unused", "null" })
 	private static Database launch() {
 
 		// application start-up message. Usage of System.err used for red chars
@@ -239,24 +240,22 @@ public class StartUI {
 			// close application
 			if (val == SWT.NO)
 				return db;
-			else {
+			
+			// delete the database
+			try {
 
-				// delete the database
-				try {
+				// delete the old database
+				db.delete();
 
-					// delete the old database
-					db.delete();
+				// reconnect to the database and
+				// create a new one
+				db.connect();
 
-					// reconnect to the database and
-					// create a new one
-					db.connect();
+			} catch (IOException e1) {
+				LOGGER.fatal(e1);
+				showInitError(TSEMessages.get("db.removal.error"));
 
-				} catch (IOException e1) {
-					LOGGER.fatal(e1);
-					showInitError(TSEMessages.get("db.removal.error"));
-
-					return db;
-				}
+				return db;
 			}
 		}
 

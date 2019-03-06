@@ -32,7 +32,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		NON_WILD_FOR_KILLED, WRONG_CASES
 	}
 
-	private int getDistinctCaseIndex(Collection<TableRow> cases, String sampEventAssesType, boolean exclude) {
+	private static int getDistinctCaseIndex(Collection<TableRow> cases, String sampEventAssesType, boolean exclude) {
 
 		HashSet<String> hash = new HashSet<>();
 
@@ -49,7 +49,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		return hash.size();
 	}
 
-	private int getDistinctCasesNumber(Collection<TableRow> cases) {
+	private static int getDistinctCasesNumber(Collection<TableRow> cases) {
 
 		HashSet<String> hash = new HashSet<>();
 
@@ -63,7 +63,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		return hash.size();
 	}
 
-	private double getPositiveCasesNumber(TableRow summInfo, Collection<TableRow> cases) {
+	private static double getPositiveCasesNumber(Collection<TableRow> cases) {
 		int neg = getDistinctCaseIndex(cases, CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, false);
 		int inc = getDistinctCaseIndex(cases, CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, false);
 
@@ -83,7 +83,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 		Collection<SampleCheck> checks = new ArrayList<>();
 
 		
-		/*shahaal
+		/* shahaal
 		 * br dropped since not valid any more
 		 *
 		String targetGroup = row.getCode(CustomStrings.TARGET_GROUP_COL);
@@ -114,7 +114,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 				// detailed inc
 				int detailedIncSamples = getDistinctCaseIndex(cases, CustomStrings.DEFAULT_ASSESS_INC_CASE_CODE, false);
 
-				double detailedPosSamples = getPositiveCasesNumber(row, cases);
+				double detailedPosSamples = getPositiveCasesNumber(cases);
 
 				if (detailedPosSamples > posSamples)
 					checks.add(SampleCheck.TOO_MANY_POSITIVES);
@@ -125,9 +125,14 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 					checks.add(SampleCheck.TOO_MANY_INCONCLUSIVES);
 				else if (detailedIncSamples < incSamples)
 					checks.add(SampleCheck.TOO_FEW_INCONCLUSIVES);
-			} else if (cases.size() == 0 || cases.isEmpty()) {
-				checks.add(SampleCheck.MISSING_RGT_CASE);
-			}
+			} 
+			
+			/* MM removed since case data are no more required for RGT
+			 *
+			 * else if (cases.size() == 0 || cases.isEmpty()) 
+			 * 	checks.add(SampleCheck.MISSING_RGT_CASE);
+			 */
+			
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 			LOGGER.error("Cannot check if the summarized information is correct", e);

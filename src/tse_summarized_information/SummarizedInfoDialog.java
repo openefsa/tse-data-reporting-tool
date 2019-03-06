@@ -68,21 +68,22 @@ import xml_catalog_reader.Selection;
 /**
  * Class which allows adding and editing a summarized information report.
  * 
- * @author avonva && shahaal
+ * @author avonva
+ * @author shahaal
  *
  */
 public class SummarizedInfoDialog extends TableDialogWithMenu {
 
-	private static final Logger LOGGER = LogManager.getLogger(SummarizedInfoDialog.class);
+	protected static final Logger LOGGER = LogManager.getLogger(SummarizedInfoDialog.class);
 
-	private TseReportService reportService;
-	private ITableDaoService daoService;
+	protected TseReportService reportService;
+	protected ITableDaoService daoService;
 	private IFormulaService formulaService;
 
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "SummarizedInformation";
 
-	private TseReport report;
+	protected TseReport report;
 
 	public SummarizedInfoDialog(Shell parent, TseReportService reportService, ITableDaoService daoService,
 			IFormulaService formulaService) {
@@ -126,11 +127,13 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 					case CustomStrings.AN_METH_TYPE_COL:
 						row.remove(CustomStrings.AN_METH_CODE_COL);
 						break;
+					default:
+						break;
 					}
 				}
 			}
 		});
-		
+
 	}
 
 	@Override
@@ -146,7 +149,18 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent arg0) {
-				addCase.setEnabled(!isTableEmpty());
+				
+				// shahaal: check if RGT, if this the case doesnt enable the open sample form
+				TableRow rowSelected = getSelection();
+				
+				// check if row has been selected
+				if (rowSelected != null) {
+					//check if row is RGT
+					boolean isRGT = rowSelected.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
+							.equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
+					
+					addCase.setEnabled(!isTableEmpty() && !isRGT);
+				}
 			}
 		});
 
@@ -176,7 +190,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 
 		addRemoveMenuItem(menu);
 		addCloneMenuItem(menu);
-		
+
 		return menu;
 	}
 
@@ -186,7 +200,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	 * @param summInfo
 	 * @return
 	 */
-	private boolean validate(TableRow summInfo) {
+	boolean validate(TableRow summInfo) {
 
 		if (!summInfo.areMandatoryFilled() && report.isEditable()) {
 			warnUser(TSEMessages.get("error.title"), TSEMessages.get("si.open.cases.error"));
@@ -199,7 +213,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	/**
 	 * Open the cases dialog of the summarized information
 	 */
-	private void openCases(SummarizedInfo summInfo) {
+	void openCases(SummarizedInfo summInfo) {
 
 		Relation.emptyCache();
 
@@ -254,24 +268,22 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	 */
 	@Override
 	public TableRow createNewRow(TableSchema schema, Selection element) {
-		
+
 		TableCell value = new TableCell(element);
 
-		// if random genotyping
-		if (value.getCode().equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE)) {
-			// check if already inserted
-			for (TableRow row : this.getLoadedRows()) {
-				if (row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE).equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE)) {
-					// cannot add two RGT!
-
-					Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"),
-							TSEMessages.get("cannot.have.two.rgt"), SWT.ICON_WARNING);
-
-					return null;
-				}
-			}
-		}
-
+		/*
+		 * monguma: removed now more RGT rows can be created // if random genotyping if
+		 * (value.getCode().equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE)) { // check
+		 * if already inserted for (TableRow row : this.getLoadedRows()) { if
+		 * (row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE).equals(CustomStrings.
+		 * SUMMARIZED_INFO_RGT_TYPE)) { // cannot add two RGT!
+		 * 
+		 * Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"),
+		 * TSEMessages.get("cannot.have.two.rgt"), SWT.ICON_WARNING);
+		 * 
+		 * return null; } } }
+		 */
+		
 		// create a new summarized information
 		SummarizedInfo si = new SummarizedInfo(CustomStrings.SUMMARIZED_INFO_TYPE, value);
 
@@ -462,7 +474,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				actions.send(reportService.getSendMessageConfiguration(report), new Listener() {
 
 					@Override
-					public void handleEvent(Event arg0) {
+					public void handleEvent(Event arg01) {
 						updateUI();
 					}
 				});
@@ -470,29 +482,25 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		};
 
 		/*
-		//shahaal: uncomment for adding Reject function
-		SelectionListener rejectListener = new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-
-				if (report == null)
-					return;
-
-				ReportActions actions = new TseReportActions(getDialog(), report, reportService);
-
-				MessageConfigBuilder config = reportService.getSendMessageConfiguration(report);
-				config.setOpType(OperationType.REJECT);
-
-				// reject the report and update the ui
-				actions.perform(config, new Listener() {
-
-					@Override
-					public void handleEvent(Event arg0) {
-						updateUI();
-					}
-				});
-			}
-		};*/
+		 * //shahaal: uncomment for adding Reject function SelectionListener
+		 * rejectListener = new SelectionAdapter() {
+		 * 
+		 * @Override public void widgetSelected(SelectionEvent arg0) {
+		 * 
+		 * if (report == null) return;
+		 * 
+		 * ReportActions actions = new TseReportActions(getDialog(), report,
+		 * reportService);
+		 * 
+		 * MessageConfigBuilder config =
+		 * reportService.getSendMessageConfiguration(report);
+		 * config.setOpType(OperationType.REJECT);
+		 * 
+		 * // reject the report and update the ui actions.perform(config, new Listener()
+		 * {
+		 * 
+		 * @Override public void handleEvent(Event arg0) { updateUI(); } }); } };
+		 */
 
 		SelectionListener submitListener = new SelectionAdapter() {
 			@Override
@@ -510,7 +518,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				actions.perform(config, new Listener() {
 
 					@Override
-					public void handleEvent(Event arg0) {
+					public void handleEvent(Event arg01) {
 						updateUI();
 					}
 				});
@@ -554,8 +562,8 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 									// open the ack in the browser to see it formatted
 									if (log.getDownloadedAck() != null) {
 
-										HtmlViewer viewer = new HtmlViewer();
-										viewer.open(log.getDownloadedAck());
+										HtmlViewer viewer1 = new HtmlViewer();
+										viewer1.open(log.getDownloadedAck());
 									}
 								}
 							}
@@ -628,31 +636,27 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 
 		/*
 		 * shahaal, uncomment for the beta tester
-		
-		SelectionListener getAcceptedDwhMsgBeta = new SelectionAdapter() {
-
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				
-				if (report == null)
-					return;
-				
-				ReportActions actions = new TseReportActions(getDialog(), report, reportService);
-
-				MessageConfigBuilder config = reportService.getAcceptDwhBetaMessageConfiguration(report);
-				config.setOpType(OperationType.ACCEPTED_DWH_BETA);
-
-				// reject the report and update the ui
-				actions.perform(config, new Listener() {
-
-					@Override
-					public void handleEvent(Event arg0) {
-						updateUI();
-					}
-				});
-				
-			}
-		};*/
+		 * 
+		 * SelectionListener getAcceptedDwhMsgBeta = new SelectionAdapter() {
+		 * 
+		 * @Override public void widgetSelected(SelectionEvent arg0) {
+		 * 
+		 * if (report == null) return;
+		 * 
+		 * ReportActions actions = new TseReportActions(getDialog(), report,
+		 * reportService);
+		 * 
+		 * MessageConfigBuilder config =
+		 * reportService.getAcceptDwhBetaMessageConfiguration(report);
+		 * config.setOpType(OperationType.ACCEPTED_DWH_BETA);
+		 * 
+		 * // reject the report and update the ui actions.perform(config, new Listener()
+		 * {
+		 * 
+		 * @Override public void handleEvent(Event arg0) { updateUI(); } });
+		 * 
+		 * } };
+		 */
 
 		SelectionListener changeMessageIdListener = new SelectionAdapter() {
 
@@ -720,12 +724,13 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 							changeDatasetIdListener);
 		}
 
-		/* shahaal: if in beta test add the change report status button
-		if (DebugConfig.betaTest) {
-			viewer.addGroup("betaTesterPanel", TSEMessages.get("si.beta.tester.panel"), new GridLayout(1, false), null)
-					.addButtonToComposite("betaAcceptedDwh", "betaTesterPanel",
-							TSEMessages.get("si.beta.accepted.dwh"), getAcceptedDwhMsgBeta);
-		}*/
+		/*
+		 * shahaal: if in beta test add the change report status button if
+		 * (DebugConfig.betaTest) { viewer.addGroup("betaTesterPanel",
+		 * TSEMessages.get("si.beta.tester.panel"), new GridLayout(1, false), null)
+		 * .addButtonToComposite("betaAcceptedDwh", "betaTesterPanel",
+		 * TSEMessages.get("si.beta.accepted.dwh"), getAcceptedDwhMsgBeta); }
+		 */
 
 		viewer.addComposite("panel", new GridLayout(1, false), null)
 
@@ -737,7 +742,9 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				.addButtonToComposite("sendBtn", "buttonsComp", TSEMessages.get("si.toolbar.send"), sendListener)
 				.addButtonToComposite("submitBtn", "buttonsComp", TSEMessages.get("si.toolbar.submit"), submitListener)
 				.addButtonToComposite("amendBtn", "buttonsComp", TSEMessages.get("si.toolbar.amend"), amendListener)
-				//.addButtonToComposite("rejectBtn", "buttonsComp", TSEMessages.get("si.toolbar.reject"), rejectListener) //uncomment for adding Reject function
+				// .addButtonToComposite("rejectBtn", "buttonsComp",
+				// TSEMessages.get("si.toolbar.reject"), rejectListener) //uncomment for adding
+				// Reject function
 				.addButtonToComposite("refreshBtn", "buttonsComp", TSEMessages.get("si.toolbar.refresh.status"),
 						refreshStateListener)
 				.addButtonToComposite("displayAckBtn", "buttonsComp", TSEMessages.get("si.toolbar.display.ack"),
@@ -749,7 +756,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 						CatalogLists.TSE_LIST)
 
 				.addTable(CustomStrings.SUMMARIZED_INFO_SHEET, true);
-		
+
 		initUI();
 	}
 
@@ -765,7 +772,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setEnabled("validateBtn", false);
 		panel.setEnabled("editBtn", false);
 		panel.setEnabled("sendBtn", false);
-		//panel.setEnabled("rejectBtn", false);
+		// panel.setEnabled("rejectBtn", false);
 		panel.setEnabled("submitBtn", false);
 		panel.setEnabled("amendBtn", false);
 		panel.setEnabled("displayAckBtn", false);
@@ -800,9 +807,11 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.addButtonImage("amendBtn", amendImage);
 
 		// add image to send button
-		/*Image rejectImage = new Image(Display.getCurrent(),
-				this.getClass().getClassLoader().getResourceAsStream("reject-icon.png"));
-		panel.addButtonImage("rejectBtn", rejectImage);*/
+		/*
+		 * Image rejectImage = new Image(Display.getCurrent(),
+		 * this.getClass().getClassLoader().getResourceAsStream("reject-icon.png"));
+		 * panel.addButtonImage("rejectBtn", rejectImage);
+		 */
 
 		// add image to send button
 		Image displayAckImage = new Image(Display.getCurrent(),
@@ -880,7 +889,8 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setEnabled("sendBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeSent());
 		panel.setEnabled("amendBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeAmended());
 		panel.setEnabled("submitBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeSubmitted());
-		//panel.setEnabled("rejectBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeRejected());
+		// panel.setEnabled("rejectBtn", !DebugConfig.disableMainPanel &&
+		// datasetStatus.canBeRejected());
 		panel.setEnabled("displayAckBtn", !DebugConfig.disableMainPanel && datasetStatus.canDisplayAck());
 		panel.setEnabled("refreshBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeRefreshed());
 		panel.setEnabled("changeStatusBtn", true);
@@ -890,7 +900,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setEnabled("betaAcceptedDwh", datasetStatus.getStatus().contains("SUBMITTED"));
 	}
 
-	private boolean askConfirmation(ReportAction action) {
+	protected boolean askConfirmation(ReportAction action) {
 
 		String title = TSEMessages.get("warning.title");
 		String message = null;
@@ -904,9 +914,10 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		case SEND:
 			message = TSEMessages.get("send.confirm");
 			break;
-		/*case ACCEPTED_DWH_BETA:
-			message = TSEMessages.get("beta_accepted_dhw.confirm");
-			break;*/
+		/*
+		 * case ACCEPTED_DWH_BETA: message =
+		 * TSEMessages.get("beta_accepted_dhw.confirm"); break;
+		 */
 		case AMEND:
 			message = TSEMessages.get("amend.confirm");
 			break;
@@ -930,7 +941,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	 * @param defaultValue
 	 * @return
 	 */
-	private String checkField(String field, String defaultValue) {
+	private static String checkField(String field, String defaultValue) {
 
 		String out = null;
 

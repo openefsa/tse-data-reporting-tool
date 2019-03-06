@@ -51,6 +51,7 @@ import xml_catalog_reader.Selection;
 /**
  * Dialog which is used to set global settings for the application
  * @author avonva
+ * @author shahaal
  *
  */
 public class SettingsDialog extends OptionsDialog {
@@ -88,7 +89,7 @@ public class SettingsDialog extends OptionsDialog {
 		return closeWindow;
 	}
 	
-	private boolean login(TableRow settings) {
+	private static boolean login(TableRow settings) {
 		
 		// get credentials
 		TableCell usernameVal = settings.get(CustomStrings.SETTINGS_USERNAME);
@@ -148,7 +149,7 @@ public class SettingsDialog extends OptionsDialog {
 		return new SimpleRowValidatorLabelProvider();
 	}
 	
-	private TseReport createTestReport() throws IOException {
+	private static TseReport createTestReport() throws IOException {
 		
 		TseReport report = new TseReport();
 		report.setCountry("TEST");
@@ -171,7 +172,7 @@ public class SettingsDialog extends OptionsDialog {
 	/**
 	 * Test the connection with the inserted credentials
 	 */
-	private void testConnection() {
+	void testConnection() {
 		
 		getPanelBuilder().selectRow(0);
 		TableRow settings = getPanelBuilder().getTableElements().iterator().next();

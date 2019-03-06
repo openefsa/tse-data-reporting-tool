@@ -16,7 +16,7 @@ import tse_config.CustomStrings;
 public class TSEFormulaDecomposerTest {
 
 	@Test
-	public void decomposeNameValueField() throws ParseException {
+	public static void decomposeNameValueField() throws ParseException {
 		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer();
 		HashMap<String, TableCell> values = decomposer.decompose(CustomStrings.SAMP_UNIT_IDS_COL, "PSUId=my samp");
 		

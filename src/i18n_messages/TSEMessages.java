@@ -9,7 +9,8 @@ import java.util.ResourceBundle;
 import i18n_messages.RCLBundle;
 
 public class TSEMessages {
-	/* internal jar properties file
+	
+	/* uncomment if need to use internal properties file
 	private static final String BUNDLE_NAME = "i18n_messages.tse_messages_en";
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH);
@@ -27,10 +28,10 @@ public class TSEMessages {
 	
 	public static String get(String key, String... values) {
 		
-		//interal jar proprieties
+		//interal proprieties file
 		//return bundle.get(key, values);
 	
-		//external jar proprieties
+		//external proprieties file
 		try {
 			RESOURCE_BUNDLE = new PropertyResourceBundle(Files.newInputStream(Paths.get(BUNDLE_NAME)));
 			bundle = new RCLBundle(RESOURCE_BUNDLE);

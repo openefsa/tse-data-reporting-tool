@@ -41,12 +41,13 @@ import xml_catalog_reader.Selection;
 
 /**
  * Class which allows adding and editing a summarized information report.
- * @author avonva && shahaal
+ * @author avonva
+ * @author shahaal
  *
  */
 public class ResultDialog extends TableDialogWithMenu {
 	
-	private static final Logger LOGGER = LogManager.getLogger(ResultDialog.class);
+	static final Logger LOGGER = LogManager.getLogger(ResultDialog.class);
 	
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "AnalyticalResult";
@@ -102,7 +103,7 @@ public class ResultDialog extends TableDialogWithMenu {
 							
 							PredefinedResultService r = new PredefinedResultService(daoService, formulaService);
 							
-							PredefinedResult predRes = r.getPredefinedResult(report, summInfo, caseInfo);
+							PredefinedResult predRes = r.getPredefinedResult(summInfo, caseInfo);
 
 							row.put(CustomStrings.PARAM_CODE_BASE_TERM_COL, 
 									predRes.get(PredefinedResultHeader.GENOTYPING_BASE_TERM));
@@ -253,6 +254,7 @@ public class ResultDialog extends TableDialogWithMenu {
 				candidateMax = Integer.valueOf(seq);
 			}
 			catch(NumberFormatException e) {
+				e.printStackTrace();
 				candidateMax = 0;
 			}
 			

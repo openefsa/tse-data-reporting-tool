@@ -46,7 +46,8 @@ import xlsx_reader.TableHeaders.XlsxHeader;
  * 
  * Report service
  * 
- * @author avonva && shahaal
+ * @author avonva
+ * @author shahaal
  *
  */
 
@@ -54,18 +55,18 @@ public class TseReportService extends ReportService {
 
 	private static final Logger LOGGER = LogManager.getLogger(TseReportService.class);
 
-	private IFormulaService formulaService;
+	private IFormulaService formulaService1;
 
 	public TseReportService(IGetAck getAck, IGetDatasetsList<IDataset> getDatasetsList, ISendMessage sendMessage,
 			IGetDataset getDataset, ITableDaoService daoService, IFormulaService formulaService) {
 		super(getAck, getDatasetsList, sendMessage, getDataset, daoService, formulaService);
 
-		this.formulaService = formulaService;
+		this.formulaService1 = formulaService;
 	}
 
 	/**
-	 * shahaal
-	 * get sampId now
+	 * get sampId field in row
+	 * @author shahaal
 	 * @param summInfo
 	 * @return
 	 * @throws FormulaException
@@ -95,7 +96,7 @@ public class TseReportService extends ReportService {
 	 * @return
 	 * @throws ParseException
 	 */
-	public boolean isRGTResult(TableRow row) throws ParseException {
+	public static boolean isRGTResult(TableRow row) throws ParseException {
 
 		FormulaDecomposer decomposer = new FormulaDecomposer();
 		String paramBaseTerm = decomposer.getBaseTerm(row.getCode(CustomStrings.PARAM_CODE_COL));
@@ -115,7 +116,7 @@ public class TseReportService extends ReportService {
 	 * @param row
 	 * @return
 	 */
-	public RowType getRowType(TableRow row) {
+	public static RowType getRowType(TableRow row) {
 
 		RowType type = null;
 
@@ -128,6 +129,8 @@ public class TseReportService extends ReportService {
 			break;
 		case CustomStrings.RESULT_SHEET:
 			type = RowType.RESULT;
+			break;
+		default:
 			break;
 		}
 
@@ -142,7 +145,7 @@ public class TseReportService extends ReportService {
 	 * @throws ParseException
 	 * @throws FormulaException
 	 */
-	public String getOrigSampIdFrom(TableRow result) throws ParseException, FormulaException {
+	public static String getOrigSampIdFrom(TableRow result) throws ParseException, FormulaException {
 		
 		// decompose param code
 		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer();
@@ -280,8 +283,8 @@ public class TseReportService extends ReportService {
 			e.printStackTrace();
 		}
 
-		MessageConfigBuilder builder = new MessageConfigBuilder(formulaService, messageParents);
-
+		MessageConfigBuilder builder = new MessageConfigBuilder(formulaService1, messageParents);
+		
 		return builder;
 	}
 
@@ -302,7 +305,7 @@ public class TseReportService extends ReportService {
 			e.printStackTrace();
 		}
 
-		MessageConfigBuilder builder = new MessageConfigBuilder(formulaService, messageParents);
+		MessageConfigBuilder builder = new MessageConfigBuilder(formulaService1, messageParents);
 
 		return builder;
 	}
@@ -497,12 +500,12 @@ public class TseReportService extends ReportService {
 		Relation.injectParent(report, resultRow);
 		Relation.injectParent(summInfo, resultRow);
 
-		formulaService.initialize(resultRow);
+		formulaService1.initialize(resultRow);
 
 		// add get the id and update the fields
 		daoService.add(resultRow);
 
-		formulaService.initialize(resultRow);
+		formulaService1.initialize(resultRow);
 
 		resultRow.put(CustomStrings.PART_COL, CustomStrings.BLOOD_CODE);
 
@@ -542,12 +545,12 @@ public class TseReportService extends ReportService {
 				// inject the case parent to the result
 				Relation.injectParent(report, resultRow);
 				Relation.injectParent(summInfo, resultRow);
-				formulaService.initialize(resultRow);
+				formulaService1.initialize(resultRow);
 
 				// add result
 				daoService.add(resultRow);
 
-				formulaService.initialize(resultRow);
+				formulaService1.initialize(resultRow);
 
 				// set assessment as inconclusive
 				TableCell value = new TableCell();
@@ -580,7 +583,7 @@ public class TseReportService extends ReportService {
 				// inject the case parent to the result
 				Relation.injectParent(report, resultRow);
 				Relation.injectParent(summInfo, resultRow);
-				formulaService.initialize(resultRow);
+				formulaService1.initialize(resultRow);
 
 				// add get the id and update the fields
 				daoService.add(resultRow);
@@ -604,7 +607,7 @@ public class TseReportService extends ReportService {
 	public TableRowList createDefaultResults(Report report, SummarizedInfo summInfo, CaseReport caseInfo)
 			throws IOException {
 
-		PredefinedResultService r = new PredefinedResultService(daoService, formulaService);
+		PredefinedResultService r = new PredefinedResultService(daoService, formulaService1);
 
 		TableRowList results = r.createDefaultResults(report, summInfo, caseInfo);
 

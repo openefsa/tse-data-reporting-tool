@@ -42,12 +42,13 @@ import xml_catalog_reader.XmlLoader;
 
 /**
  * Download a report into the local database.
- * @author avonva && shahaal
+ * @author avonva
+ * @author shahaal
  *
  */
 public class TseReportDownloader extends ReportDownloaderDialog {
 
-	private static final Logger LOGGER = LogManager.getLogger(TseReportDownloader.class);
+	static final Logger LOGGER = LogManager.getLogger(TseReportDownloader.class);
 	
 	private TseReportService reportService;
 	private ITableDaoService daoService;
@@ -219,8 +220,8 @@ public class TseReportDownloader extends ReportDownloaderDialog {
 	}
 
 	@Override
-	public IDataCollectionsDialog getDataCollectionsDialog(Shell shell,
+	public IDataCollectionsDialog getDataCollectionsDialog(Shell shell1,
 			IDcfDataCollectionsList<IDcfDataCollection> list) {
-		return new TSEDataCollectionsListDialog(shell, list);
+		return new TSEDataCollectionsListDialog(shell1, list);
 	}
 }
