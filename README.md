@@ -2,7 +2,8 @@
 The TSE data reporting tool is an open source Java client tool developed for the members of the Scientific Network for Zoonoses monitoring. The tool allows countries to submit and edit their data and automatically upload them into the EFSA Data Collection Framework (DCF) as XML data files.
 
 <p align="center">
-    <img src="icons/app-icon.png" alt="Image"/>
+    <img src="icons/app-icon.png" alt="TSE icon"/>
+    <img src="http://www.efsa.europa.eu/profiles/efsa/themes/responsive_efsa/logo.png" alt="European Food Safety Authority"/>
 </p>
 
 # Dependencies
