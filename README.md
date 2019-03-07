@@ -21,12 +21,12 @@ The project needs the following projects to work properly:
 * https://github.com/openefsa/zip-manager
 
 ## Import the project in Eclipse IDE
-In order to import the TSE project correctly into the eclipse development environment, it is necessary to download the TSE together with all its dependencies. Next, extract the all the zip packets inside the eclipse workspace in order to make them visible to Eclipse. 
+In order to import the TSE project correctly into the Eclipse development environment, it is necessary to download the TSE together with all its dependencies. Next, in order to allow an easy import into the IDE, extract all the zip packets inside the eclipse workspace. 
 At this stage you can simply open the IDE and and import all the projects just extracted one by one.
 
-Note that the TSE and its dependencies make use of the Maven technology which automatically download and set up all the jar files useful for the proper functioning of the tool.
+_Note that the TSE and its dependencies make use of the Maven technology which automatically download and set up all the jar files useful for the proper functioning of the tool._
 
-The only file which need to be manually set up in the build path (for the TSE, EFSA-RCL and the HttpManager GUI projects) is the Jface jar file which can be downloaded from the following [link](http://www.java2s.com/Code/JarDownload/org.eclipse/org.eclipse.jface-3.8.jar.zip).
+The only projects which require to manually configure a library into the build path are the **TSE**, **EFSA-RCL** and the **HttpManager GUI** projects which are making use of the **Jface** jar file downloadable from the following [link](http://www.java2s.com/Code/JarDownload/org.eclipse/org.eclipse.jface-3.8.jar.zip).
 
 For further information on how to use the tool and how to correctly install it in your local computer refer to the wiki page.
 
