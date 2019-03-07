@@ -7,7 +7,7 @@ The TSE data reporting tool is an open source Java client tool developed for the
 </p>
 
 ## Dependencies
-The project needs the following projects to work properly:
+The project needs the following dependencies in order to work properly:
 * https://github.com/openefsa/Dcf-webservice-framework
 * https://github.com/openefsa/EFSA-RCL
 * https://github.com/openefsa/email-generator
