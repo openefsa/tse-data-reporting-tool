@@ -26,7 +26,7 @@ At this stage you can simply open the IDE and and import all the projects just e
 
 _Note that the TSE and its dependencies make use of the Maven technology which automatically download and set up all the jar files useful for the proper functioning of the tool._
 
-The only projects which require to manually configure a library into the build path are the **TSE**, **EFSA-RCL** and the **HttpManager GUI** projects which are making use of the **Jface** jar file downloadable from the following [link](http://www.java2s.com/Code/JarDownload/org.eclipse/org.eclipse.jface-3.8.jar.zip).
+The only projects which require to manually configure the build path are the **TSE**, **EFSA-RCL** and the **HttpManager GUI** which are using the **Jface** jar file downloadable from the following [link](http://www.java2s.com/Code/JarDownload/org.eclipse/org.eclipse.jface-3.8.jar.zip).
 
 For further information on how to use the tool and how to correctly install it in your local computer refer to the wiki page.
 
