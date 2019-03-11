@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -149,16 +151,16 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent arg0) {
-				
+
 				// shahaal: check if RGT, if this the case doesnt enable the open sample form
 				TableRow rowSelected = getSelection();
-				
+
 				// check if row has been selected
 				if (rowSelected != null) {
-					//check if row is RGT
+					// check if row is RGT
 					boolean isRGT = rowSelected.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
 							.equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
-					
+
 					addCase.setEnabled(!isTableEmpty() && !isRGT);
 				}
 			}
@@ -168,19 +170,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-
-				TableRow row = getSelection();
-
-				if (row == null)
-					return;
-
-				SummarizedInfo summInfo = new SummarizedInfo(row);
-
-				// first validate the content of the row
-				if (!validate(summInfo) && isEditable())
-					return;
-
-				openCases(summInfo);
+				openSampleCase();
 			}
 
 			@Override
@@ -188,10 +178,48 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			}
 		});
 
+		// shahaal: added ability to direclty open next level by double clicking on the
+		// record
+		addTableDoubleClickListener(new IDoubleClickListener() {
+
+			@Override
+			public void doubleClick(DoubleClickEvent arg0) {
+				openSampleCase();
+			}
+		});
+
 		addRemoveMenuItem(menu);
 		addCloneMenuItem(menu);
 
 		return menu;
+	}
+
+	/**
+	 * open sample case
+	 * 
+	 * @author shahaal
+	 */
+	public void openSampleCase() {
+
+		TableRow row = getSelection();
+
+		if (row == null)
+			return;
+		
+		// check if row is RGT
+		boolean isRGT = row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE).equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
+		
+		//if the row is RGT dont open the sample case
+		if(isRGT)
+			return;
+		
+		SummarizedInfo summInfo = new SummarizedInfo(row);
+
+		// first validate the content of the row
+		if (!validate(summInfo) && isEditable())
+			return;
+
+		openCases(summInfo);
 	}
 
 	/**
@@ -283,7 +311,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		 * 
 		 * return null; } } }
 		 */
-		
+
 		// create a new summarized information
 		SummarizedInfo si = new SummarizedInfo(CustomStrings.SUMMARIZED_INFO_TYPE, value);
 

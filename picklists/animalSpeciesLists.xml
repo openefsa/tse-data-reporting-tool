@@ -25,9 +25,6 @@
 		<selection code="F01.A057H">
 			<description>Water buffalo (Bubalus bubalis)</description>
 		</selection>
-		<selection code="F01.A0F1V">
-			<description>TEST(to be removed)</description>
-		</selection>
 	</selectionList>
 	<selectionList id="SCRAPIE">
 		<selection code="F01.A057G">

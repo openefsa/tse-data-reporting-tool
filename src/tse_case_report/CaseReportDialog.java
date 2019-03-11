@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -42,62 +44,64 @@ import xml_catalog_reader.Selection;
 
 /**
  * Dialog which shows cases report related to a summarized information parent
+ * 
  * @author avonva
  * @author shahaal
  *
  */
 public class CaseReportDialog extends TableDialogWithMenu {
-	
+
 	static final Logger LOGGER = LogManager.getLogger(CaseReportDialog.class);
-	
+
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "CaseReport";
-	
+
 	protected Report report;
 	protected SummarizedInfo summInfo;
-	
+
 	protected TseReportService reportService;
 	protected ITableDaoService daoService;
 	protected IFormulaService formulaService;
-	
-	public CaseReportDialog(Shell parent, Report report, SummarizedInfo summInfo, 
-			TseReportService reportService, ITableDaoService daoService, IFormulaService formulaService) {
-		
+
+	public CaseReportDialog(Shell parent, Report report, SummarizedInfo summInfo, TseReportService reportService,
+			ITableDaoService daoService, IFormulaService formulaService) {
+
 		super(parent, TSEMessages.get("case.title"), true, false);
 		LOGGER.info("Opening case report dialog");
-		
+
 		this.report = report;
 		this.summInfo = summInfo;
 		this.reportService = reportService;
 		this.daoService = daoService;
 		this.formulaService = formulaService;
-		
+
 		LOGGER.info("Creating dialog structure and contents");
 		// create the parent structure
 		super.create();
-		
+
 		LOGGER.info("Saving window preferences");
 		this.window = new RestoreableWindow(getDialog(), WINDOW_CODE);
 		boolean restored = window.restore(TSERestoreableWindowDao.class);
 		window.saveOnClosure(TSERestoreableWindowDao.class);
-		
+
 		// add 300 px in height
 		if (!restored)
 			addHeight(300);
-		
+
 		LOGGER.info("Updating UI");
 		// update the ui
 		updateUI();
-		
+
 		LOGGER.info("Ask for default values");
 		// ask for default values
 		askForDefault();
-		
+
 		setEditorListener(new EditorListener() {
-			
+
 			@Override
-			public void editStarted() {}
-			
+			public void editStarted() {
+			}
+
 			@SuppressWarnings("unlikely-arg-type")
 			@Override
 			public void editEnded(TableRow row, TableColumn field, boolean changed) {
@@ -107,72 +111,70 @@ public class CaseReportDialog extends TableDialogWithMenu {
 			}
 		});
 	}
-	
+
 	public void askForDefault() {
-		
+
 		boolean isRGT = summInfo.isRGT();
 		boolean hasExpectedCases = !isRGT // cannot compute expected cases for RGT
 				&& getNumberOfExpectedCases(summInfo) > 0;
 
-		boolean canAsk = isEditable() && !summInfo.isBSEOS() 
+		boolean canAsk = isEditable() && !summInfo.isBSEOS()
 				&& !reportService.hasChildren(summInfo, TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET))
 				&& (hasExpectedCases || isRGT);
-		
+
 		LOGGER.debug("Can ask=" + canAsk);
-				
+
 		// create default cases if no cases
 		// and cases were set in the aggregated data
 		if (canAsk) {
-			
+
 			if (!isRGT) {
 				LOGGER.debug("Warn user");
-				
-				Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"), 
-						TSEMessages.get("case.check.default"), 
+
+				Warnings.warnUser(getDialog(), TSEMessages.get("warning.title"), TSEMessages.get("case.check.default"),
 						SWT.ICON_INFORMATION);
-				
+
 				LOGGER.debug("End warn user");
 			}
-			
+
 			if (hasExpectedCases) {
 				try {
 					reportService.createDefaultCases(report, summInfo);
 				} catch (IOException e) {
 					e.printStackTrace();
-					LOGGER.error("Cannot create default cases in summarized info with progId=" 
-							+ summInfo.getProgId(), e);
+					LOGGER.error("Cannot create default cases in summarized info with progId=" + summInfo.getProgId(),
+							e);
 				}
-			}
-			else if (isRGT) {
+			} else if (isRGT) {
 				reportService.createDefaultRGTCase(report, summInfo);
 			}
 		}
 	}
-	
+
 	/**
 	 * get the declared number of cases in the current row
+	 * 
 	 * @param summInfo
 	 * @return
 	 */
 	private static int getNumberOfExpectedCases(TableRow summInfo) {
-		
+
 		int positive = summInfo.getNumLabel(CustomStrings.TOT_SAMPLE_POSITIVE_COL);
 		int inconclusive = summInfo.getNumLabel(CustomStrings.TOT_SAMPLE_INCONCLUSIVE_COL);
 		int total = positive + inconclusive;
-		
+
 		return total;
 	}
 
-	
 	@Override
 	public Menu createMenu() {
-		
+
 		Menu menu = super.createMenu();
-		
+
 		MenuItem openResults = new MenuItem(menu, SWT.PUSH);
 		openResults.setText(TSEMessages.get("case.open.results"));
 		openResults.setEnabled(false);
-		
+
 		addTableSelectionListener(new ISelectionChangedListener() {
 
 			@Override
@@ -180,47 +182,66 @@ public class CaseReportDialog extends TableDialogWithMenu {
 				openResults.setEnabled(!isTableEmpty());
 			}
 		});
-		
+
 		openResults.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-
-				TableRow row = getSelection();
-				
-				if (row == null)
-					return;
-				
-				Relation.emptyCache();
-				
-				CaseReport caseReport = new CaseReport(row);
-				
-				if (!caseReport.areMandatoryFilled() && report.isEditable()) {
-					warnUser(TSEMessages.get("error.title"), TSEMessages.get("case.open.results.error"));
-					return;
-				}
-
-				LOGGER.info("Opening result dialog");
-				
-				// initialize result passing also the 
-				// report data and the summarized information data
-				ResultDialog dialog = new ResultDialog(getParent(), report, summInfo, 
-						caseReport, reportService, daoService, formulaService);
-				dialog.setParentFilter(caseReport); // set the case as filter (and parent)
-				dialog.askForDefault();
-				dialog.open();
-				
-				// update children errors
-				reportService.updateChildrenErrors(caseReport);
-				replace(caseReport);
+				openAnalyticalRes();
 			}
 		});
-		
+
+		// shahaal: added ability to direclty open next level by double clicking
+		addTableDoubleClickListener(new IDoubleClickListener() {
+
+			@Override
+			public void doubleClick(DoubleClickEvent arg0) {
+				openAnalyticalRes();
+			}
+		});
+
 		addRemoveMenuItem(menu);
 		addCloneMenuItem(menu);
-		
+
 		return menu;
 	}
-	
+
+	/**
+	 * open analytical result level
+	 * 
+	 * @author shahaal
+	 */
+	public void openAnalyticalRes() {
+
+		TableRow row = getSelection();
+
+		if (row == null)
+			return;
+
+		Relation.emptyCache();
+
+		CaseReport caseReport = new CaseReport(row);
+
+		if (!caseReport.areMandatoryFilled() && report.isEditable()) {
+			warnUser(TSEMessages.get("error.title"), TSEMessages.get("case.open.results.error"));
+			return;
+		}
+
+		LOGGER.info("Opening result dialog");
+
+		// initialize result passing also the
+		// report data and the summarized information data
+		ResultDialog dialog = new ResultDialog(getParent(), report, summInfo, caseReport, reportService, daoService,
+				formulaService);
+		dialog.setParentFilter(caseReport); // set the case as filter (and parent)
+		dialog.askForDefault();
+		dialog.open();
+
+		// update children errors
+		reportService.updateChildrenErrors(caseReport);
+		replace(caseReport);
+
+	}
+
 	@Override
 	public void setParentFilter(TableRow parentFilter) {
 		this.summInfo = new SummarizedInfo(parentFilter);
@@ -235,23 +256,24 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		panel.setTableEditable(editableReport);
 		panel.setRowCreatorEnabled(editableReport);
 	}
-	
+
 	/**
 	 * Create a new row with default values
+	 * 
 	 * @param element
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Override
 	public TableRow createNewRow(TableSchema schema, Selection element) {
 
 		// return the new row
 		TableRow caseRow = new TableRow(schema);
-		
+
 		// add parents
 		Relation.injectParent(report, caseRow);
 		Relation.injectParent(summInfo, caseRow);
-		
+
 		return caseRow;
 	}
 
@@ -271,7 +293,8 @@ public class CaseReportDialog extends TableDialogWithMenu {
 	}
 
 	@Override
-	public void processNewRow(TableRow caseRow) {}
+	public void processNewRow(TableRow caseRow) {
+	}
 
 	@Override
 	public RowValidatorLabelProvider getValidator() {
@@ -280,7 +303,7 @@ public class CaseReportDialog extends TableDialogWithMenu {
 
 	@Override
 	public void addWidgets(DialogBuilder viewer) {
-		
+
 		String reportMonth = report.getLabel(AppPaths.REPORT_MONTH_COL);
 		String reportYear = report.getLabel(AppPaths.REPORT_YEAR_COL);
 		String source = summInfo.getLabel(CustomStrings.SOURCE_COL);
@@ -288,9 +311,9 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		String age = summInfo.getLabel(CustomStrings.ANIMAGE_COL);
 		String target = summInfo.getLabel(CustomStrings.TARGET_GROUP_COL);
 		String progId = summInfo.getLabel(CustomStrings.PROG_ID_COL);
-		
+
 		String sex = summInfo.getLabel(CustomStrings.SEX_COL);
-		
+
 		String yearRow = TSEMessages.get("case.samp.year", reportYear);
 		String monthRow = TSEMessages.get("case.samp.month", reportMonth);
 		String sourceRow = TSEMessages.get("case.animal.species", source);
@@ -299,30 +322,29 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		String targetRow = TSEMessages.get("case.target.group", target);
 		String progIdRow = TSEMessages.get("case.prog.id", progId);
 		String sexRow = TSEMessages.get("case.sex.id", sex);
-		
-		viewer.addHelp(TSEMessages.get("case.help.title"))
-			.addComposite("labelsComp", new GridLayout(1, false), null)
-			.addLabelToComposite("yearLabel", yearRow, "labelsComp")
-			.addLabelToComposite("monthLabel", monthRow, "labelsComp");
-		
+
+		viewer.addHelp(TSEMessages.get("case.help.title")).addComposite("labelsComp", new GridLayout(1, false), null)
+				.addLabelToComposite("yearLabel", yearRow, "labelsComp")
+				.addLabelToComposite("monthLabel", monthRow, "labelsComp");
+
 		if (!source.isEmpty())
 			viewer.addLabelToComposite("sourceLabel", sourceRow, "labelsComp");
-		
+
 		if (!prod.isEmpty())
 			viewer.addLabelToComposite("prodLabel", prodRow, "labelsComp");
-		
+
 		if (!age.isEmpty())
 			viewer.addLabelToComposite("ageLabel", ageRow, "labelsComp");
-		
+
 		if (!target.isEmpty())
 			viewer.addLabelToComposite("targetLabel", targetRow, "labelsComp");
-		
+
 		viewer.addLabelToComposite("progIdLabel", progIdRow, "labelsComp");
-			
+
 		if (summInfo.getType().equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE))
 			viewer.addLabelToComposite("sexLabel", sexRow, "labelsComp");
-			
-		viewer.addRowCreator(TSEMessages.get("case.add.record"))
-			.addTable(CustomStrings.CASE_INFO_SHEET, true, report, summInfo);
+
+		viewer.addRowCreator(TSEMessages.get("case.add.record")).addTable(CustomStrings.CASE_INFO_SHEET, true, report,
+				summInfo);
 	}
 }
