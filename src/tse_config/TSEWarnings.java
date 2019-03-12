@@ -48,7 +48,7 @@ public class TSEWarnings {
 			break;
 			
 		default:
-			
+			//TODO check if it is possible to give a more excplicit message based on what is returned from the DCF 
 			msg = Warnings.createFatal(TSEMessages.get("send.message.failed",
 					messageError, PropertiesReader.getSupportEmail()), reports);
 			break;
