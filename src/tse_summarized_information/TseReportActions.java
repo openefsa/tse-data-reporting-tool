@@ -277,7 +277,7 @@ public class TseReportActions extends ReportActions {
 			break;
 		case REJECTED_EDITABLE:
 		case VALID:
-		case VALID_WITH_WARNINGS:
+		case VALID_WITH_WARNING:
 			
 			title = TSEMessages.get("warning.title");
 			message = TSEMessages.get("send.warning.replace", datasetId, operation.getStatus().getLabel());

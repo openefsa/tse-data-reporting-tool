@@ -653,9 +653,9 @@ public class ReportServiceTest {
 	@Test
 	public void refreshStatusWithValidWithWarningsSameModifyingMessageId() {
 		report.setStatus(RCLDatasetStatus.VALID);
-		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.VALID_WITH_WARNINGS, true);
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.VALID_WITH_WARNING, true);
 
-		assertEquals(RCLDatasetStatus.VALID_WITH_WARNINGS, report.getRCLStatus());
+		assertEquals(RCLDatasetStatus.VALID_WITH_WARNING, report.getRCLStatus());
 		assertEquals("OK500", m.getCode());
 	}
 
@@ -761,7 +761,7 @@ public class ReportServiceTest {
 	public void refreshStatusWithValidWithWarningsDifferentModifyingMessageId() {
 
 		report.setStatus(RCLDatasetStatus.VALID);
-		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.VALID_WITH_WARNINGS, false);
+		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.VALID_WITH_WARNING, false);
 
 		assertEquals(RCLDatasetStatus.DRAFT, report.getRCLStatus());
 		assertEquals("ERR504", m.getCode());
@@ -1322,7 +1322,7 @@ public class ReportServiceTest {
 		Dataset d = new Dataset();
 		d.setId("42842");
 		d.setSenderId("AT0404.00");
-		d.setStatus(DcfDatasetStatus.VALID_WITH_WARNINGS);
+		d.setStatus(DcfDatasetStatus.VALID_WITH_WARNING);
 
 		DatasetList list = new DatasetList();
 		list.add(d);
@@ -1690,7 +1690,7 @@ public class ReportServiceTest {
 
 		TseReport report1 = genRandReportWithChildrenInDatabase();
 
-		Dataset d = setReportCopyInDcfWithStatus(report1, DcfDatasetStatus.VALID_WITH_WARNINGS);
+		Dataset d = setReportCopyInDcfWithStatus(report1, DcfDatasetStatus.VALID_WITH_WARNING);
 
 		reportService.send(report1, d, getSendConfig(report1), null);
 
