@@ -263,6 +263,7 @@ public class ResultDialog extends TableDialogWithMenu {
 		}
 
 		row.put(CustomStrings.AN_PORT_SEQ_COL, max + 1);
+		
 		daoService.update(row);
 		this.refresh(row);
 	}
