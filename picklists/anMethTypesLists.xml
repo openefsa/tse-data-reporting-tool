@@ -51,18 +51,5 @@
 		<selection code="AT12A">
 			<description>Discriminatory</description>
 		</selection>
-	</selectionList>
-	<selectionList id="RAPID">
-		<selection code="AT06A">
-			<description>Screening</description>
-		</selection>
-	</selectionList>
-	<selectionList id="TG006A">
-		<selection code="AT06A">
-			<description>Screening</description>
-		</selection>
-		<selection code="AT08A">
-			<description>Confirmatory</description>
-		</selection>
-	</selectionList>
+	</selectionList>	
 </anMethTypesLists>
