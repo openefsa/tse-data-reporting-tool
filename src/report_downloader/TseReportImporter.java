@@ -86,15 +86,33 @@ public class TseReportImporter extends ReportImporter {
 			// import it
 			if (isSummarizedInfo(row)) {
 
-				SummarizedInfo si = extractSummarizedInfo(report1, row, false);
+				SummarizedInfo summInfo = new SummarizedInfo();
 
-				// save it in the database
-				daoService.add(si);
+				// if random genotyping, create the summarized information
+				if (TseReportService.isRGTResult(row)) {
 
-				LOGGER.info("Imported summ info; sampId=" + reportService.getSampId(si));
+					summInfo = extractSummarizedInfo(report1, row, true);
 
-				// save it in the cache
-				summInfos.add(si);
+					// create the summarized information
+					daoService.add(summInfo);
+
+					// add in the cache in order to avoid to save the same summInfo
+					// for the different results
+					summInfos.add(summInfo);
+
+					LOGGER.info("Created fake RGT summarized information");
+				} else {
+					
+					SummarizedInfo si = extractSummarizedInfo(report1, row, false);
+
+					// save it in the database
+					daoService.add(si);
+
+					LOGGER.info("Imported summ info; sampId=" + reportService.getSampId(si));
+
+					// save it in the cache
+					summInfos.add(si);
+				}
 			}
 		}
 	}
@@ -119,21 +137,7 @@ public class TseReportImporter extends ReportImporter {
 				SummarizedInfo summInfo = new SummarizedInfo();
 
 				// if random genotyping, create the summarized information
-				if (TseReportService.isRGTResult(row)) {
-
-					summInfo = extractSummarizedInfo(report1, row, true);
-
-					summInfo.setType(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
-
-					// create the summarized information
-					daoService.add(summInfo);
-
-					// add in the cache in order to avoid to save the same summInfo
-					// for the different results
-					summInfos.add(summInfo);
-
-					LOGGER.info("Created fake RGT summarized information");
-				} else {
+				if (!TseReportService.isRGTResult(row)) {
 
 					row.put(CustomStrings.REPORT_ID_COL, report1.getDatabaseId()); // Report is needed for results
 																					// formulas (sampId)
@@ -261,10 +265,15 @@ public class TseReportImporter extends ReportImporter {
 		rowValues.putAll(
 				decomposer.decompose(CustomStrings.SAMP_UNIT_IDS_COL, row.getCode(CustomStrings.SAMP_UNIT_IDS_COL)));
 
-		if (!isRGT)
-			rowValues.putAll(
+		// extract prog info
+		rowValues.putAll(
 					decomposer.decompose(CustomStrings.PROG_INFO_COL, row.getCode(CustomStrings.PROG_INFO_COL)));
 
+		// extract the allele if RGT
+		if(isRGT)
+			rowValues.putAll(
+					decomposer.decompose(CustomStrings.PARAM_CODE_COL, row.getCode(CustomStrings.PARAM_CODE_COL)));
+		
 		// copy values into the summarized information
 		SummarizedInfo summInfo = new SummarizedInfo(row);
 
@@ -293,6 +302,7 @@ public class TseReportImporter extends ReportImporter {
 		// set also the summarized information type using
 		// the species
 		String type = summInfo.getTypeBySpecies();
+
 		summInfo.setType(type);
 
 		return summInfo;
@@ -388,8 +398,8 @@ public class TseReportImporter extends ReportImporter {
 	 * @return
 	 * @throws ParseException
 	 */
-	private static TableRow extractAnalyticalResult(TseReport report, SummarizedInfo summInfo, TableRow caseInfo, TableRow row)
-			throws ParseException {
+	private static TableRow extractAnalyticalResult(TseReport report, SummarizedInfo summInfo, TableRow caseInfo,
+			TableRow row) throws ParseException {
 
 		// set the summarized information schema
 		row.setSchema(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
@@ -473,7 +483,7 @@ public class TseReportImporter extends ReportImporter {
 
 		LOGGER.info("Importing cases and results");
 
-		// shahaal, catch the exception whenimporting old reports
+		// shahaal, catch the exception when importing old reports
 		try {
 			// then import cases and results
 			importCasesAndResults(report, rows);

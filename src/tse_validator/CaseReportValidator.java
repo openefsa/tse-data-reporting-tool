@@ -1,6 +1,5 @@
 package tse_validator;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -34,9 +33,8 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 	public CaseReportValidator(ITableDaoService daoService) {
 		this.daoService = daoService;
 	}
-
-	@SuppressWarnings("unused")
-	public Collection<Check> isRecordCorrect(TableRow row) throws IOException {
+	
+	public Collection<Check> isRecordCorrect(TableRow row) {
 
 		Collection<Check> checks = new ArrayList<>();
 
@@ -61,15 +59,16 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			checks.add(Check.INDEX_CASE_FOR_NEGATIVE);
 		}
 
-		// shahaal status herd doenst exists anymore in samples, instead is taken from
-		// the summinfo
-		if (indexCase.equals(CustomStrings.INDEX_CASE_YES)
-				&& summInfo.getCode(CustomStrings.STATUS_HERD_COL).equals(CustomStrings.STATUS_HERD_INFECTED_CODE)) {
+		// shahaal status herd doenst exists anymore in samples, instead is taken from summinfo
+		//TSE48
+		if (indexCase.equals(CustomStrings.INDEX_CASE_YES) && 
+				(summInfo.getCode(CustomStrings.STATUS_HERD_COL).equals(CustomStrings.STATUS_HERD_INFECTED_CODE))) {
 			checks.add(Check.INDEX_CASE_FOR_INFECTED);
 		}
 
-		if (indexCase.equals(CustomStrings.INDEX_CASE_NO) && summInfo.getCode(CustomStrings.STATUS_HERD_COL)
-				.equals(CustomStrings.STATUS_HERD_NOT_INFECTED_CODE)) {
+		//TSE49
+		if (indexCase.equals(CustomStrings.INDEX_CASE_NO) && 
+				(summInfo.getCode(CustomStrings.STATUS_HERD_COL).equals(CustomStrings.STATUS_HERD_NOT_INFECTED_CODE))) {
 			checks.add(Check.NOT_INDEX_CASE_FOR_FREE);
 		}
 
@@ -177,7 +176,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 				break;
 			}
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			LOGGER.error("Cannot check if the case is correct", e);
 		}
@@ -233,7 +232,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 				break;
 			}
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			LOGGER.error("Cannot check if the case is correct", e);
 		}
@@ -279,7 +278,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			default:
 				break;
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			LOGGER.error("Cannot check if the case is correct", e);
 		}

@@ -69,17 +69,16 @@ public class SummarizedInfo extends TableRow {
 	public String getTypeBySpecies() {
 		
 		String species = getSpecies();
-
-		//shahaal, handle the null type by species when importing catalogues created
-		//with TSE <1.2.2
+		
+		// if the paramcode is rgt then return the rgt type
+		if(this.getCode(CustomStrings.PARAM_CODE_COL).contains(CustomStrings.RGT_PARAM_CODE))
+			return CustomStrings.SUMMARIZED_INFO_RGT_TYPE;
 		
 		// get the type whose species is the current one
 		Selection sel = XmlLoader.getByPicklistKey(CatalogLists.SPECIES_LIST).getElementByCode(species);
 		
 		if(sel==null)
 			return "";
-		
-		System.out.println(sel.toString());
 
 		String listId = sel.getListId();
 		
@@ -87,7 +86,7 @@ public class SummarizedInfo extends TableRow {
 		if (listId.contains("$")) {
 			listId = listId.split("\\$")[0];
 		}
-
+		
 		return listId;
 	}
 }

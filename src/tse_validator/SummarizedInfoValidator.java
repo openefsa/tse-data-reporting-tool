@@ -104,7 +104,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 			Collection<TableRow> cases = daoService.getByParentId(childSchema, row.getSchema().getSheetName(),
 					row.getDatabaseId(), true);
-
+			
 			if (!isRGT) {
 
 				// declared inc/pos

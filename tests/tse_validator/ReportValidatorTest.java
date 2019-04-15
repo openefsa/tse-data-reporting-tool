@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import org.junit.Before;
@@ -573,8 +572,7 @@ public class ReportValidatorTest {
 	}*/
 	
 	@Test
-	public void noDetailedTestCheck() throws IOException {
-
+	public void noDetailedTestCheck() {
 		daoService.delete(result.getSchema(), result.getDatabaseId());
 
 		CaseReportValidator validator = new CaseReportValidator(daoService);
@@ -584,7 +582,7 @@ public class ReportValidatorTest {
 	}
 	
 	@Test
-	public void indexCaseForNegativeSampleCheck() throws IOException {
+	public void indexCaseForNegativeSampleCheck() {
 
 		cr.put(CustomStrings.SAMP_EVENT_ASSES_COL, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, ""));
@@ -599,7 +597,7 @@ public class ReportValidatorTest {
 	}
 	
 	@Test
-	public void caseIdForNegativeSampleCheck() throws IOException {
+	public void caseIdForNegativeSampleCheck() {
 
 		cr.put(CustomStrings.SAMP_EVENT_ASSES_COL, 
 				new TableCell(CustomStrings.DEFAULT_ASSESS_NEG_CASE_CODE, ""));
@@ -655,7 +653,7 @@ public class ReportValidatorTest {
 	}
 	
 	@Test
-	public void notInfectedStatusForEradicationTargetGroupCheck() throws IOException {
+	public void notInfectedStatusForEradicationTargetGroupCheck() {
 		
 		// Eradication measure
 		si.put(CustomStrings.TARGET_GROUP_COL, 
@@ -672,7 +670,7 @@ public class ReportValidatorTest {
 	}
 	
 	@Test
-	public void infectedStatusForEradicationTargetGroupInSheepShouldRaiseNoWarning() throws IOException {
+	public void infectedStatusForEradicationTargetGroupInSheepShouldRaiseNoWarning() {
 
 		// Eradication measure
 		si.put(CustomStrings.TARGET_GROUP_COL, 
@@ -689,7 +687,7 @@ public class ReportValidatorTest {
 	}
 	
 	@Test
-	public void notInfectedStatusForNOTEradicationTargetGroupShouldRaiseNoWarning() throws IOException {
+	public void notInfectedStatusForNOTEradicationTargetGroupShouldRaiseNoWarning() {
 		
 		// Eradication measure
 		si.put(CustomStrings.TARGET_GROUP_COL, 

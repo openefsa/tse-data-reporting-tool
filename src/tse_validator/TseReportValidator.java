@@ -396,12 +396,7 @@ public class TseReportValidator extends ReportValidator {
 		CaseReportValidator validator = new CaseReportValidator(daoService);
 
 		Collection<Check> checks = new ArrayList<>();
-		try {
-			checks = validator.isRecordCorrect(row);
-		} catch (IOException e) {
-			e.printStackTrace();
-			LOGGER.error("Cannot check if case is correct", e);
-		}
+		checks = validator.isRecordCorrect(row);
 
 		for (Check check : checks) {
 			switch (check) {
@@ -424,9 +419,12 @@ public class TseReportValidator extends ReportValidator {
 				errors.add(new NotInfectedStatusForEradicationError(getStackTrace(row)));
 				break;
 			case INDEX_CASE_FOR_INFECTED:
+				errors.add(new IndexCaseInconsistentWithStatusHerdError(getStackTrace(row),
+					row.getLabel(CustomStrings.INDEX_CASE_COL), "Infected"));
+				break;
 			case NOT_INDEX_CASE_FOR_FREE:
 				errors.add(new IndexCaseInconsistentWithStatusHerdError(getStackTrace(row),
-						row.getLabel(CustomStrings.INDEX_CASE_COL), row.getLabel(CustomStrings.STATUS_HERD_COL)));
+						row.getLabel(CustomStrings.INDEX_CASE_COL), "Not infected"));
 				break;
 			case NOT_CONSTANT_ANALYSIS_YEAR:
 				errors.add(new NotConstantAnalysisYearError(getStackTrace(row)));
