@@ -28,7 +28,6 @@ public class MainPanel {
 		this.reportService = reportService;
 		this.daoService = daoService;
 		this.formulaService = formulaService;
-		create();
 	}
 	
 	/**
@@ -74,12 +73,13 @@ public class MainPanel {
 	/**
 	 * Create the interface
 	 */
-	@SuppressWarnings("unused")
-	private void create() {
+	public void create() {
 
 		shell.setLayout(new GridLayout());
 		
-		new MainMenu(this, shell, reportService, daoService, formulaService);
+		MainMenu mainMenu = new MainMenu(this, shell, reportService, daoService, formulaService);
+		mainMenu.create();
+		
 		this.reportViewer = new SummarizedInfoDialog(shell, reportService, daoService, formulaService);
 	}
 }

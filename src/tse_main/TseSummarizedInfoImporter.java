@@ -31,7 +31,7 @@ public class TseSummarizedInfoImporter extends TableImporter {
 		row.put(CustomStrings.TOT_SAMPLE_NEGATIVE_COL, "0");
 		row.put(CustomStrings.TOT_SAMPLE_TESTED_COL, "0");
 
-		this.formulaService.initialize(row, CustomStrings.PROG_ID_COL);
-		this.formulaService.initialize(row, CustomStrings.RES_ID_COL);
+		this.formulaService.Initialise(row, CustomStrings.PROG_ID_COL);
+		this.formulaService.Initialise(row, CustomStrings.RES_ID_COL);
 	}
 }

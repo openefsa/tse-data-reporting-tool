@@ -82,17 +82,17 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 		Collection<SampleCheck> checks = new ArrayList<>();
 
-		
-		/* shahaal
-		 * br dropped since not valid any more
+		/*
+		 * BR dropped since not valid any more
 		 *
-		String targetGroup = row.getCode(CustomStrings.TARGET_GROUP_COL);
-		String prod = row.getCode(CustomStrings.PROD_COL);
-
-		// non wild for killed error
-		if (targetGroup.equals(CustomStrings.KILLED_TARGET_GROUP) && !prod.equals(CustomStrings.WILD_PROD)) {
-			checks.add(SampleCheck.NON_WILD_FOR_KILLED);
-		}*/
+		 * String targetGroup = row.getCode(CustomStrings.TARGET_GROUP_COL); String prod
+		 * = row.getCode(CustomStrings.PROD_COL);
+		 * 
+		 * // non wild for killed error if
+		 * (targetGroup.equals(CustomStrings.KILLED_TARGET_GROUP) &&
+		 * !prod.equals(CustomStrings.WILD_PROD)) {
+		 * checks.add(SampleCheck.NON_WILD_FOR_KILLED); }
+		 */
 
 		String rowType = row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
 		boolean isRGT = rowType.equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
@@ -104,7 +104,7 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 
 			Collection<TableRow> cases = daoService.getByParentId(childSchema, row.getSchema().getSheetName(),
 					row.getDatabaseId(), true);
-			
+
 			if (!isRGT) {
 
 				// declared inc/pos
@@ -125,14 +125,15 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 					checks.add(SampleCheck.TOO_MANY_INCONCLUSIVES);
 				else if (detailedIncSamples < incSamples)
 					checks.add(SampleCheck.TOO_FEW_INCONCLUSIVES);
-			} 
-			
-			/* MM removed since case data are no more required for RGT
+			}
+
+			/*
+			 * MM removed since case data are no more required for RGT
 			 *
-			 * else if (cases.size() == 0 || cases.isEmpty()) 
-			 * 	checks.add(SampleCheck.MISSING_RGT_CASE);
+			 * else if (cases.size() == 0 || cases.isEmpty())
+			 * checks.add(SampleCheck.MISSING_RGT_CASE);
 			 */
-			
+
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 			LOGGER.error("Cannot check if the summarized information is correct", e);

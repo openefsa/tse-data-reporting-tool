@@ -197,7 +197,7 @@ public class TseReportActions extends ReportActions {
 		Warnings.warnUser(shell, title, message, style);
 	}
 	
-	/* shahaal, uncomment for beta testers
+	/* TODO uncomment for beta testers
 	private void acceptedDwhBetaEnd() {
 		String title = TSEMessages.get("success.title");
 		String message = TSEMessages.get("acceptedDwhBeta.success");

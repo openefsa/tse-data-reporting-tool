@@ -66,6 +66,7 @@ public class TseReportService extends ReportService {
 
 	/**
 	 * get sampId field in row
+	 * 
 	 * @author shahaal
 	 * @param summInfo
 	 * @return
@@ -76,7 +77,7 @@ public class TseReportService extends ReportService {
 		// we need all the fields to compute the context id, in order to
 		// solve formula dependencies
 		FormulaSolver solver = new FormulaSolver(summInfo, daoService);
-		
+
 		ArrayList<Formula> formulas = solver.solveAll(XlsxHeader.LABEL_FORMULA.getHeaderName());
 
 		System.out.println(Arrays.asList(formulas));
@@ -85,10 +86,10 @@ public class TseReportService extends ReportService {
 			if (f.getColumn().getId().equals(CustomStrings.SAMPLE_ID_COL))
 				return f.getSolvedFormula();
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Check if the analytical result is related to random genotyping
 	 * 
@@ -100,7 +101,7 @@ public class TseReportService extends ReportService {
 
 		FormulaDecomposer decomposer = new FormulaDecomposer();
 		String paramBaseTerm = decomposer.getBaseTerm(row.getCode(CustomStrings.PARAM_CODE_COL));
-		
+
 		boolean rgtParamCode = paramBaseTerm.equals(CustomStrings.RGT_PARAM_CODE);
 
 		return rgtParamCode;
@@ -138,41 +139,41 @@ public class TseReportService extends ReportService {
 	}
 
 	/**
-	 * shahaal
 	 * Extract the origSampId from analytical result
+	 * 
+	 * @author shahaal
 	 * @param result
 	 * @return
 	 * @throws ParseException
 	 * @throws FormulaException
 	 */
 	public static String getOrigSampIdFrom(TableRow result) throws ParseException, FormulaException {
-		
+
 		// decompose param code
 		TSEFormulaDecomposer decomposer = new TSEFormulaDecomposer();
-		
-		HashMap<String, TableCell> rowValues = 
-				decomposer.decompose(CustomStrings.SAMP_INFO_COL, 
-						result.getCode(CustomStrings.SAMP_INFO_COL));
-		
-		//get the cell for origSampId
-		TableCell cell =rowValues.get(CustomStrings.ORIG_SAMP_ID_COL);
-		
+
+		HashMap<String, TableCell> rowValues = decomposer.decompose(CustomStrings.SAMP_INFO_COL,
+				result.getCode(CustomStrings.SAMP_INFO_COL));
+
+		// get the cell for origSampId
+		TableCell cell = rowValues.get(CustomStrings.ORIG_SAMP_ID_COL);
+
 		// if the cell is null (old report) then retrieve it from resId
-		if(cell==null) {
-			
-			//get the resId
-			//String resId=result.getCode(CustomStrings.RES_ID_COL);
-			//String dot = ".";
-			//return the substring if dot present
-			//whole string otherwise
-			//if(resId.contains(dot)) {
-			//	return StringUtils.substringBefore(resId, dot);
-			//}else {
-				return StringUtils.substringBefore(result.getCode(CustomStrings.RES_ID_COL),".");
-				//return resId;
-			//}
+		if (cell == null) {
+
+			// get the resId
+			// String resId=result.getCode(CustomStrings.RES_ID_COL);
+			// String dot = ".";
+			// return the substring if dot present
+			// whole string otherwise
+			// if(resId.contains(dot)) {
+			// return StringUtils.substringBefore(resId, dot);
+			// }else {
+			return StringUtils.substringBefore(result.getCode(CustomStrings.RES_ID_COL), ".");
+			// return resId;
+			// }
 		}
-		
+
 		// return the sampOrigId
 		return cell.getCode();
 	}
@@ -284,7 +285,7 @@ public class TseReportService extends ReportService {
 		}
 
 		MessageConfigBuilder builder = new MessageConfigBuilder(formulaService1, messageParents);
-		
+
 		return builder;
 	}
 
@@ -356,7 +357,6 @@ public class TseReportService extends ReportService {
 			}
 
 			if (isReport) {
-
 				// get current version
 				String currentVersion = report.getVersion();
 
@@ -474,9 +474,9 @@ public class TseReportService extends ReportService {
 		/*
 		 * try {
 		 * 
-		 * //shahaal: uncomment for printing the columns of the schema in the report
-		 * //for (TableColumn tc : report.getSchema()) // System.out.println("Column: "
-		 * + tc.getId());
+		 * //uncomment for printing the columns of the schema in the report //for
+		 * (TableColumn tc : report.getSchema()) // System.out.println("Column: " +
+		 * tc.getId());
 		 * 
 		 * String isCWDExtendedContext = formulaService.solve(report,
 		 * report.getSchema()..getById(CustomStrings.EXCEPTION_COUNTRY_COL),
@@ -500,12 +500,12 @@ public class TseReportService extends ReportService {
 		Relation.injectParent(report, resultRow);
 		Relation.injectParent(summInfo, resultRow);
 
-		formulaService1.initialize(resultRow);
+		formulaService1.Initialise(resultRow);
 
 		// add get the id and update the fields
 		daoService.add(resultRow);
 
-		formulaService1.initialize(resultRow);
+		formulaService1.Initialise(resultRow);
 
 		resultRow.put(CustomStrings.PART_COL, CustomStrings.BLOOD_CODE);
 
@@ -545,12 +545,12 @@ public class TseReportService extends ReportService {
 				// inject the case parent to the result
 				Relation.injectParent(report, resultRow);
 				Relation.injectParent(summInfo, resultRow);
-				formulaService1.initialize(resultRow);
+				formulaService1.Initialise(resultRow);
 
 				// add result
 				daoService.add(resultRow);
 
-				formulaService1.initialize(resultRow);
+				formulaService1.Initialise(resultRow);
 
 				// set assessment as inconclusive
 				TableCell value = new TableCell();
@@ -583,7 +583,7 @@ public class TseReportService extends ReportService {
 				// inject the case parent to the result
 				Relation.injectParent(report, resultRow);
 				Relation.injectParent(summInfo, resultRow);
-				formulaService1.initialize(resultRow);
+				formulaService1.Initialise(resultRow);
 
 				// add get the id and update the fields
 				daoService.add(resultRow);

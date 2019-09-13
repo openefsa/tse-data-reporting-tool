@@ -351,7 +351,7 @@ public class ReportValidatorTest {
 	}
 	
 	/*
-	 * shahaal br not used anymore
+	 * BR not used anymore
 	@Test
 	public void nonWildCwdAndKilledShouldBeRejected() {
 		
@@ -436,7 +436,7 @@ public class ReportValidatorTest {
 	}
 	
 	/*
-	 * shahaal not used anymore, BR removed
+	 * not used anymore, BR removed
 	@Test
 	public void wrongAllelePairsAfrrAfrr() {
 		
@@ -464,7 +464,7 @@ public class ReportValidatorTest {
 	}*/
 	
 	/*
-	 * shahaal br not used anymore
+	 * BR not used anymore
 	@Test
 	public void wrongAllelePairsAlrrAfrr() {
 		
@@ -479,7 +479,7 @@ public class ReportValidatorTest {
 	}*/
 	
 	/*
-	 * shahaal br not used anymore
+	 * BR not used anymore
 	@Test
 	public void wrongAllelePairsAlrrAlrr() {
 		
@@ -494,7 +494,7 @@ public class ReportValidatorTest {
 	}*/
 	
 	/*
-	 * shahaal not used anymore BR removed
+	 * not used anymore BR removed
 
 	@Test
 	public void duplicatedScreeningTestCheck() throws IOException {
@@ -515,7 +515,7 @@ public class ReportValidatorTest {
 	
 
 	/*
-	 * shahaal br not used anymore
+	 * BR not used anymore
 	@Test
 	public void duplicatedConfirmatoryTestCheck() throws IOException {
 
@@ -534,7 +534,7 @@ public class ReportValidatorTest {
 	}*/
 	
 	/*
-	 * shahaal br not used anymore
+	 * BR not used anymore
 	@Test
 	public void duplicatedDiscriminatoryTestCheck() throws IOException {
 
@@ -553,7 +553,7 @@ public class ReportValidatorTest {
 	}*/
 	
 	/*
-	 * shahaal br not used anymore
+	 * BR not used anymore
 	@Test
 	public void duplicatedGenotypingTestCheck() throws IOException {
 
@@ -611,7 +611,7 @@ public class ReportValidatorTest {
 	}
 	
 	/*
-	 * shahaal br not used anymore
+	 * BR not used anymore
 	@Test
 	public void indexCaseNOForFarmedCwdCheck() throws IOException {
 

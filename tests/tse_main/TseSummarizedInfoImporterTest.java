@@ -82,10 +82,10 @@ public class TseSummarizedInfoImporterTest {
 		assertEquals("0", copiedSi.getCode(CustomStrings.TOT_SAMPLE_TESTED_COL));
 		assertEquals("0", copiedSi.getCode(CustomStrings.TOT_SAMPLE_UNSUITABLE_COL));
 		
-		// different res id (it was reinitialized)
+		// different res id (it was reInitialised)
 		assertFalse(si.getCode(CustomStrings.RES_ID_COL).equals(copiedSi.getCode(CustomStrings.RES_ID_COL)));
 		
-		// different prog id (it was reinitialized)
+		// different prog id (it was reInitialised)
 		assertFalse(si.getCode(CustomStrings.PROG_ID_COL).equals(copiedSi.getCode(CustomStrings.PROG_ID_COL)));
 	}
 }

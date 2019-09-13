@@ -79,7 +79,7 @@ public class ReportServiceTest {
 		this.sendMessage = new SendMessageMock();
 		this.getDataset = new GetDatasetMock();
 		this.daoService = new TableDaoService(new TableDaoMock());
-
+		
 		this.formulaService = new FormulaService(daoService);
 
 		this.reportService = new TseReportService(getAck, getDatasetsList, sendMessage, getDataset, daoService,
@@ -701,7 +701,7 @@ public class ReportServiceTest {
 		Message m = refreshStatusWithReadyAck(DcfDatasetStatus.OTHER, true);
 
 		assertEquals(RCLDatasetStatus.OTHER, report.getRCLStatus());
-		//shahaal not OK500 but ERR501, msg changed
+		// not OK500 but ERR501, msg changed
 		assertEquals("ERR501", m.getCode());
 	}
 
@@ -2117,7 +2117,7 @@ public class ReportServiceTest {
 	}
 
 	/*
-	 * shahaal contextid not used anymore
+	 * contextid not used anymore
 	@Test
 	public void computeContextIdForAnalyticalResultForBSEExceptionCountry()
 			throws NoSuchAlgorithmException, ParseException, FormulaException {
@@ -2135,7 +2135,7 @@ public class ReportServiceTest {
 
 		daoService.add(report);
 
-		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		TableRow result = new TableRow(schemaList.getByName(CustomStrings.RESULT_SHEET));
 		Relation.injectParent(report, result);
 
 		String tg = "TG001A";
@@ -2176,7 +2176,7 @@ public class ReportServiceTest {
 	}*/
 
 	/*
-	 * shahaal contextid not used anymore
+	 * contextid not used anymore
 	@Test
 	public void contextIdForAggregatedCWDForExceptionalCountry() throws NoSuchAlgorithmException, FormulaException {
 
@@ -2193,7 +2193,7 @@ public class ReportServiceTest {
 
 		daoService.add(report);
 
-		TableRow aggr = new TableRow(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+		TableRow aggr = new TableRow(schemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
 		Relation.injectParent(report, aggr);
 
 		aggr.put(CustomStrings.SUMMARIZED_INFO_TYPE, CustomStrings.SUMMARIZED_INFO_CWD_TYPE);
@@ -2236,7 +2236,7 @@ public class ReportServiceTest {
 	}*/
 	
 	/*
-	 * shahaal contextid not used anymore
+	 * contextid not used anymore
 	@Test
 	public void contextIdForAggregatedCWDForNONExceptionalCountry() throws NoSuchAlgorithmException, FormulaException {
 
@@ -2256,7 +2256,7 @@ public class ReportServiceTest {
 		//repId
 		daoService.add(report);
 
-		TableRow aggr = new TableRow(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+		TableRow aggr = new TableRow(schemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
 		Relation.injectParent(report, aggr);
 
 		aggr.put(CustomStrings.SUMMARIZED_INFO_TYPE, CustomStrings.SUMMARIZED_INFO_CWD_TYPE);
@@ -2300,7 +2300,7 @@ public class ReportServiceTest {
 	}*/
 	
 	/*
-	 * shahaal contextid not used anymore
+	 * contextid not used anymore
 	@Test
 	public void contextIdForAggregatedBSEForExceptionalCountry() throws NoSuchAlgorithmException, FormulaException {
 
@@ -2317,7 +2317,7 @@ public class ReportServiceTest {
 
 		daoService.add(report);
 
-		TableRow aggr = new TableRow(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+		TableRow aggr = new TableRow(schemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
 		Relation.injectParent(report, aggr);
 
 		aggr.put(CustomStrings.SUMMARIZED_INFO_TYPE, CustomStrings.SUMMARIZED_INFO_BSE_TYPE);
@@ -2358,7 +2358,7 @@ public class ReportServiceTest {
 	}*/
 
 	/*
-	 * shahaal contextid not used anymore
+	 * contextid not used anymore
 	@Test
 	public void contextIdForAggregatedBSEForNONExceptionalCountry() throws NoSuchAlgorithmException, FormulaException {
 
@@ -2375,7 +2375,7 @@ public class ReportServiceTest {
 
 		daoService.add(report);
 
-		TableRow aggr = new TableRow(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+		TableRow aggr = new TableRow(schemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
 		Relation.injectParent(report, aggr);
 
 		aggr.put(CustomStrings.SUMMARIZED_INFO_TYPE, CustomStrings.SUMMARIZED_INFO_BSE_TYPE);
@@ -2416,7 +2416,7 @@ public class ReportServiceTest {
 	}*/
 
 	/*
-	 * shahaal contextid not used anymore
+	 * contextid not used anymore
 	@Test
 	public void computeContextIdForAnalyticalResultForCWDNONExceptionalCountry()
 			throws NoSuchAlgorithmException, ParseException, FormulaException {
@@ -2431,7 +2431,7 @@ public class ReportServiceTest {
 
 		daoService.add(report);
 
-		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		TableRow result = new TableRow(schemaList.getByName(CustomStrings.RESULT_SHEET));
 		Relation.injectParent(report, result);
 
 		String tg = "TG006A";
@@ -2476,7 +2476,7 @@ public class ReportServiceTest {
 	}*/
 
 	/*
-	 * shahaal contextid not used anymore
+	 * contextid not used anymore
 	@Test
 	public void computeContextIdForAnalyticalResultForCWDExceptionalCountry()
 			throws NoSuchAlgorithmException, ParseException, FormulaException {
@@ -2491,7 +2491,7 @@ public class ReportServiceTest {
 
 		daoService.add(report);
 
-		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		TableRow result = new TableRow(schemaList.getByName(CustomStrings.RESULT_SHEET));
 		Relation.injectParent(report, result);
 
 		String tg = "TG001A";
@@ -2536,7 +2536,7 @@ public class ReportServiceTest {
 	}*/
 
 	/*
-	 * shahaal not context id not used anymore, BR removed
+	 * not context id not used anymore, BR removed
 	@Test
 	public void computeContextIdForAnalyticalResultForSCRAPIEExceptionCountry()
 			throws NoSuchAlgorithmException, ParseException, FormulaException {
@@ -2551,7 +2551,7 @@ public class ReportServiceTest {
 
 		daoService.add(report);
 
-		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		TableRow result = new TableRow(schemaList.getByName(CustomStrings.RESULT_SHEET));
 		Relation.injectParent(report, result);
 
 		String tg = "TG001A";
@@ -2593,7 +2593,7 @@ public class ReportServiceTest {
 	}*/
 
 	/*
-	 * shahaal contextid not used anymore
+	 * contextid not used anymore
 	@Test
 	public void computeContextIdForAnalyticalResultForSCRAPIENONExceptionCountry()
 			throws NoSuchAlgorithmException, ParseException, FormulaException {
@@ -2608,7 +2608,7 @@ public class ReportServiceTest {
 
 		daoService.add(report);
 
-		TableRow result = new TableRow(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
+		TableRow result = new TableRow(schemaList.getByName(CustomStrings.RESULT_SHEET));
 		Relation.injectParent(report, result);
 
 		String tg = "TG001A";

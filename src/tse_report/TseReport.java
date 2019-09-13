@@ -69,7 +69,7 @@ public class TseReport extends Report {
 	 */
 	@Override
 	public Collection<TableRow> getRecords(ITableDaoService daoService) {
-
+		
 		// children schemas
 		TableSchema[] schemas = new TableSchema[] { TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET),
 				TableSchemaList.getByName(CustomStrings.RESULT_SHEET) };
@@ -80,7 +80,7 @@ public class TseReport extends Report {
 		List<TableRow> filteredRecords = records.stream().filter(new Predicate<TableRow>() {
 			@Override
 			public boolean test(TableRow arg0) {
-
+				
 				// if the row is of Analytical result
 				if (AnalyticalResult.isAnalyticalResult(arg0)) {
 					String type = arg0.getCode(CustomStrings.PARAM_CODE_BASE_TERM_COL);
@@ -94,7 +94,7 @@ public class TseReport extends Report {
 		}).collect(Collectors.toList());
 
 		/*
-		 * shahaal the filter record is not needed because now RGT is defined at
+		 * the filter record is not needed because now RGT is defined at
 		 * SummInfo level // remove random genotyping from the summarized information
 		 * List<TableRow> filteredRecords = records.stream().filter(new
 		 * Predicate<TableRow>() {
@@ -119,7 +119,7 @@ public class TseReport extends Report {
 	 * @return
 	 */
 	public Collection<TableRow> getAllRecords(ITableDaoService daoService) {
-
+		
 		// children schemas
 		TableSchema[] schemas = new TableSchema[] { TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET),
 				TableSchemaList.getByName(CustomStrings.CASE_INFO_SHEET),

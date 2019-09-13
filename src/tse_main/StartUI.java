@@ -52,8 +52,7 @@ public class StartUI {
 
 	private static final Logger LOGGER = LogManager.getLogger(StartUI.class);
 
-	private static Display display;
-	private static Shell shell;
+	private Display display;
 
 	/**
 	 * Check if the mandatory fields of a generic settings table are filled or not
@@ -137,14 +136,13 @@ public class StartUI {
 	 * Close the application (db + interface)
 	 * 
 	 * @param db
-	 * @param display1
 	 */
-	private static void shutdown(Database db, Display display1) {
+	private void shutdown(Database db) {
 
 		LOGGER.info("Application closed " + System.currentTimeMillis());
 
-		if (display1 != null)
-			display1.dispose();
+		if (display != null)
+			display.dispose();
 
 		// close the database
 		if (db != null)
@@ -160,23 +158,21 @@ public class StartUI {
 	 * @param errorCode
 	 * @param message
 	 */
-	private static void showInitError(String message) {
-		Display display1 = new Display();
-		Shell shell1 = new Shell(display1);
-		Warnings.warnUser(shell1, TSEMessages.get("error.title"), message);
+	private void showInitError(String message) {
+		Shell shell = new Shell(display);
+		Warnings.warnUser(shell, TSEMessages.get("error.title"), message);
 
-		shell1.dispose();
-		display1.dispose();
+		shell.dispose();
+		display.dispose();
 	}
 
-	private static int ask(String message) {
-		Display display1 = new Display();
-		Shell shell1 = new Shell(display1);
-		int val = Warnings.warnUser(shell1, TSEMessages.get("warning.title"), message,
+	private int ask(String message) {
+		Shell shell = new Shell(display);
+		int val = Warnings.warnUser(shell, TSEMessages.get("warning.title"), message,
 				SWT.YES | SWT.NO | SWT.ICON_WARNING);
 
-		shell1.dispose();
-		display1.dispose();
+		shell.dispose();
+		display.dispose();
 
 		return val;
 	}
@@ -190,18 +186,19 @@ public class StartUI {
 	public static void main(String args[]) throws IOException {
 
 		try {
-			Database db = launch();
-			shutdown(db, display);
+			StartUI main = new StartUI();
+			Database db = main.launch();
+			main.shutdown(db);
 		} catch (Throwable e) {
 			e.printStackTrace();
 			LOGGER.fatal("Generic error occurred", e);
 
-			Warnings.createFatal(TSEMessages.get("generic.error", PropertiesReader.getSupportEmail())).open(shell);
+			Warnings.createFatal(TSEMessages.get("generic.error", PropertiesReader.getSupportEmail()))
+					.open(new Shell());
 		}
 	}
 
-	@SuppressWarnings({ "unused", "null" })
-	private static Database launch() {
+	private Database launch() {
 
 		// application start-up message. Usage of System.err used for red chars
 		LOGGER.info("Application started " + System.currentTimeMillis());
@@ -221,14 +218,14 @@ public class StartUI {
 
 			FileUtils.createFolder(CustomStrings.PREFERENCE_FOLDER);
 
-			// initialize the library
+			// Initialise the library
 			EFSARCL.init();
 
 			// check also custom files
 			EFSARCL.checkConfigFiles(CustomStrings.PREDEFINED_RESULTS_FILE, AppPaths.CONFIG_FOLDER);
 
 		} catch (IOException | SQLException e) {
-			LOGGER.fatal("Cannot initialize the EFSARCL library and accessory files", e);
+			LOGGER.fatal("Cannot Initialise the EFSARCL library and accessory files", e);
 			showInitError(TSEMessages.get("efsa.rcl.init.error", e.getMessage()));
 			return db;
 		} catch (DatabaseVersionException e) {
@@ -240,7 +237,7 @@ public class StartUI {
 			// close application
 			if (val == SWT.NO)
 				return db;
-			
+
 			// delete the database
 			try {
 
@@ -261,7 +258,7 @@ public class StartUI {
 
 		// create the main panel
 		display = new Display();
-		shell = new Shell(display);
+		final Shell shell = new Shell(display);
 
 		// set the application name in the shell
 		shell.setText(PropertiesReader.getAppName() + " " + PropertiesReader.getAppVersion());
@@ -282,7 +279,8 @@ public class StartUI {
 		// open the main panel
 
 		try {
-			new MainPanel(shell, reportService, daoService, formulaService);
+			MainPanel mainPanel = new MainPanel(shell, reportService, daoService, formulaService);
+			mainPanel.create();
 		} catch (Throwable e) {
 			e.printStackTrace();
 			LOGGER.fatal("Generic error occurred", e);
@@ -341,14 +339,14 @@ public class StartUI {
 				e.printStackTrace();
 				LOGGER.error("Cannot check if settings were set", e);
 			}
-			
-			//shahaal force the user to create a report after inserting preferences and settings
+
 			LOGGER.debug("Opening new report dialog");
 
+			// force the user to create a report after inserting preferences/settings
 			ReportCreatorDialog dialog = new ReportCreatorDialog(shell, reportService);
 			dialog.setButtonText(TSEMessages.get("new.report.button"));
 			dialog.open();
-			
+
 		} else {
 			// if settings are not opened, then login the user
 			// with the current credentials

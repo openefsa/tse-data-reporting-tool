@@ -18,7 +18,7 @@ public enum PredefinedResultHeader {
 	private String headerName;
 	
 	/**
-	 * Initialize the enumerator with the real 
+	 * Initialise the enumerator with the real 
 	 * header name that is present in the xlsx
 	 * @param headerName
 	 */

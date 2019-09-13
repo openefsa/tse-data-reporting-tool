@@ -33,7 +33,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 	public CaseReportValidator(ITableDaoService daoService) {
 		this.daoService = daoService;
 	}
-	
+
 	public Collection<Check> isRecordCorrect(TableRow row) {
 
 		Collection<Check> checks = new ArrayList<>();
@@ -42,7 +42,7 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 		String sampEventAsses = row.getCode(CustomStrings.SAMP_EVENT_ASSES_COL);
 		// String statusHerd = row.getCode(CustomStrings.STATUS_HERD_COL);
 
-		// shahaal initialize the sum info before in order to get from it the statusHerd
+		// Initialise the sum info before in order to get from it the statusHerd
 		// which is not present in the samples anymore
 		TableRow summInfo = daoService.getById(TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET),
 				row.getNumCode(Relation.foreignKeyFromParent(CustomStrings.SUMMARIZED_INFO_SHEET)));
@@ -59,16 +59,16 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			checks.add(Check.INDEX_CASE_FOR_NEGATIVE);
 		}
 
-		// shahaal status herd doenst exists anymore in samples, instead is taken from summinfo
-		//TSE48
-		if (indexCase.equals(CustomStrings.INDEX_CASE_YES) && 
-				(summInfo.getCode(CustomStrings.STATUS_HERD_COL).equals(CustomStrings.STATUS_HERD_INFECTED_CODE))) {
+		// status herd doenst exists anymore in samples, instead is taken from summinfo
+		// TSE48
+		if (indexCase.equals(CustomStrings.INDEX_CASE_YES)
+				&& (summInfo.getCode(CustomStrings.STATUS_HERD_COL).equals(CustomStrings.STATUS_HERD_INFECTED_CODE))) {
 			checks.add(Check.INDEX_CASE_FOR_INFECTED);
 		}
 
-		//TSE49
-		if (indexCase.equals(CustomStrings.INDEX_CASE_NO) && 
-				(summInfo.getCode(CustomStrings.STATUS_HERD_COL).equals(CustomStrings.STATUS_HERD_NOT_INFECTED_CODE))) {
+		// TSE49
+		if (indexCase.equals(CustomStrings.INDEX_CASE_NO) && (summInfo.getCode(CustomStrings.STATUS_HERD_COL)
+				.equals(CustomStrings.STATUS_HERD_NOT_INFECTED_CODE))) {
 			checks.add(Check.NOT_INDEX_CASE_FOR_FREE);
 		}
 
@@ -83,36 +83,33 @@ public class CaseReportValidator extends SimpleRowValidatorLabelProvider {
 			checks.add(Check.NO_TEST_SPECIFIED);
 		}
 
-		/* shahaal
-		 * br droped since not valid any more
-		if (isTestDuplicated(results)) {
-			checks.add(Check.DUPLICATED_TEST);
-		}*/
+		/*
+		 * BR dropped since not valid any more if (isTestDuplicated(results)) {
+		 * checks.add(Check.DUPLICATED_TEST); }
+		 */
 
-		/* shahaal
-		 * br droped since not valid any more
-		if (!isAnalysisYearConstant(results)) {
-			checks.add(Check.NOT_CONSTANT_ANALYSIS_YEAR);
-		}*/
+		/*
+		 * BR dropped since not valid any more if (!isAnalysisYearConstant(results)) {
+		 * checks.add(Check.NOT_CONSTANT_ANALYSIS_YEAR); }
+		 */
 
 		// check children errors
 		if (row.hasChildrenError()) {
 			checks.add(Check.WRONG_RESULTS);
 		}
 
-		
-		/* shahaal
-		 * br droped since not valid any more
+		/*
+		 * BR dropped since not valid any more
 		 * 
-		String type = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE);
-		String farmed = summInfo.getCode(CustomStrings.PROD_COL);
-
-		// Index case 'No' for farmed cwd is forbidden
-		if (indexCase.equals(CustomStrings.INDEX_CASE_NO) && type.equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE)) {
-			if (farmed.equals(CustomStrings.FARMED_PROD)) {
-				checks.add(Check.INDEX_CASE_FOR_FARMED_CWD);
-			}
-		}*/
+		 * String type = summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE); String
+		 * farmed = summInfo.getCode(CustomStrings.PROD_COL);
+		 * 
+		 * // Index case 'No' for farmed cwd is forbidden if
+		 * (indexCase.equals(CustomStrings.INDEX_CASE_NO) &&
+		 * type.equals(CustomStrings.SUMMARIZED_INFO_CWD_TYPE)) { if
+		 * (farmed.equals(CustomStrings.FARMED_PROD)) {
+		 * checks.add(Check.INDEX_CASE_FOR_FARMED_CWD); } }
+		 */
 
 		// if eradication measure for status herd F in scrapie
 		// if (type.equals(CustomStrings.SUMMARIZED_INFO_SCRAPIE_TYPE)) {

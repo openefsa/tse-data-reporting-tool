@@ -234,7 +234,7 @@ public class PredefinedResultService {
 			// code crack to save the row id for the resId field
 			// otherwise its default value will be corrupted
 			daoService.add(resultRow);
-			formulaService.initialize(resultRow);
+			formulaService.Initialise(resultRow);
 			
 			resultRow.put(CustomStrings.AN_METH_TYPE_COL, testTypeCode);
 			

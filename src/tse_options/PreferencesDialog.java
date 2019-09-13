@@ -14,7 +14,9 @@ import xml_catalog_reader.Selection;
 
 /**
  * Preferences of the report
+ * 
  * @author avonva
+ * @author shahaal
  *
  */
 public class PreferencesDialog extends OptionsDialog {
@@ -52,5 +54,11 @@ public class PreferencesDialog extends OptionsDialog {
 	public void addWidgets(DialogBuilder viewer) {
 		viewer.addHelp(TSEMessages.get("pref.help.title"))
 			.addTable(CustomStrings.PREFERENCES_SHEET, true);
+	}
+
+	@Override
+	public void nextLevel() {
+		// TODO Auto-generated method stub
+		
 	}
 }

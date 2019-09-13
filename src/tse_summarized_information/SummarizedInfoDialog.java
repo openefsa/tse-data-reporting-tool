@@ -5,8 +5,6 @@ import java.util.Collection;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -14,6 +12,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -152,7 +151,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			@Override
 			public void selectionChanged(SelectionChangedEvent arg0) {
 
-				// shahaal: check if RGT, if this the case doesnt enable the open sample form
+				// check if RGT, if this the case doesn't enable the open sample form
 				TableRow rowSelected = getSelection();
 
 				// check if row has been selected
@@ -166,25 +165,10 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			}
 		});
 
-		addCase.addSelectionListener(new SelectionListener() {
-
+		addCase.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				openSampleCase();
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-			}
-		});
-
-		// shahaal: added ability to direclty open next level by double clicking on the
-		// record
-		addTableDoubleClickListener(new IDoubleClickListener() {
-
-			@Override
-			public void doubleClick(DoubleClickEvent arg0) {
-				openSampleCase();
+				nextLevel();
 			}
 		});
 
@@ -201,25 +185,6 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 	 */
 	public void openSampleCase() {
 
-		TableRow row = getSelection();
-
-		if (row == null)
-			return;
-		
-		// check if row is RGT
-		boolean isRGT = row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE).equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
-		
-		//if the row is RGT dont open the sample case
-		if(isRGT)
-			return;
-		
-		SummarizedInfo summInfo = new SummarizedInfo(row);
-
-		// first validate the content of the row
-		if (!validate(summInfo) && isEditable())
-			return;
-
-		openCases(summInfo);
 	}
 
 	/**
@@ -510,8 +475,8 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		};
 
 		/*
-		 * //shahaal: uncomment for adding Reject function SelectionListener
-		 * rejectListener = new SelectionAdapter() {
+		 * // TODO uncomment for adding Reject function SelectionListener rejectListener
+		 * = new SelectionAdapter() {
 		 * 
 		 * @Override public void widgetSelected(SelectionEvent arg0) {
 		 * 
@@ -663,7 +628,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		};
 
 		/*
-		 * shahaal, uncomment for the beta tester
+		 * TODO uncomment for the beta tester
 		 * 
 		 * SelectionListener getAcceptedDwhMsgBeta = new SelectionAdapter() {
 		 * 
@@ -731,9 +696,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			}
 		};
 
-		viewer.addHelp(TSEMessages.get("si.help.title"))
-
-				.addComposite("labelsComp", new GridLayout(1, false), null)
+		viewer.addHelp(TSEMessages.get("si.help.title")).addComposite("labelsComp", new GridLayout(1, false), null)
 				.addLabelToComposite("reportLabel", "labelsComp").addLabelToComposite("statusLabel", "labelsComp")
 				.addLabelToComposite("messageIdLabel", "labelsComp")
 				.addLabelToComposite("datasetIdLabel", "labelsComp");
@@ -753,18 +716,20 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		}
 
 		/*
-		 * shahaal: if in beta test add the change report status button if
+		 * TODO if in beta test add the change report status button if
 		 * (DebugConfig.betaTest) { viewer.addGroup("betaTesterPanel",
 		 * TSEMessages.get("si.beta.tester.panel"), new GridLayout(1, false), null)
 		 * .addButtonToComposite("betaAcceptedDwh", "betaTesterPanel",
 		 * TSEMessages.get("si.beta.accepted.dwh"), getAcceptedDwhMsgBeta); }
 		 */
 
-		viewer.addComposite("panel", new GridLayout(1, false), null)
+		viewer.addComposite("panel", new GridLayout(1, false), new GridData(SWT.FILL, SWT.FILL, true, false))
 
+				// add the toolbar composite
 				.addGroupToComposite("buttonsComp", "panel", TSEMessages.get("si.toolbar.title"),
-						new GridLayout(8, false), null)
+						new GridLayout(8, false), new GridData(SWT.FILL, SWT.FILL, true, false))
 
+				// add the buttons to the toolbar
 				.addButtonToComposite("editBtn", "buttonsComp", TSEMessages.get("si.toolbar.edit"), editListener)
 				.addButtonToComposite("validateBtn", "buttonsComp", TSEMessages.get("si.toolbar.check"), checkListener)
 				.addButtonToComposite("sendBtn", "buttonsComp", TSEMessages.get("si.toolbar.send"), sendListener)
@@ -778,18 +743,20 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				.addButtonToComposite("displayAckBtn", "buttonsComp", TSEMessages.get("si.toolbar.display.ack"),
 						displayAckListener)
 
+				// add the row creator composite
 				.addGroupToComposite("rowCreatorComp", "panel", TSEMessages.get("si.add.record"),
-						new GridLayout(1, false), null)
+						new GridLayout(1, false), new GridData(SWT.FILL, SWT.FILL, true, false))
 				.addRowCreatorToComposite("rowCreatorComp", TSEMessages.get("si.add.record.label"),
 						CatalogLists.TSE_LIST)
 
+				// add the table
 				.addTable(CustomStrings.SUMMARIZED_INFO_SHEET, true);
 
 		initUI();
 	}
 
 	/**
-	 * Initialize the labels to their initial state
+	 * Initialise the labels to their initial state
 	 */
 	private void initUI() {
 
@@ -979,5 +946,30 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			out = defaultValue;
 
 		return out;
+	}
+
+	@Override
+	public void nextLevel() {
+
+		TableRow row = getSelection();
+
+		if (row == null)
+			return;
+
+		// check if row is RGT
+		boolean isRGT = row.getCode(CustomStrings.SUMMARIZED_INFO_TYPE).equals(CustomStrings.SUMMARIZED_INFO_RGT_TYPE);
+
+		// if the row is RGT dont open the sample case
+		if (isRGT)
+			return;
+
+		SummarizedInfo summInfo = new SummarizedInfo(row);
+
+		// first validate the content of the row
+		if (!validate(summInfo) && isEditable())
+			return;
+
+		openCases(summInfo);
+
 	}
 }

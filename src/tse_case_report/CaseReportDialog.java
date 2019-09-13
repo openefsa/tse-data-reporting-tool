@@ -5,8 +5,6 @@ import java.util.Collection;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -102,7 +100,6 @@ public class CaseReportDialog extends TableDialogWithMenu {
 			public void editStarted() {
 			}
 
-			@SuppressWarnings("unlikely-arg-type")
 			@Override
 			public void editEnded(TableRow row, TableColumn field, boolean changed) {
 				if (changed && field.equals(CustomStrings.STATUS_HERD_COL)) {
@@ -186,60 +183,14 @@ public class CaseReportDialog extends TableDialogWithMenu {
 		openResults.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				openAnalyticalRes();
-			}
-		});
-
-		// shahaal: added ability to direclty open next level by double clicking
-		addTableDoubleClickListener(new IDoubleClickListener() {
-
-			@Override
-			public void doubleClick(DoubleClickEvent arg0) {
-				openAnalyticalRes();
+				nextLevel();
 			}
 		});
 
 		addRemoveMenuItem(menu);
-		//addCloneMenuItem(menu);
+		// addCloneMenuItem(menu);
 
 		return menu;
-	}
-
-	/**
-	 * open analytical result level
-	 * 
-	 * @author shahaal
-	 */
-	public void openAnalyticalRes() {
-
-		TableRow row = getSelection();
-
-		if (row == null)
-			return;
-
-		Relation.emptyCache();
-
-		CaseReport caseReport = new CaseReport(row);
-
-		if (!caseReport.areMandatoryFilled() && report.isEditable()) {
-			warnUser(TSEMessages.get("error.title"), TSEMessages.get("case.open.results.error"));
-			return;
-		}
-
-		LOGGER.info("Opening result dialog");
-
-		// initialize result passing also the
-		// report data and the summarized information data
-		ResultDialog dialog = new ResultDialog(getParent(), report, summInfo, caseReport, reportService, daoService,
-				formulaService);
-		dialog.setParentFilter(caseReport); // set the case as filter (and parent)
-		dialog.askForDefault();
-		dialog.open();
-
-		// update children errors
-		reportService.updateChildrenErrors(caseReport);
-		replace(caseReport);
-
 	}
 
 	@Override
@@ -346,5 +297,38 @@ public class CaseReportDialog extends TableDialogWithMenu {
 
 		viewer.addRowCreator(TSEMessages.get("case.add.record")).addTable(CustomStrings.CASE_INFO_SHEET, true, report,
 				summInfo);
+	}
+
+	@Override
+	public void nextLevel() {
+		
+		TableRow row = getSelection();
+
+		if (row == null)
+			return;
+
+		Relation.emptyCache();
+
+		CaseReport caseReport = new CaseReport(row);
+
+		if (!caseReport.areMandatoryFilled() && report.isEditable()) {
+			warnUser(TSEMessages.get("error.title"), TSEMessages.get("case.open.results.error"));
+			return;
+		}
+
+		LOGGER.info("Opening result dialog");
+
+		// Initialise result passing also the
+		// report data and the summarized information data
+		ResultDialog dialog = new ResultDialog(getParent(), report, summInfo, caseReport, reportService, daoService,
+				formulaService);
+		dialog.setParentFilter(caseReport); // set the case as filter (and parent)
+		dialog.askForDefault();
+		dialog.open();
+
+		// update children errors
+		reportService.updateChildrenErrors(caseReport);
+		replace(caseReport);
+		
 	}
 }

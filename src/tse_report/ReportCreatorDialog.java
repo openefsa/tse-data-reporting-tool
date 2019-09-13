@@ -77,7 +77,7 @@ public class ReportCreatorDialog extends TableDialog {
 			LOGGER.error("Cannot inject global parent=" + CustomStrings.PREFERENCES_SHEET, e);
 		}
 		
-		row.initialize();
+		row.Initialise();
 		
 		// set as default the first version
 		row.setVersion(TableVersion.getFirstVersion());
@@ -191,5 +191,11 @@ public class ReportCreatorDialog extends TableDialog {
 
 		viewer.addHelp(TSEMessages.get("new.report.help.title"))
 			.addTable(CustomStrings.REPORT_SHEET, true);
+	}
+
+	@Override
+	public void nextLevel() {
+		// TODO Auto-generated method stub
+		
 	}
 }

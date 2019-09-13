@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<countryList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<countryList
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<selectionList>
+		<selection code="AL">
+			<description>Albania</description>
+		</selection>
 		<selection code="AT">
 			<description>Austria</description>
 		</selection>
 		<selection code="BE">
 			<description>Belgium</description>
+		</selection>
+		<selection code="BA">
+			<description>Bosnia and Herzegovina</description>
 		</selection>
 		<selection code="BG">
 			<description>Bulgaria</description>
@@ -67,6 +74,9 @@
 		<selection code="NL">
 			<description>Netherlands</description>
 		</selection>
+		<selection code="MK">
+			<description>North Macedonia</description>
+		</selection>
 		<selection code="NO">
 			<description>Norway</description>
 		</selection>
@@ -78,6 +88,9 @@
 		</selection>
 		<selection code="RO">
 			<description>Romania</description>
+		</selection>
+		<selection code="RS">
+			<description>Serbia</description>
 		</selection>
 		<selection code="SK">
 			<description>Slovakia</description>

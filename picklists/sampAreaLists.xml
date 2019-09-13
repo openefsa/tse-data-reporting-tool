@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<sampAreaLists xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<sampAreaLists
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<selectionList id="AL">
+		<selection code="AL01">
+			<description>Veri</description>
+		</selection>
+		<selection code="AL02">
+			<description>Qender</description>
+		</selection>
+		<selection code="AL03">
+			<description>Jug</description>
+		</selection>
+	</selectionList>
 	<selectionList id="AT">
 		<selection code="AT11">
 			<description>Burgenland</description>
@@ -30,6 +42,11 @@
 		</selection>
 		<selection code="ATZZ">
 			<description>Extra-Regio NUTS 2</description>
+		</selection>
+	</selectionList>
+	<selectionList id="BA">
+		<selection code="BA">
+			<description>Bosnia and Herzegovina</description>
 		</selection>
 	</selectionList>
 	<selectionList id="BE">
@@ -64,7 +81,8 @@
 			<description>Prov. West-Vlaanderen</description>
 		</selection>
 		<selection code="BE10">
-			<description>Région de Bruxelles-Capitale/ Brussels Hoofdstedelijk Gewest</description>
+			<description>Région de Bruxelles-Capitale/ Brussels Hoofdstedelijk
+				Gewest</description>
 		</selection>
 		<selection code="BEZZ">
 			<description>Extra-Regio NUTS 2</description>
@@ -477,7 +495,7 @@
 			<description>Auvergne (NUTS code deprecated)</description>
 		</selection>
 		<selection code="FR25">
-			<description>Basse-Normandie  (NUTS code deprecated)</description>
+			<description>Basse-Normandie (NUTS code deprecated)</description>
 		</selection>
 		<selection code="FR26">
 			<description>Bourgogne (NUTS code deprecated)</description>
@@ -504,10 +522,10 @@
 			<description>Guyane (NUTS code deprecated)</description>
 		</selection>
 		<selection code="FR23">
-			<description>Haute-Normandie  (NUTS code deprecated)</description>
+			<description>Haute-Normandie (NUTS code deprecated)</description>
 		</selection>
 		<selection code="FRA4">
-			<description>La Réunion  (NUTS code deprecated)</description>
+			<description>La Réunion (NUTS code deprecated)</description>
 		</selection>
 		<selection code="FR81">
 			<description>Languedoc-Roussillon (NUTS code deprecated)</description>
@@ -519,7 +537,7 @@
 			<description>Lorraine (NUTS code deprecated)</description>
 		</selection>
 		<selection code="FRA2">
-			<description>Martinique  (NUTS code deprecated)</description>
+			<description>Martinique (NUTS code deprecated)</description>
 		</selection>
 		<selection code="FRA5">
 			<description>Mayotte (NUTS code deprecated)</description>
@@ -764,7 +782,7 @@
 			<description>Extra-Regio NUTS 2</description>
 		</selection>
 		<selection code="HU10">
-			<description>Közép-Magyarország  (NUTS code deprecated)</description>
+			<description>Közép-Magyarország (NUTS code deprecated)</description>
 		</selection>
 	</selectionList>
 	<selectionList id="IE">
@@ -897,7 +915,7 @@
 	</selectionList>
 	<selectionList id="MK">
 		<selection code="MK00">
-			<description>Поранешна југословенска Република Македонија (Poranešna jugoslovenska Republika Makedonija)</description>
+			<description>Северна Македонија (North Macedonia)</description>
 		</selection>
 	</selectionList>
 	<selectionList id="MT">
@@ -1102,6 +1120,11 @@
 		</selection>
 		<selection code="ROZZ">
 			<description>Extra-Regio NUTS 2</description>
+		</selection>
+	</selectionList>
+	<selectionList id="RS">
+		<selection code="RS">
+			<description>Serbia</description>
 		</selection>
 	</selectionList>
 	<selectionList id="SE">

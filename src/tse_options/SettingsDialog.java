@@ -336,4 +336,10 @@ public class SettingsDialog extends OptionsDialog {
 			.addButtonImage("testConBtn", testConnImg)
 			.addTable(CustomStrings.SETTINGS_SHEET, true);
 	}
+
+	@Override
+	public void nextLevel() {
+		// TODO Auto-generated method stub
+		
+	}
 }

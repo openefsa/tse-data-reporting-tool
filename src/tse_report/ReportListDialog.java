@@ -20,22 +20,22 @@ import xlsx_reader.TableSchema;
 import xml_catalog_reader.Selection;
 
 public class ReportListDialog extends TableDialog {
-	
+
 	private RestoreableWindow window;
 	private static final String WINDOW_CODE = "ReportList";
-	
+
 	private TseReport selectedReport;
-	
+
 	public ReportListDialog(Shell parent, String title) {
 		super(parent, title, true, true);
-		
+
 		// create the parent structure
 		super.create();
-		
+
 		this.window = new RestoreableWindow(getDialog(), WINDOW_CODE);
 		window.restore(TSERestoreableWindowDao.class);
 		window.saveOnClosure(TSERestoreableWindowDao.class);
-		
+
 	}
 
 	@Override
@@ -48,30 +48,30 @@ public class ReportListDialog extends TableDialog {
 
 		TableDao dao = new TableDao();
 		Collection<TableRow> reports = dao.getAll(schema);
-		
+
 		// convert to dataset list
 		DatasetList tseReports = new DatasetList();
 		for (TableRow r : reports) {
 			TseReport report = new TseReport(r);
 			tseReports.add(report);
 		}
-		
+
 		// get only last versions
 		DatasetList lastVersions = tseReports.filterOldVersions();
 
 		// sort the list
 		lastVersions.sort();
-		
+
 		reports.clear();
-		
+
 		// convert back to table row
 		for (IDataset dataset : lastVersions) {
-			
+
 			TseReport tseReport = (TseReport) dataset;
-			
+
 			reports.add(new TableRow(tseReport));
 		}
-		
+
 		return reports;
 	}
 
@@ -82,9 +82,9 @@ public class ReportListDialog extends TableDialog {
 			warnUser(TSEMessages.get("error.title"), TSEMessages.get("report.not.selected"));
 			return false;
 		}
-		
+
 		this.selectedReport = new TseReport(selectedRow);
-		
+
 		return true;
 	}
 
@@ -103,8 +103,9 @@ public class ReportListDialog extends TableDialog {
 	}
 
 	@Override
-	public void processNewRow(TableRow row) {}
-	
+	public void processNewRow(TableRow row) {
+	}
+
 	@Override
 	public RowValidatorLabelProvider getValidator() {
 		return null;
@@ -112,8 +113,13 @@ public class ReportListDialog extends TableDialog {
 
 	@Override
 	public void addWidgets(DialogBuilder viewer) {
-		viewer.addHelp(getDialog().getText(), true)
-			.addTable(CustomStrings.REPORT_SHEET, false);
+		viewer.addHelp(getDialog().getText(), true).addTable(CustomStrings.REPORT_SHEET, false);
 	}
-	
+
+	@Override
+	public void nextLevel() {
+		this.apply(this.getSchema(), null, this.getSelection());
+		this.getDialog().dispose();
+	}
+
 }

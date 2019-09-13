@@ -38,7 +38,7 @@ public class TseReportImporter extends ReportImporter {
 	private ITableDaoService daoService;
 
 	// temporary variables
-	private TseReport report;
+	private TseReport mainReport;
 	private Collection<SummarizedInfo> summInfos;
 	private HashMap<String, TableRow> cases; // caseId, case
 
@@ -102,7 +102,7 @@ public class TseReportImporter extends ReportImporter {
 
 					LOGGER.info("Created fake RGT summarized information");
 				} else {
-					
+
 					SummarizedInfo si = extractSummarizedInfo(report1, row, false);
 
 					// save it in the database
@@ -150,6 +150,7 @@ public class TseReportImporter extends ReportImporter {
 					summInfo = getSummInfoByOrigSampId(origSampId);
 
 					LOGGER.info("Related summarized info with same origSampId= " + summInfo);
+					// progId, sampEventId
 				}
 
 				if (summInfo == null) {
@@ -266,14 +267,13 @@ public class TseReportImporter extends ReportImporter {
 				decomposer.decompose(CustomStrings.SAMP_UNIT_IDS_COL, row.getCode(CustomStrings.SAMP_UNIT_IDS_COL)));
 
 		// extract prog info
-		rowValues.putAll(
-					decomposer.decompose(CustomStrings.PROG_INFO_COL, row.getCode(CustomStrings.PROG_INFO_COL)));
+		rowValues.putAll(decomposer.decompose(CustomStrings.PROG_INFO_COL, row.getCode(CustomStrings.PROG_INFO_COL)));
 
 		// extract the allele if RGT
-		if(isRGT)
+		if (isRGT)
 			rowValues.putAll(
 					decomposer.decompose(CustomStrings.PARAM_CODE_COL, row.getCode(CustomStrings.PARAM_CODE_COL)));
-		
+
 		// copy values into the summarized information
 		SummarizedInfo summInfo = new SummarizedInfo(row);
 
@@ -401,7 +401,7 @@ public class TseReportImporter extends ReportImporter {
 	private static TableRow extractAnalyticalResult(TseReport report, SummarizedInfo summInfo, TableRow caseInfo,
 			TableRow row) throws ParseException {
 
-		// set the summarized information schema
+		// set the summarised information schema
 		row.setSchema(TableSchemaList.getByName(CustomStrings.RESULT_SHEET));
 
 		// decompose param code
@@ -467,10 +467,10 @@ public class TseReportImporter extends ReportImporter {
 
 		// extract the information from the dataset
 		// and insert the report into the database
-		this.report = reportService.reportFromDataset(dataset);
-		daoService.add(report);
+		this.mainReport = reportService.reportFromDataset(dataset);
+		daoService.add(mainReport);
 
-		return this.report;
+		return this.mainReport;
 	}
 
 	@Override
@@ -479,14 +479,14 @@ public class TseReportImporter extends ReportImporter {
 		LOGGER.info("Importing the summarized information");
 
 		// first import the summarized information
-		importSummarizedInformation(report, rows);
+		importSummarizedInformation(mainReport, rows);
 
 		LOGGER.info("Importing cases and results");
 
-		// shahaal, catch the exception when importing old reports
+		// catch the exception when importing old reports
 		try {
 			// then import cases and results
-			importCasesAndResults(report, rows);
+			importCasesAndResults(mainReport, rows);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

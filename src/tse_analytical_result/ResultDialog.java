@@ -89,31 +89,31 @@ public class ResultDialog extends TableDialogWithMenu {
 			@Override
 			public void editEnded(TableRow row, TableColumn field, boolean changed) {
 
-				//if a change is made on the row
+				// if a change is made on the row
 				if (changed) {
 
 					// reset the testaim and the anmethcode if anmethtype is changed
 					if (field.getId().equals(CustomStrings.AN_METH_TYPE_COL)) {
-						row.initialize(CustomStrings.TEST_AIM_COL);
-						row.initialize(CustomStrings.AN_METH_CODE_COL);
+						row.Initialise(CustomStrings.TEST_AIM_COL);
+						row.Initialise(CustomStrings.AN_METH_CODE_COL);
 					}
-					
+
 					// update the baseterm and the result value if testaim changes
-					if (field.getId().equals(CustomStrings.TEST_AIM_COL) || 
-							field.getId().equals(CustomStrings.AN_METH_CODE_COL)) {
+					if (field.getId().equals(CustomStrings.TEST_AIM_COL)
+							|| field.getId().equals(CustomStrings.AN_METH_CODE_COL)) {
 
 						// if genotyping set base term
 						if (row.getCode(CustomStrings.AN_METH_CODE_COL).equals(CustomStrings.AN_METH_CODE_GENOTYPING)
 								&& !summInfo.getCode(CustomStrings.SUMMARIZED_INFO_TYPE)
 										.equals(CustomStrings.SUMMARIZED_INFO_BSEOS_TYPE)) {
-							
+
 							try {
 								PredefinedResultService r = new PredefinedResultService(daoService, formulaService);
 								PredefinedResult predRes = r.getPredefinedResult(summInfo, caseInfo);
-								
+
 								row.put(CustomStrings.PARAM_CODE_BASE_TERM_COL,
 										predRes.get(PredefinedResultHeader.GENOTYPING_BASE_TERM));
-								
+
 							} catch (IOException e) {
 								LOGGER.error("Cannot fill results field=" + CustomStrings.PARAM_CODE_BASE_TERM_COL
 										+ " using the predefined results", e);
@@ -261,10 +261,14 @@ public class ResultDialog extends TableDialogWithMenu {
 	}
 
 	@Override
+	public void nextLevel() {
+	}
+	
+	@Override
 	public Menu createMenu() {
 		Menu menu = super.createMenu();
 		addRemoveMenuItem(menu);
-		//addCloneMenuItem(menu);
+		// addCloneMenuItem(menu);
 		return menu;
 	}
 

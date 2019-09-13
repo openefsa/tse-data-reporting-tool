@@ -62,7 +62,7 @@ public abstract class OptionsDialog extends TableDialog {
 			
 			// add a new row
 			TableRow row = new TableRow(schema);
-			row.initialize();
+			row.Initialise();
 			int id = dao.add(row);
 			row.setId(id);
 			

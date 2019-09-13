@@ -24,6 +24,7 @@ import tse_config.DebugConfig;
  * through their schema.
  * 
  * @author avonva
+ * @author shahaal
  *
  */
 public abstract class TableDialogWithMenu extends TableDialog {
@@ -235,13 +236,14 @@ public abstract class TableDialogWithMenu extends TableDialog {
 	}
 
 	/**
-	 * shahaal Add the clone menu item to the menu
+	 * Add the clone menu item to the menu
 	 * 
+	 * @author shahaal
 	 * @param menu
 	 * @return
 	 */
 	public MenuItem addCloneMenuItem(Menu menu) {
-		
+
 		MenuItem clone = new MenuItem(menu, SWT.PUSH);
 		clone.setText(TSEMessages.get("clone.records"));
 		clone.setEnabled(false);

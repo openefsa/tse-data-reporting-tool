@@ -19,12 +19,9 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 /**
- * Created with Eclipse.
- * 
- * User: shahaal Date: 28-11-2018
- *
  * Class that parse Excel Spreadsheet to XML.
  *
+ * @author shahaal
  */
 
 public class ExcelXmlConverter {
@@ -44,7 +41,7 @@ public class ExcelXmlConverter {
 		// check if the file exists
 		if (excelFile.exists() && excelFile.isFile()) {
 
-			//solve memory leak
+			// solve memory leak
 			try (FileInputStream inputStream = new FileInputStream(excelFile);
 					Workbook workbook = new XSSFWorkbook(inputStream)) {
 
@@ -158,7 +155,7 @@ public class ExcelXmlConverter {
 				// StreamResult streamResult = new StreamResult(System.out);
 
 				String xmlPath = excelFile.getAbsolutePath().replace(".xlsx", ".xml");
-				// System.out.println("shahaal new xml file in "+xmlPath);
+
 				// write to file
 				StreamResult streamResult = new StreamResult(new File(xmlPath));
 

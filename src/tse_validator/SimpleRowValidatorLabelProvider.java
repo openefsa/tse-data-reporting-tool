@@ -64,8 +64,7 @@ public class SimpleRowValidatorLabelProvider extends RowValidatorLabelProvider {
 	 * @param row
 	 * @return
 	 */
-	@SuppressWarnings("static-method")
-	private Color getRowColor(TableRow row) {
+	private static Color getRowColor(TableRow row) {
 		
 		Display display = Display.getDefault();
 		

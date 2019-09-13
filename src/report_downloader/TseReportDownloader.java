@@ -77,7 +77,7 @@ public class TseReportDownloader extends ReportDownloaderDialog {
 		DownloadReportDialog dialog = new DownloadReportDialog(shell, 
 				CustomStrings.VALID_SENDER_ID_PATTERN);
 		
-		// here the shell is initialized
+		// here the shell is Initialised
 		this.window = new RestoreableWindow(dialog.getDialog(), WINDOW_CODE);
 		window.saveOnClosure(TSERestoreableWindowDao.class);
 		

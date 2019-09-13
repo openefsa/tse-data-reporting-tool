@@ -1,7 +1,6 @@
 package tse_validator;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -166,50 +165,50 @@ public class TseReportValidator extends ReportValidator {
 
 		return errors;
 	}
-	
+
 	/**
-	 * Check if there are summarize results with the same values in natural key
+	 * Check if there are summarise results with the same values in natural key
 	 * 
 	 * @author shahaal
 	 * @param reportRecords
 	 * @return
 	 */
 	public Collection<ReportError> checkDuplicatedSummId(ArrayList<TableRow> reportRecords) {
-		
-		//collection used to report duplicate errors
+
+		// collection used to report duplicate errors
 		Collection<ReportError> errors = new ArrayList<>();
-		
-		//the set store the values already analyzed
+
+		// the set store the values already analysed
 		Set<Integer> indexComputed = new HashSet<>();
-		
-		for(int i=0; i<reportRecords.size(); i++) {
-			
+
+		for (int i = 0; i < reportRecords.size() - 1; i++) {
+
 			TableRow current = reportRecords.get(i);
-			
-			//if the row is not summ or already computed skip
-			if(TseReportService.getRowType(current) != RowType.SUMM ||
-					indexComputed.contains(i))
+
+			// if the row is not summ or already computed skip
+			if (TseReportService.getRowType(current) != RowType.SUMM || indexComputed.contains(i))
 				continue;
-			
-			for(int j=0; j<reportRecords.size();j++) {
+
+			for (int j = i + 1; j < reportRecords.size(); j++) {
 
 				TableRow next = reportRecords.get(j);
-				
-				//if the row is not summ or already computed or same as the current skip 
-				if(i==j||TseReportService.getRowType(next) != RowType.SUMM||
-						indexComputed.contains(j)) 
+
+				// if the row is not summ or already computed or same as the current skip
+				if (TseReportService.getRowType(next) != RowType.SUMM || indexComputed.contains(j))
 					continue;
-				
+
 				// if the records has same values under natural key
-				if(current.sameAs(next)) {
-					
+				if (current.sameAs(next)) {
+
 					// get their ids
 					String rowId1 = getStackTrace(current);
 					String rowId2 = getStackTrace(next);
-					//add their indexes to the set
+
+					// add their indexes to the set
 					indexComputed.add(j);
 					indexComputed.add(i);
-					//add the error to print
+
+					// add the error to print
 					errors.add(new DuplicatedContextError(rowId1, rowId2));
 				}
 			}
@@ -420,7 +419,7 @@ public class TseReportValidator extends ReportValidator {
 				break;
 			case INDEX_CASE_FOR_INFECTED:
 				errors.add(new IndexCaseInconsistentWithStatusHerdError(getStackTrace(row),
-					row.getLabel(CustomStrings.INDEX_CASE_COL), "Infected"));
+						row.getLabel(CustomStrings.INDEX_CASE_COL), "Infected"));
 				break;
 			case NOT_INDEX_CASE_FOR_FREE:
 				errors.add(new IndexCaseInconsistentWithStatusHerdError(getStackTrace(row),
@@ -434,11 +433,7 @@ public class TseReportValidator extends ReportValidator {
 			}
 		}
 
-		try {
-			errors.addAll(checkAgeClass(row));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		errors.addAll(checkAgeClass(row));
 
 		return errors;
 	}
@@ -516,8 +511,7 @@ public class TseReportValidator extends ReportValidator {
 		return errors;
 	}
 
-	@SuppressWarnings("unused")
-	public Collection<ReportError> checkAgeClass(TableRow row) throws ParseException {
+	public Collection<ReportError> checkAgeClass(TableRow row) {
 
 		Collection<ReportError> errors = new ArrayList<>();
 
@@ -584,7 +578,7 @@ public class TseReportValidator extends ReportValidator {
 	public Collection<ReportError> checkResult(TableRow row) {
 
 		Collection<ReportError> errors = new ArrayList<>();
-		
+
 		ErrorType errorType = ResultValidator.getError(row);
 		String rowId = getStackTrace(row);
 
