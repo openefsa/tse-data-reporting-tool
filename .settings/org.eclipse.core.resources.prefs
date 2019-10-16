@@ -1,8 +1,6 @@
 eclipse.preferences.version=1
-encoding/<project>=UTF-8
-encoding/config=UTF-8
-encoding/icons=UTF-8
-encoding/log4j-config=UTF-8
-encoding/picklists=UTF-8
-encoding/src=UTF-8
-encoding/tests=UTF-8
+encoding//src/main/java=Cp1252
+encoding//src/main/resources=Cp1252
+encoding//src/test/java=Cp1252
+encoding//src/test/resources=Cp1252
+encoding/<project>=Cp1252
