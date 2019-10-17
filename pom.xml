@@ -168,6 +168,9 @@
 						<goals>
 							<goal>aggregate-download-licenses</goal>
 						</goals>
+						<configuration>
+							<licensesOutputDirectory>third-party-license</licensesOutputDirectory>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
