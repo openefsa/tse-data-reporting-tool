@@ -7,7 +7,7 @@ import i18n_messages.RCLBundle;
 
 public class TSEMessages {
 	
-	private static final String BUNDLE_NAME = "i18n_messages.tse_messages_en";
+	private static final String BUNDLE_NAME = "tse_messages_en";
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH);
 
