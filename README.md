@@ -1,10 +1,12 @@
-![European Food Safety Authority](http://www.efsa.europa.eu/profiles/efsa/themes/responsive_efsa/logo.png)
+<p align="center">
+	![European Food Safety Authority](http://www.efsa.europa.eu/profiles/efsa/themes/responsive_efsa/logo.png)
+</p>
 
 # Transmissible spongiform encephalopathies tool
 The TSE data reporting tool is an open source Java client tool developed for the members of the Scientific Network for Zoonoses monitoring. The tool allows countries to submit and edit their data and automatically upload them into the EFSA Data Collection Framework (DCF) as XML data files.
 
 <p align="center">
-    <img src="src/main/resources/icons/app-icon.png" alt="TSE icon"/>
+    <img src="src/main/resources/icons/TSE_Splash.bmp" alt="TSE icon"/>
 </p>
 
 ## Dependencies
