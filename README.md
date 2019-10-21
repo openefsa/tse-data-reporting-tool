@@ -40,7 +40,7 @@ Next, close the IDE and extract all the zip packets inside the parent project.
 At this stage you can simply open the IDE and import back the parent project which will automatically import also the TSE tool and all its dependencies.
 
 _Please note that the "SWT.jar" and the "Jface.jar" libraries must be downloaded and installed manually in the Maven local repository since are custom versions used in the tool ((install 3rd party jars)[https://maven.apache.org/guides/mini/guide-3rd-party-jars-local.html]). 
-Download the exact version by checking the Catalogue browser pom.xml file._
+Download the exact version by checking the TSE pom.xml file._
 
 ### Notes for developers
 Please note that the "compact", "config" and "picklists" folders are used by the tool and therefore errors occur if missing.
