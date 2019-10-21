@@ -1,5 +1,5 @@
 <p align="center">
-	<img src="(http://www.efsa.europa.eu/profiles/efsa/themes/responsive_efsa/logo.png" alt="European Food Safety Authority"/>
+	<img src="http://www.efsa.europa.eu/profiles/efsa/themes/responsive_efsa/logo.png" alt="European Food Safety Authority"/>
 </p>
 
 # Transmissible spongiform encephalopathies tool
