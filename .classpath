@@ -1,23 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/classes" path="src/main/java">
-		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
-		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="test" value="true"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry excluding="icons/|icons/|icons/" kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/main/resources/icons"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
@@ -29,9 +15,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="src" path="/dcf-webservice-framework"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dcf-webservice-framework"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/efsa-rcl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/email-generator"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/exceptions-manager"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/http-manager"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/http-manager-gui"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/progress-bar"/>
@@ -39,6 +26,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/version-manager"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/window-size-save-restore"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/zip-manager"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/exceptions-manager"/>
+	<classpathentry kind="var" path="JFACE"/>
+	<classpathentry kind="var" path="SWT"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

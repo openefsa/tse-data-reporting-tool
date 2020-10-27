@@ -125,14 +125,12 @@ public class SummarizedInfoValidator extends SimpleRowValidatorLabelProvider {
 					checks.add(SampleCheck.TOO_MANY_INCONCLUSIVES);
 				else if (detailedIncSamples < incSamples)
 					checks.add(SampleCheck.TOO_FEW_INCONCLUSIVES);
+			} else if(isRGT) {
+				// declared tested cases
+				int testedSamples = row.getNumLabel(CustomStrings.TOT_SAMPLE_TESTED_COL);
+				if(testedSamples<=0)
+					checks.add(SampleCheck.MISSING_RGT_CASE);
 			}
-
-			/*
-			 * MM removed since case data are no more required for RGT
-			 *
-			 * else if (cases.size() == 0 || cases.isEmpty())
-			 * checks.add(SampleCheck.MISSING_RGT_CASE);
-			 */
 
 		} catch (NumberFormatException e) {
 			e.printStackTrace();

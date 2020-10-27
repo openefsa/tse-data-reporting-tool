@@ -41,6 +41,10 @@ public class TseFileDialog {
 		return select(SWT.SAVE, "*.xml", filename);
 	}
 	
+	public File saveXlsx(String filename) {
+		return select(SWT.SAVE, "*.xlsx", filename);
+	}
+	
 	public File loadXml() {
 		return select(SWT.NONE, "*.xml", "");
 	}

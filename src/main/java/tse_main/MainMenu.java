@@ -387,14 +387,16 @@ public class MainMenu {
 
 				TseReport report = mainPanel.getOpenedReport();
 
-				if (report == null)
+				if (report == null) {
+					Warnings.warnUser(shell, TSEMessages.get("error.title"), TSEMessages.get("report.noreport.error"));
 					return;
+				}
 
 				// save the file
 				TseFileDialog fileDialog = new TseFileDialog(shell);
 				String filename = TableVersion.mergeNameAndVersion(report.getSenderId(), report.getVersion());
 				File exportFile = fileDialog.saveXml(filename);
-
+				
 				if (exportFile == null)
 					return;
 
@@ -546,8 +548,10 @@ public class MainMenu {
 
 				TseReport report = mainPanel.getOpenedReport();
 
-				if (report == null)
+				if (report == null) {
+					Warnings.warnUser(shell, TSEMessages.get("error.title"), TSEMessages.get("report.noreport.error"));
 					return;
+				}
 
 				EnumPicker<OperationType> dialog = new EnumPicker<>(shell, OperationType.class);
 				dialog.open();

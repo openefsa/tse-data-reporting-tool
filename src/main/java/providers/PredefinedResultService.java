@@ -8,8 +8,6 @@ import org.apache.logging.log4j.Logger;
 import predefined_results.PredefinedResult;
 import predefined_results.PredefinedResultHeader;
 import predefined_results.PredefinedResultList;
-import providers.IFormulaService;
-import providers.ITableDaoService;
 import report.Report;
 import table_relations.Relation;
 import table_skeleton.TableRow;

@@ -3,8 +3,6 @@ package i18n_messages;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import i18n_messages.RCLBundle;
-
 public class TSEMessages {
 	
 	private static final String BUNDLE_NAME = "tse_messages_en";

@@ -1,10 +1,12 @@
 package tse_summarized_information;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -47,6 +49,7 @@ import soap.DetailedSOAPException;
 import table_dialog.DialogBuilder;
 import table_dialog.EditorListener;
 import table_dialog.RowValidatorLabelProvider;
+import table_exporter.SummInfoToExcel;
 import table_relations.Relation;
 import table_skeleton.TableCell;
 import table_skeleton.TableColumn;
@@ -59,11 +62,13 @@ import tse_components.TableDialogWithMenu;
 import tse_config.CatalogLists;
 import tse_config.CustomStrings;
 import tse_config.DebugConfig;
+import tse_main.TseFileDialog;
 import tse_report.TseReport;
 import tse_validator.SummarizedInfoValidator;
 import tse_validator.TseReportValidator;
 import window_restorer.RestoreableWindow;
 import xlsx_reader.TableSchema;
+import xlsx_reader.TableSchemaList;
 import xml_catalog_reader.Selection;
 
 /**
@@ -176,15 +181,6 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		addCloneMenuItem(menu);
 
 		return menu;
-	}
-
-	/**
-	 * open sample case
-	 * 
-	 * @author shahaal
-	 */
-	public void openSampleCase() {
-
 	}
 
 	/**
@@ -474,6 +470,42 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 			}
 		};
 
+		SelectionListener exportListener = new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+
+				Shell shell = getDialog();
+
+				if (report == null) {
+					Warnings.warnUser(shell, TSEMessages.get("error.title"), TSEMessages.get("report.noreport.error"));
+					return;
+				}
+
+				// get records from summarized information
+				Collection<TableRow> records = report.getRecords(daoService,
+						TableSchemaList.getByName(CustomStrings.SUMMARIZED_INFO_SHEET));
+				// get headers from summarized information
+				Collection<TableColumn> headers = records.iterator().next().getVisibleColumns();
+				// initiate the summarized information exporter
+				SummInfoToExcel exporter = new SummInfoToExcel();
+				// create the workbook with the summarised info records
+				XSSFWorkbook wb = exporter.createWorkbookFromTable(headers, records);
+
+				// save the file
+				TseFileDialog fileDialog = new TseFileDialog(shell);
+				String filename = TableVersion.mergeNameAndVersion(report.getSenderId(), report.getVersion());
+				File exportFile = fileDialog.saveXlsx(filename);
+
+				if (exportFile == null)
+					return;
+
+				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_WAIT));
+				exporter.dumpWorkbookToAFile(shell, wb, exportFile);
+				shell.setCursor(shell.getDisplay().getSystemCursor(SWT.CURSOR_ARROW));
+			}
+		};
+
 		/*
 		 * // TODO uncomment for adding Reject function SelectionListener rejectListener
 		 * = new SelectionAdapter() {
@@ -735,13 +767,12 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 				.addButtonToComposite("sendBtn", "buttonsComp", TSEMessages.get("si.toolbar.send"), sendListener)
 				.addButtonToComposite("submitBtn", "buttonsComp", TSEMessages.get("si.toolbar.submit"), submitListener)
 				.addButtonToComposite("amendBtn", "buttonsComp", TSEMessages.get("si.toolbar.amend"), amendListener)
-				// .addButtonToComposite("rejectBtn", "buttonsComp",
-				// TSEMessages.get("si.toolbar.reject"), rejectListener) //uncomment for adding
-				// Reject function
 				.addButtonToComposite("refreshBtn", "buttonsComp", TSEMessages.get("si.toolbar.refresh.status"),
 						refreshStateListener)
 				.addButtonToComposite("displayAckBtn", "buttonsComp", TSEMessages.get("si.toolbar.display.ack"),
 						displayAckListener)
+				.addButtonToComposite("exportExcelBtn", "buttonsComp", TSEMessages.get("si.toolbar.export"),
+						exportListener)
 
 				// add the row creator composite
 				.addGroupToComposite("rowCreatorComp", "panel", TSEMessages.get("si.add.record"),
@@ -771,6 +802,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		panel.setEnabled("submitBtn", false);
 		panel.setEnabled("amendBtn", false);
 		panel.setEnabled("displayAckBtn", false);
+		panel.setEnabled("exportExcelBtn", false);
 		panel.setEnabled("changeStatusBtn", false);
 		panel.setEnabled("changeMessageIdBtn", false);
 		panel.setEnabled("changeDatasetIdBtn", false);
@@ -812,6 +844,10 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		Image displayAckImage = new Image(Display.getCurrent(),
 				this.getClass().getClassLoader().getResourceAsStream("displayAck-icon.png"));
 		panel.addButtonImage("displayAckBtn", displayAckImage);
+
+		Image exportExcelImage = new Image(Display.getCurrent(),
+				this.getClass().getClassLoader().getResourceAsStream("export-icon.png"));
+		panel.addButtonImage("exportExcelBtn", exportExcelImage);
 
 		// add image to refresh button
 		Image refreshImage = new Image(Display.getCurrent(),
@@ -887,6 +923,7 @@ public class SummarizedInfoDialog extends TableDialogWithMenu {
 		// panel.setEnabled("rejectBtn", !DebugConfig.disableMainPanel &&
 		// datasetStatus.canBeRejected());
 		panel.setEnabled("displayAckBtn", !DebugConfig.disableMainPanel && datasetStatus.canDisplayAck());
+		panel.setEnabled("exportExcelBtn", !DebugConfig.disableMainPanel && report!=null);
 		panel.setEnabled("refreshBtn", !DebugConfig.disableMainPanel && datasetStatus.canBeRefreshed());
 		panel.setEnabled("changeStatusBtn", true);
 		panel.setEnabled("changeMessageIdBtn", true);

@@ -1,1 +1,7 @@
+/.settings/
 /target/
+/temp/
+/logs/
+/database/
+/preferences/
+*.log

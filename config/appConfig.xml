@@ -3,8 +3,8 @@
 <properties>
 <comment>Application configuration</comment>
 <entry key="Application.Name">EFSA TSE data reporting tool</entry> <!-- main title of the application -->
-<entry key="Application.Version">1.3.6</entry> <!-- version of the application that will displayed after the application name -->
-<entry key="Db.MinRequiredVersion">1.3.6</entry> <!-- version of the database needed -->
+<entry key="Application.Version">1.3.7</entry> <!-- version of the application that will displayed after the application name -->
+<entry key="Db.MinRequiredVersion">1.3.7</entry> <!-- version of the database needed -->
 <entry key="Application.Icon">app-icon.png</entry> <!-- application icon (in the icon folder) -->
 
 <entry key="TechnicalSupport.Email">zoonoses_support@efsa.europa.eu</entry> <!-- email which will be used for technical support -->
@@ -14,7 +14,7 @@
 <entry key="Application.DataCollectionTable">SSD2_CENTRAL_2019</entry> <!-- code that will be used to send report to the dcf -->
 <entry key="Application.DataCollectionPattern">TSE.yyyy</entry> <!-- data collection code, the yyyy pattern will be replaced by the report year -->
 <entry key="Application.DataCollectionTest">TEST</entry> <!-- code that will be put in the yyyy of DataCollectionPattern if the test data collection should be used -->
-<entry key="Application.DataCollectionStartingYear">2018</entry> <!-- year in which the data collection started, if the year of the opened report is < than this, then the data collection of TEST will be used -->
+<entry key="Application.DataCollectionStartingYear">2019</entry> <!-- year in which the data collection started, if the year of the opened report is < than this, then the data collection of TEST will be used -->
 <entry key="Application.HelpRepository">https://github.com/openefsa/TSE-data-reporting-tool/wiki</entry> <!-- endpoint where it is stored the help -->
 <entry key="Application.StartupHelpFile">Home</entry> <!-- file name of the html file (in the help folder) which will be visualized when the application starts (leave empty to disable) -->
 </properties>
