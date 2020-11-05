@@ -81,8 +81,7 @@
 			<description>Prov. West-Vlaanderen</description>
 		</selection>
 		<selection code="BE10">
-			<description>Région de Bruxelles-Capitale/ Brussels Hoofdstedelijk
-				Gewest</description>
+			<description>Région de Bruxelles-Capitale/ Brussels Hoofdstedelijk Gewest</description>
 		</selection>
 		<selection code="BEZZ">
 			<description>Extra-Regio NUTS 2</description>
@@ -1182,6 +1181,80 @@
 		</selection>
 		<selection code="SKZZ">
 			<description>Extra-Regio NUTS 2</description>
+		</selection>
+	</selectionList>
+	<selectionList id="TR">
+		<selection code="TR10">
+			<description>Istanbul (NUTS level 2)</description>
+		</selection>
+		<selection code="TR21">
+			<description>Tekirdag, Edirne, Kirklareli</description>
+		</selection>
+		<selection code="TR22">
+			<description>Balikesir, Çanakkale</description>
+		</selection>
+		<selection code="TR31">
+			<description>Izmir (NUTS level 2)</description>
+		</selection>
+		<selection code="TR41">
+			<description>Bursa, Eskisehir, Bilecik</description>
+		</selection>
+		<selection code="TR42">
+			<description>Kocaeli, Sakarya, Düzce, Bolu, Yalova</description>
+		</selection>
+		<selection code="TR51">
+			<description>Ankara (NUTS level 2)</description>
+		</selection>
+		<selection code="TR52">
+			<description>Konya, Karaman</description>
+		</selection>
+		<selection code="TR61">
+			<description>Antalya, Isparta, Burdur</description>
+		</selection>
+		<selection code="TR62">
+			<description>Adana, Mersin</description>
+		</selection>
+		<selection code="TR63">
+			<description>Hatay, Kahramanmaras, Osmaniye</description>
+		</selection>
+		<selection code="TR71">
+			<description>Kirikkale, Aksaray, Nigde, Nevsehir, Kirsehir</description>
+		</selection>
+		<selection code="TR72">
+			<description>Kayseri, Sivas, Yozgat</description>
+		</selection>
+		<selection code="TR81">
+			<description>Zonguldak, Karabük, Bartin</description>
+		</selection>
+		<selection code="TR82">
+			<description>Kastamonu, Çankiri, Sinop</description>
+		</selection>
+		<selection code="TR83">
+			<description>Samsun, Tokat, Çorum, Amasya</description>
+		</selection>
+		<selection code="TR90">
+			<description>Trabzon, Ordu, Giresun, Rize, Artvin, Gümüshane</description>
+		</selection>
+		<selection code="TRA1">
+			<description>Erzurum, Erzincan, Bayburt</description>
+		</selection>
+		<selection code="TRA2">
+			<description>Ağrı, Kars, Iğdır, Ardahan</description>
+		</selection>
+		<selection code="TRB1">
+			<description>Malatya, Elazig, Bingöl, Tunceli</description>
+		</selection>
+		<selection code="TRB2">
+			<description>Van, Muş, Bitlis, Hakkari</description>
+		</selection>
+		<selection code="TRC1">
+			<description>Gaziantep, Adiyaman, Kilis</description>
+		</selection>
+		<selection code="TRC2">
+			<description>Sanliurfa, Diyarbakir</description>
+		</selection>
+		<selection code="TRC3">
+			<description>Mardin, Batman, Sirnak, Siirt</description>
 		</selection>
 	</selectionList>
 </sampAreaLists>

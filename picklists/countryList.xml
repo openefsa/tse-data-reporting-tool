@@ -107,6 +107,9 @@
 		<selection code="CH">
 			<description>Switzerland</description>
 		</selection>
+		<selection code="TR">
+			<description>Turkey</description>
+		</selection>
 		<selection code="GB">
 			<description>United Kingdom</description>
 		</selection>
